@@ -42,7 +42,8 @@ def find_dotenv_path():
 DOT_ENV_PATH = find_dotenv_path()
 load_dotenv(dotenv_path=DOT_ENV_PATH)
 api_key = os.getenv("API_KEY")
-client = OpenAI(api_key=api_key, base_url="https://api.siliconflow.cn/v1")
+base_url = os.getenv("BASE_URL")
+client = OpenAI(api_key=api_key, base_url=base_url)
 
 # 模型列表
 model_list = {

@@ -13,7 +13,9 @@
 - ✅ 学生党专属成长心法
 - ✅ 定期精读好书
 
-这里是**筱可AI研习社**的实战项目仓库！这个仓库主要用于存储和展示为公众号撰写的各类实战项目。我们会不断优化和迭代这些项目，以探索AI的无限可能。
+这里是**筱可AI研习社**的实战项目仓库！
+
+**这个仓库主要用于存储和展示为公众号撰写的各类实战项目。我们会不断优化和迭代这些项目，以探索AI的无限可能。**
 
 ## 仓库概览
 
@@ -47,16 +49,16 @@
 
 1. 克隆仓库到本地：
 
-    ```bash
-    git clone https://github.com/yourusername/XiaokeAILabs.git
-    ```
+```bash
+git clone https://github.com/yourusername/XiaokeAILabs.git
+```
 
 2. 进入项目目录并安装依赖：
 
-    ```bash
-    cd projects/xiaoke_doc_assist
-    pip install -r requirements.txt
-    ```
+```bash
+cd projects/xiaoke_doc_assist
+pip install -r requirements.txt
+```
 
 3. 配置API_KEY
 
