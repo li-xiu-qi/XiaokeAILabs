@@ -26,6 +26,11 @@ from dotenv import load_dotenv
 
 
 def find_dotenv_path():
+    current_working_dir = os.getcwd()
+    env_path = os.path.join(current_working_dir, ".env")
+    if os.path.exists(env_path):
+        return env_path
+
     current_dir = os.path.dirname(__file__)
     while current_dir != os.path.dirname(current_dir):  # 循环直到找到顶层目录
         if os.path.basename(current_dir) == "XiaokeAILabs":
@@ -78,8 +83,8 @@ def process_uploaded_file(uploaded_file):
             # 处理文本文件
             content = uploaded_file.getvalue().decode("utf-8")
 
-        # 截取前 context_length 个字符
-        max_length = st.session_state.context_length
+        # 截取前 file_content_length 个字符
+        max_length = st.session_state.file_content_length
         return content[:max_length] + "..." if len(content) > max_length else content
 
     except Exception as e:
@@ -93,7 +98,7 @@ with st.sidebar:
     selected_model = st.selectbox("选择模型", options=list(model_list.keys()), index=2)
     temperature = st.slider("温度参数", 0.0, 1.0, 0.3, 0.1)
     max_tokens = st.slider("最大长度", 100, 4096, 2048, 100)
-    st.session_state.context_length = st.slider("上下文长度", 1000, 100000, 18000, 500)
+    st.session_state.context_length = st.slider("上下文长度", 1000, 100000, 32000, 500)
     st.session_state.file_content_length = st.slider(
         "文件内容读取长度", 1000, 100000, 15000, 500
     )
@@ -171,6 +176,7 @@ if uploaded_file and uploaded_file != st.session_state.get("current_file"):
     - 代码块使用```包裹
 </system>
         """
+        # 清空历史消息
         st.session_state.messages = [{"role": "system", "content": system_prompt}]
         st.success(f"文档 {uploaded_file.name} 解析完成！")
 else:
@@ -214,10 +220,20 @@ if prompt := st.chat_input("请输入问题..."):
 
     # 构建API请求
     keep_messages = 10
+    system_message = st.session_state.messages[0]  # 保留第一个system消息
     messages_for_api = [
         {"role": m["role"], "content": m["content"]}
-        for m in st.session_state.messages[-keep_messages:]  # 最近10条消息作为上下文
+        for m in st.session_state.messages
+        if m["role"] != "system"
     ]
+
+    # 截断上下文以满足上下文长度要求
+    total_length = sum(len(m["content"]) for m in messages_for_api)
+    while total_length > st.session_state.context_length:
+        messages_for_api.pop(0)
+        total_length = sum(len(m["content"]) for m in messages_for_api)
+
+    messages_for_api.insert(0, system_message)  # 将system消息重新插入到第一条
 
     try:
         # 生成流式回复
