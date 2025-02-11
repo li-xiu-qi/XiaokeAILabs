@@ -24,7 +24,17 @@ import fitz  # PyMuPDF
 from io import BytesIO
 from dotenv import load_dotenv
 
-DOT_ENV_PATH = os.path.join(os.path.dirname(__file__), ".env")
+
+def find_dotenv_path():
+    current_dir = os.path.dirname(__file__)
+    while current_dir != os.path.dirname(current_dir):  # 循环直到找到顶层目录
+        if os.path.basename(current_dir) == "XiaokeAILabs":
+            break
+        current_dir = os.path.dirname(current_dir)
+    return os.path.join(current_dir, ".env")
+
+
+DOT_ENV_PATH = find_dotenv_path()
 load_dotenv(dotenv_path=DOT_ENV_PATH)
 api_key = os.getenv("API_KEY")
 client = OpenAI(api_key=api_key, base_url="https://api.siliconflow.cn/v1")

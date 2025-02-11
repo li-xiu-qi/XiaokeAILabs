@@ -80,7 +80,7 @@ API_KEY=your_deepseek_api_key
 5. 启动应用
 
 ```bash
-streamlit run app.py
+streamlit run xiaoke_doc_assist.py
 ```
 
 ##### 界面操作
