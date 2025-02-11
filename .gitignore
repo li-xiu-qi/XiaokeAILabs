@@ -1,0 +1,24 @@
+# Python忽略规则
+__pycache__/
+*.py[cod]
+.venv/
+.env
+build/
+dist/
+
+# Jupyter Notebook忽略规则
+.ipynb_checkpoints/
+
+# VS Code忽略规则
+.vscode/
+*.code-workspace
+
+# macOS忽略规则
+.DS_Store
+
+# Windows忽略规则
+Thumbs.db
+
+# PyCharm忽略规则
+.idea/
+*.iml
