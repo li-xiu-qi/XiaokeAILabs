@@ -46,38 +46,13 @@
 - 实时生成文档分析结果
 
 #### 使用方法
+请参考 [xiaoke_doc_assist项目说明文档](projects/xiaoke_doc_assist/README.md)
 
-1. 克隆仓库到本地：
 
-```bash
-git clone https://github.com/yourusername/XiaokeAILabs.git
-```
-
-2. 进入项目目录并安装依赖：
-
-```bash
-cd projects/xiaoke_doc_assist
-pip install -r requirements.txt
-```
-
-3. 配置API_KEY
-
-```
-将`.env.example`文件改成`.env`, 并配置你的API_KEY。
-注意：API_KEY来自硅基流动。
-```
-
-4. 运行项目：
-
-```bash
-
-streamlit run xiaoke_doc_assist.py
-
-```
 
 ## 未来计划
 
-我们计划在未来的项目中引入RAG（Retrieval-Augmented Generation）技术，以进一步提升文档助手的性能和准确性。具体项目名称和细节将在后续更新中公布，敬请期待！
+我们计划在未来的项目中改进项目中的RAG（Retrieval-Augmented Generation）技术，以进一步提升文档助手的性能和准确性。具体项目名称和细节将在后续更新中公布，敬请期待！
 
 ## 贡献
 
