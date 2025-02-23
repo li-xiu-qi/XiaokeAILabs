@@ -1,6 +1,6 @@
 from typing import List
 
-from projects.xiaoke_doc_assist_by_keyword_search.utils.kmp_search import KMPSearch
+from projects.xiaoke_doc_assist_by_bm25.utils.kmp_search import KMPSearch
 
 
 def main():

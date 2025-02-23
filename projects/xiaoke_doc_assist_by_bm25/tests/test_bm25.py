@@ -10,7 +10,7 @@ def append_src2syspath():
 
 # append_src2syspath()
 
-from projects.xiaoke_doc_assist_by_keyword_search.bm25 import EnglishBM25, ChineseBM25
+from projects.xiaoke_doc_assist_by_bm25.bm25 import EnglishBM25, ChineseBM25
 
 
 # 使用示例

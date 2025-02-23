@@ -1,6 +1,6 @@
 from typing import List, Dict
 
-from projects.xiaoke_doc_assist_by_keyword_search.split_by_markdown import split_markdown_by_headers, \
+from projects.xiaoke_doc_assist_by_bm25.split_by_markdown import split_markdown_by_headers, \
     merge_markdown_chunks
 
 # 使用示例
