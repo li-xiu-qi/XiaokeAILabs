@@ -1,14 +1,3 @@
-import os
-import sys
-
-def append_src2syspath():
-    current_file = os.path.abspath(__file__)
-    current_dir = os.path.dirname(current_file)
-    while os.path.basename(current_dir) == "projects":
-        current_dir = os.path.dirname(current_dir)
-    sys.path.append(current_dir)
-
-# append_src2syspath()
 
 from projects.xiaoke_doc_assist_by_bm25.bm25 import EnglishBM25, ChineseBM25
 

@@ -22,3 +22,5 @@ Thumbs.db
 # PyCharm忽略规则
 .idea/
 *.iml
+
+upload_files/
