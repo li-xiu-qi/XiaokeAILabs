@@ -51,7 +51,7 @@
 
 from typing import List, Dict
 
-from detect_language import detect_language
+from detect_language import split_text_detect_language
 
 
 
@@ -170,6 +170,7 @@ def merge_markdown_chunks(
         if chunk['level'] > 0 and current_text:
             # 如果当前文本块不为空白
             if current_text.strip():
+
                 # 将当前文本块按指定大小分割并添加到合并后的块列表中
                 merged_chunks.extend(_split_text_by_size(
                     current_text.strip(),
@@ -179,6 +180,7 @@ def merge_markdown_chunks(
                     current_level,
                     language
                 ))
+
             # 重置当前文本块内容
             current_text = ""
             # 更新当前文本块的标题和标题级别
@@ -235,7 +237,7 @@ def _split_text_by_size(
     # 确定使用哪种语言的分割规则
     if language == 'auto':
         # 自动检测语言
-        lang = detect_language(text)
+        lang = split_text_detect_language(text)
     else:
         # 使用指定的语言
         lang = language.lower()

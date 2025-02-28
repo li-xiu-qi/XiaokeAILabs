@@ -32,6 +32,7 @@ def main() -> None:
 
     # 创建文件上传控件，支持 PDF 和 TXT 格式的文件
     uploaded_files = st.file_uploader("上传文档（支持PDF/TXT）", type=["pdf", "txt"], accept_multiple_files=True)
+
     handle_uploaded_files(uploaded_files)
 
     # 在应用首次加载时显示气球动画效果

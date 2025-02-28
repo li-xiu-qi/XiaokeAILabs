@@ -5,6 +5,8 @@ PyMuPDF
 pymupdf4llm
 modelscope
 jieba
+
+# MinerU 依赖
 magic-pdf[full]
 --extra-index-url https://wheels.myhloli.com
 --index-url https://mirrors.aliyun.com/pypi/simple

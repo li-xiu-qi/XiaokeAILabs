@@ -53,7 +53,7 @@ def setup_sidebar() -> None:
         st.session_state.context_length = st.slider("上下文长度", 1000, 100000, 32000, 500)
         st.session_state.language = st.selectbox("选择语言", options=["zh", "en"], index=0)
         st.session_state.retrieval_context_length = st.slider("检索上下文长度", 1000, 50000, 15000, 1000)
-     
+        st.session_state.pdf_process_method = st.selectbox("PDF处理方法", options=["pymupdf", "pymupdf4llm", "mineru"], index=2)
 
 
 def setup_main_ui() -> None:

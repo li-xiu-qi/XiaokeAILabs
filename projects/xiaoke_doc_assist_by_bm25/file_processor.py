@@ -3,6 +3,7 @@ import streamlit as st
 import os
 import pymupdf4llm
 import uuid
+from mineru_convert import mineru_pdf2md
 
 def create_temp_file(file_stream, original_filename) -> str | None:
     """
@@ -80,19 +81,49 @@ def process_pdf_with_pymupdf4llm(file_path) -> str | None:
 
 def process_pdf_with_mineru(file_path) -> str | None:
     """
-    使用 mineru 处理 PDF 文件并提取内容（待实现）
+    使用 mineru 处理 PDF 文件并提取内容
 
     参数:
-        file_stream: 文件流对象
+        file_path: 文件路径
 
     返回值:
         str | None: 提取的文本内容
     """
-    # TODO: 等待 mineru 实现
-    st.warning("mineru 处理方法尚未实现")
-    return None
+    # 获取文件名和文件名无后缀（使用os.path模块，跨平台兼容）
+    pdf_relative = file_path
+    pdf_name = os.path.basename(pdf_relative)
+    # 从路径中提取文件名（正确处理完整路径）
+    pdf_name = os.path.basename(pdf_relative)
+    # 移除文件扩展名以仅获取文件名
+    name_without_suff = os.path.splitext(pdf_name)[0]
+    
+    # 设置输出目录
+    output_dir = "test_outputs"
+    
+    # 生成唯一ID
+    unique_id = uuid.uuid4()
+    output_subdir = f"{name_without_suff}_{unique_id}".replace("-", "")
+    
+    # 创建输出目录和图片目录
+    md_relative = os.path.join(output_dir, output_subdir)
+    os.makedirs(md_relative, exist_ok=True)
+    
+    image_relative = os.path.join(md_relative, "images")
+    os.makedirs(image_relative, exist_ok=True)
+    
+    # 转换为绝对路径
+    pdf_path = os.path.abspath(pdf_relative)
+    md_output_path = os.path.abspath(md_relative)
 
-def extract_uploaded_file_content(uploaded_file, pdf_method: str = "pymupdf") -> tuple[str | None, dict | None]:
+    # 使用绝对路径调用函数
+    md = mineru_pdf2md(
+        pdf_file_path=pdf_path,
+        md_output_path=md_output_path,
+    )
+    return md
+
+
+def extract_uploaded_file_content(uploaded_file, pdf_process_method: str = "pymupdf") -> tuple[str | None, dict | None]:
     """
     功能描述: 处理上传的文件并返回完整内容和文件元数据。
 
@@ -113,14 +144,14 @@ def extract_uploaded_file_content(uploaded_file, pdf_method: str = "pymupdf") ->
 
         if uploaded_file.type == "application/pdf":
             # 根据指定的 pdf_method 处理 PDF
-            if pdf_method == "pymupdf":
+            if pdf_process_method == "pymupdf":
                 content = process_pdf_with_pymupdf(tmp_file_path)
-            elif pdf_method == "pymupdf4llm":
+            elif pdf_process_method == "pymupdf4llm":
                 content = process_pdf_with_pymupdf4llm(tmp_file_path)
-            elif pdf_method == "mineru":
-                content = process_pdf_with_mineru(file_stream)
+            elif pdf_process_method == "mineru":
+                content = process_pdf_with_mineru(tmp_file_path)
             else:
-                st.error(f"不支持的 PDF 处理方法: {pdf_method}")
+                st.error(f"不支持的 PDF 处理方法: {pdf_process_method}")
                 return None, None
         else:
             # 处理文本文件

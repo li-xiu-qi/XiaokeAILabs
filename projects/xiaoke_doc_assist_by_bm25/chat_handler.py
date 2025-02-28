@@ -11,10 +11,11 @@
 
 import streamlit as st
 from openai import OpenAI
-from config  import API_KEY, BASE_URL, CURRENT_DATE, MODEL_LIST,  Document
+from config  import API_KEY, BASE_URL, CURRENT_DATE, MODEL_LIST
 from file_processor import extract_uploaded_file_content
-from bm25 import ChineseBM25, EnglishBM25
+from bm25 import create_bm25, bm25_search
 from split_by_markdown import merge_markdown_chunks, split_markdown_by_headers
+
 # 初始化 OpenAI 客户端
 client: OpenAI = OpenAI(api_key=API_KEY, base_url=BASE_URL)
 
@@ -49,8 +50,10 @@ def init_session() -> None:
         st.session_state.language = "zh"
     if "file_change" not in st.session_state:
         st.session_state.file_change = 0
+    if "pdf_process_method" not in st.session_state:
+        st.session_state.pdf_process_method = "mineru"
 
-def retrieved_information(query="") -> str:
+def retrieved_information(query="") -> str | None:
     """
     功能描述: 根据已处理的文件内容生成参考信息文档。
 
@@ -62,6 +65,8 @@ def retrieved_information(query="") -> str:
         str: 生成的参考信息文档字符串
     """
     uploaded_content = st.session_state.uploaded_content
+    if not uploaded_content:
+        return ""
     documents = []
     for u in uploaded_content:
         content = u.get("content")
@@ -81,19 +86,12 @@ def retrieved_information(query="") -> str:
             # documents.append(d)
             # todo 将document换成Document类
             documents.append(chunk_dict.get("content"))
-    language = st.session_state.language
-    if language == "zh":
-        # 中文模式
-        chinese_bm25 = ChineseBM25(documents)
-        retrieved_text_result = chinese_bm25.search(query)
 
-    elif language == "en":
-        # 英文模式
-        english_bm25 = EnglishBM25(documents)
-        retrieved_text_result= english_bm25.search(query)
     
-    relate_texts = [documents[doc_id] for doc_id, score in retrieved_text_result]
-    retrieval_context_length = st.session_state.retrieval_context_length 
+    results = bm25_search(corpus=documents,query=query,top_k=20)
+    # 将去掉分数，提取序号
+    relate_texts =[doc for doc_id, score,doc in results]
+    retrieval_context_length = st.session_state.retrieval_context_length
     # 根据检索内容长度限制获取合适数量的文本
     selected_texts = []
     current_length = 0
@@ -107,7 +105,8 @@ def retrieved_information(query="") -> str:
     
     # 将选中的文本内容拼接成字符串返回
     if selected_texts:
-        return "\n\n".join(text for text in selected_texts)
+        print("检索到的文本内容：",selected_texts)
+        return "---" * 5 +"\n\n".join(text for text in selected_texts)
 
 def get_system_prompt() -> str:
     """
@@ -127,6 +126,7 @@ def get_system_prompt() -> str:
     )
     
     retrieved_info = retrieved_information()
+
     if file_metadatas:
         return f"""
 <system>
@@ -167,6 +167,7 @@ def get_system_prompt() -> str:
 """
 
 def handle_uploaded_files(uploaded_files) -> None:
+    pdf_process_method = st.session_state.pdf_process_method
     # 处理多个上传文件
     if uploaded_files:
         for uploaded_file in uploaded_files:
@@ -175,7 +176,7 @@ def handle_uploaded_files(uploaded_files) -> None:
                 continue
             with st.spinner("文档处理中..."):
                 # 处理上传的文件，返回处理后的内容和文件元数据
-                processed_content, file_metadata = extract_uploaded_file_content(uploaded_file, pdf_method="pymupdf4llm")
+                processed_content, file_metadata = extract_uploaded_file_content(uploaded_file, pdf_process_method=pdf_process_method)
             # 显示成功消息，提示用户文件已解析完成
             st.success(f"文档 {uploaded_file.name} 解析完成！")
             if processed_content:
