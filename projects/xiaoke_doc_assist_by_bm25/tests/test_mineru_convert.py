@@ -1,14 +1,18 @@
+"""
+用来测试MinerU的PDF转换功能
+"""
+
 import os
 import uuid
 
-from mineru_convert import mineru_pdf2md
+from projects.xiaoke_doc_assist_by_bm25.mineru_convert import mineru_pdf2md
 
 if __name__ == '__main__':
 
     # 使用示例：将相对路径转换为绝对路径后传入
     try:
         # 原相对路径
-        pdf_relative = "test_datas/test_mineru_add_image_description_如何阅读一本书.pdf"
+        pdf_relative = "test_datas/test_paper.pdf"
         pdf_name = pdf_relative.split("/")[-1]
         name_without_suff = pdf_name.split(".")[-2]
 

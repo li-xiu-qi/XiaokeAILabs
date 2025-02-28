@@ -1,3 +1,7 @@
+"""
+测试 os.path.basename 和 os.path.splitext
+"""
+
 import  os
 
 file_path = r"C:\Users\k\Documents\project\programming_project\python_project\development\XiaokeAILabs\projects\xiaoke_doc_assist_by_bm25\tests\test_datas\test_mineru_add_image_description_如何阅读一本书.pdf"

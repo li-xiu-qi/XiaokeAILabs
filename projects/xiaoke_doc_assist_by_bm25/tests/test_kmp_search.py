@@ -1,3 +1,8 @@
+"""
+测试KMP搜索算法
+"""
+
+
 from typing import List
 
 from projects.xiaoke_doc_assist_by_bm25.utils.kmp_search import KMPSearch

@@ -3,10 +3,10 @@ openai
 python-dotenv
 PyMuPDF
 pymupdf4llm
-modelscope
 jieba
 
 # MinerU 依赖
+modelscope
 magic-pdf[full]
 --extra-index-url https://wheels.myhloli.com
 --index-url https://mirrors.aliyun.com/pypi/simple
