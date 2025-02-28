@@ -19,9 +19,10 @@
 
 ## 仓库概览
 
-| 项目名称       | 文件名                | 状态     | 地址|
-| -------------- | --------------------- | -------- |-------- |
-| 智能文档助手   | `xiaoke_doc_assist.py` | ✅ 已完成 | [项目地址](projects/xiaoke_doc_assist/README.md)|
+| 项目名称                       | 文件名                          | 状态     | 地址                                                                 |
+| ------------------------------ | ------------------------------- | -------- | -------------------------------------------------------------------- |
+| 智能文档助手                   | `xiaoke_doc_assist.py`          | ✅ 已完成 | [项目地址](projects/xiaoke_doc_assist/README.md)                     |
+| 基于BM25检索算法的智能文档助手 | `xiaoke_doc_assist_by_bm25.py` | ✅ 已完成 | [项目地址](projects/xiaoke_doc_assist_by_bm25/README.md)            |
 
 ## 下一步工作
 
@@ -46,9 +47,8 @@
 - 实时生成文档分析结果
 
 #### 使用方法
+
 请参考 [xiaoke_doc_assist项目说明文档](projects/xiaoke_doc_assist/README.md)
-
-
 
 ## 未来计划
 

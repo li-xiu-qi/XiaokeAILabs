@@ -31,8 +31,6 @@ xiaoke_doc_assist_by_bm25/
 └── requirements.txt      # 项目依赖
 ```
 
-
-
 ## 模型支持
 
 | 模型名称          | 模型ID                                   | 适用场景                     |
