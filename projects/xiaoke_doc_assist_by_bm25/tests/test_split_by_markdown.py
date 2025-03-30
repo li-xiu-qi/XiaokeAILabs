@@ -3,8 +3,7 @@
 """
 from typing import List, Dict
 
-from split_by_markdown import split_markdown_by_headers, \
-    merge_markdown_chunks
+from projects.xiaoke_doc_assist_by_bm25.split_by_markdown import split_markdown_by_headers, merge_markdown_chunks
 
 # 使用示例
 if __name__ == "__main__":
@@ -40,6 +39,7 @@ if __name__ == "__main__":
     print("\n指定中文分割结果:")
     for i, chunk in enumerate(merged_chunks_zh):
         print(f"Chunk {i}:")
+        print(f"chunk_index: '{chunk['chunk_index']}'")
         print(f"Header: '{chunk['header']}'")
         print(f"Level: {chunk['level']}")
         print(f"Content: '{chunk['content']}'")
