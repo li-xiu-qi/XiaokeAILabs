@@ -37,7 +37,7 @@ import os
 import pdb
 import json
 import re
-import yaml # 导入 yaml 库
+import yaml # 使用 YAML 处理元数据
 from abc import ABC, abstractmethod
 from typing import (AbstractSet, Any, Callable, Collection, Dict, Iterable,
                     List, Literal, Optional, Sequence, Tuple, Type, TypedDict,
@@ -91,7 +91,7 @@ class LineType(TypedDict):
 class HeaderType(TypedDict):
     """标题类型，使用类型字典定义。"""
     level: int # 标题级别
-    name: str # 标题名称 (例如, 'Header 1')
+    name: str # 标题名称 (例如, 'h1', 'h2')
     data: str # 标题文本内容
 
 # --- 文本分割逻辑 ---
@@ -222,8 +222,8 @@ class CharacterTextSplitter(TextSplitter):
     """按字符分割文本。"""
 
     def __init__(self,
-                 separator: str = '\n\n', # 分隔符，默认为两个换行符
-                 is_separator_regex: bool = False, # 分隔符是否为正则表达式
+                 separator: str = '\n\n',
+                 is_separator_regex: bool = False,
                  **kwargs: Any) -> None:
         """创建一个新的 CharacterTextSplitter。"""
         super().__init__(**kwargs)
@@ -249,7 +249,7 @@ class RecursiveCharacterTextSplitter(TextSplitter):
 
     def __init__(
         self,
-        separators: Optional[List[str]] = None, # 分隔符列表
+        separators: Optional[List[str]] = None,
         keep_separator: bool = True, # 注意: 原始 langchain 默认为 True
         is_separator_regex: bool = False, # 注意: 原始 langchain 默认为 False
         **kwargs: Any,
@@ -448,7 +448,7 @@ class MarkdownHeaderTextSplitter:
                         break
 
             if not found_header and not in_code_block:
-                 if line.strip() or current_content:
+                 if line.strip() or current_content: # 保留空行以维持格式
                     current_content.append(line)
 
         if current_content:
@@ -479,12 +479,12 @@ def clean_md(text: str) -> str:
 
 # --- 主要执行 / 测试块 ---
 if __name__ == '__main__':
-    # 测试代码块 (保持原文的测试逻辑)
-    try: # 增加简单的错误处理
+    # 测试代码块
+    try:
         with open("article.md", "r", encoding="utf-8") as f:
             text = f.read()
-        # 现在 splitter 将使用 h1, h2 等作为元数据键
-        splitter = MarkdownHeaderTextSplitter() # 保持原文默认初始化
+        # 使用 h1, h2 等作为元数据键
+        splitter = MarkdownHeaderTextSplitter()
         chunks = splitter.split_text(text)
         for chunk in chunks:
             print("--- Chunk ---")
