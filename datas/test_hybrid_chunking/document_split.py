@@ -479,18 +479,23 @@ def clean_md(text: str) -> str:
 
 # --- 主要执行 / 测试块 ---
 if __name__ == '__main__':
-    # 测试代码块
-    with open("article.md", "r", encoding="utf-8") as f:
-        text = f.read()
-    # 现在 splitter 将使用 h1, h2 等作为元数据键
-    splitter = MarkdownHeaderTextSplitter()
-    chunks = splitter.split_text(text)
-    for chunk in chunks:
-        print("--- Chunk ---")
-        print(f"Length: {len(chunk.content)}")
-        print(f"Metadata: {chunk.metadata}")
-        print("\n--- Markdown (Content Only) ---")
-        print(chunk.to_markdown())
-        print("\n--- Markdown (With Metadata) ---")
-        print(chunk.to_markdown(return_all=True))
-        print("====" * 40)
+    # 测试代码块 (保持原文的测试逻辑)
+    try: # 增加简单的错误处理
+        with open("article.md", "r", encoding="utf-8") as f:
+            text = f.read()
+        # 现在 splitter 将使用 h1, h2 等作为元数据键
+        splitter = MarkdownHeaderTextSplitter() # 保持原文默认初始化
+        chunks = splitter.split_text(text)
+        for chunk in chunks:
+            print("--- Chunk ---")
+            print(f"Length: {len(chunk.content)}")
+            print(f"Metadata: {chunk.metadata}")
+            print("\n--- Markdown (Content Only) ---")
+            print(chunk.to_markdown())
+            print("\n--- Markdown (With Metadata) ---")
+            print(chunk.to_markdown(return_all=True))
+            print("====" * 40)
+    except FileNotFoundError:
+        print("Error: article.md not found. Please create the file for testing.")
+    except Exception as e:
+        print(f"An error occurred during testing: {e}")
