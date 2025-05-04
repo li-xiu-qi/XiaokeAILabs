@@ -1,0 +1,210 @@
+{
+  "version": "1.0",
+  "truncation": null,
+  "padding": null,
+  "added_tokens": [
+    {
+      "id": 0,
+      "content": "[UNK]",
+      "single_word": false,
+      "lstrip": false,
+      "rstrip": false,
+      "normalized": false,
+      "special": true
+    },
+    {
+      "id": 1,
+      "content": "[CLS]",
+      "single_word": false,
+      "lstrip": false,
+      "rstrip": false,
+      "normalized": false,
+      "special": true
+    },
+    {
+      "id": 2,
+      "content": "[SEP]",
+      "single_word": false,
+      "lstrip": false,
+      "rstrip": false,
+      "normalized": false,
+      "special": true
+    },
+    {
+      "id": 3,
+      "content": "[PAD]",
+      "single_word": false,
+      "lstrip": false,
+      "rstrip": false,
+      "normalized": false,
+      "special": true
+    },
+    {
+      "id": 4,
+      "content": "[MASK]",
+      "single_word": false,
+      "lstrip": false,
+      "rstrip": false,
+      "normalized": false,
+      "special": true
+    }
+  ],
+  "normalizer": null,
+  "pre_tokenizer": {
+    "type": "Whitespace"
+  },
+  "post_processor": {
+    "type": "TemplateProcessing",
+    "single": [
+      {
+        "SpecialToken": {
+          "id": "[CLS]",
+          "type_id": 0
+        }
+      },
+      {
+        "Sequence": {
+          "id": "A",
+          "type_id": 0
+        }
+      },
+      {
+        "SpecialToken": {
+          "id": "[SEP]",
+          "type_id": 0
+        }
+      }
+    ],
+    "pair": [
+      {
+        "SpecialToken": {
+          "id": "[CLS]",
+          "type_id": 0
+        }
+      },
+      {
+        "Sequence": {
+          "id": "A",
+          "type_id": 0
+        }
+      },
+      {
+        "SpecialToken": {
+          "id": "[SEP]",
+          "type_id": 0
+        }
+      },
+      {
+        "Sequence": {
+          "id": "B",
+          "type_id": 0
+        }
+      },
+      {
+        "SpecialToken": {
+          "id": "[SEP]",
+          "type_id": 0
+        }
+      }
+    ],
+    "special_tokens": {
+      "[CLS]": {
+        "id": "[CLS]",
+        "ids": [
+          1
+        ],
+        "tokens": [
+          "[CLS]"
+        ]
+      },
+      "[SEP]": {
+        "id": "[SEP]",
+        "ids": [
+          2
+        ],
+        "tokens": [
+          "[SEP]"
+        ]
+      }
+    }
+  },
+  "decoder": null,
+  "model": {
+    "type": "BPE",
+    "dropout": null,
+    "unk_token": "[UNK]",
+    "continuing_subword_prefix": "##",
+    "end_of_word_suffix": "",
+    "fuse_unk": false,
+    "byte_fallback": false,
+    "ignore_merges": false,
+    "vocab": {
+      "[UNK]": 0,
+      "[CLS]": 1,
+      "[SEP]": 2,
+      "[PAD]": 3,
+      "[MASK]": 4,
+      "。": 5,
+      "会": 6,
+      "低": 7,
+      "使": 8,
+      "基": 9,
+      "性": 10,
+      "提": 11,
+      "温": 12,
+      "片": 13,
+      "硅": 14,
+      "碳": 15,
+      "能": 16,
+      "芯": 17,
+      "降": 18,
+      "高": 19,
+      "##温": 20,
+      "##会": 21,
+      "##使": 22,
+      "##碳": 23,
+      "##基": 24,
+      "##芯": 25,
+      "##片": 26,
+      "##性": 27,
+      "##能": 28,
+      "##提": 29,
+      "##高": 30,
+      "##硅": 31,
+      "##降": 32,
+      "##低": 33,
+      "##温会": 34,
+      "##基芯": 35,
+      "##片性": 36,
+      "##温会使": 37,
+      "##基芯片性": 38,
+      "##基芯片性能": 39
+    },
+    "merges": [
+      [
+        "##温",
+        "##会"
+      ],
+      [
+        "##基",
+        "##芯"
+      ],
+      [
+        "##片",
+        "##性"
+      ],
+      [
+        "##温会",
+        "##使"
+      ],
+      [
+        "##基芯",
+        "##片性"
+      ],
+      [
+        "##基芯片性",
+        "##能"
+      ]
+    ]
+  }
+}
