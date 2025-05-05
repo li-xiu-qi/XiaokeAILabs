@@ -21,7 +21,7 @@ class QwenTokenizerTool:
     """
     一个基于 Qwen Tokenizer 的简单分词工具类。
 
-    Qwen(通义千问)是阿里云开发的大语言模型，其分词器针对中文进行了优化。
+    Qwen(通义千问)是阿里巴巴开发的大语言模型，其分词器针对中文进行了优化。
     该工具类封装了Qwen的分词功能，可以将文本切分为Qwen Tokenizer定义的子词单元(Subword Tokens)。
     """
     def __init__(self, model_name_or_path="Qwen/Qwen1.5-0.5B-Chat"):
