@@ -297,6 +297,11 @@ if __name__ == "__main__":
    分词结果: English /  and /  中 / 文 / [e6b7] / [b7] / 合 / 的 / [e58f] / [a5] / 子 /  with /  some /  special /  chars / : /  @ / #$ / %
    分隔标记: English /  and /  中 / 文 / 混 / 合 / 的 / 句 / 子 /   / w / ith s / ome s / pecial c / hars:  / @ / #$ / % /  /
    
+
+"""
+
+
+"""
 8. 解释解码失败的原因:
    在BPE分词中，有些token可能只包含UTF-8字符的部分字节
    例如中文字符'世'的UTF-8编码为 \xe4\xb8\x96，可能被分成两个token:
