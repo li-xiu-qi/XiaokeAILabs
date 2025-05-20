@@ -1,10 +1,29 @@
 # Python忽略规则
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+.Python
 .venv/
-.env
+env/
 build/
+develop-eggs/
 dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 不忽略dll文件
+!*.dll
 
 # Jupyter Notebook忽略规则
 .ipynb_checkpoints/
@@ -15,14 +34,57 @@ dist/
 
 # macOS忽略规则
 .DS_Store
+._*
+.Spotlight-V100
+.Trashes
 
 # Windows忽略规则
 Thumbs.db
+ehthumbs.db
+Desktop.ini
 
 # PyCharm忽略规则
 .idea/
 *.iml
 
-upload_files
+# 数据库文件 - 保留数据库但忽略日志
+*.db-journal
 
-test_outputs
+# 日志文件
+*.log
+logs/
+
+# 临时文件
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# 测试覆盖报告
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# 项目特定文件夹
+upload_files/
+test_outputs/
+
+# 特定数据文件 - 根据您的仓库结构
+datas/test_duckdb/sample_data.csv
+datas/test_duckdb/sample_image.png
+datas/test_duckdb/your_database.db
+datas/test_duckdb/duckdb.db
+datas/test_duckdb/duckdb.db.wal
+datas/test_jina_clip_v2/images/
+
+# 虚拟环境相关
+.env
+ENV/
+env.bak/
+venv.bak/
