@@ -1,0 +1,10 @@
+C:\Users\k\Documents\project\programming_project\python_project\importance\XiaokeAILabs\datas\test_rust_in_python\target\debug\deps\libautocfg-f9079d6c53b367f4.rmeta: C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\lib.rs C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\error.rs C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\rustc.rs C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\version.rs
+
+C:\Users\k\Documents\project\programming_project\python_project\importance\XiaokeAILabs\datas\test_rust_in_python\target\debug\deps\libautocfg-f9079d6c53b367f4.rlib: C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\lib.rs C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\error.rs C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\rustc.rs C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\version.rs
+
+C:\Users\k\Documents\project\programming_project\python_project\importance\XiaokeAILabs\datas\test_rust_in_python\target\debug\deps\autocfg-f9079d6c53b367f4.d: C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\lib.rs C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\error.rs C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\rustc.rs C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\version.rs
+
+C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\lib.rs:
+C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\error.rs:
+C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\rustc.rs:
+C:\Users\k\.cargo\registry\src\mirrors.tuna.tsinghua.edu.cn-df7c3c540f42cdbd\autocfg-1.4.0\src\version.rs:

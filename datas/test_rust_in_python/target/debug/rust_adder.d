@@ -1,0 +1,1 @@
+C:\Users\k\Documents\project\programming_project\python_project\importance\XiaokeAILabs\datas\test_rust_in_python\target\debug\rust_adder.dll: C:\Users\k\Documents\project\programming_project\python_project\importance\XiaokeAILabs\datas\test_rust_in_python\src\lib.rs
