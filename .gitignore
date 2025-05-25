@@ -43,6 +43,10 @@ test_outputs
 *.pt
 *.pth
 
+# 模型文件夹
+models/
+datas/test_kv_cache/models/
+
 # 图片和媒体文件忽略规则 (可选，根据需要调整)
 
 
