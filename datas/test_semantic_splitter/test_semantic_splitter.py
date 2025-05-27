@@ -8,7 +8,7 @@ import spacy
 
 from sentence_transformers import SentenceTransformer, util
 
-class AdvancedSemanticSplitter:
+class SemanticSplitter:
     """
     高级语义切分器，完整实现SemanticDoubleMergingSplitterNodeParser的双重合并逻辑。
     可以接受自定义的句子列表作为输入，计算语义相似度并进行分组。
