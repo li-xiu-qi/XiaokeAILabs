@@ -31,8 +31,12 @@ test_outputs
 *.db
 *.db-wal
 *.db-journal
+*.db-shm
 *.sqlite
 *.sqlite3
+
+# DuckDB数据库文件
+your_database.db
 
 # 大型模型文件忽略规则
 *.pkl
@@ -42,15 +46,94 @@ test_outputs
 *.openvino
 *.pt
 *.pth
+*.h5
+*.hdf5
+*.tflite
+*.pb
 
 # 模型文件夹
 models/
 datas/test_kv_cache/models/
+**/models/
+
+# Rust忽略规则
+target/
+Cargo.lock
+*.rs.bk
+*.pdb
+*.rlib
+*.rmeta
+*.d
+*.dll
+*.dll.lib
+*.dll.exp
+*.exe
+
+# 数据库和缓存文件
+*.db-shm
+*.db-wal
+*.db-journal
+cache.db*
+*.cache
+embedding_cache/
+
+# 编译和构建产物
+*.o
+*.obj
+*.lib
+*.a
+*.so
+*.dylib
 
 # 图片和媒体文件忽略规则 (可选，根据需要调整)
 
+
+# 测试输出数据忽略规则
+**/chunk_*.txt
+**/红楼梦_*分割结果*/
+**/test_output*/
+**/output*/
+**/results*/
+**/benchmark_results*/
 
 # 临时文件和缓存
 *.tmp
 *.temp
 *.log
+remote_files.txt
+
+# HTML文件（通常是生成的报告）
+**/performance_chart.html
+**/relative_performance.html
+**/benchmark_results.html
+
+# JSON结果文件
+**/benchmark_results.json
+**/performance_results.json
+
+# 更多Rust忽略规则
+**/.rustc_info.json
+**/CACHEDIR.TAG
+**/.fingerprint/
+**/incremental/
+**/deps/
+
+# 数据库和缓存文件的更多规则
+*.db
+*.db-wal
+*.db-journal
+*.db-shm
+**/duckdb.db*
+**/your_database.db*
+**/test.db*
+
+# 模型和权重文件的更多规则
+**/models/*.onnx
+**/models/*.pth
+**/models/*.pt
+**/models/*.bin
+**/models/*.safetensors
+
+# 临时文件列表
+remote_files.txt
+tatus

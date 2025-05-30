@@ -5,8 +5,13 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 from typing import List, Dict, Any, Optional, Tuple
 import numpy as np
 import spacy
+from dotenv import load_dotenv
 
-from sentence_transformers import SentenceTransformer, util
+from sentence_transformers import util
+from cached_embedding_models import get_cached_embedding_model
+
+# 加载环境变量
+load_dotenv()
 
 class SemanticSplitter:
     """
@@ -32,8 +37,15 @@ class SemanticSplitter:
             merging_threshold: 合并阈值，用于决定是否合并两个相邻的块
             max_chunk_size: 最大块大小（字符数）
         """
-        model_path = os.environ.get("EMBEDDING_MODEL_PATH", "all-MiniLM-L6-v2")
-        self.embed_model = embed_model or SentenceTransformer(model_path)
+        if embed_model is None:
+            # 使用带缓存的嵌入模型（优先API，失败时回退到本地）
+            self.embed_model = get_cached_embedding_model(
+                cache_dir="./embedding_cache",
+                enable_cache=True
+            )
+        else:
+            self.embed_model = embed_model
+            
         self.initial_threshold = initial_threshold
         self.appending_threshold = appending_threshold
         self.merging_threshold = merging_threshold
@@ -60,7 +72,7 @@ class SemanticSplitter:
             return []
         
         # 1. 为每个句子生成嵌入向量
-        sentence_embeddings = self.embed_model.encode(sentences, convert_to_numpy=True)
+        sentence_embeddings = self.embed_model.encode(sentences)
         
         # 2. 第一阶段：初始分块 - 根据语义相似度将句子分成初始块
         initial_chunks = self._create_initial_chunks(sentences, sentence_embeddings)
@@ -213,30 +225,10 @@ _SPACY_MODEL = None
 def get_spacy_model():
     """获取spaCy模型，如果尚未加载则加载模型"""
     global _SPACY_MODEL
-    if _SPACY_MODEL is None:
-        try:
-            # 首先尝试从环境变量获取模型路径
-            model_path = os.environ.get("SPACY_MODEL_PATH")
-            
-            # 如果环境变量未设置，使用默认路径
-            if not model_path:
-                model_path = os.path.join(os.getcwd(), "xx_sent_ud_sm-3.8.0")
-            
-            print(f"尝试从 {model_path} 加载spaCy模型...")
-            _SPACY_MODEL = spacy.load(model_path)
-            print("模型加载成功!")
-        except Exception as e:
-            # 如果本地模型加载失败，尝试使用已安装的模型
-            try:
-                print("本地模型加载失败，尝试使用已安装的模型...")
-                _SPACY_MODEL = spacy.load("xx_sent_ud_sm")
-                print("已安装模型加载成功!")
-            except Exception as e2:
-                # 提供更详细的错误信息
-                print(f"错误：无法加载spaCy模型: {e}")
-                print(f"也无法加载已安装的模型: {e2}")
-                print("请确保模型路径正确，并且包含所有必要的模型文件。")
-                raise
+  
+
+    _SPACY_MODEL = spacy.load("xx_sent_ud_sm")
+  
     return _SPACY_MODEL
 
 def custom_sentence_splitter(text: str) -> List[str]:
