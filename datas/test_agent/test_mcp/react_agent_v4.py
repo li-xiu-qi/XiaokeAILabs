@@ -79,67 +79,68 @@ class ReActAgentV4:
             return result.content[0].text
         except Exception as e:
             return f"工具调用失败: {str(e)}"
-    
     def call_ai_with_react_prompt(self, user_message: str, conversation_history: list, is_first_turn: bool = False) -> str:
-        """使用 ReAct 提示词调用 AI - 工具优先策略"""
+        """使用 ReAct 提示词调用 AI - 优化版工具优先策略"""
         tools_description = "\n".join([f"- {name}: {desc}" for name, desc in self.available_tools.items()])
         
         # 分析用户意图，找出可能适用的工具
         applicable_tools = self.analyze_user_intent(user_message)
         
         if is_first_turn:
-            # 第一轮：绝对强制使用工具
-            system_prompt = f"""你是一个工具优先的智能助手，使用 ReAct (Reasoning and Acting) 模式来解决问题。
+            # 第一轮：必须使用工具获取信息
+            system_prompt = f"""你是一个基于工具的ReAct智能助手，擅长通过工具获取准确信息来解决问题。
 
 🔧 可用工具：
 {tools_description}
 
-🎯 用户请求可能需要的工具：{applicable_tools if applicable_tools else "需要分析确定"}
+🎯 用户请求：{user_message}
+🎯 建议工具：{applicable_tools if applicable_tools else "需要分析确定"}
 
-⚠️ 严格规则 - 工具优先策略：
-1. 这是第一轮对话，你绝对禁止直接给出 Final Answer
-2. 你必须先执行工具获取真实信息，哪怕是简单问题
-3. 如果用户问题涉及任何可以用工具解决的内容（计算、时间、文件、命令等），必须使用工具
-4. 每次只执行一个工具
-5. 绝对不能基于你的知识直接回答，必须使用工具获取实时信息
+📋 ReAct工作流程：
+1. Thought: 分析问题，确定需要哪个工具
+2. Action: 执行一个工具获取信息
+3. Observation: 观察工具返回结果
+4. 重复1-3直到有足够信息
+5. Final Answer: 基于工具结果给出完整答案
 
-严格按照以下格式输出：
-Thought: [分析用户需求，判断需要使用哪个工具获取信息]
-Action: [工具名称] [参数JSON]
+⚠️ 重要规则：
+- 第一轮必须使用工具，不能直接回答
+- 每次只执行一个工具
+- 工具参数必须是有效的JSON格式
+- 如果工具执行失败，分析原因并尝试其他方法
 
-示例：
-- 用户问"1+1等于多少" → 必须用 calculate 工具
-- 用户问"现在几点" → 必须用 get_time 工具  
-- 用户问"当前目录有什么文件" → 必须用 list_files 工具
+严格按照格式输出：
+Thought: [你的分析思路]
+Action: [工具名] [JSON参数]
 
-现在处理用户请求：{user_message}
-
-记住：绝对不能直接回答，必须先用工具！"""
+现在开始处理用户请求！"""
         else:
-            # 后续轮次：继续强制工具优先
-            system_prompt = f"""你是工具优先的智能助手，继续使用 ReAct 模式。
+            # 后续轮次：基于已有信息决定下一步
+            system_prompt = f"""继续ReAct推理流程。
 
 🔧 可用工具：
 {tools_description}
 
-🎯 用户原始请求：{user_message}
+🎯 原始请求：{user_message}
 
-⚠️ 工具优先原则：
-1. 仔细分析用户的原始请求和已完成的工具执行
-2. 如果还有任何部分可以用工具解决，必须继续使用工具
-3. 只有当真正无法再用工具获取更多信息时，才能给出最终答案
-4. 绝对不能编造信息，所有信息必须来自工具的真实执行结果
+📊 当前状态分析：
+回顾上一步的 Observation。根据已执行的工具和获得的信息，现在需要判断：
 
-决策流程：
-选项1 - 如果还有未完成的任务或可以用工具获取更多信息：
-Thought: [分析还需要完成什么任务，或者可以用什么工具获取更多信息]
-Action: [工具名称] [参数JSON]
+方案A - 继续使用工具（如果需要更多信息）：
+Thought: [分析为什么还需要更多信息，以及需要哪个工具来获取这些信息。]
+Action: [工具名] [JSON参数]
 
-选项2 - 只有当确实所有相关工具都已执行完毕，无法再获取更多信息时：
-Thought: [确认所有可用工具都已执行，基于工具结果进行分析]
-Final Answer: [基于真实工具结果的完整答案，不添加任何编造信息]
+方案B - 给出最终答案（如果信息已足够或可从观察结果中直接推断）:
+Thought: [分析上一步的 Observation。如果 Observation 本身已包含足够信息，或者可以通过对 Observation 进行简单的直接处理（例如：计数列表中的项目、提取关键信息）来回答用户问题，则确认信息已足够。明确说明如何从 Observation 得到答案。]
+Final Answer: [基于工具的 Observation 或对其直接分析得出的完整、准确答案。]
 
-重要：优先选择选项1，尽可能多使用工具获取信息！"""
+⚠️ 决策标准：
+- 如果上一步的 Observation 提供了足够信息，或者可以通过对 Observation 进行简单的直接处理（如计数、提取）来回答用户问题，请选择方案B。
+- 如果确实还需要通过工具获取新的、不同的信息才能回答问题，选择方案A。
+- 避免在 Observation 已提供所需信息后，仍尝试使用工具进行简单的二次处理（如用 calculate 工具对列表计数）。
+- 答案必须严格基于工具的 Observation 或对这些 Observation 的直接、简单处理，不能编造。
+
+请选择合适的方案并执行："""
 
         # 构建对话历史
         messages = [{"role": "system", "content": system_prompt}]

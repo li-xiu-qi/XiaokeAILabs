@@ -68,7 +68,7 @@ def read_file(filename: str) -> str:
     try:
         with open(filename, 'r', encoding='utf-8') as f:
             content = f.read()
-        return f"文件 {filename} 内容:\n{content}"
+        return f"文件 {filename} 内容:\\n{content}"
     except Exception as e:
         return f"读取文件失败: {str(e)}"
 

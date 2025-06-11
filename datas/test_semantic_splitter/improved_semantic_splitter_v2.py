@@ -47,8 +47,8 @@ class ImprovedSemanticSplitterV2:
         self.min_chunk_size = min_chunk_size
         self.max_chunk_size = max_chunk_size
         self.similarity_threshold = similarity_threshold
-        self.overlap_size = overlap_size
-    
+        self.overlap_size = overlap_size # 本次改进中未使用重叠大小，但保留以备将来使用
+
     def split_text(self, text: str) -> List[str]:
         """
         主要分割方法
