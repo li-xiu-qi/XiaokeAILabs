@@ -1,8 +1,59 @@
 # deepsearch-google
 
-![alt text](<assets/image copy 2.png>)
-![alt text](assets/image.png)
-![alt text](<assets/image copy.png>)
+## 快速开始
+
+1. **安装依赖**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+1. **配置环境变量**
+   你可以在[硅基流动 API Key 注册页面](https://cloud.siliconflow.cn/i/FcjKykMn)免费注册并获取你的 API Key。
+   
+   复制 `.env.exmple` 为 `.env`，并填写你的 OpenAI/Google/硅基流动 API 相关信息：
+   ```bash
+   cp .env.exmple .env
+   # 用文本编辑器打开 .env，填写你的密钥
+   ```
+
+   **.env 配置示例：**
+   
+   ```env
+   # 硅基流动 API 配置
+   OPENAI_API_KEY=你的硅基流动APIKey
+   OPENAI_BASE_URL=https://api.siliconflow.cn/v1
+   OPENAI_MODEL=
+
+   # Google 搜索API配置
+   GOOGLE_API_KEY=你的GoogleAPIKey
+   GOOGLE_ENGINE_ID=你的GoogleEngineID
+   ```
+
+1. **启动 Streamlit 网页应用**
+   ```bash
+   streamlit run streamlit_app.py
+   ```
+
+1. **命令行批量搜索（可选）**
+   ```bash
+   python main.py
+   ```
+
+---
+
+## 项目简介
+
+本项目是一个基于多轮智能决策的深度行业信息搜索与报告生成工具，支持 Google 搜索、LLM 相关性判别、自动报告输出等。
+
+## 项目截图
+
+<div align="center">
+  <img src="assets/image%20copy%202.png" width="300" />
+  <img src="assets/image.png" width="300" />
+  <img src="assets/image%20copy.png" width="300" />
+</div>
+
+---
 
 ## 工作流程图
 
