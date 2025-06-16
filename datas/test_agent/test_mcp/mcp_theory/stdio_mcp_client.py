@@ -12,9 +12,7 @@ from typing import Dict, Any, Optional, List
 
 
 class StdioMCPClient:
-    """MCP Stdio 传输客户端"""
-
-    # 错误信息常量
+    """MCP Stdio 传输客户端"""    # 错误信息常量
     _NOT_INITIALIZED_ERROR = "客户端尚未初始化"
 
     def __init__(self, server_command: List[str]):
@@ -33,13 +31,15 @@ class StdioMCPClient:
         """启动服务器进程并建立连接"""
         print(f"启动 MCP 服务器: {' '.join(self.server_command)}")
 
+        # 创建子进程启动 MCP 服务器
+        # subprocess.Popen 用于启动外部进程并与其进行双向通信
         self.process = subprocess.Popen(
-            self.server_command,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            bufsize=0  # 无缓冲，实时通信
+            self.server_command,        # 要执行的命令及参数列表，如 ['python', 'simple_mcp_server.py']
+            stdin=subprocess.PIPE,      # 创建管道连接到子进程的标准输入，允许客户端向服务器发送数据
+            stdout=subprocess.PIPE,     # 创建管道连接到子进程的标准输出，允许客户端读取服务器的响应
+            stderr=subprocess.PIPE,     # 创建管道连接到子进程的标准错误，用于捕获错误信息和调试输出
+            text=True,                  # 以文本模式处理输入输出流，自动处理字符串编码/解码
+            bufsize=0                   # 设置缓冲区大小为0，实现无缓冲的实时通信，确保数据立即传输
         )
 
         # 启动后台线程监控错误输出
