@@ -400,8 +400,9 @@ class GoogleSearchPool:
 
 # 使用示例
 if __name__ == "__main__":
-    from dotenv import load_dotenv # 新增：导入 load_dotenv
-    load_dotenv() # 新增：加载 .env 文件
+    from dotenv import load_dotenv
+
+    load_dotenv()
 
     # 创建搜索池实例
     search_pool = GoogleSearchPool()
@@ -412,11 +413,11 @@ if __name__ == "__main__":
     engine_id_1 = os.getenv("GOOGLE_ENGINE_ID")
 
     if api_key_1 and engine_id_1:
-        search_pool.add_client(
-            api_key_1, engine_id_1, daily_limit=100
-        )
+        search_pool.add_client(api_key_1, engine_id_1, daily_limit=100)
     else:
-        print("警告：未在环境变量中找到 GOOGLE_API_KEY 和 GOOGLE_ENGINE_ID，无法添加默认客户端。")
+        print(
+            "警告：未在环境变量中找到 GOOGLE_API_KEY 和 GOOGLE_ENGINE_ID，无法添加默认客户端。"
+        )
 
     # 示例：添加第二个客户端（如果环境变量中定义了）
     # api_key_2 = os.getenv("GOOGLE_API_KEY_2")
@@ -425,7 +426,6 @@ if __name__ == "__main__":
     #     search_pool.add_client(api_key_2, engine_id_2, daily_limit=50)
     # else:
     #     print("提示：未找到 GOOGLE_API_KEY_2 和 GOOGLE_ENGINE_ID_2，跳过添加第二个客户端。")
-
 
     # 也可以统一设置所有客户端的限制
     # search_pool.set_daily_limit_for_all(100)
