@@ -3,38 +3,42 @@
 ## 快速开始
 
 1. **安装依赖**
+
    ```bash
    pip install -r requirements.txt
    ```
 
 1. **配置环境变量**
-   你可以在[硅基流动 API Key 注册页面](https://cloud.siliconflow.cn/i/FcjKykMn)免费注册并获取你的 API Key。
-   
-   复制 `.env.exmple` 为 `.env`，并填写你的 OpenAI/Google/硅基流动 API 相关信息：
-   ```bash
-   cp .env.exmple .env
-   # 用文本编辑器打开 .env，填写你的密钥
-   ```
 
-   **.env 配置示例：**
-   
-   ```env
-   # 硅基流动 API 配置
-   OPENAI_API_KEY=你的硅基流动APIKey
-   OPENAI_BASE_URL=https://api.siliconflow.cn/v1
-   OPENAI_MODEL=
+    ```bash
+    # .env文件
+    OPENAI_API_KEY=your_openai_key
+    OPENAI_BASE_URL=https://api.openai.com/v1  # 或者你的代理地址
+    OPENAI_MODEL=deepseek-ai/DeepSeek-V3 # 或其他适用模型
 
-   # Google 搜索API配置
-   GOOGLE_API_KEY=你的GoogleAPIKey
-   GOOGLE_ENGINE_ID=你的GoogleEngineID
-   ```
+    GOOGLE_API_KEY=your_google_api_key
+    GOOGLE_ENGINE_ID=your_search_engine_id
+    ```
+
+    * **OpenAI API Key**: 可考虑硅基流动等提供兼容API的服务，地址：<https://cloud.siliconflow.cn/i/FcjKykMn>
+    * **Google API Key & Engine ID**:
+        * 🔑 **GOOGLE_API_KEY**:
+            1. 访问 Google Cloud Console，创建项目。
+            2. 启用 "Custom Search API"。
+            3. 在“凭据”页面创建 API 密钥。
+        * 🆔 **GOOGLE_ENGINE_ID**:
+            1. 访问 Google 可编程搜索引擎 页面。
+            2. 创建新的搜索引擎，配置搜索的网站、语言和名称。
+            3. 在控制面板的“基本信息”中找到并复制“搜索引擎 ID”，一般是cx后面的部分。
 
 1. **启动 Streamlit 网页应用**
+
    ```bash
    streamlit run streamlit_app.py
    ```
 
 1. **命令行批量搜索（可选）**
+
    ```bash
    python main.py
    ```
@@ -161,10 +165,10 @@ flowchart TD
 
 #### 1. 搜索决策节点 (research)
 
-- 分析已收集的信息质量和完整性
-- 评估当前搜索进度
-- 决定是否需要继续搜索或开始汇总
-- 检查无效轮数和总搜索次数，防止无限循环搜索或超出预设搜索量
+* 分析已收集的信息质量和完整性
+* 评估当前搜索进度
+* 决定是否需要继续搜索或开始汇总
+* 检查无效轮数和总搜索次数，防止无限循环搜索或超出预设搜索量
 
 **输入参数**: industry, context, search_round, invalid_search_rounds, max_invalid_rounds, total_search_count, max_search_count
 
@@ -172,11 +176,11 @@ flowchart TD
 
 #### 2. 信息搜索节点 (search)
 
-- 执行具体的网络搜索操作（当前使用 Google Search）
-- 判断搜索结果的相关性（有摘要才判定，否则直接无用）
-- 分类和存储有用信息
-- 统计分析本轮有效信息数量
-- 累计总搜索次数
+* 执行具体的网络搜索操作（当前使用 Google Search）
+* 判断搜索结果的相关性（有摘要才判定，否则直接无用）
+* 分类和存储有用信息
+* 统计分析本轮有效信息数量
+* 累计总搜索次数
 
 **输入参数**: search_queries, industry, useful_links, useless_links, search_pool
 
@@ -184,10 +188,10 @@ flowchart TD
 
 #### 3. 搜索报告汇总节点 (summary)
 
-- 分析所有收集的信息
-- 生成结构化的搜索报告
-- 报告中包含所有有用搜索结果的详细参考文献（标题、链接、摘要）以及搜索过程中的时间记录
-- 保存输出文件
+* 分析所有收集的信息
+* 生成结构化的搜索报告
+* 报告中包含所有有用搜索结果的详细参考文献（标题、链接、摘要）以及搜索过程中的时间记录
+* 保存输出文件
 
 **输入参数**: industry, context, search_round, search_times
 
@@ -195,10 +199,10 @@ flowchart TD
 
 #### 4. 提前终止节点 (early_stop)
 
-- 连续无效搜索轮数 >= 最大允许无效轮数时触发
-- 或，总搜索次数 >= 最大允许搜索次数时触发
-- 避免无效的重复搜索或超出预算，节省资源
-- 可输出部分结果
+* 连续无效搜索轮数 >= 最大允许无效轮数时触发
+* 或，总搜索次数 >= 最大允许搜索次数时触发
+* 避免无效的重复搜索或超出预算，节省资源
+* 可输出部分结果
 
 ---
 
