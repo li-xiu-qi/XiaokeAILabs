@@ -1,0 +1,6 @@
+spacy
+spacy-transformers
+transformers
+torch
+cupy-cuda12x  # 对应CUDA 12.x（如12.6），如有问题可换成cupy或cupy-cuda121
+jieba
