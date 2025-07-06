@@ -100,7 +100,12 @@ async def main():
                         print(f"  读取资源 {resource.uri}:")
                         try:
                             result = await client.read_resource(resource.uri)
-                            print(f"    内容: {result}")
+                            # result 可能是 list，遍历并打印每个内容的 text
+                            if isinstance(result, list):
+                                for item in result:
+                                    print(f"    内容: {item.text}")
+                            else:
+                                print(f"    内容: {result.text}")
                         except Exception as e:
                             print(f"    读取失败: {e}")
                 else:
