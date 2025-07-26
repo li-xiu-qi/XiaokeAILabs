@@ -125,6 +125,4 @@ pip install torch transformers sentence-transformers tqdm
 
 ---
 
-## 许可证
 
-本项目采用 [MIT License](https://opensource.org/licenses/MIT) 授权。
