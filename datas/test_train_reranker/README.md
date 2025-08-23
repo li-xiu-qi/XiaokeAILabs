@@ -109,7 +109,10 @@ tokens = {k: v.to(device) for k, v in tokens.items()}
 with torch.no_grad():
     out = model(tokens)               # out['logits'] shape: [1, 1]
     score = out["logits"].squeeze(-1) # 未过 sigmoid 的相关性分数
+    probs = torch.sigmoid(score)       # 转为概率（0-1）
+
 print(score.tolist())
+print(probs.tolist())
 ```
 
 ## 运行示例输出
