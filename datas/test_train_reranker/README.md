@@ -22,9 +22,11 @@ pip install wandb
 ## 数据格式（JSONL）
 
 每行一个样本：
+
 ```json
 {"query": "问题文本", "content": "文档文本", "label": 1}
 ```
+
 `label` 建议在 [0,1] 区间；脚本内部支持线性归一化。
 
 ## 快速开始
@@ -35,11 +37,13 @@ pip install wandb
 - 其他参数按需调整（见下）
 
 2) 运行：
+
 ```bash
 python train_bert_rerank.py
 ```
 
 3) 输出：
+
 - 模型保存于 `args["output_dir"]/final_model/`
 
 ## 可复现性与确定性运行
@@ -47,14 +51,19 @@ python train_bert_rerank.py
 本项目在 `train_bert_rerank.py` 中已通过 `seed_everything()` 固定随机性、启用确定性并关闭 TF32。然而，若使用 GPU（CuBLAS），还需要在“启动前”设置环境变量，否则会报 Deterministic 错误。
 
 - 推荐启动方式（在命令前设置环境变量）：
+
 ```bash
 CUBLAS_WORKSPACE_CONFIG=:16:8 PYTHONHASHSEED=42 python train_bert_rerank.py
 ```
+
 - 如果仍有报错，可尝试另一可选值：
+
 ```bash
 CUBLAS_WORKSPACE_CONFIG=:4096:2 PYTHONHASHSEED=42 python train_bert_rerank.py
 ```
+
 - 或先导出再运行：
+
 ```bash
 export CUBLAS_WORKSPACE_CONFIG=:16:8
 export PYTHONHASHSEED=42
@@ -62,6 +71,7 @@ python train_bert_rerank.py
 ```
 
 补充说明：
+
 - 代码中已设置：
   - 统一种子（`random`/`numpy`/`torch`/`cuda`）
   - `torch.use_deterministic_algorithms(True)`、`cudnn.deterministic=True`、`cudnn.benchmark=False`
@@ -115,7 +125,14 @@ print(score.tolist())
 print(probs.tolist())
 ```
 
-## 运行示例输出
+## 推理模型的运行示例输出
+
+```
+[-2.9021458625793457]
+[0.05204758793115616]
+```
+
+## 训练模型的运行示例输出
 
 ```bash
 (finetune_rerank) xiaoke@DESKTOP-112CDUC:~/projects/rerank_finetuing$ CUBLAS_WORKSPACE_CONFIG=:16:8 PYTHONHASHSEED=42 python train_bert_rerank.py
@@ -137,4 +154,5 @@ Model saved successfully!
 ## 文件结构
 
 - `train_bert_rerank.py`: 训练脚本（模型/数据集/训练循环）
-- `README.md`: 本说明
+- `README.md`: 本脚本说明
+- `default_train_data.jsonl`:训练使用的数据
