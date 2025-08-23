@@ -1,0 +1,198 @@
+{"query": "法国的首都是什么？", "content": "巴黎是法国的首都。", "label": 1}
+{"query": "法国的首都是什么？", "content": "中国的人口超过14亿人。", "label": 0}
+{"query": "中国的人口是多少？", "content": "巴黎是法国的首都。", "label": 0}
+{"query": "中国的人口是多少？", "content": "中国的人口超过14亿人。", "label": 1}
+{"query": "苹果的英文是什么？", "content": "苹果的英文是 apple。", "label": 1}
+{"query": "苹果的英文是什么？", "content": "香蕉的英文是 banana。", "label": 0}
+{"query": "世界上最高的山峰是哪座？", "content": "珠穆朗玛峰是世界上最高的山峰。", "label": 1}
+{"query": "世界上最高的山峰是哪座？", "content": "长江是中国最长的河流。", "label": 0}
+{"query": "中国的国庆节是哪一天？", "content": "中国的国庆节是10月1日。", "label": 1}
+{"query": "中国的国庆节是哪一天？", "content": "春节是中国最重要的传统节日。", "label": 0}
+{"query": "水的化学式是什么？", "content": "水的化学式是H2O。", "label": 1}
+{"query": "水的化学式是什么？", "content": "氧气的化学式是O2。", "label": 0}
+{"query": "太阳从哪里升起？", "content": "太阳从东方升起。", "label": 1}
+{"query": "太阳从哪里升起？", "content": "太阳在西方落下。", "label": 0}
+{"query": "Who is the president of the United States?", "content": "The president of the United States is Joe Biden.", "label": 1}
+{"query": "Who is the president of the United States?", "content": "The capital of France is Paris.", "label": 0}
+{"query": "What is the capital of Japan?", "content": "The capital of Japan is Tokyo.", "label": 1}
+{"query": "What is the capital of Japan?", "content": "Mount Everest is the highest mountain in the world.", "label": 0}
+{"query": "How many continents are there?", "content": "There are seven continents in the world.", "label": 1}
+{"query": "How many continents are there?", "content": "The chemical formula for water is H2O.", "label": 0}
+{"query": "中国的首都是什么？", "content": "中国的首都是北京。", "label": 1}
+{"query": "中国的首都是什么？", "content": "中国的面积是960万平方公里。", "label": 0}
+{"query": "Who wrote Hamlet?", "content": "Hamlet was written by William Shakespeare.", "label": 1}
+{"query": "Who wrote Hamlet?", "content": "Hamlet is a famous play in China.", "label": 0}
+{"query": "地球有多少个大洋？", "content": "地球有五个大洋。", "label": 1}
+{"query": "地球有多少个大洋？", "content": "地球有七大洲。", "label": 0}
+{"query": "What is the largest planet in our solar system?", "content": "Jupiter is the largest planet in our solar system.", "label": 1}
+{"query": "What is the largest planet in our solar system?", "content": "The sun is the center of our solar system.", "label": 0}
+{"query": "中国的国花是什么？", "content": "中国的国花是牡丹。", "label": 1}
+{"query": "中国的国花是什么？", "content": "中国的国鸟是朱鹮。", "label": 0}
+{"query": "Who discovered gravity?", "content": "Gravity was discovered by Isaac Newton.", "label": 1}
+{"query": "Who discovered gravity?", "content": "Gravity is a force that attracts objects.", "label": 0}
+{"query": "世界上最长的河流是哪条？", "content": "尼罗河是世界上最长的河流。", "label": 1}
+{"query": "世界上最长的河流是哪条？", "content": "亚马逊河是世界上流量最大的河流。", "label": 0}
+{"query": "What is the boiling point of water?", "content": "The boiling point of water is 100°C.", "label": 1}
+{"query": "What is the boiling point of water?", "content": "Water freezes at 0°C.", "label": 0}
+{"query": "中国的第一任国家主席是谁？", "content": "中国的第一任国家主席是毛泽东。", "label": 1}
+{"query": "中国的第一任国家主席是谁？", "content": "中国的第一任总理是周恩来。", "label": 0}
+{"query": "Who painted the Mona Lisa?", "content": "The Mona Lisa was painted by Leonardo da Vinci.", "label": 1}
+{"query": "Who painted the Mona Lisa?", "content": "The Mona Lisa is displayed in the Louvre.", "label": 0}
+{"query": "世界上人口最多的国家是哪个？", "content": "中国是世界上人口最多的国家。", "label": 1}
+{"query": "世界上人口最多的国家是哪个？", "content": "印度是世界上面积第七大的国家。", "label": 0}
+{"query": "What is the chemical symbol for gold?", "content": "The chemical symbol for gold is Au.", "label": 1}
+{"query": "What is the chemical symbol for gold?", "content": "The chemical symbol for silver is Ag.", "label": 0}
+{"query": "中国的四大发明有哪些？", "content": "中国的四大发明是造纸术、指南针、火药和印刷术。", "label": 1}
+{"query": "中国的四大发明有哪些？", "content": "中国的四大名著是《红楼梦》《西游记》《三国演义》《水浒传》。", "label": 0}
+{"query": "Who is the founder of Microsoft?", "content": "The founder of Microsoft is Bill Gates.", "label": 1}
+{"query": "Who is the founder of Microsoft?", "content": "Microsoft is a technology company.", "label": 0}
+{"query": "世界上最大的沙漠是哪一个？", "content": "撒哈拉沙漠是世界上最大的沙漠。", "label": 1}
+{"query": "世界上最大的沙漠是哪一个？", "content": "南极洲是世界上最冷的大陆。", "label": 0}
+{"query": "What is the speed of light?", "content": "The speed of light is approximately 299,792 kilometers per second.", "label": 1}
+{"query": "What is the speed of light?", "content": "Sound travels slower than light.", "label": 0}
+{"query": "中国的国旗是什么颜色？", "content": "中国的国旗是红色的，带有五颗黄色五角星。", "label": 1}
+{"query": "中国的国旗是什么颜色？", "content": "中国的国旗上有一只龙。", "label": 0}
+{"query": "Who invented the telephone?", "content": "The telephone was invented by Alexander Graham Bell.", "label": 1}
+{"query": "Who invented the telephone?", "content": "The telephone is used for communication.", "label": 0}
+{"query": "世界上最高的建筑是哪座？", "content": "哈利法塔是世界上最高的建筑。", "label": 1}
+{"query": "世界上最高的建筑是哪座？", "content": "上海中心大厦是中国最高的建筑。", "label": 0}
+{"query": "What is the currency of Japan?", "content": "The currency of Japan is Yen.", "label": 1}
+{"query": "What is the currency of Japan?", "content": "The currency of China is Yuan.", "label": 0}
+{"query": "中国的母亲河是哪条？", "content": "中国的母亲河是黄河。", "label": 1}
+{"query": "中国的母亲河是哪条？", "content": "长江是中国最长的河流。", "label": 0}
+{"query": "Who is the author of Harry Potter?", "content": "The author of Harry Potter is J.K. Rowling.", "label": 1}
+{"query": "Who is the author of Harry Potter?", "content": "Harry Potter is a famous book series.", "label": 0}
+{"query": "世界上最大的海洋是哪一个？", "content": "太平洋是世界上最大的海洋。", "label": 1}
+{"query": "世界上最大的海洋是哪一个？", "content": "大西洋是世界上第二大海洋。", "label": 0}
+{"query": "What is the tallest animal in the world?", "content": "The tallest animal in the world is the giraffe.", "label": 1}
+{"query": "What is the tallest animal in the world?", "content": "The elephant is the largest land animal.", "label": 0}
+{"query": "中国的第一部字典是什么？", "content": "中国的第一部字典是《说文解字》。", "label": 1}
+{"query": "中国的第一部字典是什么？", "content": "《红楼梦》是中国的四大名著之一。", "label": 0}
+{"query": "世界上最长的墙是哪一座？", "content": "中国的长城是世界上最长的墙。", "label": 1}
+{"query": "世界上最长的墙是哪一座？", "content": "金字塔是埃及著名的建筑。", "label": 0}
+{"query": "Who invented the light bulb?", "content": "The light bulb was invented by Thomas Edison.", "label": 1}
+{"query": "Who invented the light bulb?", "content": "The airplane was invented by the Wright brothers.", "label": 0}
+{"query": "中国的国宝是什么动物？", "content": "中国的国宝是大熊猫。", "label": 1}
+{"query": "中国的国宝是什么动物？", "content": "中国的国宝是东北虎。", "label": 0}
+{"query": "What is the largest ocean on Earth?", "content": "The largest ocean on Earth is the Pacific Ocean.", "label": 1}
+{"query": "What is the largest ocean on Earth?", "content": "The Atlantic Ocean is the second largest ocean.", "label": 0}
+{"query": "Who is the first president of the United States?", "content": "The first president of the United States is George Washington.", "label": 1}
+{"query": "Who is the first president of the United States?", "content": "Abraham Lincoln was the 16th president of the United States.", "label": 0}
+{"query": "世界上最深的海沟是哪一个？", "content": "马里亚纳海沟是世界上最深的海沟。", "label": 1}
+{"query": "世界上最深的海沟是哪一个？", "content": "太平洋是世界上最大的海洋。", "label": 0}
+{"query": "Who wrote 'Pride and Prejudice'?", "content": "Pride and Prejudice was written by Jane Austen.", "label": 1}
+{"query": "Who wrote 'Pride and Prejudice'?", "content": "Charles Dickens wrote Oliver Twist.", "label": 0}
+{"query": "中国的四大名著有哪些？", "content": "中国的四大名著是《红楼梦》《西游记》《三国演义》《水浒传》。", "label": 1}
+{"query": "中国的四大名著有哪些？", "content": "中国的四大发明是造纸术、指南针、火药和印刷术。", "label": 0}
+{"query": "What is the smallest planet in our solar system?", "content": "Mercury is the smallest planet in our solar system.", "label": 1}
+{"query": "What is the smallest planet in our solar system?", "content": "Jupiter is the largest planet in our solar system.", "label": 0}
+{"query": "世界上最长的河流是哪条？", "content": "尼罗河是世界上最长的河流。", "label": 1}
+{"query": "世界上最长的河流是哪条？", "content": "亚马逊河是世界上流量最大的河流。", "label": 0}
+{"query": "Who invented the airplane?", "content": "The airplane was invented by the Wright brothers.", "label": 1}
+{"query": "Who invented the airplane?", "content": "Thomas Edison invented the light bulb.", "label": 0}
+{"query": "中国的第一部小说是什么？", "content": "中国的第一部小说是《世说新语》。", "label": 1}
+{"query": "中国的第一部小说是什么？", "content": "《红楼梦》是中国的四大名著之一。", "label": 0}
+{"query": "What is the largest desert in the world?", "content": "The largest desert in the world is the Sahara Desert.", "label": 1}
+{"query": "What is the largest desert in the world?", "content": "The Amazon is the largest rainforest.", "label": 0}
+{"query": "Who is the founder of Alibaba?", "content": "The founder of Alibaba is Jack Ma.", "label": 1}
+{"query": "Who is the founder of Alibaba?", "content": "Alibaba is a Chinese e-commerce company.", "label": 0}
+{"query": "世界上最高的瀑布是哪一个？", "content": "安赫尔瀑布是世界上最高的瀑布。", "label": 1}
+{"query": "世界上最高的瀑布是哪一个？", "content": "尼亚加拉瀑布是世界上最著名的瀑布之一。", "label": 0}
+{"query": "What is the main ingredient in bread?", "content": "The main ingredient in bread is flour.", "label": 1}
+{"query": "What is the main ingredient in bread?", "content": "Rice is the main ingredient in sushi.", "label": 0}
+{"query": "中国的第一部百科全书是什么？", "content": "中国的第一部百科全书是《永乐大典》。", "label": 1}
+{"query": "中国的第一部百科全书是什么？", "content": "《说文解字》是中国的第一部字典。", "label": 0}
+{"query": "Who discovered penicillin?", "content": "Penicillin was discovered by Alexander Fleming.", "label": 1}
+{"query": "Who discovered penicillin?", "content": "Isaac Newton discovered gravity.", "label": 0}
+{"query": "世界上最大的岛屿是哪一个？", "content": "格陵兰岛是世界上最大的岛屿。", "label": 1}
+{"query": "世界上最大的岛屿是哪一个？", "content": "澳大利亚是世界上最小的大陆。", "label": 0}
+{"query": "What is the capital of Italy?", "content": "The capital of Italy is Rome.", "label": 1}
+{"query": "What is the capital of Italy?", "content": "Venice is famous for its canals.", "label": 0}
+{"query": "中国的第一部诗歌总集是什么？", "content": "中国的第一部诗歌总集是《诗经》。", "label": 1}
+{"query": "中国的第一部诗歌总集是什么？", "content": "《楚辞》是中国古代诗歌的重要作品。", "label": 0}
+{"query": "Who is the author of 'The Old Man and the Sea'?", "content": "The author of 'The Old Man and the Sea' is Ernest Hemingway.", "label": 1}
+{"query": "Who is the author of 'The Old Man and the Sea'?", "content": "Mark Twain wrote 'The Adventures of Tom Sawyer'.", "label": 0}
+{"query": "世界上最大的湖泊是哪一个？", "content": "里海是世界上最大的湖泊。", "label": 1}
+{"query": "世界上最大的湖泊是哪一个？", "content": "苏必利尔湖是北美最大的淡水湖。", "label": 0}
+{"query": "What is the chemical symbol for iron?", "content": "The chemical symbol for iron is Fe.", "label": 1}
+{"query": "What is the chemical symbol for iron?", "content": "The chemical symbol for copper is Cu.", "label": 0}
+{"query": "中国的第一部历史书是什么？", "content": "中国的第一部历史书是《史记》。", "label": 1}
+{"query": "中国的第一部历史书是什么？", "content": "《资治通鉴》是中国重要的历史著作。", "label": 0}
+{"query": "Who is the founder of Facebook?", "content": "The founder of Facebook is Mark Zuckerberg.", "label": 1}
+{"query": "Who is the founder of Facebook?", "content": "Facebook is a social media platform.", "label": 0}
+{"query": "世界上最长的隧道是哪一个？", "content": "哥达基线隧道是世界上最长的铁路隧道。", "label": 1}
+{"query": "世界上最长的隧道是哪一个？", "content": "英吉利海峡隧道连接英国和法国。", "label": 0}
+{"query": "What is the capital of Canada?", "content": "The capital of Canada is Ottawa.", "label": 1}
+{"query": "What is the capital of Canada?", "content": "Toronto is the largest city in Canada.", "label": 0}
+{"query": "Who invented the computer?", "content": "The computer was invented by Charles Babbage.", "label": 1}
+{"query": "Who invented the computer?", "content": "Alexander Graham Bell invented the telephone.", "label": 0}
+{"query": "中国的第一部医学著作是什么？", "content": "中国的第一部医学著作是《黄帝内经》。", "label": 1}
+{"query": "中国的第一部医学著作是什么？", "content": "《本草纲目》是中国著名的药学著作。", "label": 0}
+{"query": "What is the largest country in the world by area?", "content": "Russia is the largest country in the world by area.", "label": 1}
+{"query": "What is the largest country in the world by area?", "content": "China has the largest population in the world.", "label": 0}
+{"query": "Who wrote 'War and Peace'?", "content": "War and Peace was written by Leo Tolstoy.", "label": 1}
+{"query": "Who wrote 'War and Peace'?", "content": "Fyodor Dostoevsky wrote Crime and Punishment.", "label": 0}
+{"query": "世界上最小的国家是哪一个？", "content": "梵蒂冈是世界上最小的 国家。", "label": 1}
+{"query": "世界上最小的国家是哪一个？", "content": "摩纳哥是世界上人口最密集的国家之一。", "label": 0}
+{"query": "What is the main ingredient in sushi?", "content": "The main ingredient in sushi is rice.", "label": 1}
+{"query": "What is the main ingredient in sushi?", "content": "Bread is made mainly from flour.", "label": 0}
+{"query": "中国的第一部兵书是什么？", "content": "中国的第一部兵书是《孙子兵法》。", "label": 1}
+{"query": "中国的第一部兵书是什么？", "content": "《三国演义》是中国的四大名著之一。", "label": 0}
+{"query": "Who is the founder of Tesla?", "content": "The founder of Tesla is Elon Musk.", "label": 1}
+{"query": "Who is the founder of Tesla?", "content": "Tesla is an electric car company.", "label": 0}
+{"query": "世界上最长的桥是哪一座？", "content": "丹昆特大桥是世界上最长的桥。", "label": 1}
+{"query": "世界上最长的桥是哪一座？", "content": "港珠澳大桥是中国最长的跨海大桥。", "label": 0}
+{"query": "What is the capital of Australia?", "content": "The capital of Australia is Canberra.", "label": 1}
+{"query": "What is the capital of Australia?", "content": "Sydney is the largest city in Australia.", "label": 0}
+{"query": "中国的第一部字典是谁编写的？", "content": "中国的第一部字典《说文解字》由许慎编写。", "label": 1}
+{"query": "中国的第一部字典是谁编写的？", "content": "《红楼梦》由曹雪芹编写。", "label": 0}
+{"query": "Who discovered electricity?", "content": "Electricity was discovered by Benjamin Franklin.", "label": 1}
+{"query": "Who discovered electricity?", "content": "Isaac Newton discovered gravity.", "label": 0}
+{"query": "世界上最大的火山是哪一个？", "content": "莫纳罗亚火山是世界上最大的火山。", "label": 1}
+{"query": "世界上最大的火山是哪一个？", "content": "富士山是日本著名的火山。", "label": 0}
+{"query": "What is the chemical symbol for oxygen?", "content": "The chemical symbol for oxygen is O.", "label": 1}
+{"query": "What is the chemical symbol for oxygen?", "content": "The chemical symbol for hydrogen is H.", "label": 0}
+{"query": "中国的第一部地图集是什么？", "content": "中国的第一部地图集是《禹贡地域图》。", "label": 1}
+{"query": "中国的第一部地图集是什么？", "content": "《永乐大典》是中国的百科全书。", "label": 0}
+{"query": "Who is the author of 'Don Quixote'?", "content": "The author of 'Don Quixote' is Miguel de Cervantes.", "label": 1}
+{"query": "Who is the author of 'Don Quixote'?", "content": "William Shakespeare wrote Hamlet.", "label": 0}
+{"query": "世界上最长的铁路是哪一条？", "content": "西伯利亚铁路是世界上最长的铁路。", "label": 1}
+{"query": "世界上最长的铁路是哪一条？", "content": "京广高铁是中国最长的高速铁路。", "label": 0}
+{"query": "What is the capital of Brazil?", "content": "The capital of Brazil is Brasília.", "label": 1}
+{"query": "What is the capital of Brazil?", "content": "Rio de Janeiro is a famous city in Brazil.", "label": 0}
+{"query": "Who invented the World Wide Web?", "content": "The World Wide Web was invented by Tim Berners-Lee.", "label": 1}
+{"query": "Who invented the World Wide Web?", "content": "Bill Gates founded Microsoft.", "label": 0}
+{"query": "中国的第一部农书是什么？", "content": "中国的第一部农书是《齐民要术》。", "label": 1}
+{"query": "中国的第一部农书是什么？", "content": "《本草纲目》是中国著名的药学著作。", "label": 0}
+{"query": "What is the largest mammal in the world?", "content": "The largest mammal in the world is the blue whale.", "label": 1}
+{"query": "What is the largest mammal in the world?", "content": "The elephant is the largest land animal.", "label": 0}
+{"query": "Who wrote 'The Great Gatsby'?", "content": "The Great Gatsby was written by F. Scott Fitzgerald.", "label": 1}
+{"query": "Who wrote 'The Great Gatsby'?", "content": "Ernest Hemingway wrote 'The Old Man and the Sea'.", "label": 0}
+{"query": "世界上最古老的大学是哪一个？", "content": "卡鲁因大学是世界上最古老的大学。", "label": 1}
+{"query": "世界上最古老的大学是哪一个？", "content": "哈佛大学是美国最古老的大学之一。", "label": 0}
+{"query": "What is the main ingredient in chocolate?", "content": "The main ingredient in chocolate is cocoa.", "label": 1}
+{"query": "What is the main ingredient in chocolate?", "content": "Milk is the main ingredient in cheese.", "label": 0}
+{"query": "中国的第一部字书是什么？", "content": "中国的第一部字书是《尔雅》。", "label": 1}
+{"query": "中国的第一部字书是什么？", "content": "《诗经》是中国的第一部诗歌总集。", "label": 0}
+{"query": "Who discovered radioactivity?", "content": "Radioactivity was discovered by Marie Curie.", "label": 1}
+{"query": "Who discovered radioactivity?", "content": "Albert Einstein developed the theory of relativity.", "label": 0}
+{"query": "世界上最大的半岛是哪一个？", "content": "阿拉伯半岛是世界上最大的半岛。", "label": 1}
+{"query": "世界上最大的半岛是哪一个？", "content": "印度半岛是亚洲重要的半岛。", "label": 0}
+{"query": "What is the capital of Spain?", "content": "The capital of Spain is Madrid.", "label": 1}
+{"query": "What is the capital of Spain?", "content": "Barcelona is a famous city in Spain.", "label": 0}
+{"query": "中国的第一部地理著作是什么？", "content": "中国的第一部地理著作是《山海经》。", "label": 1}
+{"query": "中国的第一部地理著作是什么？", "content": "《史记》是中国的第一部历史书。", "label": 0}
+{"query": "Who is the author of 'Moby-Dick'?", "content": "The author of 'Moby-Dick' is Herman Melville.", "label": 1}
+{"query": "Who is the author of 'Moby-Dick'?", "content": "J.K. Rowling wrote Harry Potter.", "label": 0}
+{"query": "世界上最长的河流是亚马逊河吗？", "content": "亚马逊河是世界上流量最大的河流，但不是最长的。", "label": 1}
+{"query": "世界上最长的河流是亚马逊河吗？", "content": "亚马逊河是世界上最长的河流。", "label": 0}
+{"query": "What is the chemical symbol for sodium?", "content": "The chemical symbol for sodium is Na.", "label": 1}
+{"query": "What is the chemical symbol for sodium?", "content": "The chemical symbol for potassium is K.", "label": 0}
+{"query": "中国的第一部法律是什么？", "content": "中国的第一部法律是《法经》。", "label": 1}
+{"query": "中国的第一部法律是什么？", "content": "《史记》是中国的第一部历史书。", "label": 0}
+{"query": "Who is the founder of Amazon?", "content": "The founder of Amazon is Jeff Bezos.", "label": 1}
+{"query": "Who is the founder of Amazon?", "content": "Amazon is an online shopping platform.", "label": 0}
+{"query": "世界上最大的内陆国是哪一个？", "content": "哈萨克斯坦是世界上最大的内陆国。", "label": 1}
+{"query": "世界上最大的内陆国是哪一个？", "content": "蒙古是亚洲最大的内陆国。", "label": 0}
+{"query": "What is the capital of Russia?", "content": "The capital of Russia is Moscow.", "label": 1}
+{"query": "What is the capital of Russia?", "content": "Saint Petersburg is a famous city in Russia.", "label": 0}
