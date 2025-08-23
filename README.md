@@ -102,9 +102,7 @@
 
 | 实验名称 | 描述 | 技术栈 | 路径 |
 | ------- | ---- | ------ | ---- |
-| **FastAPI集成** | 构建高性能AI API服务 | FastAPI | [datas/test_fastapi](datas/test_fastapi) |
 | **Rust Python集成** | 使用Rust优化Python性能瓶颈 | Rust, PyO3 | [datas/test_rust_in_python](datas/test_rust_in_python) |
-| **LlamaIndex框架** | 企业级RAG应用开发框架 | LlamaIndex | [datas/test_llama_index](datas/test_llama_index) |
 
 ### 🧠 模型工程
 
