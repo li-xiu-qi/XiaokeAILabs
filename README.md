@@ -21,16 +21,14 @@
 
 | 实验名称 | 描述 | 技术栈 | 路径 |
 | ------- | ---- | ------ | ---- |
-| **深度搜索实验** | 深度搜索算法的原理验证与实现 | - | [datas/test_deepsearch](datas/test_deepsearch) |
-| **混合图文处理** | 图文混合内容的智能处理和分析 | PIL, OpenCV | [datas/mixd_image_text](datas/mixd_image_text) |
-| **Agent测试** | AI Agent的构建与测试框架 | - | [datas/test_agent](datas/test_agent) |
+| **深度搜索实验** | 深度搜索算法 | - | [datas/test_deepsearch](datas/test_deepsearch) |
+| **混合图文处理** | 图文混合内容分析 | PIL, OpenCV | [datas/mixd_image_text](datas/mixd_image_text) |
+| **Agent测试** | AI Agent测试| - | [datas/test_agent](datas/test_agent) |
 
 ### 🔍 向量检索与相似度计算
 
 | 实验名称 | 描述 | 技术栈 | 路径 |
 | ------- | ---- | ------ | ---- |
-| **FAISS向量检索** | 高性能向量检索库的完整教程，包括多种索引类型对比 | FAISS, NumPy | [datas/test_faiss](datas/test_faiss) |
-| **ColBERT检索** | 延迟交互检索模型与残差压缩技术实现 | ColBERT, Transformers | [datas/test_colbert](datas/test_colbert) |
 | **MMR多样性检索** | 最大边际相关性搜索算法，平衡相关性与多样性 | Scikit-learn | [datas/test_mmr_search](datas/test_mmr_search) |
 | **K-means聚类检索** | 基于聚类的文档分组与多样性检索策略 | Scikit-learn, Matplotlib | [datas/test_k_means](datas/test_k_means) |
 | **SimHash相似度** | 局部敏感哈希算法实现，用于近似相似度计算 | - | [datas/test_simhash](datas/test_simhash) |
@@ -86,7 +84,7 @@
 | ------- | ---- | ------ | ---- |
 | **图算法实战** | 图论算法在AI中的应用 | NetworkX | [datas/test_graph](datas/test_graph) |
 | **KV缓存优化** | 大模型推理中的KV缓存机制优化 | - | [datas/test_kv_cache](datas/test_kv_cache) |
-| **大模型Logit分析** | 深度解析大模型输出概率分布 | - | [datas/test_llm_logit](datas/test_llm_logit) |
+| **大模型Logit分析** | 解析大模型输出概率分布 | - | [datas/test_llm_logit](datas/test_llm_logit) |
 | **知识图谱构建** | 知识图谱的构建与查询技术 | Neo4j, NetworkX | [datas/test_kg](datas/test_kg) |
 | **红楼梦知识图谱** | 基于红楼梦的知识图谱构建案例 | - | [datas/test_hong_lou_meng_kg](datas/test_hong_lou_meng_kg) |
 | **函数调用** |Agent函数调用 | openai | [datas/test_fc](datas/test_fc) |
@@ -96,6 +94,8 @@
 | 实验名称 | 描述 | 技术栈 | 路径 |
 | ------- | ---- | ------ | ---- |
 | **Embedding微调** | 向量模型的数据准备与微调训练 | Transformers | [datas/test_embedding](datas/test_embedding) |
+| **训练：Embedding 模型** | 示例脚本与数据，用于对嵌入模型进行微调（train_embedding.py） | Transformers, PyTorch | [datas/test_train_embedding](datas/test_train_embedding) |
+| **训练：Reranker（BERT）** | 基于 BERT 的重排序模型训练示例（train_bert_rerank.py），含默认训练数据与损失曲线 | Transformers, PyTorch | [datas/test_train_reranker](datas/test_train_reranker) |
 | **模型下载管理** | ModelScope模型下载与管理工具 | ModelScope | [datas/test_download_modelscope_model](datas/test_download_modelscope_model) |
 
 ### 🔧 系统集成与工程化
@@ -110,7 +110,7 @@
 
 | 实验名称|描述|技术栈|路径|
 | ------- | ---- | ------ | ---- |
-|模型量化|基于bitsbytes的模型量化|bitsbytes|[datas/test_quantize_model/quantize_qwen.py](datas/test_quantize_model/quantize_qwen.py)
+|模型量化|基于bitsbytes的模型量化|bitsbytes|[datas/test_quantize_model/quantize_qwen.py](datas/test_quantize_model/quantize_qwen.py) |
 
 ## 🤝 贡献指南
 
