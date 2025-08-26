@@ -60,7 +60,7 @@
 | ------- | ---- | ------ | ---- |
 | **BGE重排序模型** | 使用BGE Reranker提升检索精度 | FlagEmbedding | [datas/test_rerank](datas/test_rerank) |
 | **BM25增强检索** | 传统BM25与现代向量检索的结合 | - | [datas/test_bm25_augmentation](datas/test_bm25_augmentation) |
-| **深度搜索系统** | 构建企业级智能搜索系统的完整方案 | - | [datas/test_deepsearch](datas/test_deepsearch) |
+| **深度搜索系统** | 构建一个deepsearch | - | [datas/test_deepsearch](datas/test_deepsearch) |
 
 ### 🎨 多模态AI技术
 
