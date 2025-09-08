@@ -98,10 +98,10 @@
 
 本项目基于 [Apache 2.0 许可证](http://www.apache.org/licenses/LICENSE-2.0) 开源。
 
-## 📞 联系我们
+## 📞 联系我
 
-- � 作者：**li-xiu-qi**
-- �📧 邮箱：<lixiuqixiaoke@qq.com>
+- 作者：**li-xiu-qi**
+- 📧 邮箱：<lixiuqixiaoke@qq.com>
 - 📢 公众号：**筱可AI**
 - 🌐 仓库地址：[GitHub](https://github.com/li-xiu-qi/XiaokeAILabs)
 
