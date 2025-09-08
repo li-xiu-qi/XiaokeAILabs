@@ -100,7 +100,7 @@
 
 ## 📞 联系我
 
-- 作者：**li-xiu-qi**
+- � 作者：**li-xiu-qi**
 - 📧 邮箱：<lixiuqixiaoke@qq.com>
 - 📢 公众号：**筱可AI**
 - 🌐 仓库地址：[GitHub](https://github.com/li-xiu-qi/XiaokeAILabs)
