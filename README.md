@@ -1,10 +1,9 @@
-# 筱可AI研习社实战项目仓库
-
-✨【你好，我是筱可，欢迎来到"筱可AI研习社"】✨
+# 筱可AI工程实验仓库
+✨【你好，我是筱可，欢迎来到"筱可AI的工程实验仓库"】✨
 
 🌈 期待与你成为"AI+成长"的双向奔赴伙伴！
 
-这里是**筱可AI研习社**的工程实验仓库！
+这里是**筱可AI**的工程实验仓库！
 
 ## 📋 免责声明
 
@@ -51,6 +50,7 @@
 
 1. **BGE-VL多模态**：视觉-语言多模态模型的实战应用，地址： [datas/test_bge_vl](datas/test_bge_vl)
 2. **Jina CLIP**：图文匹配与多模态检索实现，地址： [datas/test_jina_clip_v2](datas/test_jina_clip_v2)
+3. **CLIP模型微调**：CLIP模型的轻量级微调实现，支持冻结部分层以提高训练效率，地址： [datas/test_finetune_clip](datas/test_finetune_clip)
 
 ### 🤖 模型优化与部署
 
@@ -100,7 +100,7 @@
 
 ## 📞 联系我
 
-- � 作者：**li-xiu-qi**
+- 🧑‍💻 作者：**li-xiu-qi**
 - 📧 邮箱：<lixiuqixiaoke@qq.com>
 - 📢 公众号：**筱可AI**
 - 🌐 仓库地址：[GitHub](https://github.com/li-xiu-qi/XiaokeAILabs)
