@@ -74,6 +74,7 @@
 2. **训练：Embedding 模型**：示例脚本与数据，用于对嵌入模型进行微调（train_embedding.py），地址： [datas/test_train_embedding](datas/test_train_embedding)
 3. **训练：Reranker（BERT）**：基于 BERT 的重排序模型训练示例（train_bert_rerank.py），含默认训练数据与损失曲线，地址： [datas/test_train_reranker](datas/test_train_reranker)
 4. **模型下载管理**：ModelScope模型下载与管理工具，地址： [datas/test_download_modelscope_model](datas/test_download_modelscope_model)
+5. **DPO 训练脚本**： DPO（Differential Preference Optimization）训练脚本，支持按样本量与 epoch 控制，地址： [datas/test_dpo/dpo.py](datas/test_dpo/dpo.py)
 
 ### 🔧 系统集成与工程化
 
