@@ -20,7 +20,7 @@ class Config:
     beta: float = 0.1
     gradient_accumulation_steps: int = 4
     learning_rate: float = 5e-5
-    num_epochs: int = 3
+    num_epochs: int = 1
     warmup_ratio: float = 0.05
     logging_steps: int = 1
     max_prompt_length: int = 1024
