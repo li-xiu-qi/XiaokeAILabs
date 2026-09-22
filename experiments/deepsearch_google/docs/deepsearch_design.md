@@ -236,3 +236,23 @@ flowchart TD
 - 逻辑一致性检查
 - 事实准确性验证
 - 引用来源透明度
+
+
+---
+
+## 来源说明
+
+本文档原为独立实验 `experiments/test_deepsearch/` 的设计方案，2026-09-04 整理时并入本项目。
+该实验的 `main.py` 为 0 字节，设计未落成代码；本项目是这套设计的完整实现。
+
+实现与设计的对应关系：
+
+| 设计阶段 | 本项目实现 |
+|---|---|
+| 任务接收与理解 | `main.py` 的入口处理 |
+| 任务规划与分解 | `pocketflow/` 的节点调用栈 |
+| 并行检索 | `google_search.py` 的多查询调度 |
+| 信息汇总 | `financial_search_prompt.py` 的结果组织 |
+| 冲突检查与查询重写 | `pocketflow/build_mermaid.py` 的流程控制 |
+
+架构图见 `diagrams/` 下三个 drawio 文件。
