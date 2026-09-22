@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>索引性能推算器</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        header h1 { font-size: 28px; margin-bottom: 8px; }
+        header p { opacity: 0.9; font-size: 14px; }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .panel h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e8ecf1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #5a6c7d;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d9e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .form-group .hint {
+            font-size: 11px;
+            color: #95a5a6;
+            margin-top: 4px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn:hover { background: #5568d3; }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .result-card h3 {
+            font-size: 15px;
+            margin-bottom: 12px;
+            color: #5a6c7d;
+        }
+        .big-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        .big-number .unit {
+            font-size: 16px;
+            color: #95a5a6;
+            margin-left: 4px;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+        .comparison-table th, .comparison-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e8ecf1;
+            font-size: 13px;
+        }
+        .comparison-table th {
+            background: #f8f9fb;
+            font-weight: 600;
+            color: #5a6c7d;
+        }
+        .comparison-table tr:hover { background: #f8f9fb; }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-best { background: #d4edda; color: #155724; }
+        .badge-good { background: #fff3cd; color: #856404; }
+        .badge-bad { background: #f8d7da; color: #721c24; }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 16px;
+        }
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e8ecf1;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: #95a5a6;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        .tab:hover { color: #667eea; }
+
+        @media (max-width: 1024px) {
+            .main-grid { grid-template-columns: 1fr; }
+            .results-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>索引性能推算器</h1>
+            <p>输入参数，实时推算各索引结构的存储、延迟、内存占用</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('vector')">向量索引</button>
+            <button class="tab" onclick="switchTab('general')">通用索引</button>
+            <button class="tab" onclick="switchTab('format')">数据格式</button>
+            <button class="tab" onclick="switchTab('probabilistic')">概率数据结构</button>
+        </div>
+
+        <div class="main-grid">
+            <!-- 输入面板 -->
+            <div class="panel">
+                <h2>参数设置</h2>
+
+                <!-- 向量索引参数 -->
+                <div id="vector-inputs">
+                    <div class="form-group">
+                        <label>向量数量 (N)</label>
+                        <input type="number" id="vec-n" value="1000000" min="1">
+                        <div class="hint">1K ~ 1B</div>
+                    </div>
+                    <div class="form-group">
+                        <label>向量维度 (D)</label>
+                        <input type="number" id="vec-d" value="384" min="1">
+                        <div class="hint">典型 128 ~ 1536</div>
+                    </div>
+                    <div class="form-group">
+                        <label>PQ 子空间数 (M)</label>
+                        <input type="number" id="vec-pq-m" value="8" min="1">
+                        <div class="hint">D 的约数</div>
+                    </div>
+                    <div class="form-group">
+                        <label>IVF 聚类数 (nlist)</label>
+                        <input type="number" id="vec-nlist" value="4096" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>IVF 探测数 (nprobe)</label>
+                        <input type="number" id="vec-nprobe" value="32" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>HNSW 连接数 (M)</label>
+                        <input type="number" id="vec-hnsw-m" value="16" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>HNSW 搜索宽度 (ef)</label>
+                        <input type="number" id="vec-hnsw-ef" value="64" min="1">
+                    </div>
+                </div>
+
+                <!-- 通用索引参数 -->
+                <div id="general-inputs" style="display:none">
+                    <div class="form-group">
+                        <label>数据量 (N)</label>
+                        <input type="number" id="gen-n" value="1000000" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>键大小 (bytes)</label>
+                        <input type="number" id="gen-key-size" value="8" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>值大小 (bytes)</label>
+                        <input type="number" id="gen-value-size" value="92" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>页大小 (bytes)</label>
+                        <input type="number" id="gen-page-size" value="4096" min="512">
+                    </div>
+                </div>
+
+                <!-- 数据格式参数 -->
+                <div id="format-inputs" style="display:none">
+                    <div class="form-group">
+                        <label>行数</label>
+                        <input type="number" id="fmt-rows" value="100000" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>列数</label>
+                        <input type="number" id="fmt-cols" value="20" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>平均列值长度 (bytes)</label>
+                        <input type="number" id="fmt-value-len" value="8" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>列值基数（不同取值数）</label>
+                        <input type="number" id="fmt-cardinality" value="5" min="1">
+                        <div class="hint">典型: 枚举字段 5-20, ID 字段 10000+</div>
+                    </div>
+                    <div class="form-group">
+                        <label>数据类型（决定压缩率）</label>
+                        <select id="fmt-data-type" onchange="updateCompressionHint()">
+                            <option value="enum">枚举/分类字段 (高重复)</option>
+                            <option value="short-text">短文本 (8-20B, 中重复)</option>
+                            <option value="long-text">长文本 (100B+, 低重复)</option>
+                            <option value="random">随机数据 (UUID/哈希)</option>
+                        </select>
+                        <div class="hint" id="compression-hint"></div>
+                    </div>
+                </div>
+
+                <!-- 概率数据结构参数 -->
+                <div id="prob-inputs" style="display:none">
+                    <div class="form-group">
+                        <label>预期元素数 (N)</label>
+                        <input type="number" id="prob-n" value="1000000" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>目标假阳性率 (ε)</label>
+                        <input type="number" id="prob-eps" value="0.01" min="0.001" max="0.5" step="0.001">
+                    </div>
+                    <div class="form-group">
+                        <label>置信度 (1-δ)</label>
+                        <input type="number" id="prob-delta" value="0.999" min="0.5" max="0.999" step="0.001">
+                    </div>
+                </div>
+
+                <button class="btn" onclick="calculate()">推算</button>
+            </div>
+
+            <!-- 结果面板 -->
+            <div>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3>存储占用</h3>
+                        <div class="big-number" id="storage-result">-</div>
+                    </div>
+                    <div class="result-card">
+                        <h3>查询延迟</h3>
+                        <div class="big-number" id="latency-result">-</div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>详细对比</h2>
+                    <table class="comparison-table" id="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>结构</th>
+                                <th>存储</th>
+                                <th>延迟</th>
+                                <th>内存</th>
+                                <th>备注</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparison-body">
+                        </tbody>
+                    </table>
+
+                    <div class="chart-container">
+                        <canvas id="storage-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let storageChart = null;
+
+        function switchTab(name) {
+            // 更新 tab 样式
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // 显示对应输入面板
+            document.getElementById('vector-inputs').style.display = name === 'vector' ? 'block' : 'none';
+            document.getElementById('general-inputs').style.display = name === 'general' ? 'block' : 'none';
+            document.getElementById('format-inputs').style.display = name === 'format' ? 'block' : 'none';
+            document.getElementById('prob-inputs').style.display = name === 'probabilistic' ? 'block' : 'none';
+
+            if (name === 'format') {
+                updateCompressionHint();
+            }
+        }
+        function updateCompressionHint() {
+            const dataType = document.getElementById('fmt-data-type').value;
+            const hints = {
+                'enum': '压缩率 40-320 倍（高重复，zip 效果极佳）',
+                'short-text': '压缩率 5-50 倍（中重复，取决于基数）',
+                'long-text': '压缩率 1.5-5 倍（低重复，zip 效果有限）',
+                'random': '压缩率 1.5-2 倍（随机数据，几乎压不动）'
+            };
+            document.getElementById('compression-hint').textContent = hints[dataType] || '';
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
+        }
+
+        function formatTime(ms) {
+            if (ms < 1) return (ms * 1000).toFixed(2) + ' μs';
+            if (ms < 1000) return ms.toFixed(2) + ' ms';
+            return (ms / 1000).toFixed(2) + ' s';
+        }
+
+        function calculateVector() {
+            const n = parseInt(document.getElementById('vec-n').value);
+            const d = parseInt(document.getElementById('vec-d').value);
+            const pqM = parseInt(document.getElementById('vec-pq-m').value);
+            const nlist = parseInt(document.getElementById('vec-nlist').value);
+            const nprobe = parseInt(document.getElementById('vec-nprobe').value);
+            const hnswM = parseInt(document.getElementById('vec-hnsw-m').value);
+            const hnswEf = parseInt(document.getElementById('vec-hnsw-ef').value);
+
+            const rawBytes = n * d * 4;
+            const sq8Bytes = n * d;
+            const pqBytes = n * pqM + pqM * 256 * (d / pqM) * 4;
+            const ivfFlatBytes = nlist * d * 4 + n * 8 + rawBytes;
+            const ivfPqBytes = nlist * d * 4 + n * 8 + n * pqM + pqM * 256 * (d / pqM) * 4;
+            const hnswBytes = rawBytes + n * 2 * hnswM * 4 + n * 8;
+
+            const Q = 36000000; // 算力常数
+            const flatLatency = n * 2 * d / Q * 1000;
+            const ivfLatency = (nprobe * n / nlist) * 2 * d / Q * 1000;
+            const hnswLatency = hnswEf * Math.log2(n) * 2 * d / Q * 1000;
+
+            const ivfRecall = Math.min(1, nprobe / nlist);
+            const hnswRecall = 1 - Math.exp(-hnswEf / hnswM);
+
+            const data = [
+                { name: 'FLAT', storage: rawBytes, latency: flatLatency, memory: rawBytes, note: '暴力扫描，召回 100%' },
+                { name: 'SQ8', storage: sq8Bytes, latency: flatLatency * 1.2, memory: sq8Bytes, note: '4x 压缩，召回损失小' },
+                { name: 'PQ', storage: pqBytes, latency: flatLatency * 0.3, memory: pqBytes, note: '~35x 压缩' },
+                { name: 'IVF-Flat', storage: ivfFlatBytes, latency: ivfLatency, memory: ivfFlatBytes, note: `召回 ~${(ivfRecall*100).toFixed(0)}%` },
+                { name: 'IVF-PQ', storage: ivfPqBytes, latency: ivfLatency, memory: ivfPqBytes, note: `召回 ~${(ivfRecall*100).toFixed(0)}%` },
+                { name: 'HNSW', storage: hnswBytes, latency: hnswLatency, memory: hnswBytes, note: `召回 ~${(hnswRecall*100).toFixed(1)}%` },
+            ];
+
+            return data;
+        }
+
+        function calculateGeneral() {
+            const n = parseInt(document.getElementById('gen-n').value);
+            const keySize = parseInt(document.getElementById('gen-key-size').value);
+            const valueSize = parseInt(document.getElementById('gen-value-size').value);
+            const pageSize = parseInt(document.getElementById('gen-page-size').value);
+
+            const entrySize = keySize + valueSize;
+            const rawBytes = n * entrySize;
+
+            // B+树
+            const fanout = Math.floor(pageSize / entrySize);
+            const height = Math.max(1, Math.ceil(Math.log(n) / Math.log(fanout)));
+            const btreeBytes = n * entrySize / 0.84; // 填充率 0.84
+
+            // LSM-tree
+            const lsmBytes = n * entrySize * 1.1; // leveling 空间放大 1.1
+
+            // 哈希
+            const hashBytes = n * entrySize / 0.75 * 1.2; // 负载因子 0.75，指针开销
+
+            // 延迟（内存随机访问 11.36 ns）
+            const btreeLatency = height * 11.36 / 1000; // ms
+            const hashLatency = 0.011; // 1-2 次探测，约 11 us
+            const lsmLatency = 0.01; // 布隆过滤器过滤后接近 0
+
+            const data = [
+                { name: 'B+树', storage: btreeBytes, latency: btreeLatency, memory: btreeBytes, note: `树高 ${height}` },
+                { name: 'LSM-tree', storage: lsmBytes, latency: lsmLatency, memory: lsmBytes, note: '写优化' },
+                { name: '哈希索引', storage: hashBytes, latency: hashLatency, memory: hashBytes, note: 'O(1) 等值查询' },
+            ];
+
+            return data;
+        }
+
+        function calculateFormat() {
+            const rows = parseInt(document.getElementById('fmt-rows').value);
+            const cols = parseInt(document.getElementById('fmt-cols').value);
+            const valueLen = parseInt(document.getElementById('fmt-value-len').value);
+            const cardinality = parseInt(document.getElementById('fmt-cardinality').value);
+            const dataType = document.getElementById('fmt-data-type').value;
+
+            // 根据数据类型和实际数据特征推算压缩率
+            // 实测范围: 1.5 倍 (随机长文本) ~ 300+ 倍 (高重复短文本)
+            let compression;
+            const effectiveRepeat = cardinality / Math.max(1, valueLen);
+
+            if (dataType === 'enum') {
+                // 枚举字段：高重复（基数 3-20），压缩率 40-320 倍
+                compression = Math.max(40, 320 / Math.max(1, effectiveRepeat * 2));
+            } else if (dataType === 'short-text') {
+                // 短文本：中重复（基数 10-1000），压缩率 5-50 倍
+                compression = Math.max(5, 50 / Math.max(1, effectiveRepeat * 0.5));
+            } else if (dataType === 'long-text') {
+                // 长文本：低重复（基数 1000-10000），压缩率 1.5-5 倍
+                compression = Math.max(1.5, 5 / Math.max(1, effectiveRepeat * 0.1));
+            } else {
+                // 随机数据：压缩率接近 1.5-2 倍
+                compression = 1.5 + (valueLen < 20 ? 0.5 : 0);
+            }
+
+            // xlsx: zip 压缩的 XML，有共享字符串表
+            const xmlVolume = rows * cols * (valueLen + 40);
+            const uniqueValues = Math.min(cardinality, rows * cols);
+            const sharingSaving = (rows * cols - uniqueValues) * valueLen;
+            const xlsxBytes = (xmlVolume - Math.max(0, sharingSaving)) / compression;
+
+            // sqlite: 不压缩的二进制行存储
+            const sqliteBytes = rows * (cols * valueLen + 20);
+
+            // json 行式
+            const jsonRowBytes = rows * (2 + cols * (12 + valueLen + 3 + 1)) + 2;
+
+            // json 列式
+            const jsonColBytes = cols * (12 + 2 + rows * (valueLen + 3 + 1)) + (cols - 1) + 2;
+
+            // jsonl
+            const jsonlBytes = rows * (2 + cols * (12 + valueLen + 3 + 1) + 1);
+
+            // 读取延迟
+            const xlsxReadMs = rows * cols * 24 / 1000;
+            const jsonReadMs = jsonRowBytes / 1024 / 1024 / 500 * 1000;
+            const jsonlFullReadMs = jsonReadMs * 1.8;
+
+            const data = [
+                { name: 'xlsx', storage: xlsxBytes, latency: xlsxReadMs, memory: xlsxBytes, note: `压缩率 ~${compression.toFixed(1)}x` },
+                { name: 'sqlite', storage: sqliteBytes, latency: jsonReadMs * 0.5, memory: sqliteBytes, note: '不压缩行存储' },
+                { name: 'json 行式', storage: jsonRowBytes, latency: jsonReadMs, memory: jsonRowBytes * 2, note: '无压缩' },
+                { name: 'json 列式', storage: jsonColBytes, latency: jsonReadMs * 0.7, memory: jsonColBytes * 2, note: '键名只写一次' },
+                { name: 'jsonl', storage: jsonlBytes, latency: jsonlFullReadMs, memory: jsonlBytes * 1.5, note: '支持流式 + 追加' },
+            ];
+
+            return data;
+        }
+
+        function calculateProbabilistic() {
+            const n = parseInt(document.getElementById('prob-n').value);
+            const eps = parseFloat(document.getElementById('prob-eps').value);
+            const delta = parseFloat(document.getElementById('prob-delta').value);
+
+            const m = Math.ceil(-n * Math.log(eps) / (Math.log(2) ** 2));
+            const k = Math.max(1, Math.round(m / n * Math.log(2)));
+            const bloomBytes = m / 8;
+            const bloomFpr = Math.pow(1 - Math.exp(-k * n / m), k);
+
+            const w = Math.ceil(Math.E / eps);
+            const d = Math.max(1, Math.ceil(Math.log(1 / (1 - delta))));
+            const cmsBytes = w * d * 4;
+            const fidBytes = w * d * 0.5; // 4 bit
+
+            const m2 = Math.pow(2, 14); // HLL 默认 m=16384
+            const hllBytes = m2 * 5 / 8;
+
+            const data = [
+                { name: 'Bloom Filter', storage: bloomBytes, latency: 0.05, memory: bloomBytes, note: `假阳性率 ${(bloomFpr*100).toFixed(2)}%` },
+                { name: 'Cuckoo Filter', storage: bloomBytes * 0.8, latency: 0.05, memory: bloomBytes * 0.8, note: '支持删除' },
+                { name: 'Count-Min Sketch', storage: cmsBytes, latency: 0.1, memory: cmsBytes, note: `32 bit 计数器` },
+                { name: 'FID-Sketch', storage: fidBytes, latency: 0.1, memory: fidBytes, note: `4 bit 概率计数` },
+                { name: 'HyperLogLog', storage: hllBytes, latency: 0.05, memory: hllBytes, note: '基数估计' },
+            ];
+
+            return data;
+        }
+
+        function calculate() {
+            const activeTab = document.querySelector('.tab.active').textContent;
+            let data;
+
+            if (activeTab.includes('向量')) {
+                data = calculateVector();
+            } else if (activeTab.includes('通用')) {
+                data = calculateGeneral();
+            } else if (activeTab.includes('格式')) {
+                data = calculateFormat();
+            } else {
+                data = calculateProbabilistic();
+            }
+
+            // 更新大数字
+            const minStorage = Math.min(...data.map(d => d.storage));
+            const minLatency = Math.min(...data.map(d => d.latency));
+            document.getElementById('storage-result').innerHTML = formatBytes(minStorage);
+            document.getElementById('latency-result').innerHTML = formatTime(minLatency);
+
+            // 更新表格
+            const tbody = document.getElementById('comparison-table').querySelector('tbody');
+            tbody.innerHTML = '';
+            const minStore = Math.min(...data.map(d => d.storage));
+            const minLat = Math.min(...data.map(d => d.latency));
+            data.forEach(d => {
+                const tr = document.createElement('tr');
+                const storeBadge = d.storage === minStore ? 'badge-best' : (d.storage < minStore * 2 ? 'badge-good' : 'badge-bad');
+                const latBadge = d.latency === minLat ? 'badge-best' : (d.latency < minLat * 2 ? 'badge-good' : 'badge-bad');
+                tr.innerHTML = `
+                    <td><strong>${d.name}</strong></td>
+                    <td><span class="badge ${storeBadge}">${formatBytes(d.storage)}</span></td>
+                    <td><span class="badge ${latBadge}">${formatTime(d.latency)}</span></td>
+                    <td>${formatBytes(d.memory)}</td>
+                    <td style="color:#95a5a6">${d.note}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // 更新图表
+            updateChart(data);
+        }
+
+        function updateChart(data) {
+            const ctx = document.getElementById('storage-chart').getContext('2d');
+            if (storageChart) storageChart.destroy();
+
+            storageChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(d => d.name),
+                    datasets: [{
+                        label: '存储占用 (bytes)',
+                        data: data.map(d => d.storage),
+                        backgroundColor: '#667eea',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        title: { display: true, text: '存储占用对比' }
+                    },
+                    scales: {
+                        y: {
+                            type: 'logarithmic',
+                            ticks: {
+                                callback: function(value) {
+                                    return formatBytes(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 初始计算
+        updateCompressionHint();
+        calculate();
+
+        // 绑定输入事件
+        document.querySelectorAll('input, select').forEach(el => {
+            el.addEventListener('input', () => {
+                if (el.id === 'fmt-data-type') {
+                    updateCompressionHint();
+                }
+                calculate();
+            });
+        });
+    </script>
+</body>
+</html>
