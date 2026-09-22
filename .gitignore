@@ -1,7 +1,7 @@
 # Python忽略规则
 __pycache__/
 *.py[cod]
-.venv/
+.venv*/
 .env
 build/
 dist/
@@ -139,6 +139,10 @@ remote_files.txt
 
 # 标准数据集原始文件（用时自行下载）
 **/MNIST/raw/
+
+# 实验语料与缓存（由脚本从数据源生成，可重建）
+**/corpus/
+**/wiki_zh/
 
 # 微调训练数据（大文件，按需准备）
 **/ft_data/
