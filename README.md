@@ -19,7 +19,6 @@
 
 ### 🔍 向量检索与相似度计算
 
-1. **MMR多样性检索**：最大边际相关性搜索算法，平衡相关性与多样性，地址： [experiments/test_mmr_search](experiments/test_mmr_search)
 2. **K-means聚类检索**：基于聚类的文档分组与多样性检索策略，地址： [experiments/test_k_means](experiments/test_k_means)
 3. **SimHash相似度**：局部敏感哈希算法实现，用于近似相似度计算，地址： [experiments/test_simhash](experiments/test_simhash)
 4. **BGE稀疏检索**：稀疏向量检索与稠密向量检索对比分析，地址： [experiments/test_bge_sparse](experiments/test_bge_sparse)
@@ -47,9 +46,7 @@
 ### 🎯 检索增强与重排序
 
 1. **BGE重排序模型**：使用BGE Reranker提升检索精度，地址： [experiments/test_rerank](experiments/test_rerank)
-2. **BM25增强检索**：传统BM25与现代向量检索的结合，地址： [experiments/test_bm25_augmentation](experiments/test_bm25_augmentation)
-3. **深度搜索**：构建一个deepsearch，地址： [experiments/test_deepsearch](experiments/test_deepsearch)
-4. **深度搜索(Google)**：基于Google的深度搜索实现，地址： [experiments/deepsearch_google](experiments/deepsearch_google)
+3. **深度搜索（设计与实现）**：深度搜索系统的架构设计与 Google 实现，地址： [experiments/deepsearch_google](experiments/deepsearch_google)
 
 ### 🎨 多模态AI技术
 
@@ -83,23 +80,21 @@
 1. **Embedding微调**：向量模型的数据准备与微调训练，地址： [experiments/test_embedding](experiments/test_embedding)
 2. **训练：Embedding 模型**：示例脚本与数据，用于对嵌入模型进行微调（train_embedding.py），地址： [experiments/test_train_embedding](experiments/test_train_embedding)
 3. **训练：Reranker（BERT）**：基于 BERT 的重排序模型训练示例（train_bert_rerank.py），含默认训练数据与损失曲线，地址： [experiments/test_train_reranker](experiments/test_train_reranker)
-4. **模型下载管理**：ModelScope模型下载与管理工具，地址： [experiments/test_download_modelscope_model](experiments/test_download_modelscope_model)
 5. **DPO 训练脚本**： DPO（Direct Preference Optimization）训练脚本，支持按样本量与 epoch 控制，地址： [experiments/test_dpo/dpo.py](experiments/test_dpo/dpo.py)
-6. **音频模型微调** 🚧未完成：音频模型微调（当前仅有加载数据集的开头，尚未继续），地址： [experiments/test_finetune_audio](experiments/test_finetune_audio)
 
 ### 💾 数据存储与格式选型
 
-1. **xlsx与sqlite的体积换算与速度实测**：xlsx转sqlite后的体积膨胀规律、xlsx压缩率上限（500字节约110倍）、索引对查询速度的真实影响（点查快217倍，但范围过滤和分组聚合会变慢4倍以上），地址： [experiments/test_xlsx_sqlite_size](experiments/test_xlsx_sqlite_size)
+1. **xlsx、sqlite、json、jsonl 的体积与速度实测**：同一份数据在四种格式下的体积换算与读写耗时，含 xlsx 压缩率上限（500字节约110倍）、索引对查询速度的真实影响（点查快217倍，范围过滤与分组聚合反而变慢4倍以上）、jsonl 的增量能力（追加一行快三个数量级，只取前1000行快66~239倍），地址： [experiments/test_data_formats_bench](experiments/test_data_formats_bench)
 
 ### 🔧 系统集成与工程化
 
 1. **Rust Python集成**：使用Rust优化Python性能瓶颈，地址： [experiments/test_rust_in_python](experiments/test_rust_in_python)
-2. **FastAPI接口服务**：FastAPI接口服务示例，地址： [experiments/test_fastapi](experiments/test_fastapi)
+2. **FastAPI接口服务**：FastAPI 依赖注入与 sqlite 会话管理示例（单文件，内容已归档，不再随仓维护）
 3. **BFPRT的Rust实现**：BFPRT算法的Rust语言实现，地址： [experiments/test_rs_bfprt](experiments/test_rs_bfprt)
 
 ### 🧠 模型工程
 
-1. 模型量化：基于bitsbytes的模型量化，地址： [experiments/test_quantize_model/quantize_qwen.py](experiments/test_quantize_model/quantize_qwen.py)
+1. 模型量化：基于 bitsandbytes 的 8-bit 量化（Qwen2.5-0.5B-Instruct，单文件，内容已归档，不再随仓维护）
 
 ### 🚀 完整应用
 
