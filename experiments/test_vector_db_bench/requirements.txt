@@ -1,0 +1,10 @@
+# 向量数据库本地基准依赖
+# Python 3.13（python.org 版），不用 pkm-hub-runtime 的 uv 版 3.12
+surrealdb==1.0.4
+pymilvus==3.0.1
+qdrant-client==1.19.0
+lancedb==0.38.0
+chromadb==1.5.9
+sqlite-vec==0.1.9
+numpy==2.5.2
+pandas==3.0.5
