@@ -1,0 +1,3 @@
+# 本实验的输入数据与全局 *.npz 规则冲突：20news_emb.npz 是实验输入，
+# 不是构建生成的中间产物，重新生成要跑 7 分钟 embedding，值得入库。
+!data/20news_emb.npz

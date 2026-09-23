@@ -1,0 +1,14 @@
+
+torch
+torchvision
+transformers>=4.30
+datasets>=2.12
+trl>=0.6
+huggingface_hub>=0.16
+accelerate>=0.20
+tokenizers>=0.13
+einops>=0.6
+ipywidgets
+numpy<2.0
+matplotlib
+tqdm

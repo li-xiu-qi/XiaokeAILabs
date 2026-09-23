@@ -1,0 +1,17 @@
+[package]
+name = "test_rs_bfprt"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rand = "0.8"
+plotly = "0.8"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "selection_algorithms"
+harness = false

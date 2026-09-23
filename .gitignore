@@ -1,0 +1,174 @@
+# Python忽略规则
+__pycache__/
+*.py[cod]
+.venv/
+.env
+build/
+dist/
+
+# Jupyter Notebook忽略规则
+.ipynb_checkpoints/
+
+# VS Code忽略规则
+.vscode/
+*.code-workspace
+
+# macOS忽略规则
+.DS_Store
+
+# Windows忽略规则
+Thumbs.db
+
+# PyCharm忽略规则
+.idea/
+*.iml
+
+upload_files
+
+test_outputs
+
+# 数据库文件忽略规则
+*.db
+*.db-wal
+*.db-journal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# DuckDB数据库文件
+your_database.db
+
+# 大型模型文件忽略规则
+*.pkl
+*.bin
+*.safetensors
+*.onnx
+*.openvino
+*.pt
+*.pth
+*.h5
+*.hdf5
+*.tflite
+*.pb
+
+# 模型文件夹
+models/
+datas/test_kv_cache/models/
+**/models/
+
+# Rust忽略规则
+target/
+Cargo.lock
+*.rs.bk
+*.pdb
+*.rlib
+*.rmeta
+*.d
+*.dll
+*.dll.lib
+*.dll.exp
+*.exe
+
+# 数据库和缓存文件
+*.db-shm
+*.db-wal
+*.db-journal
+cache.db*
+*.cache
+embedding_cache/
+
+# 编译和构建产物
+*.o
+*.obj
+*.lib
+*.a
+*.so
+*.dylib
+
+# 图片和媒体文件忽略规则 (可选，根据需要调整)
+
+
+# 测试输出数据忽略规则
+**/chunk_*.txt
+**/红楼梦_*分割结果*/
+**/test_output*/
+**/output*/
+**/results*/
+**/benchmark_results*/
+
+# 临时文件和缓存
+*.tmp
+*.temp
+*.log
+remote_files.txt
+
+# HTML文件（通常是生成的报告）
+**/performance_chart.html
+**/relative_performance.html
+**/benchmark_results.html
+
+# JSON结果文件
+**/benchmark_results.json
+**/performance_results.json
+
+# 更多Rust忽略规则
+**/.rustc_info.json
+**/CACHEDIR.TAG
+**/.fingerprint/
+**/incremental/
+**/deps/
+
+# 数据库和缓存文件的更多规则
+*.db
+*.db-wal
+*.db-journal
+*.db-shm
+**/duckdb.db*
+**/your_database.db*
+**/test.db*
+
+# 模型和权重文件的更多规则
+**/models/*.onnx
+**/models/*.pth
+**/models/*.pt
+**/models/*.bin
+**/models/*.safetensors
+
+# 用户上传文件（书籍PDF等大文件不入库，匹配任意层级）
+**/upload_files/
+
+# 标准数据集原始文件（用时自行下载）
+**/MNIST/raw/
+
+# 微调训练数据（大文件，按需准备）
+**/ft_data/
+
+# 分词器文件（模型资产，按需下载）
+**/tokenizer.json
+**/tokenizers.json
+
+# 知识图谱产物（可重新生成，勿入库）
+**/hongloumeng_kg_output/
+**/graph_exports/
+**/knowledge_graph*.png
+**/knowledge_graph*.html
+**/*.gexf
+**/*.graphml
+
+# OpenVINO 模型权重文件
+**/jina_model_path/*.xml
+**/jina_model_path/*.bin
+**/jina_model_path/*.pdmodel
+
+# 红楼梦原著及预处理数据（可公开获取）
+**/*红楼梦*
+
+# 向量索引/序列化产物（构建生成，勿入库）
+*.faiss
+*.index
+*.npy
+*.npz
+*.joblib
+
+# 实验输入图片（可重新获取，勿入库）
+**/furseal.png
