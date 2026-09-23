@@ -21,7 +21,7 @@ python llm_baseline/qwen4b-latency.py
 
 `qwen4b-latency.py` 第一次跑会自动下载约 8.3 GB 权重，加载约 54 s，之后常驻 8.3 GB。跑完记得释放，别和 Nimble 那组同时驻留。
 
-结果对应 `../docs/logs/` 编号 08 的日志。编号 08b 是早期一次模板未生效的失败调试记录，已被后续脚本修正，不作为正常复现路径。
+结果对应 `../docs/执行日志/` 编号 08 的日志。编号 08b 是早期一次模板未生效的失败调试记录，已被后续脚本修正，不作为正常复现路径。
 
 ## 为什么用 AutoTokenizer 而不是 processor
 
