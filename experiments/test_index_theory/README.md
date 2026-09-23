@@ -43,13 +43,13 @@
 | 列式存储 | 按列存、压缩、向量化 |
 | 哈希索引 | 桶数组 + 冲突处理 |
 
-### 文本与查询引擎（3 个，文档在仓）
+### 文本与查询引擎（3 个，已迁）
 
-| 算法 | 核心机制 | 文档 |
-|---|---|---|
-| 倒排索引 | 词典 + 倒排列表，TF-IDF/BM25 | `docs/倒排索引模型.md` |
-| Join 算法 | NLJ、Hash Join、Sort-Merge Join | `docs/Join算法模型.md` |
-| BM25 排序 | IDF + TF 饱和 + 长度归一化 | `docs/BM25模型.md` |
+| 算法 | 核心机制 |
+|---|---|
+| 倒排索引 | 词典 + 倒排列表，TF-IDF/BM25 |
+| Join 算法 | NLJ、Hash Join、Sort-Merge Join |
+| BM25 排序 | IDF + TF 饱和 + 长度归一化 |
 
 ### 基础算法（4 个，已迁）
 
@@ -70,13 +70,13 @@
 | HyperLogLog++ | 稀疏表示 + 64 位哈希，精度更高 |
 | FID-Sketch | 4 位概率计数，Count-Min Sketch 的改进版 |
 
-### 近似最近邻（3 个，文档在仓）
+### 近似最近邻（3 个，已迁）
 
-| 算法 | 核心机制 | 文档 |
-|---|---|---|
-| LSH | 局部敏感哈希，S-curve 筛选 | `docs/LSH模型.md` |
-| SimHash | 随机超平面投影，海明距离 | `docs/SimHash模型.md` |
-| MinHash | 最小哈希，Jaccard 相似度估计 | `docs/MinHash模型.md` |
+| 算法 | 核心机制 |
+|---|---|
+| LSH | 局部敏感哈希，S-curve 筛选 |
+| SimHash | 随机超平面投影，海明距离 |
+| MinHash | 最小哈希，Jaccard 相似度估计 |
 
 ### 前缀搜索与区间查询（4 个，已迁）
 
@@ -87,13 +87,13 @@
 | Segment Tree | 线段树，O(log n) 区间查询 |
 | Fenwick Tree | 树状数组，O(log n) 前缀和 |
 
-### 哈希表优化（3 个，文档在仓）
+### 哈希表优化（3 个，已迁）
 
-| 算法 | 核心机制 | 文档 |
-|---|---|---|
-| Robin Hood Hashing | 开放寻址 + 探测距离均衡 | `docs/RobinHood模型.md` |
-| Swiss Table | SIMD 分组比较，2-3x std::unordered_map | `docs/SwissTable模型.md` |
-| Hopscotch Hashing | 邻域位图，负载因子 90%+ | `docs/Hopscotch模型.md` |
+| 算法 | 核心机制 |
+|---|---|
+| Robin Hood Hashing | 开放寻址 + 探测距离均衡 |
+| Swiss Table | SIMD 分组比较，2-3x std::unordered_map |
+| Hopscotch Hashing | 邻域位图，负载因子 90%+ |
 
 ### Heavy Hitters（3 个，已迁）
 
@@ -103,37 +103,37 @@
 | Space-Saving | m 计数器 + 最小堆，O(1) 更新 |
 | Lossy Counting | 分桶删除，误差 ε×N |
 
-### 压缩编码（4 个，文档在仓）
+### 压缩编码（4 个，已迁）
 
-| 算法 | 核心机制 | 文档 |
-|---|---|---|
-| Varint | 每字节 7 位数据 + 1 位 continuation | `docs/Varint模型.md` |
-| Delta Encoding | 差分 + Zigzag + Varint | `docs/Delta编码模型.md` |
-| Simple8b | 64 位字，4 位选择器 + 60 位数据 | `docs/Simple8b模型.md` |
-| PForDelta | 帧内统一位宽 + 异常区 | `docs/PForDelta模型.md` |
+| 算法 | 核心机制 |
+|---|---|
+| Varint | 每字节 7 位数据 + 1 位 continuation |
+| Delta Encoding | 差分 + Zigzag + Varint |
+| Simple8b | 64 位字，4 位选择器 + 60 位数据 |
+| PForDelta | 帧内统一位宽 + 异常区 |
 
-### 动态哈希（2 个，文档在仓）
+### 动态哈希（2 个，已迁）
 
-| 算法 | 核心机制 | 文档 |
-|---|---|---|
-| Cuckoo Hashing | 两表 + 递归踢出，O(1) 最坏查找 | `docs/布谷鸟哈希模型.md` |
-| Extendible Hashing | 目录 + 桶分裂，O(1) 查找 | `docs/可扩展哈希模型.md` |
+| 算法 | 核心机制 |
+|---|---|
+| Cuckoo Hashing | 两表 + 递归踢出，O(1) 最坏查找 |
+| Extendible Hashing | 目录 + 桶分裂，O(1) 查找 |
 
-### 向量索引（1 个统一模型，文档在仓）
+### 向量索引（1 个统一模型，通用部分已迁）
 
 | 算法 | 核心机制 | 文档 |
 |---|---|---|
 | 向量索引 | FLAT/SQ/PQ/IVF/HNSW 统一公式 | `docs/向量索引统一模型.md` |
 
-向量索引详细文档：`docs/向量索引的存储与内存模型.md`、`docs/向量索引的查询延迟模型.md`、`docs/向量索引的召回特性.md`。
+向量索引的通用成本模型（三维度可推导性、统一公式表）已迁往配套知识库《向量索引统一成本模型》，`docs/` 下四篇保留 faiss 版本绑定实测与召回实测表，文首有指针。
 
-### 数据格式（1 个统一模型，文档在仓）
+### 数据格式（1 个统一模型，已迁）
 
-| 算法 | 核心机制 | 文档 |
-|---|---|---|
-| 数据格式 | xlsx/sqlite/json/jsonl 体积与速度 | `docs/数据格式模型.md` |
+| 算法 | 核心机制 |
+|---|---|
+| 数据格式 | xlsx/sqlite/json/jsonl 体积与速度 |
 
-数据格式的详细实测文档见 `docs/数据格式体积与速度实测.md`（从 test_data_formats_bench 合并）。
+数据格式的详细实测文档见 `docs/数据格式体积与速度实测.md`（从 test_data_formats_bench 合并，实测过程记录留仓）。
 
 ### 架构映射（1 个，已迁）
 
