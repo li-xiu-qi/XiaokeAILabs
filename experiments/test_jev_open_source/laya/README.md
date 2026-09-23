@@ -12,6 +12,7 @@ Laya 采用专用判别式架构，核心机制是内置双模型分支（英文
 - `laya-zh-en.py`：中英双语分类与命题判定测试集。验证语言分支自动分流效果，并实测中文场景下的命题判断置信度表现。另含强灌实验（中文输入直接打 english checkpoint）。
 - `laya-scale.py`：多题合并扩展基准脚本。题数从 1 推到 256，题目互不相同（12 个题面池循环取样，覆盖 choice / score / noul 三种题型），测单题边际成本的衰减拐点与激活显存的增长。脚本只记录数据，不对平台期成因下结论。
 - `laya-direct.py`：调用路径对照脚本。Agent 直接锁定单个分支 vs Router 自动路由（默认分支、全量常驻两种档位），测延迟与常驻显存差异。
+- `laya-pin.py`：指定模型模式对照脚本。同一条中文输入跑自动路由、单请求 model= 覆盖（multilingual / english 强灌 / typed-decisions）、Router(default=) 五种模式，对比判定、置信度与路由理由。
 - `laya-common.py`：模型架构、token 序列构造与置信度算法的本地复刻实现，供源码级对照分析。
 
 ## 运行与复现步骤
@@ -26,10 +27,11 @@ python laya/laya-verify.py
 python laya/laya-latency.py
 python laya/laya-scale.py
 python laya/laya-direct.py
+python laya/laya-pin.py
 python laya/laya-zh-en.py
 ```
 
-六个脚本在 aarch64 GB10（20 核 CPU，121 GB 统一内存，torch 2.14.0+cu130）上实测通过，完整原始日志见 `../docs/logs/`。`test_laya.py` 只需 GPU 与网络权限即可运行，最适合作为第一个脚本。
+七个脚本在 aarch64 GB10（20 核 CPU，121 GB 统一内存，torch 2.14.0+cu130）上实测通过，完整原始日志见 `../docs/logs/`。`test_laya.py` 只需 GPU 与网络权限即可运行，最适合作为第一个脚本。
 
 **注意事项**：
 
