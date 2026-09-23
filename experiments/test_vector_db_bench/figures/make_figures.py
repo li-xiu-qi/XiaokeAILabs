@@ -12,7 +12,7 @@ test_vector_db_bench · 图表生成脚本
 其余 3 张图数据来自对应报告里的表格（存档数据/调参根因，无对应 JSON）：
   fig5-surreal-milvus-ef.png     SurrealDB vs Milvus ef 异常  → 随机向量专项测试 第二节
   fig6-lancedb-param-root.png    LanceDB IVF_PQ 调参根因      → 真实数据五库对比 根因节
-  fig7-deployment-heatmap.png    部署能力矩阵热力图           → 部署方式与平台支持 第一/七节
+  fig7-deployment-heatmap.png    部署能力矩阵热力图           → 部署能力矩阵（原部署报告，结论已迁知识库，数据内联于本脚本）
   fig10-hybrid-rrf.png          混合检索 RRF 命中率对比       → 混合检索BM25对比 第二节
 
 用法（需带 matplotlib 等绘图依赖的环境，本目录无 .venv）：
@@ -360,7 +360,7 @@ def fig_lancedb_param_root(data, out):
 
 # ============================================================
 # 图 7：部署能力矩阵热力图（定性）
-# 数据来源：reports/2026-09-04-部署方式与平台支持.md 第一/七节
+# 数据来源：部署能力矩阵（原 reports/2026-09-04-部署方式与平台支持.md，已迁知识库，数值内联于本脚本）
 # 支持度编码：2=完整原生 / 1=有条件或部分 / 0=不支持或不需要
 # ============================================================
 def fig_deployment_heatmap(data, out):
