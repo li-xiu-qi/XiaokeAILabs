@@ -118,11 +118,11 @@ LLM 分割未纳入本表：water18-new 不服从「只答 YES/NO」格式约束
 | 旧目录（现位于 archive_predecessors/） | 内容 | 去向 |
 |---|---|---|
 | `test_late_chunking/` | 迟分实现 + 红楼梦测试 | 迟分逻辑重写为 `algo_late_chunking.py`，原实现写死的旧模型路径已失效 |
-| `test_sentence_similarity_with_code_or_table/` | 代码/表格与文本的相似度评测 | 其结论（嵌入模型对结构化内容的分辨力）已并入选型边界，正文不重复 |
+| `test_sentence_similarity_with_code_or_table/`（现存 embedding_research/behavior_tests/）| 代码/表格与文本的相似度评测 | 其结论（嵌入模型对结构化内容的分辨力）已并入选型边界，正文不重复 |
 | `test_semantic_splitter/` | spaCy + 句向量断句 v1/v2/v3 | 核心逻辑并入 `algo_semantic_breakpoint.py`，补上百分位自适应判据与尺寸硬约束 |
 | `test_hybrid_chunking/` | 某开源应用派生的 Markdown/文档切分 | 规则抽成 `algo_structural.py`，去掉 yaml 依赖 |
 
-`test_semantic_splitter` 的 v1/v2/v3 三个版本与英文变体命名混乱，吸收时已统一为单一实现。`test_sentence_similarity_with_code_or_table` 未随代码归档，只保留了结论。
+`test_semantic_splitter` 的 v1/v2/v3 三个版本与英文变体命名混乱，吸收时已统一为单一实现。`test_sentence_similarity_with_code_or_table` 已归入 embedding_research/behavior_tests/，原始过程与可视化在那边，本实验只保留结论。
 
 ## 实测结论摘要
 
