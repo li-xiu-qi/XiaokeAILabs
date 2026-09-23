@@ -23,7 +23,7 @@
 2. **SimHash相似度**：局部敏感哈希算法实现，用于近似相似度计算，地址： [experiments/test_simhash](experiments/test_simhash)
 3. **检索与重排实践**：检索链路四环节上手教程（FAISS 稠密库、BGE-M3 稀疏向量、ColBERT 晚期交互、BGE Reranker 重排），地址： [experiments/retrieval_and_rerank](experiments/retrieval_and_rerank)
 4. **文档分块**：结合语义和结构的混合分块、迟分等策略的综合对比（含三个早期分块实验的归档），地址： [experiments/test_text_segmentation](experiments/test_text_segmentation)
-5. **NLI相似度迁移**：基于NLI数据的嵌入相似度迁移学习，地址： [experiments/test_nli_merge_sim_transfer](experiments/test_nli_merge_sim_transfer)
+5. **NLI相似度迁移**：基于NLI数据的嵌入相似度迁移学习，地址： [experiments/embedding_research/behavior_tests/test_nli_merge_sim_transfer](experiments/embedding_research/behavior_tests/test_nli_merge_sim_transfer)
 
 ### 🗃️ 向量数据库
 
@@ -34,8 +34,8 @@
 
 1. **布局排序算法**：针对复杂文档布局的智能排序方法，地址： [experiments/layout_sorter](experiments/layout_sorter)
 2. **SpaCy模型微调**：自然语言处理模型的微调和训练，地址： [experiments/spacy_finetune](experiments/spacy_finetune)
-3. **句子长度影响分析**：句子长度对相似度计算的影响研究（⚠️ 含未完成的 multilingual 子实验），地址： [experiments/test_sentence_length](experiments/test_sentence_length)
-4. **代码表格相似度**：特殊格式文本的相似度计算方法，地址： [experiments/test_sentence_similarity_with_code_or_table](experiments/test_sentence_similarity_with_code_or_table)
+3. **句子长度影响分析**：句子长度对相似度计算的影响研究（⚠️ 含未完成的 multilingual 子实验），地址： [experiments/embedding_research/behavior_tests/test_sentence_length](experiments/embedding_research/behavior_tests/test_sentence_length)
+4. **代码表格相似度**：特殊格式文本的相似度计算方法，地址： [experiments/embedding_research/behavior_tests/test_sentence_similarity_with_code_or_table](experiments/embedding_research/behavior_tests/test_sentence_similarity_with_code_or_table)
 
 ### 🎯 检索增强与重排序
 
@@ -43,10 +43,9 @@
 
 ### 🎨 多模态AI技术
 
-1. **BGE-VL多模态**：视觉-语言多模态模型的实战应用，地址： [experiments/test_bge_vl](experiments/test_bge_vl)
+1. **多模态 Embedding**：BGE-VL 视觉-语言嵌入快速验证与 CLIP 冻结层轻量微调，地址： [experiments/embedding_research/multimodal_embedding](experiments/embedding_research/multimodal_embedding)
 2. **Jina CLIP 部署**：同一图文模型的三种部署形态（原生推理与封装、ONNX/OpenVINO 脚本、NNCF INT8 量化），地址： [experiments/jina_deployment](experiments/jina_deployment)
-3. **CLIP模型微调**：CLIP模型的轻量级微调实现，支持冻结部分层以提高训练效率，地址： [experiments/test_finetune_clip](experiments/test_finetune_clip)
-4. **图文混合处理**：Markdown 图片描述增强工具与演示应用，地址： [experiments/mixd_image_text](experiments/mixd_image_text)
+3. **图文混合处理**：Markdown 图片描述增强工具与演示应用，地址： [experiments/mixd_image_text](experiments/mixd_image_text)
 
 ### ⚙️ 模型优化与部署
 
@@ -59,7 +58,7 @@
 3. **索引成本模型系列**：45 个数据结构与算法的成本模型与实测（公式推导已迁知识库，本仓保留复现脚本与 GB10/faiss 版本绑定实测），地址： [experiments/test_index_theory](experiments/test_index_theory)
 4. **知识图谱构建**：知识图谱的构建与查询技术，地址： [experiments/test_kg](experiments/test_kg)
 5. **红楼梦知识图谱**：基于红楼梦的知识图谱构建案例，地址： [experiments/test_hong_lou_meng_kg](experiments/test_hong_lou_meng_kg)
-6. **function call**：Agent函数调用，地址： [experiments/test_fc](experiments/test_fc)
+6. **function call**：Agent函数调用，地址： [experiments/test_agent/function_calling](experiments/test_agent/function_calling)
 7. **UMAP降维**：使用UMAP进行高维数据降维与三维可视化，包含降维前后相似度与距离分析，地址： [experiments/clustering_and_dimreduction/test_umap](experiments/clustering_and_dimreduction/test_umap)
 8. **经典算法系列**：BFPRT 选择算法的 Python/Rust 双实现与实测对比、图算法的从零实现（DFS/BFS、Dijkstra、Kruskal），地址： [experiments/classic_algorithms](experiments/classic_algorithms)
 9. **激活函数**：常见激活函数的原理与实现，地址： [experiments/test_popular_activate_func](experiments/test_popular_activate_func)
@@ -67,10 +66,8 @@
 
 ### 📊 模型微调训练与评估
 
-1. **Embedding微调**：向量模型的数据准备与微调训练，地址： [experiments/test_embedding](experiments/test_embedding)
-2. **训练：Embedding 模型**：示例脚本与数据，用于对嵌入模型进行微调（train_embedding.py），地址： [experiments/test_train_embedding](experiments/test_train_embedding)
-3. **训练：Reranker（BERT）**：基于 BERT 的重排序模型训练示例（train_bert_rerank.py），含默认训练数据与损失曲线，地址： [experiments/test_train_reranker](experiments/test_train_reranker)
-4. **DPO 训练脚本**： DPO（Direct Preference Optimization）训练脚本，支持按样本量与 epoch 控制，地址： [experiments/test_dpo/dpo.py](experiments/test_dpo/dpo.py)
+1. **Embedding 研究总组**：评测基准与微调数据、相似度行为专项（句子长度、代码与表格、NLI 迁移）、嵌入与 Reranker 微调、多模态图文（BGE-VL、CLIP），地址： [experiments/embedding_research](experiments/embedding_research)
+2. **DPO 训练脚本**： DPO（Direct Preference Optimization）训练脚本，支持按样本量与 epoch 控制，地址： [experiments/test_dpo/dpo.py](experiments/test_dpo/dpo.py)
 
 ### ⚡ 判别式决策模型
 
