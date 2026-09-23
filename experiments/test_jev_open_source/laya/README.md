@@ -6,6 +6,7 @@ Laya 采用专用判别式架构，核心机制是内置双模型分支（英文
 
 ## 文件组成与测试分工
 
+- `test_laya.py`：最小可运行示例，对应教程第三步。一条输入加一个问题，跑通 Router 调用全链路，打印路由去向与判定结果。
 - `laya-verify.py`：输出协议与结构验证脚本。dump 四种题型（choice / score / noul）的完整返回结构，校验字段契约，并对比 Router 模式与直接 Agent 模式的延迟差异。
 - `laya-latency.py`：多阶段延迟评测脚本。分别测量冷启动加载耗时、纯 Python 路由调度开销、单题前向推理延迟、1 至 16 题请求合并时的边际吞吐表现，以及模型常驻显存开销。
 - `laya-zh-en.py`：中英双语分类与命题判定测试集。验证语言分支自动分流效果，并实测中文场景下的命题判断置信度表现。另含强灌实验（中文输入直接打 english checkpoint）。
@@ -20,6 +21,7 @@ Laya 采用专用判别式架构，核心机制是内置双模型分支（英文
 ```bash
 pip install laya
 
+python laya/test_laya.py
 python laya/laya-verify.py
 python laya/laya-latency.py
 python laya/laya-scale.py
@@ -27,7 +29,7 @@ python laya/laya-direct.py
 python laya/laya-zh-en.py
 ```
 
-五个脚本在 aarch64 GB10（20 核 CPU，121 GB 统一内存，torch 2.14.0+cu130）上实测通过，完整原始日志见 `../docs/logs/`。
+六个脚本在 aarch64 GB10（20 核 CPU，121 GB 统一内存，torch 2.14.0+cu130）上实测通过，完整原始日志见 `../docs/logs/`。`test_laya.py` 只需 GPU 与网络权限即可运行，最适合作为第一个脚本。
 
 **注意事项**：
 
