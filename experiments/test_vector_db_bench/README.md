@@ -59,12 +59,12 @@ python figures/make_figures.py
 | [docs/向量搜索引擎底层实现.md](docs/向量搜索引擎底层实现.md) | 背景概念：五个库各自用什么做向量搜索（FAISS 封装 / Rust 自研 / 无 ANN） |
 | [docs/六库背后的人物与公司背景.md](docs/六库背后的人物与公司背景.md) | 背景概念：六个库的公司、创始人、融资与维护模式 |
 | [docs/六库索引类型支持清单.md](docs/六库索引类型支持清单.md) | 背景概念：六个库各自支持的向量索引类型总览，标注哪些在本次基准中实测过 |
-| [docs/向量索引类型区别.md](docs/向量索引类型区别.md) | 背景概念：FLAT、IVF、HNSW、PQ、SQ、DISKANN、SCANN、ANNOY、RaBitQ 的原理、优缺点与选型 |
-| [docs/主流分词器横向对比.md](docs/主流分词器横向对比.md) | 主流分词器分类与对比（jieba / HanLP / THULAC / IK / Lucene / ICU / tantivy / 子词分词器），含 9 个源码仓库与底层切分规则 |
-| [docs/六库分词器实现与中文支持.md](docs/六库分词器实现与中文支持.md) | 六库 BM25 的分词器实现（jieba / ICU / whitespace / snowball）与中文支持实测：只有 Milvus 和 LanceDB 能用，Milvus 靠内置 jieba 和 language_identifier 自动识别中英文 |
+| [docs/六库分词器实现与中文支持.md](docs/六库分词器实现与中文支持.md) | 版本实测存档：六库分词器实现源码路径、可选分词器清单与中文实测表（通用结论已迁知识库） |
 | [docs/六库BM25支持度与接入难度.md](docs/六库BM25支持度与接入难度.md) | 六库 BM25 支持度实测+源码对比（Milvus/LanceDB/SurrealDB 实测通过，ChromaDB/Qdrant 源码确认，sqlite-vec 无），含接入难度分层；混合检索实测已拆到独立报告 |
 | [docs/FAISS预计算表内存限制与Milvus分段.md](docs/FAISS预计算表内存限制与Milvus分段.md) | 背景概念：FAISS 的 IVFPQ 预计算表内存限制（1GB 说法的来源），Milvus 用分段绕开单索引规模上限 |
 | [docs/各库体积与安装包数据.md](docs/各库体积与安装包数据.md) | 七个库在 clone 源码 / pip 包 / Docker 镜像 / 二进制安装包 / 运行时内存五个维度的体积对比，含 seekdb v1.3.0→v1.4.0 轻量化进展 |
+
+已迁往知识库的三篇（本仓不再维护原文）：分词器分类与选型、jieba 组成环节、向量索引类型原理与选型。它们的可迁移结论属通用知识，留在配套知识库；本仓 `scripts/probe_jieba_tokenizer.py`、`scripts/probe_chinese_tokenizer.py` 与实测表仍在，复现不受影响。
 
 每份报告开头都写了「这个文档是干嘛的」。性能与存储结论只看真实数据主报告。
 
