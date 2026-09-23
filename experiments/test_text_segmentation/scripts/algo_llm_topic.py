@@ -14,9 +14,9 @@
 两种都返回带 reason 的断点，reason 记录模型给出的判断依据，
 这是其他七种算法都没有的（它们只能给分数）。
 
-模型配置（来自 pkm-coding-cli-model-configs）：
+模型配置：
   water18-new，OpenAI Chat Completions 协议，base_url https://api.stepfun.com
-  API Key 读 pkm-hub-configs/coding-cli-model-configs/keys.json 的 stepfun 字段
+  API Key 读环境变量 STEPFUN_API_KEY
 """
 import json
 import os
@@ -54,10 +54,8 @@ class LLMTopicSplitter(BaseSplitter):
         self.base_url = base_url
         self.api_key = api_key or os.environ.get("STEPFUN_API_KEY")
         if not self.api_key:
-            keys_path = ("C:/Users/ke/Documents/projects/obsidian_projects/"
-                         "pkm-hub-configs/coding-cli-model-configs/keys.json")
-            if os.path.exists(keys_path):
-                self.api_key = json.load(open(keys_path, encoding="utf-8"))["stepfun"]
+            raise RuntimeError(
+                "未提供 API key：请设置环境变量 STEPFUN_API_KEY，或通过 api_key 参数传入")
         self.n_calls = 0
         self.prompt_tokens = 0
         self.completion_tokens = 0

@@ -156,7 +156,7 @@
 ```bash
 cd experiments/test_index_theory
 # 跑单个算法的模型自测
-<pkm-hub-runtime>/.venv/Scripts/python.exe scripts/<algorithm>_model.py
+python scripts/<algorithm>_model.py
 # 跑单个算法的实测验证
-<pkm-hub-runtime>/.venv/Scripts/python.exe scripts/verify_<algorithm>.py
+python scripts/verify_<algorithm>.py
 ```
