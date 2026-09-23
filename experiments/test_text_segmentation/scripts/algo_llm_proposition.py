@@ -57,10 +57,8 @@ class LLMPropositionSplitter(BaseSplitter):
         self.concurrency = concurrency
         self.api_key = api_key or os.environ.get("STEPFUN_API_KEY")
         if not self.api_key:
-            keys_path = ("C:/Users/ke/Documents/projects/obsidian_projects/"
-                         "pkm-hub-configs/coding-cli-model-configs/keys.json")
-            if os.path.exists(keys_path):
-                self.api_key = json.load(open(keys_path, encoding="utf-8"))["stepfun"]
+            raise RuntimeError(
+                "未提供 API key：请设置环境变量 STEPFUN_API_KEY，或通过 api_key 参数传入")
         self.n_calls = 0
         self.blocked = 0
         self.prompt_tokens = 0
