@@ -59,14 +59,14 @@ llmfit 混合架构建模的逆向调研（外部计算器的口径修正）已�
 ```bash
 cd experiments/test_inference_theory
 # 看硬件/模型规格与实测锚点
-<pkm-hub-runtime>/.venv/Scripts/python.exe scripts/llm_spec.py
+python scripts/llm_spec.py
 # 跑单个理论模型的自测
-<pkm-hub-runtime>/.venv/Scripts/python.exe scripts/roofline_model.py
-<pkm-hub-runtime>/.venv/Scripts/python.exe scripts/kv_cache_model.py
-<pkm-hub-runtime>/.venv/Scripts/python.exe scripts/weight_memory_model.py
-<pkm-hub-runtime>/.venv/Scripts/python.exe scripts/attention_model.py
-<pkm-hub-runtime>/.venv/Scripts/python.exe scripts/throughput_model.py
-<pkm-hub-runtime>/.venv/Scripts/python.exe scripts/scaling_law_model.py
+python scripts/roofline_model.py
+python scripts/kv_cache_model.py
+python scripts/weight_memory_model.py
+python scripts/attention_model.py
+python scripts/throughput_model.py
+python scripts/scaling_law_model.py
 ```
 
 ## 和推理框架的关系

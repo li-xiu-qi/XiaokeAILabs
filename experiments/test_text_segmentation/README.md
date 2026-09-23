@@ -57,7 +57,7 @@ ssh ke@192.168.1.170
 cd ~/text-seg
 export HF_ENDPOINT=https://hf-mirror.com
 export PATH=/usr/local/cuda/bin:$PATH
-export STEPFUN_API_KEY=<见 pkm-hub-configs/coding-cli-model-configs/keys.json>
+export STEPFUN_API_KEY=<本地配置目录中的 key>
 
 # 语料准备（本机跑，采样后 scp 到 Spark）
 HF_ENDPOINT=https://huggingface.co ../test_index_theory/.venv-embed/Scripts/python.exe -I \
@@ -103,7 +103,7 @@ HF_ENDPOINT=https://huggingface.co ../test_index_theory/.venv-embed/Scripts/pyth
 | sentence_window_w1 | 规则(框架) | — | — | — | 0.302 | 6920 | 66 | — | — |
 | dtc_50_200 | 词法(动态) | 0.642 | 0.854 | 0.953 | 0.350 | 6088 | 75 | 329 | 2.6 |
 
-框架三件套的 F1 列未单独跑全量（当时只跑了 P_k 检索口径），数字以 pkm-hub 报告为准。DTC 为 2026-09-16 全量跑批实测。DTC 的 max=329 超 k_max=200 是句对齐累积无法切开超长单句的边界行为；密度反比机制在中文维基上把目标块大小压向 k_min（均块 75），块过碎导致 P_k 与检索双输 fixed_256。
+框架三件套的 F1 列未单独跑全量（当时只跑了 P_k 检索口径），数字以本地知识库报告为准。DTC 为 2026-09-16 全量跑批实测。DTC 的 max=329 超 k_max=200 是句对齐累积无法切开超长单句的边界行为；密度反比机制在中文维基上把目标块大小压向 k_min（均块 75），块过碎导致 P_k 与检索双输 fixed_256。
 
 Auto-Merge（HiChunk 检索侧复现，P&P 章级召回口径，2026-09-16）：baseline top-8 MRR=0.4670 vs auto_merge MRR=0.4627，平均 merge 0.7 次/查询几乎不触发——章级 QA 语料上「同父多子同时命中」的前置条件极少成立，是忠实复现的负结果（其设计场景是细粒度段落级 QA）。
 
@@ -148,7 +148,7 @@ LLM 分割未纳入本表：water18-new 不服从「只答 YES/NO」格式约束
 
 ## 文献对照
 
-论文仓（`pkm-hub-papers/论文阅读/papers/`）共登记 13 篇分块/分割论文，全仓扫描 meta.json 关键词确认无遗漏。2026-09-16 已从 arXiv HTML 转出 3 篇 markdown（2603.06976、2509.11552、2410.13070）；L14-1709 为 2014 年 ACL Anthology 论文无 HTML 版，仅有 PDF 文字层。完整登记如下：
+论文仓（本地论文库）共登记 13 篇分块/分割论文，全仓扫描 meta.json 关键词确认无遗漏。2026-09-16 已从 arXiv HTML 转出 3 篇 markdown（2603.06976、2509.11552、2410.13070）；L14-1709 为 2014 年 ACL Anthology 论文无 HTML 版，仅有 PDF 文字层。完整登记如下：
 
 | ID | 年份 | 论文 | 内容覆盖 | 与本实验的关系 |
 |---|---|---|---|---|
