@@ -28,14 +28,12 @@
 ### 🗃️ 向量数据库
 
 1. **嵌入式数据库学习**：SQLite 与 DuckDB 入门及其向量检索扩展对照（sqlite-vec 虚拟表路线 vs DuckDB ARRAY 列加 HNSW 索引路线），地址： [experiments/embedded_db_tutorials](experiments/embedded_db_tutorials)
-2. **五库向量检索对比**：SurrealDB、Milvus、Qdrant、LanceDB、sqlite-vec 五个向量库的写入吞吐、查询延迟、召回率实测对比，揭示 HNSW、IVF_PQ、暴力扫描三种索引形态的差异，并验证随机向量作为 ANN 测试数据的缺陷，地址： [experiments/test_vector_db_bench](experiments/test_vector_db_bench)
+2. **六库向量检索对比**：Milvus、Qdrant、SurrealDB、LanceDB、ChromaDB、sqlite-vec 六个向量库的写入吞吐、查询延迟、召回率实测对比，揭示 HNSW、IVF_PQ、暴力扫描三种索引形态的差异，并验证随机向量作为 ANN 测试数据的缺陷；体积另含 seekdb 共七库快照，地址： [experiments/test_vector_db_bench](experiments/test_vector_db_bench)
 
 ### 📝 文本处理
 
 1. **布局排序算法**：针对复杂文档布局的智能排序方法，地址： [experiments/layout_sorter](experiments/layout_sorter)
 2. **SpaCy模型微调**：自然语言处理模型的微调和训练，地址： [experiments/spacy_finetune](experiments/spacy_finetune)
-3. **句子长度影响分析**：句子长度对相似度计算的影响研究（⚠️ 含未完成的 multilingual 子实验），地址： [experiments/embedding_research/behavior_tests/test_sentence_length](experiments/embedding_research/behavior_tests/test_sentence_length)
-4. **代码表格相似度**：特殊格式文本的相似度计算方法，地址： [experiments/embedding_research/behavior_tests/test_sentence_similarity_with_code_or_table](experiments/embedding_research/behavior_tests/test_sentence_similarity_with_code_or_table)
 
 ### 🎯 检索增强与重排序
 
