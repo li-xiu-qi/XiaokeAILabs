@@ -1,0 +1,1 @@
+{"by_kind":{"choice":1.9,"noul":2.375,"score":2.3,"global":2.05},"note":"fit on aug3+multilingual val (p4b-multilingual); apply logits/T by kind at inference","ece_before":0.1141,"ece_after":0.0396}

@@ -1,0 +1,70 @@
+{
+  "model": "Qwen/Qwen3-VL-4B-Instruct",
+  "load_s": 53.739601135253906,
+  "results": [
+    {
+      "label": "短输入 en",
+      "style": "minimal",
+      "lang": "en",
+      "mode": "chat_template",
+      "n_prompt": 78,
+      "empty": 0,
+      "avg_new": 2.0,
+      "max_new": 12,
+      "prefill_p50": 49.32149899832439,
+      "prefill_p99": 50.56918799527921,
+      "full_p50": 103.48195600090548,
+      "full_p99": 105.21240699745249,
+      "decode_p50": 53.65497199818492,
+      "sample": "billing"
+    },
+    {
+      "label": "短输入 en",
+      "style": "json",
+      "lang": "en",
+      "mode": "chat_template",
+      "n_prompt": 95,
+      "empty": 0,
+      "avg_new": 29.0,
+      "max_new": 192,
+      "prefill_p50": 51.74383000121452,
+      "prefill_p99": 51.85978199006058,
+      "full_p50": 1448.1718540046131,
+      "full_p99": 1456.651400992996,
+      "decode_p50": 1396.3320610055234,
+      "sample": "{\"choice\": \"billing\", \"reason\": \"The message requests a refund for a duplicate charge, which is a billing-related issue."
+    },
+    {
+      "label": "短输入 zh",
+      "style": "minimal",
+      "lang": "zh",
+      "mode": "chat_template",
+      "n_prompt": 91,
+      "empty": 0,
+      "avg_new": 2.0,
+      "max_new": 12,
+      "prefill_p50": 50.51728099351749,
+      "prefill_p99": 51.615048010717146,
+      "full_p50": 104.85221100680064,
+      "full_p99": 106.6271460003918,
+      "decode_p50": 54.08772002556361,
+      "sample": "billing"
+    },
+    {
+      "label": "短输入 zh",
+      "style": "json",
+      "lang": "zh",
+      "mode": "chat_template",
+      "n_prompt": 111,
+      "empty": 0,
+      "avg_new": 23.0,
+      "max_new": 192,
+      "prefill_p50": 51.99179700866807,
+      "prefill_p99": 52.781859994865954,
+      "full_p50": 1153.5448680078844,
+      "full_p99": 1156.213109003147,
+      "decode_p50": 1101.4377200044692,
+      "sample": "{\"choice\": \"billing\", \"reason\": \"用户投诉重复扣款，属于账单相关问题\"}"
+    }
+  ]
+}
