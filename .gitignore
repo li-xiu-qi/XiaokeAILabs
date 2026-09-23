@@ -176,3 +176,5 @@ remote_files.txt
 
 # 实验输入图片（可重新获取，勿入库）
 **/furseal.png
+# 实验复现证据日志入库：评测的数字要能回溯到原始终端输出
+!experiments/test_jev_open_source/docs/logs/*.log
