@@ -88,11 +88,11 @@ insert into vss_ivf_articles(operation, headline_embedding, description_embeddin
   from articles;
 ```
 
-Beware! Indexes that require training can take a long time. With the [News Category Dataset](./examples/headlines/) (386 dimension over 210k vectors) that this example is based on, the default index would take 8 seconds to build. But with the custom `"IVF4096,Flat,IDMap2"` factory, it took 45 minutes to train and 4.5 minutes to insert data! This likely can be reduced with a smaller training set, but the faster queries can be helpful.
+Beware! Indexes that require training can take a long time. With the News Category Dataset（`./examples/headlines/`，上游路径） (386 dimension over 210k vectors) that this example is based on, the default index would take 8 seconds to build. But with the custom `"IVF4096,Flat,IDMap2"` factory, it took 45 minutes to train and 4.5 minutes to insert data! This likely can be reduced with a smaller training set, but the faster queries can be helpful.
 
 ## Documentation
 
-See [`docs.md`](./docs.md) for a instructions to compile `sqlite-vss` yourself, as well as a full SQL API reference.
+See `docs.md`（`./docs.md`，上游路径） for a instructions to compile `sqlite-vss` yourself, as well as a full SQL API reference.
 
 ## Installing
 
@@ -153,7 +153,7 @@ version, = db.execute('select vss_version()').fetchone()
 print(version)
 ```
 
-See [`bindings/python`](./bindings/python/README.md) for more details.
+See `bindings/python`（`./bindings/python/README.md`，上游路径） for more details.
 
 ### Node.js
 
@@ -174,7 +174,7 @@ const version = db.prepare("select vss_version()").pluck().get();
 console.log(version);
 ```
 
-See [`npm/sqlite-vss/README.md`](./npm/sqlite-vss/README.md) for more details.
+See `npm/sqlite-vss/README.md`（`./npm/sqlite-vss/README.md`，上游路径） for more details.
 
 ### Deno
 
@@ -196,7 +196,7 @@ const [version] = db.prepare("select vss_version()").value<[string]>()!;
 console.log(version);
 ```
 
-See [`deno/sqlite-vss/README.md`](./deno/README.md) for more details.
+See `deno/sqlite-vss/README.md`（`./deno/README.md`，上游路径） for more details.
 
 ### Datasette
 
@@ -206,7 +206,7 @@ And for [Datasette](https://datasette.io/), install the [`datasette-sqlite-vss` 
 datasette install datasette-sqlite-vss
 ```
 
-See [`bindings/datasette`](./bindings/datasette/README.md) for more details.
+See `bindings/datasette`（`./bindings/datasette/README.md`，上游路径） for more details.
 
 ## Disadvantages
 
