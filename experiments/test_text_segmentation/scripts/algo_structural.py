@@ -12,7 +12,7 @@
    节超过 max_tokens 时才在节内按段落二次切分
 4. 其余文本按段落 \n\n 累积，超过 max_tokens 时切
 
-源：test_hybrid_chunking/document_split.py 与 markdown_split.py，
+源：archive_predecessors/test_hybrid_chunking/document_split.py 与 markdown_split.py（早期前身），
 原实现依赖 HuixiangDou 的 yaml 元数据流，这里抽成纯规则版，
 去掉 yaml 依赖，保留「结构优先于长度」的核心。
 """

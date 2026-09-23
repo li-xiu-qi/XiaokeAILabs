@@ -7,7 +7,7 @@
 相比「先切块再分别编码」，每个 token 的表示都看过全文上下文，
 代词消解、跨句指代、省略主语这些在独立编码时丢失的信息得以保留。
 
-实现要点（与 test_late_chunking 的实现差异）：
+实现要点（与 archive_predecessors/test_late_chunking 的实现差异）：
 1. 原实现用 AutoModel + 手动 mask 池化，这里直接用 HF 的
    mean pooling + 手动取窗口切片，等价且更短
 2. 原实现只支持 BGE-M3 且路径硬编码，这里走 model_hub 统一入口
