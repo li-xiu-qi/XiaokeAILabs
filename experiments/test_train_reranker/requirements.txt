@@ -1,0 +1,12 @@
+# Core dependencies for train_bert_rerank.py
+# Note: For CUDA-specific Torch wheels, consider installing from https://pytorch.org/get-started/locally/
+torch
+transformers
+accelerate
+# Progress bar
+tqdm
+# Default logger in args is tensorboard; install wandb only if you switch log_with to "wandb"
+tensorboard
+wandb
+
+matplotlib

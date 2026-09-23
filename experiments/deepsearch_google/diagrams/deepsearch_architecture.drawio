@@ -1,0 +1,90 @@
+<mxfile host="65bd71144e">
+    <diagram name="DeepSearch系统架构" id="deepsearch-architecture">
+        <mxGraphModel dx="1053" dy="899" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="DeepSearch 智能深度搜索系统架构" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#2E5984;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="30" width="370" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="container" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E6F3FF;strokeColor=#4A90E2;strokeWidth=2;dashed=1;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="80" width="1070" height="700" as="geometry"/>
+                </mxCell>
+                <mxCell id="user_input" value="用户输入&#xa;研究主题" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#D79B00;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="190" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="core_container" value="核心处理流程" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F0F8FF;strokeColor=#1E90FF;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="250" y="120" width="670" height="480" as="geometry"/>
+                </mxCell>
+                <mxCell id="decision_engine" value="🧠 搜索决策引擎&#xa;&#xa;• LLM驱动的智能分析&#xa;• 信息缺口识别&#xa;• 搜索策略制定&#xa;• 终止条件判断" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#01579B;fontStyle=1;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="160" width="200" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="search_module" value="🔍 信息搜索模块&#xa;&#xa;• Google Search API&#xa;• 结果去重处理&#xa;• 智能内容筛选&#xa;• 有用性判断" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#4A148C;fontStyle=1;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="160" width="200" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="workflow_engine" value="🔄 工作流编排器 (PocketFlow)&#xa;&#xa;• Node基类设计&#xa;• 条件分支控制&#xa;• 循环流程管理&#xa;• 状态共享机制" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E8;strokeColor=#2E7D32;fontStyle=1;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="320" width="300" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="report_generator" value="📊 报告生成器&#xa;&#xa;• 信息汇总整理&#xa;• Markdown格式化&#xa;• 参考文献生成&#xa;• 文件保存输出" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#EF6C00;fontStyle=1;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="620" y="320" width="200" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="prompt_engineering" value="🎯 提示词工程&#xa;&#xa;• 自定义结构化输出&#xa;• 角色定位设计&#xa;• 任务描述优化&#xa;• 容错处理机制" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;fontStyle=1;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="490" y="160" width="180" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="external_services" value="外部API服务" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F5F5;strokeColor=#666666;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="250" y="650" width="670" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="google_api" value="Google Search API&#xa;信息检索服务" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFDE7;strokeColor=#FBC02D;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="680" width="150" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="openai_api" value="OpenAI API&#xa;智能分析服务" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E8;strokeColor=#4CAF50;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="680" width="150" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="other_llm" value="其他LLM服务&#xa;(可扩展)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#FF9800;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="680" width="150" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="output" value="输出结果&#xa;研究报告" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#4CAF50;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="960" y="350" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4A90E2;" parent="1" source="user_input" target="decision_engine" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow2" value="生成搜索策略" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4A90E2;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" parent="1" source="decision_engine" target="search_module" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="380" y="150"/>
+                            <mxPoint x="680" y="150"/>
+                            <mxPoint x="680" y="220"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow3" value="收集到的信息" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4A90E2;labelBackgroundColor=#FFFFFF;" parent="1" source="search_module" target="decision_engine" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="800" y="300"/>
+                            <mxPoint x="380" y="300"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="arrow4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4A90E2;" parent="1" source="decision_engine" target="workflow_engine" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4A90E2;" parent="1" source="workflow_engine" target="report_generator" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4A90E2;" parent="1" source="report_generator" target="output" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow7" value="指导" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#C62828;dashed=1;labelBackgroundColor=#FFFFFF;" parent="1" source="prompt_engineering" target="decision_engine" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow8" value="指导" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#C62828;dashed=1;labelBackgroundColor=#FFFFFF;" parent="1" source="prompt_engineering" target="search_module" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="loop_label" value="多轮智能搜索循环" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=2;fontColor=#4A90E2;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="300" width="120" height="20" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
