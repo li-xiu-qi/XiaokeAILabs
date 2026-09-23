@@ -1,0 +1,12 @@
+/home/ke/xinfer-env/lib/python3.12/site-packages/torch/cuda/__init__.py:68: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/home/ke/xinfer-env/lib/python3.12/site-packages/laya/router.py:187: RuntimeWarning: laya: this checkpoint ships temperatures outside [0.5, 5] which would distort confidence; clamping choice:11+=0.1006. Treat confidence from the affected buckets as uncalibrated.
+  agent = Agent(repo, device=self.device, token=self.token, subfolder=sub)
+host: spark-4462 | CUDA_VISIBLE_DEVICES = <unset>
+MemAvailable 基线: 102.9 GB
+{"tag": "A_Agent_subfolder", "zh": {"p50_ms": 8.15, "choice": "billing", "confidence": 1.0}, "en": {"p50_ms": 8.1, "choice": "billing", "confidence": 1.0}, "cuda_resident_gb": 1.25, "load_s": 19.04}
+{"tag": "C_Router_default_zh_max1", "zh": {"p50_ms": 8.55, "choice": "billing", "confidence": 1.0, "routed_to": "laya-rl-agent"}, "en": {"p50_ms": 16.72, "choice": "billing", "confidence": 0.8347, "routed_to": "laya-rl-agent"}, "cuda_resident_gb": 4.39, "load_s": 50.31}
+{"tag": "D_Router_auto_max3", "zh": {"p50_ms": 8.56, "choice": "billing", "confidence": 1.0, "routed_to": "laya-rl-agent"}, "en": {"p50_ms": 17.04, "choice": "billing", "confidence": 0.8347, "routed_to": "laya-rl-agent"}, "cuda_resident_gb": 4.39, "load_s": 49.18}
+
+[收尾] CUDA: 0.03 GB，MemAvailable: 100.5 GB
+结果已写入 ~/laya-direct-result.json
