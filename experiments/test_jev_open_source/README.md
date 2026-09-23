@@ -15,7 +15,7 @@ TypeSafe 推出的 Jev 模型将判别式机制引入大模型，直接输出结
 | 硬件 | aarch64 架构 GB10 算力盒（20 核 CPU，121 GB 统一内存，单卡 CUDA） |
 | 系统 | Python 3.12，PyTorch 2.14.0+cu130，CUDA 13.0 |
 | 被测版本 | laya 0.3.5、nimble 与 metask-jev 按各目录 README 锁定 |
-| 原始日志 | `docs/logs/` 下 11 组实测终端输出，报告数字均可回溯到日志 |
+| 原始日志 | `docs/执行日志/` 下编号 01 至 12 的实测输出（15 个文件），报告数字均可回溯到日志 |
 
 ## 我们大概做了什么实验
 
@@ -45,7 +45,7 @@ TypeSafe 推出的 Jev 模型将判别式机制引入大模型，直接输出结
   - [metask/README.md](metask/README.md)：metask-jev 的环境初始化、基准测试运行与温度系数配置。
   - [nimble/README.md](nimble/README.md)：Nimble 的基座与 LoRA 权重合成、CUDA 打分逻辑与显存开销说明。
   - [llm_baseline/README.md](llm_baseline/README.md)：Qwen3-VL 生成式基线的测试脚本与结构化提示词设计。
-- **[docs/logs/](docs/logs/)**：收录全部 11 组实测产生的原始终端日志，供校验原始耗时与判定结果。
+- **[docs/执行日志/](docs/执行日志/)**：收录全部实测产生的原始终端输出（14 份 .log + 1 份 JSON），供校验原始耗时与判定结果。
 
 ## 致谢
 

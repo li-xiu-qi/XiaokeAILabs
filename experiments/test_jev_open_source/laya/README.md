@@ -31,7 +31,7 @@ python laya/laya-pin.py
 python laya/laya-zh-en.py
 ```
 
-七个脚本在 aarch64 GB10（20 核 CPU，121 GB 统一内存，torch 2.14.0+cu130）上实测通过，完整原始日志见 `../docs/logs/`。`test_laya.py` 只需 GPU 与网络权限即可运行，最适合作为第一个脚本。
+七个脚本在 aarch64 GB10（20 核 CPU，121 GB 统一内存，torch 2.14.0+cu130）上实测通过，完整原始日志见 `../docs/执行日志/`。`test_laya.py` 只需 GPU 与网络权限即可运行，最适合作为第一个脚本。
 
 **注意事项**：
 
