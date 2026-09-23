@@ -12,7 +12,7 @@
 5. 尺寸约束：块 token 数超过 max_tokens 时强制在最大相似度处切开，
    低于 min_tokens 时不切（防止碎块）
 
-这一步是 test_semantic_splitter 里 v2/v3 的核心逻辑，
+这一步是 archive_predecessors/test_semantic_splitter 里 v2/v3 的核心逻辑，
 原实现散在 improved_semantic_splitter_v2/v3 两个文件且依赖硅基流动 API，
 这里改成本地 sentence-transformers，并补上 percentile 自适应判据和尺寸硬约束。
 """
