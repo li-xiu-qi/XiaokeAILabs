@@ -185,4 +185,3 @@ create table documents(
 ) strict;
 ```
 
-[img](/sqlite-vec/logo.dark.svg)[img](/sqlite-vec/flyio.svg)[img](/sqlite-vec/sqlitecloud.svg)

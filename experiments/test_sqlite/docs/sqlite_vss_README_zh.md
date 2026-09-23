@@ -87,11 +87,11 @@ insert into vss_ivf_articles(operation, headline_embedding, description_embeddin
   from articles;
 ```
 
-请注意！需要训练的索引可能需要很长时间。在这个例子中使用的[新闻类别数据集](./examples/headlines/)（210k个向量，每个386维）中，默认索引构建需要8秒。但使用自定义的`"IVF4096,Flat,IDMap2"`工厂，训练需要45分钟，插入数据需要4.5分钟！这可能可以通过使用较小的训练集来减少，但更快的查询是有益的。
+请注意！需要训练的索引可能需要很长时间。在这个例子中使用的新闻类别数据集（`./examples/headlines/`，上游路径）（210k个向量，每个386维）中，默认索引构建需要8秒。但使用自定义的`"IVF4096,Flat,IDMap2"`工厂，训练需要45分钟，插入数据需要4.5分钟！这可能可以通过使用较小的训练集来减少，但更快的查询是有益的。
 
 ## 文档
 
-查看[`docs.md`](./docs.md)了解自行编译`sqlite-vss`的说明，以及完整的SQL API参考。
+查看`docs.md`（`./docs.md`，上游路径）了解自行编译`sqlite-vss`的说明，以及完整的SQL API参考。
 
 ## 安装
 
@@ -144,7 +144,7 @@ version, = db.execute('select vss_version()').fetchone()
 print(version)
 ```
 
-有关更多详细信息，请参阅[`bindings/python`](./bindings/python/README.md)。
+有关更多详细信息，请参阅`bindings/python`（`./bindings/python/README.md`，上游路径）。
 
 ## 缺点
 
