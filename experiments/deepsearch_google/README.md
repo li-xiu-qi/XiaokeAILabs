@@ -52,9 +52,9 @@
 ## 项目截图
 
 <div align="center">
-  <img src="assets/image%20copy%202.png" width="300" />
+  <img src="assets/image-copy-2.png" width="300" />
   <img src="assets/image.png" width="300" />
-  <img src="assets/image%20copy.png" width="300" />
+  <img src="assets/image-copy.png" width="300" />
 </div>
 
 ---
