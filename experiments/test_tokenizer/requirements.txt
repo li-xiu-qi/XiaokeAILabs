@@ -1,0 +1,18 @@
+# 核心分词库
+tokenizers>=0.13.0  # Hugging Face tokenizers库，用于BPE分词器
+transformers>=4.30.0  # Hugging Face transformers库，用于加载预训练分词器
+sentencepiece>=0.1.99  # Google的SentencePiece分词库
+tiktoken>=0.5.0  # OpenAI的分词器，用于GPT系列模型
+
+# 可选依赖
+numpy>=1.24.0  # 科学计算库，用于向量处理
+pandas>=2.0.0  # 数据处理库，可能用于结果分析
+matplotlib>=3.7.0  # 绘图库，用于可视化分词结果
+tqdm>=4.66.0  # 进度条库，用于显示训练进度
+
+# 其他可能需要的库
+torch>=2.0.0  # PyTorch，用于运行部分需要模型推理的代码
+datasets>=2.14.0  # Hugging Face数据集库，用于加载测试数据
+
+# 安装命令
+# pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple

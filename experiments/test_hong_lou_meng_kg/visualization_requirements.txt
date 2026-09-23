@@ -1,0 +1,13 @@
+# 用于 GEXF 图谱可视化和交互式可视化的依赖包
+networkx>=3.0
+matplotlib>=3.5.0
+pyvis>=0.3.0
+pandas>=1.5.0
+
+# 交互式可视化 & Web 应用
+plotly         # 3D 交互式图表
+bokeh          # 交互式可视化
+streamlit      # Web 应用框架
+dash           # Web 应用框架
+dash-cytoscape # 专业网络图组件
+kaleido        # Plotly 静态图像导出
