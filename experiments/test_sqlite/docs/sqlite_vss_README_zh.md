@@ -1,5 +1,7 @@
 # sqlite-vss
 
+> 本文是上游项目 README 的副本（上游仓库 github.com/asg017/sqlite-vss），文内相对链接与图片资源指向上游结构，本仓未随附，已就地清理失效引用。
+
 > [!警告]  
 > `sqlite-vss` 目前不再积极开发。取而代之的是我现在致力于开发 [`sqlite-vec`](https://github.com/asg017/sqlite-vec)，这是一个类似的向量搜索SQLite扩展，但比`sqlite-vss`更易于安装和使用。更多信息请参阅[这篇博客文章](https://alexgarcia.xyz/blog/2024/building-new-vector-search-sqlite/index.html)。
 >

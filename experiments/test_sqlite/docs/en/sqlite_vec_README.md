@@ -1,5 +1,7 @@
 # `sqlite-vec`
 
+> 本文是上游项目 README 的副本（上游仓库 github.com/asg017/sqlite-vss），文内相对链接与图片资源指向上游结构，本仓未随附，已就地清理失效引用。
+
 [![](https://dcbadge.vercel.app/api/server/VCtQ8cGhUs)](https://discord.gg/Ve7WeCJFXk)
 
 An extremely small, "fast enough" vector search SQLite extension that runs
@@ -18,13 +20,7 @@ anywhere! A successor to [`sqlite-vss`](https://github.com/asg017/sqlite-vss)
 - Store non-vector data in metadata, auxiliary, or partition key columns
 
 <p align="center">
-  <a href="https://hacks.mozilla.org/2024/06/sponsoring-sqlite-vec-to-enable-more-powerful-local-ai-applications/">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./.github/logos/mozilla.dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="./.github/logos/mozilla.svg">
-    <img alt="Mozilla Builders logo" width=400>
-  </picture>
-  </a>
+  - [Mozilla Builders logo](https://hacks.mozilla.org/2024/06/sponsoring-sqlite-vec-to-enable-more-powerful-local-ai-applications/)
 </p>
 
 <p align="center">
@@ -32,10 +28,10 @@ anywhere! A successor to [`sqlite-vss`](https://github.com/asg017/sqlite-vss)
 <code>sqlite-vec</code> is a
 <a href="https://hacks.mozilla.org/2024/06/sponsoring-sqlite-vec-to-enable-more-powerful-local-ai-applications/">Mozilla Builders project</a>,
 with additional sponsorship from
-<a href="https://fly.io/"><img width=14px src="./.github/logos/flyio.small.ico"/> Fly.io </a>,
-<a href="https://tur.so/sqlite-vec"><img width=14px src="./.github/logos/turso.small.ico"/> Turso</a>,
-<a href="https://sqlitecloud.io/"><img width=14px src="./.github/logos/sqlitecloud.small.svg"/> SQLite Cloud</a>, and
-<a href="https://shinkai.com/"><img width=14px src="./.github/logos/shinkai.small.svg"/> Shinkai</a>.
+[Fly.io](https://fly.io/),
+[Turso](https://tur.so/sqlite-vec),
+[SQLite Cloud](https://sqlitecloud.io/), and
+[Shinkai](https://shinkai.com/).
 See <a href="#sponsors">the Sponsors section</a> for more details.
 </i>
 </p>
@@ -99,49 +95,18 @@ limit 2;
 Development of `sqlite-vec` is supported by multiple generous sponsors! Mozilla
 is the main sponsor through the new Builders project.
 <p align="center">
-  <a href="https://hacks.mozilla.org/2024/06/sponsoring-sqlite-vec-to-enable-more-powerful-local-ai-applications/">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./.github/logos/mozilla.dark.svg">
-    <source media="(prefers-color-scheme: light)" srcset="./.github/logos/mozilla.svg">
-    <img alt="Mozilla Builders logo" width=400>
-  </picture>
-  </a>
+  - [Mozilla Builders logo](https://hacks.mozilla.org/2024/06/sponsoring-sqlite-vec-to-enable-more-powerful-local-ai-applications/)
 </p>
 
 `sqlite-vec` is also sponsored by the following companies:
 
-<a href="https://fly.io/">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./.github/logos/flyio.dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="./.github/logos/flyio.svg">
-  <img alt="Fly.io logo" src="./.github/logos/flyio.svg" width="48%">
-</picture>
-</a>
+- [Fly.io logo](https://fly.io/)
 
-<a href="https://tur.so/sqlite-vec">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./.github/logos/turso.svg">
-  <source media="(prefers-color-scheme: light)" srcset="./.github/logos/turso.svg">
-  <img alt="Turso logo" src="./.github/logos/turso.svg" width="48%">
-</picture>
-</a>
+- [Turso logo](https://tur.so/sqlite-vec)
 
-<a href="https://sqlitecloud.io/">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./.github/logos/sqlitecloud.dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="./.github/logos/sqlitecloud.svg">
-  <img alt="SQLite Cloud logo" src="./.github/logos/flyio.svg" width="48%">
-</picture>
-</a>
+- [SQLite Cloud logo](https://sqlitecloud.io/)
 
-<a href="https://shinkai.com">
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./.github/logos/shinkai.dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="./.github/logos/shinkai.svg">
-
-  <img alt="Shinkai logo" src="./.github/logos/shinkai.svg" width="48%">
-</picture>
-</a>
+- [Shinkai logo](https://shinkai.com)
 
 As well as multiple individual supporters on
 [Github sponsors](https://github.com/sponsors/asg017/)!
