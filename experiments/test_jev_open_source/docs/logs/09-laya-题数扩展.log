@@ -1,0 +1,24 @@
+/home/ke/xinfer-env/lib/python3.12/site-packages/torch/cuda/__init__.py:68: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+/home/ke/xinfer-env/lib/python3.12/site-packages/laya/router.py:187: RuntimeWarning: laya: this checkpoint ships temperatures outside [0.5, 5] which would distort confidence; clamping choice:11+=0.1006. Treat confidence from the affected buckets as uncalibrated.
+  agent = Agent(repo, device=self.device, token=self.token, subfolder=sub)
+host: spark-4462 | CUDA_VISIBLE_DEVICES = <unset>
+MemAvailable 基线: 77.7 GB
+Router 就绪，常驻 CUDA: 4.36 GB，当前可用 61.1 GB
+路由: model=english reason=English Latin text
+
+====================================================================================================
+    题数     总时长p50       单题ms       激活峰值MB         常驻GB    MemAvail差       返回题数
+====================================================================================================
+     1      18.66      18.66        711.5         4.39         -1.6          1
+     2      20.66      10.33        712.1         4.39         -0.0          2
+     4      25.66       6.41        714.8         4.39          0.5          4
+     8      31.71       3.96        732.5         4.39          1.4          8
+    16      51.26       3.20        740.5         4.39          2.8         16
+    32     103.92       3.25        786.2         4.39          0.2         32
+    64     214.59       3.35        851.8         4.39         -0.8         64
+   128     431.50       3.37       1048.0         4.39         -0.6        128
+   256     845.47       3.30       1445.2         4.39         -1.8        256
+
+[收尾] 常驻 CUDA: 4.39 GB，MemAvailable: 61.2 GB
+结果已写入 ~/laya-scale-v2-result.json

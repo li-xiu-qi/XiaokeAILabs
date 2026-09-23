@@ -1,0 +1,79 @@
+<venv>/lib/python3.12/site-packages/torch/cuda/__init__.py:68: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+host: gb10-box
+model_path: ~/.cache/models/nimble-9b-594dfdcfb6f94e3d0c0db7535180d3c71689169a
+MemAvailable 基线: 107.4 GB
+
+============================================================================================
+[A] 加载与输出契约
+============================================================================================
+
+Loading weights:   0%|          | 0/760 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 760/760 [00:00<00:00, 16181.56it/s]
+CudaCandidateScorer 加载: 135.75 s，当前可用 88.9 GB
+CUDA 已分配: 17.54 GB  峰值: 17.54 GB
+
+output  : {'priority': 'HIGH', 'requires_review': True}
+fields  : {
+  "priority": {
+    "value": "HIGH",
+    "scores": {
+      "HIGH": 0.9991176724433899,
+      "LOW": 0.0008823107928037643
+    },
+    "logits": {
+      "HIGH": 26.6169490814209,
+      "LOW": 19.58486557006836
+    },
+    "candidate_token_ids": [
+      32,
+      33
+    ],
+    "code_to_choice": {
+      "A": "HIGH",
+      "B": "LOW"
+    },
+    "prompt_token_count": 243,
+    "prompt_token_sha256": "dd074575600b7d361581c8f9724124f3840977111544137c9c2be0691c18dd26"
+  },
+  "requires_review": {
+    "value": true,
+    "scores": {
+      "false": 0.0035719566512852907,
+      "true": 0.9964280724525452
+    },
+    "logits": {
+      "false": 20.809425354003906,
+      "true": 26.440488815307617
+    },
+    "candidate_token_ids": [
+      32,
+      33
+    ],
+    "code_to_choice": {
+      "A": false,
+      "B": true
+    },
+    "prompt_token_count": 244,
+    "prompt_token_sha256": "f8616b5daf69554a9ab714d2c7a7566c4dd555d0949fbf83d3835aeab4112818"
+  }
+}
+
+============================================================================================
+[B] 延迟基准，英文，与 laya 同口径（单次 score 调用）
+============================================================================================
+单次 score（2 字段）                           n=120  min   358.74  p50   365.33  p90   367.45  p99   368.63  max    370.05  均值   365.02 ms
+
+============================================================================================
+[C] 中文场景（README 声明 language: en）
+============================================================================================
+单次 score 中文                              n=60   min   361.51  p50   366.66  p90   368.95  p99   370.86  max    382.25  均值   366.78 ms
+中文输出: {'priority': 'HIGH', 'requires_review': True}
+中文各字段分数: {"priority": {"value": "HIGH", "scores": {"HIGH": 0.9977037310600281, "LOW": 0.002296329475939274}, "logits": {"HIGH": 25.749774932861328, "LOW": 19.675630569458008}, "candidate_token_ids": [32, 33], "code_to_choice": {"A": "HIGH", "B": "LOW"}, "prompt_token_count": 239, "prompt_token_sha256": "38604f10ede2a663dbb4a3ae9aae03eae4a2bf83e4f4ecd358b7324d63e9eb34"}, "requires_review": {"value": true, "scores": {"false": 0.005335709545761347, "true": 0.9946643114089966}, "logits": {"false": 20.44796371459961, "true": 25.675947189331055}, "candidate_token_ids": [32, 33], "code_to_choice": {"A": false, "B": true}, "prompt_token_count": 240, "prompt_token_sha256": "c949605eaf044a3cda69e1b715fa03c4f3dfca52c7d3a36ba7e177a9861a0fdc"}}
+
+============================================================================================
+[F] 资源占用
+============================================================================================
+CUDA 当前分配: 17.57 GB
+CUDA 峰值    : 17.63 GB
+MemAvailable  : 88.0 GB

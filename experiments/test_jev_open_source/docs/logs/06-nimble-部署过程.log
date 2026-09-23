@@ -1,0 +1,45 @@
+[17:09:22] host: gb10-box
+<venv>/lib/python3.12/site-packages/torch/cuda/__init__.py:68: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+[17:09:24] torch 2.14.0+cu130  transformers 5.16.1  peft 0.20.0
+[17:09:24] 下载适配器仓库 bespokelabs/Bespoke-Nimble-9B ...
+
+Fetching 17 files:   0%|          | 0/17 [00:00<?, ?it/s]
+Fetching 17 files:  47%|████▋     | 8/17 [00:01<00:02,  4.20it/s]
+Fetching 17 files:  94%|█████████▍| 16/17 [00:04<00:00,  3.36it/s]
+Fetching 17 files: 100%|██████████| 17/17 [00:09<00:00,  1.72it/s]
+[17:09:35] 适配器就绪 10.8 s -> ~/.cache/huggingface/hub/models--bespokelabs--Bespoke-Nimble-9B/snapshots/594dfdcfb6f94e3d0c0db7535180d3c71689169a
+[17:09:35] 契约 task='schema_candidate_classification_v1'  prompt_code_sha256=a0a0f94d0f65e972bc20d088678ad3d595ff1c42b9c0d78f96034526303f63fc
+[17:09:35] prompt 契约校验通过
+[17:09:35] pinned 基座: Qwen/Qwen3.5-9B  revision=c202236235762e1c871ad0ccb60c8ee5ba337b9a
+[17:09:35] 下载基座权重（约 18 GB，走 hf-mirror）...
+
+Fetching 16 files:   0%|          | 0/16 [00:00<?, ?it/s]
+Fetching 16 files:  50%|█████     | 8/16 [00:03<00:03,  2.27it/s]
+Fetching 16 files:  69%|██████▉   | 11/16 [00:19<00:08,  1.78s/it]
+Fetching 16 files:  75%|███████▌  | 12/16 [01:13<00:24,  6.15s/it]
+Fetching 16 files:  81%|████████▏ | 13/16 [04:59<01:09, 23.04s/it]
+Fetching 16 files:  88%|████████▊ | 14/16 [05:13<00:44, 22.40s/it]
+Fetching 16 files:  94%|█████████▍| 15/16 [06:45<00:27, 27.05s/it]
+Fetching 16 files: 100%|██████████| 16/16 [08:08<00:00, 30.51s/it]
+Fetching 16 files: 100%|██████████| 16/16 [08:08<00:00, 30.51s/it]
+[17:17:44] 基座下载完成 488.7 s
+[17:17:44] 加载基座到 CPU（bf16）...
+
+Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]
+Fetching 4 files: 100%|██████████| 4/4 [00:00<00:00, 1155.46it/s]
+
+Loading weights:   0%|          | 0/760 [00:00<?, ?it/s]
+Loading weights: 100%|██████████| 760/760 [00:00<00:00, 13237.29it/s]
+[17:17:46] 基座加载 1.8 s
+[17:17:46] 挂适配器并 merge ...
+<venv>/lib/python3.12/site-packages/peft/config.py:220: UserWarning: Unexpected keyword arguments ['kasa_config'] for class LoraConfig, these are ignored. This probably means that you're loading a configuration file that was saved using a higher version of the library and additional parameters have been introduced since. It is highly recommended to upgrade the PEFT version before continuing (e.g. by running `pip install -U peft`).
+  warnings.warn(
+[17:17:51] merge 完成 5.2 s
+[17:17:51] 保存合并后权重到 ~/.cache/models/nimble-9b-594dfdcfb6f94e3d0c0db7535180d3c71689169a ...
+
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]
+Writing model shards: 100%|██████████| 1/1 [00:03<00:00,  3.33s/it]
+Writing model shards: 100%|██████████| 1/1 [00:03<00:00,  3.33s/it]
+[17:17:55] 保存完成
+[17:17:55] 全部完成。model_path=~/.cache/models/nimble-9b-594dfdcfb6f94e3d0c0db7535180d3c71689169a
