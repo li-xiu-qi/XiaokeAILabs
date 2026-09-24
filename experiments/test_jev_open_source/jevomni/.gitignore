@@ -1,0 +1,5 @@
+# 下载的权重与素材不进版本库
+models/
+assets/
+media/
+results/

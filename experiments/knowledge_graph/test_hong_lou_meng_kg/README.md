@@ -15,16 +15,23 @@
 
 ```
 test_hong_lou_meng_kg/
-├── 红楼梦.txt                    # 红楼梦原文（必需）
-├── build_hongloumeng_kg.py       # 主要的知识图谱构建器
-├── demo_hongloumeng_kg.py        # 演示脚本
-├── simple_semantic_splitter.py   # 简化版文本分割器
+├── build_hongloumeng_kg.py       # 主要的知识图谱构建器（HongLouMengKGBuilder 类）
+├── streamlit_kg_app.py           # Streamlit 交互式图谱应用
+├── semantic_splitter.py          # 文本分割器
+├── cached_embedding_models.py    # 带缓存的嵌入模型封装
 ├── embedding_models.py           # 嵌入模型封装
-├── fallback_openai_client.py     # LLM客户端
+├── fallback_openai_client.py     # LLM 客户端兜底封装
+├── prompts.py                    # LLM 抽取用 prompt
+├── visualize_gexf.py             # Matplotlib 可视化
+├── visualize_gexf_bokeh.py       # Bokeh 可视化
+├── visualize_gexf_dash.py        # Dash 可视化
+├── visualize_gexf_streamlit.py   # Streamlit 可视化
 ├── requirements_kg.txt           # 依赖包列表
-├── .env                          # 环境变量配置
+├── visualization_requirements.txt# 可视化额外依赖
 └── README.md                     # 本文件
 ```
+
+> `红楼梦.txt` 原文需自备，放在运行目录，不随仓提供。
 
 ## 安装依赖
 
@@ -44,8 +51,11 @@ pip install spacy
 ### 1. 基础使用（不需要LLM）
 
 ```bash
-# 运行基础演示
-python demo_hongloumeng_kg.py basic
+# 构建红楼梦知识图谱（运行前确认 红楼梦.txt 在目录中）
+python build_hongloumeng_kg.py
+
+# 交互式浏览已有图谱
+streamlit run streamlit_kg_app.py
 ```
 
 这将：
@@ -73,7 +83,7 @@ GUIJI_MODEL=THUDM/GLM-4-9B-0414
 然后运行高级演示：
 
 ```bash
-python demo_hongloumeng_kg.py advanced
+python build_hongloumeng_kg.py  # 同一脚本，LLM 在 HongLouMengKGBuilder 构造参数中开启
 ```
 
 ### 3. 编程使用
