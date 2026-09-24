@@ -51,7 +51,7 @@
 
 ### 🧮 算法基础与数学原理
 
-1. **LLM机制系列**：从分词到解码的全链路机制实操（BPE 从零实现与多种 tokenizer、logits 到采样解码、手动 KV Cache 与耗时实测），地址： [experiments/llm_mechanics](experiments/llm_mechanics)
+1. **LLM机制系列**：从模型加载到解码的全链路机制实操（bitsandbytes 8bit 加载、BPE 从零实现与多种 tokenizer、logits 到采样解码、手动 KV Cache 与耗时实测），地址： [experiments/llm_mechanics](experiments/llm_mechanics)
 2. **推理成本模型系列**：12 个可计算性能模型（Roofline、显存、KV Cache、吞吐规模化、Scaling Laws、量化等），输入模型配置与硬件规格即可外推显存、速度与服务吞吐，GB10 实测锚点自测，地址： [experiments/test_inference_theory](experiments/test_inference_theory)
 3. **索引成本模型系列**：45 个数据结构与算法的成本模型与实测（公式推导已迁知识库，本仓保留复现脚本与 GB10/faiss 版本绑定实测），地址： [experiments/test_index_theory](experiments/test_index_theory)
 4. **知识图谱构建**：知识图谱的构建与查询技术，地址： [experiments/knowledge_graph/test_kg](experiments/knowledge_graph/test_kg)
@@ -80,9 +80,6 @@
 1. **Rust Python集成**：使用Rust优化Python性能瓶颈，地址： [experiments/test_rust_in_python](experiments/test_rust_in_python)
 2. **FastAPI接口服务**：FastAPI 依赖注入与 sqlite 会话管理示例（单文件，内容已归档，不再随仓维护）
 
-### 🧠 模型工程
-
-1. 模型量化：基于 bitsandbytes 的 8-bit 量化（Qwen2.5-0.5B-Instruct，单文件，内容已归档，不再随仓维护）
 
 ### 🚀 完整应用
 
