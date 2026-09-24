@@ -1,0 +1,14 @@
+# Jev-Omni 运行依赖。版本要求与官方 requirements.txt 对齐，
+# torch 与 torchvision 按本机 CUDA 版本自行安装，这里只写最低版本。
+torch>=2.10
+torchvision
+transformers==5.17.0
+accelerate
+huggingface_hub
+safetensors
+numpy
+Pillow
+opencv-python-headless
+soundfile
+librosa
+cffi
