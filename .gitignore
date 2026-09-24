@@ -93,8 +93,12 @@ embedding_cache/
 **/红楼梦_*分割结果*/
 **/test_output*/
 **/output*/
-**/results*/
+**/results/**
 **/benchmark_results*/
+# 例外：句长实验的 results 是受版本管理的实验资产（报告 + CSV 证据 + 图），
+# 748K。其余 results 仍是运行产物忽略。模式不能写成目录本身，否则 git
+# 不进被 ignore 的目录，内部文件无法 re-include。
+!experiments/embedding_research/behavior_tests/test_sentence_length/results/**
 
 # 临时文件和缓存
 *.tmp
@@ -177,4 +181,6 @@ remote_files.txt
 # 实验输入图片（可重新获取，勿入库）
 **/furseal.png
 # 实验复现证据日志入库：评测的数字要能回溯到原始终端输出
-!experiments/test_jev_open_source/docs/logs/*.log
+# 覆盖顶层执行日志目录与各子实验（laya、jevomni 等）自己的日志目录
+!experiments/test_jev_open_source/docs/执行日志/*.log
+!experiments/test_jev_open_source/**/执行日志/*.log
