@@ -109,23 +109,23 @@ def main():
         options=["Yes", "No"],
     )
     image_kw = dict(
-        state="视频首帧。",
+        state="一张动物照片。",
         question="画面的主体是什么？",
-        options=["人物", "墙面或建筑表面", "屏幕文字", "天空"],
+        options=["猫", "狗", "人物", "汽车"],
         media=paths["image"],
         modality="image",
     )
     audio_kw = dict(
-        state="视频提取的音轨。",
+        state="一段约 12 秒的录音。",
         question="音频里是否包含人声？",
-        options=["人声", "仅音乐", "静音"],
+        options=["人声对话", "仅音乐", "静音"],
         media=paths["audio"],
         modality="audio",
     )
     video_kw = dict(
-        state="23 秒手持拍摄片段。",
-        question="相机是否在移动？",
-        options=["基本静止", "沿墙或走廊移动", "快速动作"],
+        state="一段约 19 秒的人物近景片段。",
+        question="视频里的人主要在做什么？",
+        options=["按太阳穴表现疲惫", "吃东西", "跑步", "睡觉"],
         media=paths["video"],
         modality="video",
     )

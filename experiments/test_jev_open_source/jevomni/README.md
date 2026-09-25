@@ -24,14 +24,16 @@ Jev-Omni 是一款开源的多模态类型化决策模型，在 Gemma 4 12B IT �
 | 路径 | 内容 |
 |---|---|
 | `scripts/download_models.py` | 下载 Jev-Omni 全部权重与 Gemma 4 底座，支持镜像与自定义目录 |
-| `scripts/download_assets.py` | 下载官方仓库自带的演示视频，作为测试素材 |
-| `scripts/prepare_media.py` | 从视频派生测试图片（首帧）与音频（前 13 秒） |
+| `scripts/download_assets.py` | 下载三份独立 CC0 测试素材：猫图、对话音频、人物视频 |
 | `scripts/quickstart.py` | 最小验证：一次跑通四个模态 |
 | `scripts/bench_latency.py` | 四模态延迟基准（p50/p90/p99） |
+| `scripts/multimodal_eval.py` | 多模态批量评估：10 类图像、3 类音频、1 个视频，统计准确率与置信度 |
+| `scripts/test_suite.py` | 综合测试套件：题型、选项规模、中文业务、文本稳定性、多模态理解、文本长度六组测试，单次加载完成 |
 | `requirements.txt` | 运行依赖 |
 | `docs/部署踩坑记录.md` | 环境依赖、运行时补丁、内存与加载的实测细节 |
+| `../docs/执行日志/17-jevomni-多模态批量评估.log` | 10 图加 3 音频加 1 视频的批量评估完整输出，多模态结论主要来自该日志 |
 
-权重与素材不进版本库。运行脚本后生成的目录：`models/`（权重）、`assets/`（视频）、`media/`（图片与音频）、`results/`（基准输出）。
+权重与素材不进版本库。运行脚本后生成的目录：`models/`（权重）、`assets/`（三份素材）、`results/`（基准输出）。
 
 ## 快速复现
 
@@ -44,24 +46,43 @@ pip install -r requirements.txt
 # 2. 下载权重（国内网络加 --mirror）
 python scripts/download_models.py --mirror
 
-# 3. 准备测试素材
-python scripts/download_assets.py --mirror
-python scripts/prepare_media.py
+# 3. 下载三份测试素材（直连失败时可加 GitHub 加速前缀）
+python scripts/download_assets.py
+#   python scripts/download_assets.py --gh-prefix https://ghfast.top/
 
 # 4. 最小验证，需要 ffmpeg 在 PATH
 python scripts/quickstart.py
 
 # 5. 延迟基准
 python scripts/bench_latency.py
+
+# 6. 多模态批量评估（需要扩展素材集）
+python scripts/download_assets.py --full
+python scripts/multimodal_eval.py
+
+# 7. 综合测试套件（题型、规模、中文、稳定性、多模态理解）
+python scripts/test_suite.py
 ```
 
 ## 测试素材说明
 
-图像、音频、视频三类测试素材都不是本仓库生产或分发的，全部来自 Jev-Omni 官方仓库：视频是官方仓库自带的公开演示文件，图片是该视频的首帧，音频是该视频前 13 秒音轨。为控制仓库体积，这些素材不随本仓库保存，由 `download_assets.py` 与 `prepare_media.py` 在运行时拉取和生成。
+媒体素材不进 git 仓库，托管在 GitHub Release Assets，由 `download_assets.py` 拉取并按 SHA256 校验。素材 Release：tag `assets/test_jev_open_source`。
 
-如果素材脚本运行失败，先不要默认是本仓库的代码问题。素材的真实位置在 Jev-Omni 官方仓库，建议直接打开 https://huggingface.co/akhilaaa3/Jev-Omni 查看演示文件是否仍在原路径、是否改名或移除。上游仓库变动（文件移动、改名、删除）会导致下载脚本失效，这属于外部变更，需要按上游当前的实际路径调整脚本。
+基础集三份独立的免费可商用素材，分别对应三个模态：
 
-同源设计让素材下载可复现、链路可审计，但也意味着多模态决策质量只在这一个素材上验证过，不能外推到一般图像或音频理解能力。延迟与接口可用性结论不受此影响。
+| 文件 | 内容 | 来源 |
+|---|---|---|
+| `assets/cat.jpg` | 虎斑猫特写 | Flickr（CC0） |
+| `assets/conversation.mp3` | 两人英文对话，约 12 秒，讨论排球队 | Freesound（CC0） |
+| `assets/person-reading.mp4` | 年轻人疲惫后戴眼镜低头阅读，约 19 秒 | Pexels（Pexels License） |
+
+扩展评估集用 `--full` 下载到 `assets/eval/`：`images/` 下是猫、狗、汽车、人物、自行车、鸟、船、椅子、建筑、花 10 类各一张，`audio/` 下是人声、音乐、环境声各一段。`multimodal_eval.py` 用固定候选标签跑这些素材，统计分类准确率和置信度。
+
+脚本默认从 Release 拉取，下载后逐份校验 SHA256，哈希不符不会使用。直连失败时可加 `--gh-prefix https://ghfast.top/` 走 GitHub 加速前缀；只想测某一类素材可加 `--only image/audio/video`。素材由本仓自己托管，不依赖第三方站点是否保留原文件。
+
+素材来源与许可的完整清单见 Release 页面的说明：
+
+https://github.com/li-xiu-qi/XiaokeAILabs/releases/tag/assets/test_jev_open_source
 
 ## 参考资料
 
