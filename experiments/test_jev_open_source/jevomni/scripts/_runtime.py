@@ -76,8 +76,8 @@ def experiment_root():
 def default_paths():
     root = experiment_root()
     return {
-        "video": os.path.join(root, "assets", "the-wall-23s.mp4"),
-        "image": os.path.join(root, "media", "frame.jpg"),
-        "audio": os.path.join(root, "media", "audio.wav"),
+        "video": os.path.join(root, "assets", "person-reading.mp4"),
+        "image": os.path.join(root, "assets", "cat.jpg"),
+        "audio": os.path.join(root, "assets", "conversation.mp3"),
         "results": os.path.join(root, "results"),
     }

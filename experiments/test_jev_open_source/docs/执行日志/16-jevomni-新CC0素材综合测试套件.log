@@ -1,0 +1,24 @@
+# 16 Jev-Omni 新 CC0 素材综合测试套件
+# 环境：dgx-spark / GB10 统一内存 / CUDA / Python 3.12 / PyTorch 2.14 / transformers 5.17.0
+# 六组：题型、候选规模、中文工单 15 例、文本稳定性、多模态内容理解（含图像重复 10 次）、文本长度
+# 说明：进度条已过滤。多模态结果基于三份独立 CC0 素材。
+
+加载模型...
+
+加载完成，用时 482 秒
+测试组 1：题型覆盖
+{"boolean": {"prediction": "Yes", "confidence": 0.9957}, "choice": {"prediction": "Billing", "confidence": 0.999, "distribution": {"Billing": 0.999, "Technical": 0.0003, "Sales": 0.0001, "Other": 0.0006}}, "score": {"prediction": "Very urgent", "confidence": 0.6753, "distribution": {"Not urgent": 0.0028, "Slightly urgent": 0.0171, "Moderately urgent": 0.2523, "Very urgent": 0.6753, "Extremely urgent": 0.0525}}}
+测试组 2：选项规模 2/4/8/16/20/32
+{"n=2": {"prediction_index": 0, "top1_correct": true, "confidence": 0.9852, "entropy_probe": 0.9852}, "n=4": {"prediction_index": 0, "top1_correct": true, "confidence": 0.9347, "entropy_probe": 0.9347}, "n=8": {"prediction_index": 0, "top1_correct": true, "confidence": 0.7608, "entropy_probe": 0.7608}, "n=16": {"prediction_index": 0, "top1_correct": true, "confidence": 0.5347, "entropy_probe": 0.5347}, "n=20": {"prediction_index": 1, "top1_correct": false, "confidence": 0.6762, "entropy_probe": 0.6762}, "n=32": {"prediction_index": 1, "top1_correct": false, "confidence": 0.5756, "entropy_probe": 0.5756}}
+测试组 3：中文业务 15 例
+中文准确率 14/15
+测试组 4：同一用例重复 10 次
+{"runs": 10, "unique_predictions": ["Billing"], "prediction_changes": false, "confidence_mean": 0.9992, "confidence_stdev": 0.0, "confidence_range": [0.9992, 0.9992]}
+中文稳定性： {"unique_predictions": ["账务"], "prediction_changes": false, "confidence_mean": 0.9971, "confidence_stdev": 0.0, "confidence_range": [0.9971, 0.9971]}
+测试组 5：图像、音频、视频内容理解
+{"image": {"gold": "猫", "prediction": "猫", "correct": true, "confidence": 0.9996, "distribution": {"猫": 0.9996, "狗": 0.0, "人物": 0.0, "汽车": 0.0003}}, "audio": {"gold": "人声对话", "prediction": "人声对话", "correct": true, "confidence": 0.9743, "distribution": {"人声对话": 0.9743, "仅音乐": 0.0226, "静音": 0.0031}}, "video": {"gold": "按太阳穴表现疲惫", "prediction": "按太阳穴表现疲惫", "correct": true, "confidence": 0.9984, "distribution": {"按太阳穴表现疲惫": 0.9984, "吃东西": 0.0004, "跑步": 0.0005, "睡觉": 0.0007}}}
+图像稳定性： {"runs": 10, "unique_predictions": ["猫"], "prediction_changes": false, "confidence_mean": 0.9996, "confidence_stdev": 0.0, "confidence_range": [0.9996, 0.9996]}
+测试组 6：文本长度三档
+{"short": {"prediction": "No", "correct": true, "confidence": 0.9999}, "about_500_tokens": {"prediction": "No", "correct": true, "confidence": 0.9999}, "about_2k_tokens": {"prediction": "No", "correct": true, "confidence": 0.9999}}
+
+全部测试完成，结果保存：/home/ke/test_jev_open_source/jevomni/results/test_suite_results.json
