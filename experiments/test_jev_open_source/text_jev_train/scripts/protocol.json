@@ -1,0 +1,23 @@
+{
+  "experiment": "agentjev_typed_from_scratch",
+  "dataset": "LocalLLaMA/typed-decisions",
+  "dataset_revision": "ea9306458d6e9563628369a3d1e72e362fb381d2",
+  "seed": 20260921,
+  "max_steps": 600,
+  "microbatch_questions": 4,
+  "gradient_accumulation": 4,
+  "backbone_lr": 0.00001,
+  "head_lr": 0.0001,
+  "warmup_steps": 20,
+  "weight_decay": 0.01,
+  "grad_clip": 1.0,
+  "loss": "soft cross entropy + 0.1 * sum-candidate Brier",
+  "selection": "minimum uncalibrated development soft cross entropy every 100 steps, including initialization",
+  "calibration": "positive scalar temperature per primitive, fitted only on separate calibration cases",
+  "official_test": "400 cases, 2000 decisions; read only after selection and temperature fitting",
+  "limitations": [
+    "Targets are public teacher distributions, not empirical outcome probabilities.",
+    "Training reserves 120 dev and 120 calibration cases from the 1200 source training cases.",
+    "The published phase4 starting checkpoint is not available; this run starts from the Qwen3 pretrained base."
+  ]
+}
