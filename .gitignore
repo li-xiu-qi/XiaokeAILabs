@@ -99,6 +99,9 @@ embedding_cache/
 # 748K。其余 results 仍是运行产物忽略。模式不能写成目录本身，否则 git
 # 不进被 ignore 的目录，内部文件无法 re-include。
 !experiments/embedding_research/behavior_tests/test_sentence_length/results/**
+# 跨模态实验同理：报告与按模型分的读数是结论载体，全量数据在 DGX，
+# 本仓只放汇总（2026-09-26 纳入，约 2.4M）。
+!experiments/embedding_research/behavior_tests/test_crossmodal_retrieval/results/**
 
 # 临时文件和缓存
 *.tmp

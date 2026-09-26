@@ -1,0 +1,20 @@
+{
+  "n": 6000,
+  "img_gap_median": 0.004217103644033722,
+  "img_gap_positive_rate": 0.5686666666666667,
+  "text_sim_tf_median": 0.930014264280685,
+  "by_kind": {
+    "attribution": {
+      "n": 3000,
+      "img_gap_median": 0.007276329775332338,
+      "img_gap_positive_rate": 0.6163333333333333,
+      "text_sim_tf_median": 0.9023930011738117
+    },
+    "relation": {
+      "n": 3000,
+      "img_gap_median": 0.001176839424694591,
+      "img_gap_positive_rate": 0.521,
+      "text_sim_tf_median": 0.9483801164368055
+    }
+  }
+}

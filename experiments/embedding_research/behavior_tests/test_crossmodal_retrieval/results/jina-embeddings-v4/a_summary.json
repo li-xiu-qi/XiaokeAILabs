@@ -1,0 +1,11 @@
+{
+  "n": 500,
+  "R@1": 0.06,
+  "R@5": 0.136,
+  "R@10": 0.178,
+  "median_rank": 83.0,
+  "rel_sim_median": 0.4240776598453522,
+  "unrel_sim_median": 0.36293378472328186,
+  "margin_median": 0.05760599672794342,
+  "img_img_unrel_median": null
+}
