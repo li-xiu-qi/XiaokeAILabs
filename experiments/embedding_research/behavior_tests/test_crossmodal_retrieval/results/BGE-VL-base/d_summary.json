@@ -1,0 +1,17 @@
+{
+  "model": "BAAI/BGE-VL-base",
+  "by_kind": {
+    "swap": {
+      "n": 1000,
+      "img_gap_median": 0.008335411814186955,
+      "img_gap_positive_rate": 0.728,
+      "text_sim_tf_median": 0.9626206592292874
+    },
+    "shuffle": {
+      "n": 1000,
+      "img_gap_median": 0.07148658884761971,
+      "img_gap_positive_rate": 0.953,
+      "text_sim_tf_median": 0.7826481457923364
+    }
+  }
+}
