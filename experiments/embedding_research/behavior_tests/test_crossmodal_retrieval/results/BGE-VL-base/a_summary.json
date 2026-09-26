@@ -1,11 +1,11 @@
 {
-  "n": 3000,
-  "R@1": 0.5,
-  "R@5": 0.763,
-  "R@10": 0.8486666666666667,
-  "median_rank": 1.5,
-  "rel_sim_median": 0.33810925483703613,
-  "unrel_sim_median": 0.06753858923912048,
-  "margin_median": 0.2716180793941021,
+  "n": 500,
+  "R@1": 0.72,
+  "R@5": 0.914,
+  "R@10": 0.952,
+  "median_rank": 1.0,
+  "rel_sim_median": 0.337052583694458,
+  "unrel_sim_median": 0.06858248263597488,
+  "margin_median": 0.268820658326149,
   "img_img_unrel_median": null
 }
