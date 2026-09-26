@@ -1,0 +1,17 @@
+{
+  "model": "jinaai/jina-embeddings-v4",
+  "by_kind": {
+    "swap": {
+      "n": 1000,
+      "img_gap_median": -0.0017475484375182315,
+      "img_gap_positive_rate": 0.455,
+      "text_sim_tf_median": 0.9645798305344458
+    },
+    "shuffle": {
+      "n": 1000,
+      "img_gap_median": -0.015057259826100844,
+      "img_gap_positive_rate": 0.403,
+      "text_sim_tf_median": 0.7748118658764243
+    }
+  }
+}

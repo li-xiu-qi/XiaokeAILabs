@@ -15,6 +15,7 @@
 | `code/fetch_crossmodal_datasets.py` | 数据集下载，含每个文件的来源、体积、许可 |
 | `code/run_experiments.py` | A 组（检索基线）与 B 组（ARO 硬负样本）入口，`--model` 换模型 |
 | `code/route_compare.py` | C 组入口：图向量路由 对 描述向量路由 |
+| `code/order_hardneg.py` | D 组入口：词序扰动硬负样本，两种扰动做对照 |
 | `code/diag_cohesion.py` | 内聚性诊断，区分「模型特性」与「编码 bug」 |
 | `code/collect_t2t.py` | 补采文本对文本分布，供画图用 |
 | `results/<模型名>/` | 按模型分目录的读数与直方图汇总，全量数据在 DGX |
@@ -30,9 +31,10 @@
 | 换个说法在跨模态下的代价是否比文本内更大 | B 组 | 已完成，两个模型 |
 | 折扣比例是否随模型变化 | A 组扩展 | 已完成，两个模型 |
 | 走图的原生向量与走图的文字描述，哪条路更好 | C 组 | 已完成，两个模型，优劣顺序反转 |
+| 词序进不进入表示，语法崩坏会被惩罚吗 | D 组 | 已完成，两个模型，表现截然相反 |
 | 抽象层级、细粒度属性、负向查询、图内文字 | 后续组 | 未开始 |
 
-语料：Flickr30k 图像与五条人工标注，ARO 的关系与属性硬负样本，FSD50K 音频分片（字段未验证）。全部数据集只落 DGX，本机不留副本。
+语料：Flickr30k 图像与五条人工标注，ARO 的关系与属性硬负样本，FSD50K 音频分片（字段已验通：音频在 `audio.bytes` 的 WAV 二进制，另有 `description` 人类可读描述，但本地模型都不支持音频编码）。全部数据集只落 DGX，本机不留副本。
 
 ## 主结论（详见 results/REPORT.md）
 
@@ -44,15 +46,21 @@
 
 B 组给出更硬的一层：6000 条硬负样本上，关系顺序上两个模型都与掷硬币无区别（52%），属性归因上 jina-v4 完全无信号（47.7%）、BGE-VL 略强于硬币（61.6%）。这一层与 gap 叠加，共同解释图检索文本的 R@1 为何只有个位数百分比。
 
+C 组回答路由取舍：走图的原生向量还是走图的文字描述。两条路的优劣顺序随模型反转，jina-v4 上描述路由 R@1 是图向量路由的 2.5 倍，BGE-VL 上反过来。所以选路由也要按模型实测，没有普适答案。
+
+D 组闭合 ARO 三类硬负样本，测词序进不进入表示。BGE-VL 对词序和语法敏感（语法崩坏时 95.3% 能排除），jina-v4 基本不敏感，而且对乱码有系统性负偏好：语法崩坏的句子拿到的图侧分数反而高于原句（gap 中位数负 0.0151）。解释是乱码句词集合不变、表示被推向更通用区域，而 jina-v4 的无关图文基线本身就高（0.363），通用文本因此拿到更高分数。
+
 ## 踩过的坑
 
-五个都记在 `code/` 的注释里，省得下次重踩。
+六个都记在 `code/` 的注释里，省得下次重踩。
 
 remote code 的 ProcessorMixin 不传 tokenizer，直接加载会崩，`mm_patch.py` 打补丁；句柄库的模态白名单不认模型的 remote code，需要显式声明两种模态；ARO 的标注文件是原始划分不是预处理版，词序扰动要自己生成，而目标机无外网装不了词性标注库，改用不依赖词性的轻量实现。
 
 第四个是加第二个模型时踩的，值得单独说：`mm_patch` 定位 remote code 目录原先靠「取最新修改的那个」，缓存里只有一个 remote code 模型时能跑，第二个模型一下载就被抢走，报找不到第一个模型的文件。已改为按模型名精确匹配，匹配不到直接报错不猜。另外补丁的 fallback 是「拿第一个模型的 processor 类手动构造」，对标准 CLIP 系模型会直接失败，所以补丁现在只在 jina-v4 上生效，其他模型走原生加载路径。结果按模型分目录，否则第二个模型会静默覆盖第一个的读数。
 
 第五个是 C 组自己踩的：第一版用同一条 caption 既作查询又作描述候选，排除自身之后这条查询就不存在正确候选，检索任务不成立，读出来 R@1 全是 0。改成查询取第二条 caption、候选取第一条，两条路才都有明确答案。取值顺序也错过一次：把对角线置成负无穷之后又去取它当相关值，得到一片 Infinity。
+
+第六个是数据集侧的：FSD50K 的两个 parquet 分片都是残文件（一个是完整大小的四分之一，另一个一半），pyarrow 报 magic bytes not found。头四个字节是合法魔数但尾部不是，所以是下载中断而非格式错误。重下 train-00000 后字段才验通：音频在 `audio.bytes`（WAV），另有 `description` 字段是人类可读描述。
 
 ## 复现
 
@@ -74,6 +82,10 @@ HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 ~/xinfer-env/bin/python collect_t2t.py 5
 # C 组：图向量路由 对 描述向量路由
 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 ~/xinfer-env/bin/python route_compare.py 500
 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 ~/xinfer-env/bin/python route_compare.py 500 BAAI/BGE-VL-base
+
+# D 组：词序扰动硬负样本
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 ~/xinfer-env/bin/python order_hardneg.py 1000
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 ~/xinfer-env/bin/python order_hardneg.py 1000 BAAI/BGE-VL-base
 ```
 
 A 组与 C 组必须用同一个 limit，否则 R@1 不能横向比。数据不在仓里，先跑 `code/fetch_crossmodal_datasets.py`。目标机无外网，需经本机代理隧道中转，隧道脚本在 `pkm-hub-runtime/scripts/start-dgx-tunnel.ps1`。
