@@ -1,0 +1,30 @@
+{
+  "experiment": "vision_jev_scienceqa_from_scratch",
+  "dataset": "derek-thomas/ScienceQA",
+  "dataset_license": "CC BY-SA 4.0",
+  "backbone": "Qwen/Qwen3.5-2B",
+  "seed": 20260925,
+  "adapter": "LoRA r=16 alpha=32 dropout=0.05",
+  "modules_to_save": ["score"],
+  "max_steps": 1200,
+  "microbatch_questions": 4,
+  "lora_lr": 0.0001,
+  "head_lr": 0.0001,
+  "warmup_ratio": 0.03,
+  "weight_decay": 0.01,
+  "grad_clip": 1.0,
+  "loss": "soft cross entropy + 0.1 * sum-candidate Brier",
+  "selection": "minimum uncalibrated development soft cross entropy",
+  "calibration": "single scalar temperature, 81-point grid 1.0..2.0, fitted only on separate calibration cases",
+  "official_test": "1000 cases read only after selection and temperature fitting",
+  "max_len": 320,
+  "max_pixels": 102400,
+  "vision_placeholder": "<|vision_start|><|image_pad|><|vision_end|>",
+  "mem_cap_gb": 70.0,
+  "mem_min_start_gb": 25.0,
+  "limitations": [
+    "Targets are multiple-choice gold, not teacher distributions and not measured action success.",
+    "Qwen3.5 uses a Gated DeltaNet plus gated attention hybrid, so activation accounting differs from a plain transformer; the memory guard is required, not optional.",
+    "Dedup key is image sha256; ScienceQA reuses the same image across its own splits."
+  ]
+}

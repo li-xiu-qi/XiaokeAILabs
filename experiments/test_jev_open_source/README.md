@@ -48,6 +48,9 @@ TypeSafe 推出的 Jev 模型将判别式机制引入大模型，直接输出结
   - [nimble/README.md](nimble/README.md)：Nimble 的基座与 LoRA 权重合成、CUDA 打分逻辑与显存开销说明。
   - [llm_baseline/README.md](llm_baseline/README.md)：Qwen3-VL 生成式基线的测试脚本与结构化提示词设计。
   - [jevomni/README.md](jevomni/README.md)：Jev-Omni 的权重下载、素材准备、四模态部署验证与延迟基准。
+- **从零训练自己的决策模型**（上面都是部署别人的，这两条是自己训）：
+  - [text_jev_train/README.md](text_jev_train/README.md)：纯文本路线，Qwen3-0.6B 全参微调，typed-decisions 数据集，四步跑通训练、选优、校准、服务。
+  - [vision_jev_train/README.md](vision_jev_train/README.md)：视觉路线，Qwen3.5-2B 加 LoRA，ScienceQA 按图片 sha256 去重切分，含启动内存体检与运行内存硬闸。
 - **[docs/执行日志/](docs/执行日志/)**：收录全部实测产生的原始终端输出（14 份 .log + 1 份 JSON），供校验原始耗时与判定结果。
 
 ## 致谢
