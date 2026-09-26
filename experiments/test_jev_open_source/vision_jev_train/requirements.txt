@@ -1,0 +1,8 @@
+torch>=2.6.0
+transformers>=5.16.0
+peft>=0.13.0
+accelerate>=1.0.0
+numpy>=1.24.0
+pillow>=10.0.0
+pyarrow>=14.0.0
+huggingface_hub>=0.24.0

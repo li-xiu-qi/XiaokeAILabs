@@ -65,7 +65,7 @@
 ### 📊 模型微调训练与评估
 
 1. **Embedding 研究总组**：评测基准与微调数据、相似度行为专项（句子长度含跨语言扩展、代码与表格、NLI 迁移）、嵌入与 Reranker 微调、多模态图文（BGE-VL、CLIP），地址： [experiments/embedding_research](experiments/embedding_research)
-2. **DPO 训练脚本**： DPO（Direct Preference Optimization）训练脚本，支持按样本量与 epoch 控制，地址： [experiments/test_dpo/dpo.py](experiments/test_dpo/dpo.py)
+2. **偏好训练**：用 chosen/rejected 偏好对直接优化策略的对齐训练（DPO 教学脚本），预留 RLHF 家族其他变体的入口，地址： [experiments/preference_training](experiments/preference_training)
 
 ### ⚡ 判别式决策模型
 
