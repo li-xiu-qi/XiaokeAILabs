@@ -1,0 +1,28 @@
+{
+  "model": "jinaai/jina-embeddings-v4",
+  "n": 500,
+  "image_route": {
+    "R@1": 0.094,
+    "R@5": 0.21,
+    "R@10": 0.31,
+    "median_rank": 39.0,
+    "rel_median": 0.47310215587616883,
+    "unrel_median": 0.39078138242293275,
+    "margin_median": 0.08232077345323607
+  },
+  "text_route": {
+    "R@1": 0.236,
+    "R@5": 0.438,
+    "R@10": 0.516,
+    "median_rank": 9.0,
+    "rel_median": 0.7237646713155659,
+    "unrel_median": 0.5050747439180496,
+    "margin_median": 0.21868992739751625
+  },
+  "complement": {
+    "both_top1": 14,
+    "image_only_top5": 46,
+    "text_only_top5": 160,
+    "neither_top5": 235
+  }
+}
