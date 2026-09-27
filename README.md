@@ -75,12 +75,6 @@
 
 1. **xlsx、sqlite、json、jsonl 的体积与速度实测**：同一份数据在四种格式下的体积换算与读写耗时，含 xlsx 压缩率上限（500字节约110倍）、索引对查询速度的真实影响（点查快217倍，范围过滤与分组聚合反而变慢4倍以上）、jsonl 的增量能力（追加一行快三个数量级，只取前1000行快66~239倍），地址： [experiments/test_index_theory](experiments/test_index_theory)（数据格式实测已并入该实验）
 
-### 🔧 系统集成与工程化
-
-1. **Rust Python集成**：使用Rust优化Python性能瓶颈，地址： [experiments/test_rust_in_python](experiments/test_rust_in_python)
-2. **FastAPI接口服务**：FastAPI 依赖注入与 sqlite 会话管理示例（单文件，内容已归档，不再随仓维护）
-
-
 ### 🚀 完整应用
 
 以下是可以直接运行的应用，不是单点实验：
