@@ -109,3 +109,23 @@ HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 ~/xinfer-env/bin/python order_hardneg.py
 ```
 
 A 组与 C 组必须用同一个 limit，否则 R@1 不能横向比。数据不在仓里，先跑 `code/fetch_crossmodal_datasets.py`。目标机无外网，需经本机代理隧道中转，隧道脚本在 `pkm-hub-runtime/scripts/start-dgx-tunnel.ps1`。
+
+## 三项几何诊断：复现脚本
+
+这三项（各向异性、hubness、RRF 融合）原先只有终端输出，撤到不可复现。现补了两个脚本，读数与口径都落盘到 `results/geometry_diag/`。
+
+```bash
+# hubness + RRF + 检索读数，只用已有 simmat，不需要 GPU，秒级
+~/xinfer-env/bin/python scripts/diag_geometry_simmat.py --check   # --check 与 REPORT 历史读数逐项比对
+
+# 各向异性，需要 embedding 矩阵，重编码（首次几分钟，之后走 results/diag_cache/ 缓存）
+HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 ~/xinfer-env/bin/python scripts/diag_anisotropy_embed.py --n 500 --check
+```
+
+两个口径上的坑，都是反推定义时才发现、且会让数字静默偏移的：
+
+`unrel_median` 是**每查询的中位数再取中位**，不是全局中位数。omni_a2t 全局 0.2398 对逐查询 0.2511，clap_a2t 0.3265 对 0.3353。REPORT 的 margin 一律用逐查询口径。
+
+hubness 取 top-k 时必须**排除自匹配**，对角线置 -inf 后再排。不排除时每条候选必得自己那一票，分布被系统性拉平，omni_i2t 的 deg_max 会从 55 掉到 50、基尼从 0.374 掉到 0.339。
+
+另有一个 transformers 5.x 的参数改名：`proc(audios=...)` 已废弃，必须写 `proc(audio=...)`，否则报 deprecated ValueError。
