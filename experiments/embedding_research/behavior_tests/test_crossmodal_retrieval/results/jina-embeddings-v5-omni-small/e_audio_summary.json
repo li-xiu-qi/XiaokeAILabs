@@ -1,0 +1,46 @@
+{
+  "model": "jinaai/jina-embeddings-v5-omni-small",
+  "task": "retrieval",
+  "dataset": "FSD50K train-00000",
+  "source": "/home/ke/crossmodal_lab/datasets/fsd50k/parquet/train-00000-of-00031-31accf869b307ce3.parquet",
+  "n": 1322,
+  "random_baseline_r1": 0.000756,
+  "overall": {
+    "rel_median": 0.2439,
+    "unrel_median": 0.16,
+    "margin": 0.084,
+    "r@1": 0.01,
+    "r@5": 0.026,
+    "r@10": 0.038,
+    "median_rank": 197
+  },
+  "by_desc_len": {
+    "short_le4words": {
+      "n": 89,
+      "rel_median": 0.2999,
+      "unrel_median": 0.1494,
+      "margin": 0.1504,
+      "r@1": 0.0112,
+      "r@5": 0.0225,
+      "r@10": 0.0225,
+      "median_rank": 91
+    },
+    "long_gt4words": {
+      "n": 411,
+      "rel_median": 0.2538,
+      "unrel_median": 0.1545,
+      "margin": 0.0993,
+      "r@1": 0.0097,
+      "r@5": 0.0268,
+      "r@10": 0.0414,
+      "median_rank": 219
+    }
+  },
+  "notes": [
+    "query=音频, document=文本描述，对齐图文 A 组的图检索文本",
+    "无关组为每个音频对其余全部文本的中位数，样本量对等",
+    "不报折扣比例：FSD50K 每条仅一条描述，无同源同模态基线",
+    "description 有详略（标签式与句子式），故按词数分层"
+  ],
+  "elapsed_sec": 128.3
+}
