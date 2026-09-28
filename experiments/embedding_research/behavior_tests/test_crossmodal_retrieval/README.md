@@ -21,6 +21,7 @@
 | `code/diag_cohesion.py` | 内聚性诊断，区分「模型特性」与「编码 bug」 |
 | `code/collect_t2t.py` | 补采文本对文本分布，供画图用 |
 | `results/<模型名>/` | 按模型分目录的读数与直方图汇总，全量数据在 DGX |
+| `logs/` | 执行日志，从 DGX 拉回并清理噪声，含与 Spark 原名的对应表 |
 | `results/REPORT.md` | 实验报告，含两个模型的对照读数与解读 |
 
 ## 测什么
