@@ -294,3 +294,15 @@ C 组的描述候选只用每图第一条 caption，没试多条描述的投票�
 D 组的实词用长度近似（不少于 4 字母），不等同于词性标注，可能把部分短实词当功能词漏掉。
 
 全量数据在 DGX `~/crossmodal_lab/results/<模型名>/`，本仓只放汇总与直方图，`t2t_dist.csv` 约 50MB 未入仓。
+
+## 操作踩坑（复现前必读）
+
+四条都会让读数变成无效数字而不报错，按踩到的顺序记。
+
+**一、Flickr30k 图像路径少一层，症状是跨模态完全归零。** 图像实际在 `datasets/flickr30k/images/flickr30k-images/*.jpg`，比 `images/` 多一层。路径写错时 `os.path.join` 不会报错，编码器拿到不存在的路径产出崩坏向量，于是 I2T 的 margin 掉到 0.0009、R@1 恰好等于随机基线 0.002，而同一轮的 T2T 完全正常（margin 0.517）。**半侧归零、半侧正常时，先验输入路径存在性，再讨论模型特性。** 本次就是靠这个区分开编码 bug 与模型无能的。原 A 组脚本的 `ensure_flickr_images()` 会先解压 zip，直接用仓里别处的路径拼接容易漏掉这一步。
+
+**二、HF 不通时必须带离线变量，否则加载阶段静默挂住。** `SentenceTransformer(...)` 会向 `huggingface.co` 发 HEAD 探测远端是否有更新，远端不通就卡在 `Retrying in 1s` 里反复重试，日志只有一行 `loading...`，进程活着、内存占用量不涨，看起来像在加载大模型。加 `HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1` 直接读本地缓存即可。本次 3.2GB 模型因此白等了约 4 分钟。
+
+**三、sentence-transformers 不收 `default_task` 顶层参数。** 该参数属于原始 transformers 路径的 `AutoModel.from_pretrained`，ST 侧要写成 `model_kwargs={"default_task": "retrieval"}`。传错直接 `TypeError: unexpected keyword argument`，报错清晰不算陷阱，但 README 两种写法并存容易看错。
+
+**四、音频传 bytes 会走文件路径分支，报缺 librosa。** `encode_query(audio_bytes)` 在 ST 内部把 bytes 当作路径处理，落到 `_load_audio_array` 报 `Loading audio from a file path needs pip install librosa`，装 librosa 也不解决（它要的是路径不是内容）。正解是先用 soundfile 解成 1-D float32 波形再传：44.1kHz 单声道 WAV 用 `scipy.signal.resample_poly(x, 16000, sr)` 抗混叠重采样到 16k。装 soundfile 与 scipy 即可，不必装 librosa（后者依赖 numba，体积大得多）。
