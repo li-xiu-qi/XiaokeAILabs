@@ -9,7 +9,7 @@
 ```
 text_jev_train/
 ├── agentjev/           # 模型代码（Qwen3 骨干 + 候选头）
-├── jev_service/        # 输入协议、编码、推理引擎、HTTP 服务
+├── jev_service/        # 输入协议、编码（含共享前缀加速）、推理引擎、HTTP 服务
 ├── scripts/
 │   ├── download_data.py       # 下载并校验数据集
 │   ├── download_backbone.py   # 下载 Qwen3-0.6B 底座
@@ -92,6 +92,8 @@ curl -s http://127.0.0.1:8149/api/evaluate \
 ```
 
 返回每个选项的概率和胜出项，不生成文本。实测单题延迟几十毫秒。
+
+编码默认 `auto`：同一道题的多个候选共享 `[STATE]+[QUESTION]` 前缀的 KV 计算（一次性算前缀，各候选只算自己的后缀），输出与逐路径独立编码一致，长题多候选时吞吐约翻倍；怀疑编码问题时可用 `--encoder path` 逐路径复跑对照。
 
 ## 换成自己的数据
 
