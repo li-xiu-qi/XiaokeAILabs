@@ -24,6 +24,8 @@ def main():
     parser.add_argument("--host", default="127.0.0.1", help="监听地址，默认本机")
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--max-tokens", type=int, default=2048)
+    parser.add_argument("--encoder", default="auto", choices=["auto", "path", "shared"],
+                        help="候选编码模式：auto=长前缀多候选走共享前缀，否则逐路径；path=始终逐路径（数值基准）；shared=逐题强制共享前缀")
     args = parser.parse_args()
 
     run_dir = Path(args.run_dir)
@@ -41,6 +43,7 @@ def main():
         args.backbone,
         args.device,
         args.max_tokens,
+        encoder=args.encoder,
         temperatures=str(temperatures) if temperatures.exists() else None,
     )
     server = ThreadingHTTPServer((args.host, args.port), make_handler(engine))
