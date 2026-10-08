@@ -34,7 +34,7 @@ def build_url(name: str, mirror: bool) -> str:
         if mirror
         else "https://huggingface.co"
     )
-    return f"{base}/datasets/{REPO_ID}/resolve/{REVISION}/data/{name}"
+    return f"{base}/datasets/{REPO_ID}/resolve/{REVISION}/all/{name}"
 
 
 def download(name: str, mirror: bool) -> Path:
