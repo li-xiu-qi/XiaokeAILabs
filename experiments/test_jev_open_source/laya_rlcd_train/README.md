@@ -42,10 +42,20 @@ Kaggle 免费 2xT4 DDP）。本实验把它改成单卡 CUDA 路径（无 DDP）
 laya_rlcd_train/
 ├── scripts/
 │   ├── prepare_data.py        # typed-decisions → {state, questions, gold} JSONL
-│   └── run_rlcd_train.py      # 单卡训练入口（对齐 notebook 配方）
+│   ├── run_finetune.py        # 单卡训练入口（--loss rlcd / soft-ce 对照臂）
+│   └── run_ab_compare.sh      # 一键 A/B 对照（两臂串行 + 并排对比）
 ├── data/                      # JSONL 数据集
+├── docs/RLCD微调报告.md       # 主报告（唯一结论来源）
 └── runs/                      # 训练产物（checkpoint、train_report.json）
 ```
+
+## 已跑出的结果（seed 0，held-out 2000 题）
+
+RLCD 臂两次运行准确率 0.751 与 0.770（同配方重跑差 1.9 点，GPU 训练非确定性），超过
+Jev 官方 0.727 与教师上限 0.735，官方 2xT4 的 0.766 落在两次实测区间内。A/B 对照
+（唯一变量为 loss）中 soft-ce 纯蒸馏 0.7855 数值略高，但差距小于运行间波动，无证据
+表明 RLCD 策略梯度项在此数据集带来准确率增益（ECE 上 rlcd 略优，仅方向性观察）。
+详见 `docs/RLCD微调报告.md`；重跑对照用 `bash scripts/run_ab_compare.sh`，约 54 分钟。
 
 上游：laya 仓库 `github.com/NandhaKishorM/laya`（Apache-2.0），数据集
 `huggingface.co/datasets/LocalLLaMA/typed-decisions`，权重
