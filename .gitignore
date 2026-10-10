@@ -198,3 +198,7 @@ experiments/video_finetune/*/data/
 **/_latent_cache/
 # RLCD 实验数据：LocalLLaMA/typed-decisions，HF 可重下，只在训练机留存
 experiments/test_jev_open_source/laya_rlcd_train/data/
+# RLCD 实验训练产物：6.4G 的 checkpoint 与逐轮输出，按 run 可重新生成，只在训练机留存。
+# Spark 侧原先用子目录 .gitignore 放这条，与仓库"忽略规则集中根文件"的约定不一致，
+# 2026-10-11 合并到此处并删除该子目录文件。
+experiments/test_jev_open_source/laya_rlcd_train/runs/
