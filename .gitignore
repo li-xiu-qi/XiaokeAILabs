@@ -187,3 +187,12 @@ remote_files.txt
 # 覆盖顶层执行日志目录与各子实验（laya、jevomni 等）自己的日志目录
 !experiments/test_jev_open_source/docs/执行日志/*.log
 !experiments/test_jev_open_source/**/执行日志/*.log
+
+# 微调训练数据：全量只在 DGX Spark 本地准备，Windows 侧不留、不入库。
+# 依据与下方 results 例外注释同源：全量数据在 DGX，本仓只放汇总。
+# 目录模式是刻意的，data/ 下一律不进版本库，数据来源写在各实验 README。
+# latent 缓存是 ai-toolkit 的训练副产物，按 dataset folder 可重新生成，
+# 体积可达数百 MB，同样只在训练机留存。（2026-10-10 定）
+experiments/image_finetune/*/data/
+experiments/video_finetune/*/data/
+**/_latent_cache/
