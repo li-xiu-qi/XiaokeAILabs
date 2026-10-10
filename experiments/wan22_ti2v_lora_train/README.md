@@ -43,12 +43,23 @@ python /home/ke/ai-toolkit-main/run.py config/rzqduck_wan22_ti2v_lora_v2.yaml
 python scripts/eval_wan_lora_v2style.py \
   --lora output_v2/rzqduck_wan22_ti2v_lora_v2/rzqduck_wan22_ti2v_lora_v2.safetensors \
   --out output_v2/eval_v2style
+
+# 第三轮（数据集严格配平 11 水 + 11 陆 + 600 步压力测试）
+python scripts/gen_dataset_v3.py --out data/rzqduck_clips_v3   # 补 4 段水景
+python scripts/build_dataset_v3.py                             # 汇编 22 段并核对配比
+python /home/ke/ai-toolkit-main/run.py config/rzqduck_wan22_ti2v_lora_v3.yaml
+python scripts/eval_wan_lora_v2style.py \
+  --lora output_v3/rzqduck_wan22_ti2v_lora_v3/rzqduck_wan22_ti2v_lora_v3.safetensors \
+  --out output_v3/eval_v2style
+python scripts/eval_wan_lora.py \
+  --lora output_v3/rzqduck_wan22_ti2v_lora_v3/rzqduck_wan22_ti2v_lora_v3.safetensors \
+  --out output_v3/eval_v1style
 ```
 
 ## 关键结论速览
 
-- 视频 LoRA 全链路在 aarch64 上零障碍跑通，训练期内存仅 21-24GB，推理峰值约 104GB，全程无 OOM
-- 触发词绑定呈现场景依赖性：水景最强（双鸭 + 红领结红点），厨房场景始终不绑定
+- 视频 LoRA 全链路在 aarch64 上零障碍跑通，训练期内存仅 21-25GB，推理峰值约 104GB，全程无 OOM
+- 触发词绑定呈现场景依赖性：水景最强（黄鸭稳定复现，600 步后对长短 prompt 均激活），纸船场景弱，厨房场景在三轮迭代（300/400/600 步 + 配平）后始终不绑定，判定为结构性阻断
 - caption 极简化（去掉显式外观描述）显著强化生僻 token 的绑定
-- 推理 prompt 风格必须与训练 caption 格式对齐，否则概念不激活
-- 训练数据是底模自产合成数据，结论不外推到真实视频
+- 推理 prompt 风格要与训练 caption 格式对齐（400 步时陆地场景尤其明显，600 步后水景脱敏）
+- 训练数据是底模自产合成数据，结论不外推到真实视频；评测为单 seed 单次，场景间存在采样波动
