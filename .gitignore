@@ -196,3 +196,5 @@ remote_files.txt
 experiments/image_finetune/*/data/
 experiments/video_finetune/*/data/
 **/_latent_cache/
+# RLCD 实验数据：LocalLLaMA/typed-decisions，HF 可重下，只在训练机留存
+experiments/test_jev_open_source/laya_rlcd_train/data/
