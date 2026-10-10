@@ -7,12 +7,29 @@
 
 ```
 config/     训练配置（smoke / 第一轮 / 第二轮修正轮）
-data/       训练数据集（底模自产合成视频 + caption）
+data/       训练数据集，不在本仓。见下方"数据位置"
 scripts/    数据生成、数据集汇编、训练启动、评估脚本
 docs/       实验报告与评估帧网格图（assets/）
 output/     第一轮训练产物（checkpoint、采样、评估）
 output_v2/  第二轮训练产物
 ```
+
+## 数据位置
+
+训练数据全量只在 DGX Spark 本地，不进版本库、不留 Windows 工作树
+（`.gitignore` 规则 `experiments/video_finetune/*/data/`）。
+三个数据集由底模自产合成，共 22 段 clip 加 caption，约 445 MB：
+
+| 目录 | 内容 |
+|---|---|
+| `data/rzqduck_clips/` | 第一轮，12 段 |
+| `data/rzqduck_clips_v2/` | 第二轮修正，6 段补充 |
+| `data/rzqduck_clips_v3_full/` | 第三轮配平，11 水 + 11 陆 |
+
+Spark 路径 `/home/ke/XiaokeAILabs/experiments/video_finetune/wan22_ti2v_lora_train/data/`。
+换机复现时按下方复现步骤用 `gen_dataset*.py` 重新生成，无需拷贝。
+latent 缓存（`_latent_cache/`）是 ai-toolkit 的训练副产物，按 dataset folder
+自动重建，本实验曾达 417 MB，只在训练机留存。
 
 ## 复现步骤
 
