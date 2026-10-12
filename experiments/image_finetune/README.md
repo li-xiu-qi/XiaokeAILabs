@@ -12,10 +12,8 @@
 
 ## 已移出本仓的实验
 
-橡皮鸭主体 LoRA 两轮（SDXL 与 Flux）**不在本仓**。该线结论负面，
-源仓远端公开，不对外展示，已整体迁入私有归档：
+橡皮鸭主体 LoRA 两轮已移出本仓，迁入私有归档
 `pkm-hub-lab/_归档/XiaokeAILabs-废弃实验/test_rubber_duck_subject_lora/`。
-
 迁出前确认 `origin/main` 不含 `image_finetune`，内容从未推送，无需改写历史。
 
 ## 这条线的验收标准
