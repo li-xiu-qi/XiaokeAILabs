@@ -1,0 +1,406 @@
+===== 35b / base =====
+### 35b|base|READY=1
+### 35b|base|T1-自由生成|round1
+{
+  "prefill_tps": 77.78,
+  "gen_tps": 63.89,
+  "prefill_tokens": 28,
+  "gen_tokens": 400
+}
+### 35b|base|T1-自由生成|round2
+{
+  "prefill_tps": 72.82,
+  "gen_tps": 63.45,
+  "prefill_tokens": 4,
+  "gen_tokens": 400
+}
+### 35b|base|T1-自由生成|round3
+{
+  "prefill_tps": 84.12,
+  "gen_tps": 64.87,
+  "prefill_tokens": 4,
+  "gen_tokens": 400
+}
+### 35b|base|T2-长文本改写|round1
+{
+  "prefill_tps": 656.43,
+  "gen_tps": 65.53,
+  "prefill_tokens": 276,
+  "gen_tokens": 400
+}
+### 35b|base|T2-长文本改写|round2
+{
+  "prefill_tps": 81.02,
+  "gen_tps": 65.17,
+  "prefill_tokens": 4,
+  "gen_tokens": 400
+}
+### 35b|base|T2-长文本改写|round3
+{
+  "prefill_tps": 70.17,
+  "gen_tps": 65.16,
+  "prefill_tokens": 4,
+  "gen_tokens": 400
+}
+### 35b|base|T3-代码改写|round1
+{
+  "prefill_tps": 543.07,
+  "gen_tps": 65.25,
+  "prefill_tokens": 237,
+  "gen_tokens": 400
+}
+### 35b|base|T3-代码改写|round2
+{
+  "prefill_tps": 79.42,
+  "gen_tps": 65.15,
+  "prefill_tokens": 4,
+  "gen_tokens": 400
+}
+### 35b|base|T3-代码改写|round3
+{
+  "prefill_tps": 68.34,
+  "gen_tps": 65.0,
+  "prefill_tokens": 4,
+  "gen_tokens": 400
+}
+### 35b|base|END
+===== 35b / mtp =====
+### 35b|mtp|READY=1
+### 35b|mtp|T1-自由生成|round1
+{
+  "prefill_tps": 59.38,
+  "gen_tps": 87.66,
+  "prefill_tokens": 28,
+  "gen_tokens": 400,
+  "draft_n": 335,
+  "draft_accepted": 231,
+  "accept_rate": 0.6896
+}
+### 35b|mtp|T1-自由生成|round2
+{
+  "prefill_tps": 78.25,
+  "gen_tps": 90.98,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 326,
+  "draft_accepted": 236,
+  "accept_rate": 0.7239
+}
+### 35b|mtp|T1-自由生成|round3
+{
+  "prefill_tps": 77.61,
+  "gen_tps": 91.68,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 322,
+  "draft_accepted": 238,
+  "accept_rate": 0.7391
+}
+### 35b|mtp|T2-长文本改写|round1
+{
+  "prefill_tps": 624.88,
+  "gen_tps": 88.1,
+  "prefill_tokens": 276,
+  "gen_tokens": 400,
+  "draft_n": 332,
+  "draft_accepted": 233,
+  "accept_rate": 0.7018
+}
+### 35b|mtp|T2-长文本改写|round2
+{
+  "prefill_tps": 77.32,
+  "gen_tps": 89.57,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 325,
+  "draft_accepted": 236,
+  "accept_rate": 0.7262
+}
+### 35b|mtp|T2-长文本改写|round3
+{
+  "prefill_tps": 74.99,
+  "gen_tps": 83.91,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 351,
+  "draft_accepted": 223,
+  "accept_rate": 0.6353
+}
+### 35b|mtp|T3-代码改写|round1
+{
+  "prefill_tps": 525.02,
+  "gen_tps": 90.49,
+  "prefill_tokens": 237,
+  "gen_tokens": 400,
+  "draft_n": 323,
+  "draft_accepted": 237,
+  "accept_rate": 0.7337
+}
+### 35b|mtp|T3-代码改写|round2
+{
+  "prefill_tps": 73.49,
+  "gen_tps": 100.42,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 291,
+  "draft_accepted": 253,
+  "accept_rate": 0.8694
+}
+### 35b|mtp|T3-代码改写|round3
+{
+  "prefill_tps": 72.2,
+  "gen_tps": 91.95,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 318,
+  "draft_accepted": 240,
+  "accept_rate": 0.7547
+}
+### 35b|mtp|END
+===== 35b / ngram-simple =====
+### 35b|ngram-simple|READY=1
+### 35b|ngram-simple|T1-自由生成|round1
+{
+  "prefill_tps": 82.07,
+  "gen_tps": 60.94,
+  "prefill_tokens": 28,
+  "gen_tokens": 400,
+  "draft_n": 8,
+  "draft_accepted": 8,
+  "accept_rate": 1.0
+}
+### 35b|ngram-simple|T1-自由生成|round2
+{
+  "prefill_tps": 72.32,
+  "gen_tps": 61.17,
+  "prefill_tokens": 4,
+  "gen_tokens": 400
+}
+### 35b|ngram-simple|T1-自由生成|round3
+{
+  "prefill_tps": 73.75,
+  "gen_tps": 62.22,
+  "prefill_tokens": 4,
+  "gen_tokens": 400
+}
+### 35b|ngram-simple|T2-长文本改写|round1
+{
+  "prefill_tps": 655.92,
+  "gen_tps": 79.23,
+  "prefill_tokens": 276,
+  "gen_tokens": 400,
+  "draft_n": 283,
+  "draft_accepted": 158,
+  "accept_rate": 0.5583
+}
+### 35b|ngram-simple|T2-长文本改写|round2
+{
+  "prefill_tps": 67.98,
+  "gen_tps": 61.56,
+  "prefill_tokens": 4,
+  "gen_tokens": 400
+}
+### 35b|ngram-simple|T2-长文本改写|round3
+{
+  "prefill_tps": 68.58,
+  "gen_tps": 57.38,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 192,
+  "draft_accepted": 15,
+  "accept_rate": 0.0781
+}
+### 35b|ngram-simple|T3-代码改写|round1
+{
+  "prefill_tps": 559.58,
+  "gen_tps": 61.75,
+  "prefill_tokens": 237,
+  "gen_tokens": 400
+}
+### 35b|ngram-simple|T3-代码改写|round2
+{
+  "prefill_tps": 72.29,
+  "gen_tps": 61.66,
+  "prefill_tokens": 4,
+  "gen_tokens": 400
+}
+### 35b|ngram-simple|T3-代码改写|round3
+{
+  "prefill_tps": 70.32,
+  "gen_tps": 61.88,
+  "prefill_tokens": 4,
+  "gen_tokens": 400
+}
+### 35b|ngram-simple|END
+===== 35b / ngram-map-k =====
+### 35b|ngram-map-k|READY=1
+### 35b|ngram-map-k|T1-自由生成|round1
+{
+  "prefill_tps": 77.79,
+  "gen_tps": 81.68,
+  "prefill_tokens": 28,
+  "gen_tokens": 400,
+  "draft_n": 94,
+  "draft_accepted": 94,
+  "accept_rate": 1.0
+}
+### 35b|ngram-map-k|T1-自由生成|round2
+{
+  "prefill_tps": 72.77,
+  "gen_tps": 60.98,
+  "prefill_tokens": 4,
+  "gen_tokens": 400
+}
+### 35b|ngram-map-k|T1-自由生成|round3
+{
+  "prefill_tps": 67.8,
+  "gen_tps": 64.51,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 50,
+  "draft_accepted": 50,
+  "accept_rate": 1.0
+}
+### 35b|ngram-map-k|T2-长文本改写|round1
+{
+  "prefill_tps": 636.94,
+  "gen_tps": 55.14,
+  "prefill_tokens": 276,
+  "gen_tokens": 400,
+  "draft_n": 96,
+  "draft_accepted": 0,
+  "accept_rate": 0.0
+}
+### 35b|ngram-map-k|T2-长文本改写|round2
+{
+  "prefill_tps": 72.74,
+  "gen_tps": 68.03,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 187,
+  "draft_accepted": 100,
+  "accept_rate": 0.5348
+}
+### 35b|ngram-map-k|T2-长文本改写|round3
+{
+  "prefill_tps": 65.15,
+  "gen_tps": 57.14,
+  "prefill_tokens": 4,
+  "gen_tokens": 400
+}
+### 35b|ngram-map-k|T3-代码改写|round1
+{
+  "prefill_tps": 539.67,
+  "gen_tps": 57.65,
+  "prefill_tokens": 237,
+  "gen_tokens": 400
+}
+### 35b|ngram-map-k|T3-代码改写|round2
+{
+  "prefill_tps": 65.19,
+  "gen_tps": 55.54,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 96,
+  "draft_accepted": 11,
+  "accept_rate": 0.1146
+}
+### 35b|ngram-map-k|T3-代码改写|round3
+{
+  "prefill_tps": 86.93,
+  "gen_tps": 56.66,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 48,
+  "draft_accepted": 3,
+  "accept_rate": 0.0625
+}
+### 35b|ngram-map-k|END
+===== 35b / ngram-mod =====
+### 35b|ngram-mod|READY=1
+### 35b|ngram-mod|T1-自由生成|round1
+{
+  "prefill_tps": 79.02,
+  "gen_tps": 58.0,
+  "prefill_tokens": 28,
+  "gen_tokens": 400
+}
+### 35b|ngram-mod|T1-自由生成|round2
+{
+  "prefill_tps": 76.64,
+  "gen_tps": 56.86,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 128,
+  "draft_accepted": 26,
+  "accept_rate": 0.2031
+}
+### 35b|ngram-mod|T1-自由生成|round3
+{
+  "prefill_tps": 79.06,
+  "gen_tps": 62.94,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 128,
+  "draft_accepted": 72,
+  "accept_rate": 0.5625
+}
+### 35b|ngram-mod|T2-长文本改写|round1
+{
+  "prefill_tps": 658.91,
+  "gen_tps": 56.33,
+  "prefill_tokens": 276,
+  "gen_tokens": 400,
+  "draft_n": 64,
+  "draft_accepted": 8,
+  "accept_rate": 0.125
+}
+### 35b|ngram-mod|T2-长文本改写|round2
+{
+  "prefill_tps": 81.28,
+  "gen_tps": 54.58,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 128,
+  "draft_accepted": 0,
+  "accept_rate": 0.0
+}
+### 35b|ngram-mod|T2-长文本改写|round3
+{
+  "prefill_tps": 80.71,
+  "gen_tps": 59.95,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 64,
+  "draft_accepted": 36,
+  "accept_rate": 0.5625
+}
+### 35b|ngram-mod|T3-代码改写|round1
+{
+  "prefill_tps": 555.63,
+  "gen_tps": 57.89,
+  "prefill_tokens": 237,
+  "gen_tokens": 400
+}
+### 35b|ngram-mod|T3-代码改写|round2
+{
+  "prefill_tps": 75.18,
+  "gen_tps": 58.85,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 64,
+  "draft_accepted": 23,
+  "accept_rate": 0.3594
+}
+### 35b|ngram-mod|T3-代码改写|round3
+{
+  "prefill_tps": 76.42,
+  "gen_tps": 58.92,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 128,
+  "draft_accepted": 40,
+  "accept_rate": 0.3125
+}
+### 35b|ngram-mod|END
+ALL_DONE 35b
