@@ -1,0 +1,280 @@
+===== 125mtp2 / mtp-n3-p0 =====
+### 125mtp2|mtp-n3-p0|READY=1
+### 125mtp2|mtp-n3-p0|T1-自由生成|round1
+{
+  "prefill_tps": 37.97,
+  "gen_tps": 42.14,
+  "prefill_tokens": 28,
+  "gen_tokens": 400,
+  "draft_n": 456,
+  "draft_accepted": 246,
+  "accept_rate": 0.5395
+}
+### 125mtp2|mtp-n3-p0|T1-自由生成|round2
+{
+  "prefill_tps": 36.91,
+  "gen_tps": 45.25,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 434,
+  "draft_accepted": 254,
+  "accept_rate": 0.5853
+}
+### 125mtp2|mtp-n3-p0|T1-自由生成|round3
+{
+  "prefill_tps": 38.4,
+  "gen_tps": 41.44,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 476,
+  "draft_accepted": 240,
+  "accept_rate": 0.5042
+}
+### 125mtp2|mtp-n3-p0|T2-长文本改写|round1
+{
+  "prefill_tps": 255.49,
+  "gen_tps": 47.97,
+  "prefill_tokens": 276,
+  "gen_tokens": 400,
+  "draft_n": 402,
+  "draft_accepted": 265,
+  "accept_rate": 0.6592
+}
+### 125mtp2|mtp-n3-p0|T2-长文本改写|round2
+{
+  "prefill_tps": 36.34,
+  "gen_tps": 47.82,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 401,
+  "draft_accepted": 265,
+  "accept_rate": 0.6608
+}
+### 125mtp2|mtp-n3-p0|T2-长文本改写|round3
+{
+  "prefill_tps": 37.54,
+  "gen_tps": 49.14,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 388,
+  "draft_accepted": 268,
+  "accept_rate": 0.6907
+}
+### 125mtp2|mtp-n3-p0|T3-代码改写|round1
+{
+  "prefill_tps": 244.3,
+  "gen_tps": 55.0,
+  "prefill_tokens": 237,
+  "gen_tokens": 400,
+  "draft_n": 346,
+  "draft_accepted": 283,
+  "accept_rate": 0.8179
+}
+### 125mtp2|mtp-n3-p0|T3-代码改写|round2
+{
+  "prefill_tps": 35.95,
+  "gen_tps": 59.24,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 322,
+  "draft_accepted": 291,
+  "accept_rate": 0.9037
+}
+### 125mtp2|mtp-n3-p0|T3-代码改写|round3
+{
+  "prefill_tps": 36.4,
+  "gen_tps": 58.33,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 327,
+  "draft_accepted": 289,
+  "accept_rate": 0.8838
+}
+### 125mtp2|mtp-n3-p0|END
+===== 125mtp2 / mtp-n3-p075 =====
+### 125mtp2|mtp-n3-p075|READY=1
+### 125mtp2|mtp-n3-p075|T1-自由生成|round1
+{
+  "prefill_tps": 29.72,
+  "gen_tps": 38.42,
+  "prefill_tokens": 28,
+  "gen_tokens": 400,
+  "draft_n": 263,
+  "draft_accepted": 215,
+  "accept_rate": 0.8175
+}
+### 125mtp2|mtp-n3-p075|T1-自由生成|round2
+{
+  "prefill_tps": 36.97,
+  "gen_tps": 39.91,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 266,
+  "draft_accepted": 223,
+  "accept_rate": 0.8383
+}
+### 125mtp2|mtp-n3-p075|T1-自由生成|round3
+{
+  "prefill_tps": 34.93,
+  "gen_tps": 40.26,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 254,
+  "draft_accepted": 222,
+  "accept_rate": 0.874
+}
+### 125mtp2|mtp-n3-p075|T2-长文本改写|round1
+{
+  "prefill_tps": 256.08,
+  "gen_tps": 49.38,
+  "prefill_tokens": 276,
+  "gen_tokens": 400,
+  "draft_n": 291,
+  "draft_accepted": 270,
+  "accept_rate": 0.9278
+}
+### 125mtp2|mtp-n3-p075|T2-长文本改写|round2
+{
+  "prefill_tps": 35.36,
+  "gen_tps": 46.71,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 293,
+  "draft_accepted": 261,
+  "accept_rate": 0.8908
+}
+### 125mtp2|mtp-n3-p075|T2-长文本改写|round3
+{
+  "prefill_tps": 35.09,
+  "gen_tps": 47.59,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 289,
+  "draft_accepted": 262,
+  "accept_rate": 0.9066
+}
+### 125mtp2|mtp-n3-p075|T3-代码改写|round1
+{
+  "prefill_tps": 242.89,
+  "gen_tps": 54.04,
+  "prefill_tokens": 237,
+  "gen_tokens": 400,
+  "draft_n": 292,
+  "draft_accepted": 283,
+  "accept_rate": 0.9692
+}
+### 125mtp2|mtp-n3-p075|T3-代码改写|round2
+{
+  "prefill_tps": 34.64,
+  "gen_tps": 52.94,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 293,
+  "draft_accepted": 277,
+  "accept_rate": 0.9454
+}
+### 125mtp2|mtp-n3-p075|T3-代码改写|round3
+{
+  "prefill_tps": 35.24,
+  "gen_tps": 52.65,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 285,
+  "draft_accepted": 273,
+  "accept_rate": 0.9579
+}
+### 125mtp2|mtp-n3-p075|END
+===== 125mtp2 / mtp-n5-p0 =====
+### 125mtp2|mtp-n5-p0|READY=1
+### 125mtp2|mtp-n5-p0|T1-自由生成|round1
+{
+  "prefill_tps": 37.76,
+  "gen_tps": 30.97,
+  "prefill_tokens": 28,
+  "gen_tokens": 400,
+  "draft_n": 787,
+  "draft_accepted": 241,
+  "accept_rate": 0.3062
+}
+### 125mtp2|mtp-n5-p0|T1-自由生成|round2
+{
+  "prefill_tps": 36.58,
+  "gen_tps": 31.72,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 778,
+  "draft_accepted": 243,
+  "accept_rate": 0.3123
+}
+### 125mtp2|mtp-n5-p0|T1-自由生成|round3
+{
+  "prefill_tps": 36.22,
+  "gen_tps": 34.87,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 701,
+  "draft_accepted": 258,
+  "accept_rate": 0.368
+}
+### 125mtp2|mtp-n5-p0|T2-长文本改写|round1
+{
+  "prefill_tps": 253.65,
+  "gen_tps": 34.26,
+  "prefill_tokens": 276,
+  "gen_tokens": 400,
+  "draft_n": 693,
+  "draft_accepted": 259,
+  "accept_rate": 0.3737
+}
+### 125mtp2|mtp-n5-p0|T2-长文本改写|round2
+{
+  "prefill_tps": 34.81,
+  "gen_tps": 53.0,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 451,
+  "draft_accepted": 308,
+  "accept_rate": 0.6829
+}
+### 125mtp2|mtp-n5-p0|T2-长文本改写|round3
+{
+  "prefill_tps": 35.29,
+  "gen_tps": 47.42,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 506,
+  "draft_accepted": 297,
+  "accept_rate": 0.587
+}
+### 125mtp2|mtp-n5-p0|T3-代码改写|round1
+{
+  "prefill_tps": 241.84,
+  "gen_tps": 62.19,
+  "prefill_tokens": 237,
+  "gen_tokens": 400,
+  "draft_n": 385,
+  "draft_accepted": 321,
+  "accept_rate": 0.8338
+}
+### 125mtp2|mtp-n5-p0|T3-代码改写|round2
+{
+  "prefill_tps": 35.25,
+  "gen_tps": 38.62,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 631,
+  "draft_accepted": 270,
+  "accept_rate": 0.4279
+}
+### 125mtp2|mtp-n5-p0|T3-代码改写|round3
+{
+  "prefill_tps": 37.2,
+  "gen_tps": 63.99,
+  "prefill_tokens": 4,
+  "gen_tokens": 400,
+  "draft_n": 370,
+  "draft_accepted": 324,
+  "accept_rate": 0.8757
+}
+### 125mtp2|mtp-n5-p0|END
+ALL_DONE 125mtp2

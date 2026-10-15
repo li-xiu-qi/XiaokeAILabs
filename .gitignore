@@ -102,6 +102,10 @@ embedding_cache/
 # 跨模态实验同理：报告与按模型分的读数是结论载体，全量数据在 DGX，
 # 本仓只放汇总（2026-09-26 纳入，约 2.4M）。
 !experiments/embedding_research/behavior_tests/test_crossmodal_retrieval/results/**
+# 推理性能矩阵实验同理：矩阵原始输出（每配置 × 每任务 × 三轮的 JSON 读数）与
+# 生成它的脚本、配置是结论可回溯的唯一载体，全量 30KB 级，入库；模型权重本身
+# 在 DGX 本地，不入库。（2026-10-15 纳入）
+!experiments/llm_inference_perf/results/**
 
 # 临时文件和缓存
 *.tmp
