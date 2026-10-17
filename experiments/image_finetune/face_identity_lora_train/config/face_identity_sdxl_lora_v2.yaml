@@ -1,0 +1,73 @@
+---
+job: extension
+config:
+  name: "face_identity_sdxl_lora_v2"
+  process:
+    - type: 'sd_trainer'
+      training_folder: "output_face_v2"
+      device: cuda:0
+      # v1（2000 步 / lr 1e-4 / dropout 0.05 / caption_dropout 0）检查点扫描结果：
+      #   500 步 0.3110、1000 步 0.3232、1500 步 0.2518、2000 步 0.2461
+      # 1000 步见顶后下滑，是过拟合。生成图表面有细密噪点伪影，
+      # 人脸检测检出率也从基线的 12/20 掉到 6-9/10。
+      #
+      # v2 的三项改动都指向同一个病因（过拟合强度），视为一次改动：
+      #   1. lr 1e-4 -> 5e-5       单人 20 张的数据量撑不住原学习率
+      #   2. steps 2000 -> 800     按扫描的最优点区间取中，留出早停余地
+      #   3. caption_dropout 0 -> 0.15   原来 20 张共用同一句 caption 且无 dropout，
+      #      模型会把 prompt 的每个词都当身份信号
+      #
+      # 数据、分辨率、网络结构、底模一律不动，保证差异可归因。
+      network:
+        type: "lora"
+        linear: 32
+        linear_alpha: 32
+        dropout: 0.05
+      save:
+        dtype: float16
+        save_every: 200
+        max_step_saves_to_keep: 5
+        push_to_hub: false
+      datasets:
+        - folder_path: "/home/ke/face_train"
+          caption_ext: "txt"
+          caption_dropout_rate: 0.15
+          shuffle_tokens: false
+          cache_latents_to_disk: true
+          resolution: [ 512 ]
+      train:
+        batch_size: 1
+        steps: 800
+        gradient_accumulation_steps: 1
+        train_unet: true
+        train_text_encoder: false
+        gradient_checkpointing: false
+        noise_scheduler: "ddpm"
+        optimizer: "adamw"
+        lr: 5e-5
+        ema_config:
+          use_ema: true
+          ema_decay: 0.99
+        dtype: bf16
+      model:
+        name_or_path: "/home/ke/models/SDXL-base-vkqzm"
+        is_xl: true
+        is_v2: false
+        quantize: false
+      sample:
+        sampler: "dpmsolver++"
+        sample_every: 200
+        sample_start_step: 0
+        width: 512
+        height: 512
+        prompts:
+          - "vkqzm, a photo of a man"
+          - "vkqzm, a photo of a man smiling"
+        neg: ""
+        seed: 42
+        walk_seed: true
+        guidance_scale: 7
+        sample_steps: 25
+meta:
+  name: "[name]"
+  version: '1.0'
