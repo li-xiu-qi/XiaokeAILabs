@@ -197,7 +197,7 @@ remote_files.txt
 # 目录模式是刻意的，data/ 下一律不进版本库，数据来源写在各实验 README。
 # latent 缓存是 ai-toolkit 的训练副产物，按 dataset folder 可重新生成，
 # 体积可达数百 MB，同样只在训练机留存。（2026-10-10 定）
-experiments/image_finetune/*/data/
+experiments/image-finetune/*/data/
 experiments/video-finetune/*/data/
 **/_latent_cache/
 # RLCD 实验数据：LocalLLaMA/typed-decisions，HF 可重下，只在训练机留存
