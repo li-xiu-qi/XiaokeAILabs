@@ -5,7 +5,7 @@
 set -u
 PY=/home/ke/jevomni-env/bin/python
 BASE=/home/ke/models/SDXL-base-vkqzm
-ROOT=/home/ke/XiaokeAILabs/experiments/image_finetune/kuniyoshi_style_lora_train
+ROOT=/home/ke/XiaokeAILabs/experiments/image_finetune/face_identity_lora_train
 OUT=/home/ke/probe_candidates
 mkdir -p "$OUT"
 

@@ -2,7 +2,7 @@
 # 数据盘点：把训练集/验证集的实际内容摊开给人看
 # 产出：每张图的标题、来源、尺寸、颜色统计 + 联系表（带标注）
 set -u
-D=/home/ke/XiaokeAILabs/experiments/image_finetune/kuniyoshi_style_lora_train/data
+D=/home/ke/XiaokeAILabs/experiments/image_finetune/face_identity_lora_train/data
 OUT=/mnt/c/Users/ke/datasheet
 mkdir -p "$OUT"
 

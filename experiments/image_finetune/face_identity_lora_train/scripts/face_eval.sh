@@ -3,7 +3,7 @@
 # 与基线严格同口径：同提示词（仅多 trigger）、同 seed、同生成参数
 set -u
 PY=/home/ke/jevomni-env/bin/python
-EX=/home/ke/XiaokeAILabs/experiments/image_finetune/kuniyoshi_style_lora_train
+EX=/home/ke/XiaokeAILabs/experiments/image_finetune/face_identity_lora_train
 LORA=${1:-$EX/output_face/face_identity_sdxl_lora/face_identity_sdxl_lora.safetensors}
 OUT=${2:-/home/ke/face_eval}
 NEG_ID=15
