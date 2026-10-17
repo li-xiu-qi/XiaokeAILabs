@@ -44,7 +44,7 @@ XiaokeAILabs/
 ## 开发纪律
 
 - pre-commit：black（line-length 100）加 trailing-whitespace、end-of-file-fixer、check-yaml、check-added-large-files，提交前安装并运行
-- 命名：实验目录 `test_` 前缀是单点验证，无前缀是可运行小应用；代码与脚本用英文，文档用中文名
+- 命名：实验目录用连字符（kebab-case）领域主题词，不带 `test_` 前缀、不用版本号、不用动词开头；名字自解释，不看 README 也知内容（如 `vector-db-benchmark`、`inference-cost-models`）。代码与脚本用英文，文档用中文名
 - commit：Conventional Commits，一个 commit 一个语义单元；逐文件 `git add`，禁用 `git add -A` 与 `git commit -a`
 - 措辞合规：代码注释、commit message、公开文档不写内部系统路径、私有仓名、本机环境细节；被测产品实名出现允许（它们是被测对象），但不描述本仓在对齐或复刻任何内部项目
 - 产物不入库：`models/`、`.venv/`、`results/` 已由 `.gitignore` 覆盖；新增同类产物继续加 ignore，二进制与数据文件不进版本库
