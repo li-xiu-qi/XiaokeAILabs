@@ -1,6 +1,6 @@
 # 筱可 AI 工程实验仓库（XiaokeAILabs）
 
-> 李秀奇（筱可）的 AI 工程实验集合。以「能跑、能复现、讲得清」为标准，沉淀 embedding / 检索 / 推理成本 / 多模态 / 判别式模型 / Agent 等方向的实验代码。
+> 李秀奇（筱可）的 AI 工程实验集合。以「能跑、能复现、讲得清」为标准，沉淀 embedding / 检索 / 推理成本 / 多模态 / 判别式模型等方向的实验代码。
 
 ## 这是什么
 
@@ -26,9 +26,8 @@
 - **video_finetune** — LoRA 微调（视频） → `experiments/video_finetune`
 - **jina_deployment** — 同一 CLIP 的三种部署形态（原生 / ONNX / NNCF INT8） → `experiments/jina_deployment`
 
-### 判别式模型与 Agent
+### 判别式模型
 - **test_jev_open_source** — Jev 判别式模型三个开源复刻（Laya / Nimble / metask-jev）在 GB10 上的延迟与准确率实测 → `experiments/test_jev_open_source`
-- **test_agent** — MCP 协议 + 记忆机制的 Agent 实现 → `experiments/test_agent`
 
 ### 知识图谱
 - **knowledge_graph** — 知识图谱构建与查询（含红楼梦案例） → `experiments/knowledge_graph`
