@@ -1,0 +1,106 @@
+<mxfile host="65bd71144e">
+    <diagram name="提示词工程设计" id="prompt-engineering-design">
+        <mxGraphModel dx="1358" dy="899" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="DeepSearch 提示词工程与结构化输出设计" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#2E5984;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="20" width="400" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="traditional_problems" value="传统方案的问题" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="80" width="300" height="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="json_problems" value="📋 JSON 格式问题" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C62828;strokeWidth=1;verticalAlign=top;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="100" y="120" width="260" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="json_issue1" value="• 未转义引号导致解析失败" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="140" width="240" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="json_issue2" value="• 换行符处理复杂" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="160" width="240" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="json_issue3" value="• 特殊字符转义麻烦" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="180" width="240" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="yaml_problems" value="📄 YAML 格式问题" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C62828;strokeWidth=1;verticalAlign=top;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="100" y="220" width="260" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="yaml_issue1" value="• LLM对YAML语法掌握不稳定" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="240" width="240" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="yaml_issue2" value="• 缩进敏感，容易出错" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="260" width="240" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="yaml_issue3" value="• 调试困难" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="280" width="240" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="parsing_complexity" value="⚙️ 解析复杂度高" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#C62828;strokeWidth=1;verticalAlign=top;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="100" y="320" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="complexity_issue" value="• 需要复杂的错误处理机制&#xa;• 调试和维护成本高" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="340" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="custom_advantages" value="自定义结构化输出方案" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E8;strokeColor=#2E7D32;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="480" y="80" width="300" height="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="custom_format" value="📝 简洁的自定义格式" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;strokeWidth=1;verticalAlign=top;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="120" width="260" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="format_advantage1" value="• [字段名] 内容 - 直观易懂" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="510" y="140" width="240" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="format_advantage2" value="• 无需考虑转义问题" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="510" y="160" width="240" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="format_advantage3" value="• LLM更容易理解和生成" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="510" y="180" width="240" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="parsing_simple" value="⚡ 解析逻辑简单" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;strokeWidth=1;verticalAlign=top;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="220" width="260" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="parsing_advantage1" value="• 字符串匹配和分割即可" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="510" y="240" width="240" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="parsing_advantage2" value="• 容错能力强" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="510" y="260" width="240" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="parsing_advantage3" value="• 调试友好，一目了然" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="510" y="280" width="240" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="maintainability" value="🔧 维护性优势" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#2E7D32;strokeWidth=1;verticalAlign=top;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="320" width="260" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="maintain_advantage" value="• 人机友好，易于阅读&#xa;• 开发和维护成本低" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="510" y="340" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="vs_arrow" value="VS" style="shape=doubleArrow;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#EF6C00;strokeWidth=2;fontStyle=1;fontSize=16;" parent="1" vertex="1">
+                    <mxGeometry x="410" y="220" width="40" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="implementation_example" value="实现示例" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#4A148C;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="450" width="700" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="prompt_template" value="提示词模板设计" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4A148C;strokeWidth=1;verticalAlign=top;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="100" y="480" width="320" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="template_content" value="请以如下结构化文本格式输出：&#xa;```custom_structure_text&#xa;[continue_search] true/false&#xa;[reason] 继续搜索的原因和目标&#xa;[search_inputs]&#xa;- 搜索输入1&#xa;- 搜索输入2&#xa;```" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" parent="1" vertex="1">
+                    <mxGeometry x="110" y="510" width="300" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="parsing_function" value="解析函数实现" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#4A148C;strokeWidth=1;verticalAlign=top;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="450" y="480" width="320" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="function_content" value="def parse_custom_structured_text(text, fields):&#xa;    result = {}&#xa;    for field in fields:&#xa;        pattern = f&#39;\\[{field}\\]\\s*(.*?)(?=\\[|$)&#39;&#xa;        match = re.search(pattern, text, re.DOTALL)&#xa;        if match:&#xa;            result[field] = match.group(1).strip()&#xa;    return result" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" parent="1" vertex="1">
+                    <mxGeometry x="460" y="510" width="300" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#C62828;endArrow=block;endFill=1;" parent="1" source="traditional_problems" target="vs_arrow" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#2E7D32;endArrow=block;endFill=1;" parent="1" source="custom_advantages" target="vs_arrow" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="arrow3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#4A148C;endArrow=block;endFill=1;" parent="1" source="vs_arrow" target="implementation_example" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

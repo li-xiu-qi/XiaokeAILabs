@@ -1,0 +1,69 @@
+<venv>/lib/python3.12/site-packages/torch/cuda/__init__.py:68: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+<venv>/lib/python3.12/site-packages/laya/router.py:187: RuntimeWarning: laya: this checkpoint ships temperatures outside [0.5, 5] which would distort confidence; clamping choice:11+=0.1006. Treat confidence from the affected buckets as uncalibrated.
+  agent = Agent(repo, device=self.device, token=self.token, subfolder=sub)
+~/laya-zh-en.py:153: RuntimeWarning: laya: this checkpoint ships temperatures outside [0.5, 5] which would distort confidence; clamping choice:11+=0.1006. Treat confidence from the affected buckets as uncalibrated.
+  en_agent = Agent("convaiinnovations/laya", device="cuda")  # english, subfolder=None
+host: gb10-box
+MemAvailable 基线: 40.1 GB
+
+======================================================================
+[1] Router 自动路由：中英平行对比
+======================================================================
+Router(preload=True) 就绪: 54.6 s，当前可用 76.8 GB
+
+--- 英文 ---
+  准确率      : 19/20 = 95.0%
+  路由到      : {'english': 20}
+  路由理由    : ['English Latin text']
+  延迟        : p50 17.1 ms, min 16.9, max 1284.3
+  置信度均值  : 0.506（答对 0.530 / 答错 0.044）
+    billing    5/5
+    technical  5/5
+    sales      4/5
+    other      5/5
+
+--- 中文 ---
+  准确率      : 19/20 = 95.0%
+  路由到      : {'multilingual': 20}
+  路由理由    : ['non-Latin script (han, 59% of letters); the English checkpoint cannot read it', 'non-Latin script (han, 100% of letters); the English checkpoint cannot read it', 'non-Latin script (han, 85% of letters); the English checkpoint cannot read it', 'non-Latin script (han, 68% of letters); the English checkpoint cannot read it']
+  延迟        : p50 8.4 ms, min 8.3, max 25.5
+  置信度均值  : 0.866（答对 0.863 / 答错 0.906）
+    billing    5/5
+    technical  5/5
+    sales      5/5
+    other      4/5
+
+  [en] 答错 1 条:
+    期望 sales      实得 other      置信 0.044  概率分布 {'billing': 0.17, 'technical': 0.31, 'sales': 0.16, 'other': 0.36}
+
+  [zh] 答错 1 条:
+    期望 other      实得 billing    置信 0.906  概率分布 {'billing': 0.98, 'technical': 0.01, 'sales': 0.0, 'other': 0.01}
+
+======================================================================
+[2] 强灌实验：中文输入直接打 english checkpoint
+======================================================================
+  中文 + english checkpoint: 准确率 15/20 = 75.0%, 置信度均值 0.384
+  对照：同一 Router  multilingual 下中文准确率见 [1]
+
+======================================================================
+[3] noul 题型中英对比
+======================================================================
+  --- 英文 ---  路由: {'english'}
+    真值 True  noul=0.862  对
+    真值 True  noul=0.656  对
+    真值 False noul=0.000  对
+    真值 False noul=0.000  对
+    真值 True  noul=0.809  对
+    TP 3 FN 0 FP 0 TN 2
+  --- 中文 ---  路由: {'multilingual'}
+    真值 True  noul=0.025  错
+    真值 True  noul=0.051  错
+    真值 False noul=0.003  对
+    真值 False noul=0.009  对
+    真值 True  noul=0.028  错
+    TP 0 FN 3 FP 0 TN 2
+
+[内存] 基线 40.1 GB -> 现在 73.6 GB（占用 -33.5 GB），CUDA 峰值 6.65 GB
+
+[口径] 样本量小（每题 20 条、noul 5 条），只说明方向，不构成基准对比。

@@ -1,0 +1,60 @@
+<venv>/lib/python3.12/site-packages/torch/cuda/__init__.py:68: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+~/laya-latency.py:60: RuntimeWarning: laya: this checkpoint ships temperatures outside [0.5, 5] which would distort confidence; clamping choice:11+=0.1006. Treat confidence from the affected buckets as uncalibrated.
+  agent = Agent("convaiinnovations/laya", device="cuda")
+<venv>/lib/python3.12/site-packages/laya/router.py:187: RuntimeWarning: laya: this checkpoint ships temperatures outside [0.5, 5] which would distort confidence; clamping choice:11+=0.1006. Treat confidence from the affected buckets as uncalibrated.
+  agent = Agent(repo, device=self.device, token=self.token, subfolder=sub)
+host: gb10-box | CUDA_VISIBLE_DEVICES = <unset>
+MemAvailable 基线: 45.2 GB
+
+================================================================================================
+[A] 模型加载（冷启动，无缓存预热）
+================================================================================================
+Agent(english) 单 checkpoint 加载      :  23.21 s
+Router(preload=True, 三 checkpoint 常驻):  60.34 s
+Router 就绪后当前可用内存              : 36.6 GB
+CUDA 已分配                            : 5.93 GB
+CUDA 峰值                              : 5.93 GB
+
+================================================================================================
+[B] 路由判定开销：router.route() 单独调用，不含任何前向
+================================================================================================
+英文输入 route() 判定                            n=2000 min    0.01  p50    0.02  p90    0.02  p99    0.02  max     0.24  均值    0.02 ms
+中文输入 route() 判定                            n=2000 min    0.19  p50    0.19  p90    0.19  p99    0.19  max     0.23  均值    0.19 ms
+
+================================================================================================
+[C] 单题前向（1 个 choice，4 个 criteria），各 300 次
+================================================================================================
+英文 → english（经 Router）                     n=300  min   16.92  p50   16.98  p90   18.41  p99   26.86  max  2430.77  均值   25.84 ms
+      ^^ 实际落到 english，置信度 0.835，choice=billing
+中文 → multilingual（经 Router）                n=300  min    8.21  p50    8.25  p90    8.28  p99    8.90  max    10.30  均值    8.27 ms
+      ^^ 实际落到 multilingual，置信度 1.000，choice=billing
+
+================================================================================================
+[E] 同一条英文输入：Router 路径 vs 直接 Agent 路径
+================================================================================================
+经 Router（英文分流到 english）                    n=300  min   16.93  p50   16.97  p90   17.00  p99   17.59  max    17.87  均值   17.00 ms
+直接用 Agent（跳过分流）                            n=300  min   16.82  p50   16.87  p90   16.91  p99   17.52  max    17.61  均值   16.90 ms
+
+================================================================================================
+[D] 一次 predict 塞 N 个题，看单题边际成本（英文 checkpoint）
+================================================================================================
+题数            总时长ms       单题ms      单前向判定
+1             16.87      16.87         基准
+2             18.45       9.22       1.58
+4             22.45       5.61       4.00
+8             29.40       3.67       6.95
+16            45.32       2.83      15.93
+
+================================================================================================
+[F] 资源占用
+================================================================================================
+CUDA 当前分配   : 5.96 GB
+CUDA 峰值       : 6.68 GB
+MemAvailable     : 36.0 GB
+引擎线程数       : 20
+
+================================================================================================
+[附] multilingual checkpoint 出厂温度系数告警（首次加载时打印）
+================================================================================================
+reload multilingual 观察告警…

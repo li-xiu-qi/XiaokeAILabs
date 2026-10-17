@@ -11,30 +11,30 @@
 ## 实验索引
 
 ### 检索与向量
-- **embedding_research** — 评测基准 + 微调数据 + 相似度行为专项（句长 / 跨语言 / 代码表格 / NLI 迁移）+ 多模态（BGE-VL、CLIP） → `experiments/embedding_research`
-- **retrieval_and_rerank** — 检索链路四环节：FAISS 稠密、BGE-M3 稀疏、ColBERT 晚期交互、BGE Reranker → `experiments/retrieval_and_rerank`
-- **test_vector_db_bench** — Milvus / Qdrant / SurrealDB / LanceDB / ChromaDB / sqlite-vec 六库吞吐、延迟、召回实测 → `experiments/test_vector_db_bench`
-- **test_text_segmentation** — 语义 + 结构混合分块、迟分等策略对比 → `experiments/test_text_segmentation`
+- **embedding-research** — 评测基准 + 微调数据 + 相似度行为专项（句长 / 跨语言 / 代码表格 / NLI 迁移）+ 多模态（BGE-VL、CLIP） → `experiments/embedding-research`
+- **retrieval-and-rerank** — 检索链路四环节：FAISS 稠密、BGE-M3 稀疏、ColBERT 晚期交互、BGE Reranker → `experiments/retrieval-and-rerank`
+- **vector-db-benchmark** — Milvus / Qdrant / SurrealDB / LanceDB / ChromaDB / sqlite-vec 六库吞吐、延迟、召回实测 → `experiments/vector-db-benchmark`
+- **text-segmentation** — 语义 + 结构混合分块、迟分等策略对比 → `experiments/text-segmentation`
 
-### 推理成本与模型理论
-- **test_inference_theory** — 12 个可计算推理性能模型（Roofline、显存、KV Cache、吞吐、Scaling Laws、量化），GB10 实测锚点 → `experiments/test_inference_theory`
-- **test_index_theory** — 45 个数据结构 / 算法成本模型与实测（公式迁知识库，本仓留复现脚本） → `experiments/test_index_theory`
-- **llm_inference_perf** — 推理成本分阶段报告（MTP、DeepSeek 等） → `experiments/llm_inference_perf`
-- **llm_mechanics** — 从模型加载到解码的全链路机制实操 → `experiments/llm_mechanics`
+### 推理成本与模型机制
+- **inference-cost-models** — 12 个可计算的推理成本模型（Roofline、显存、KV Cache、吞吐、Scaling Laws、量化），GB10 实测锚点 → `experiments/inference-cost-models`
+- **data-structure-costs** — 45 个数据结构 / 算法成本模型与实测（公式迁知识库，本仓留复现脚本） → `experiments/data-structure-costs`
+- **llm-inference-perf** — 推理成本分阶段报告（MTP、DeepSeek 等） → `experiments/llm-inference-perf`
+- **llm-mechanics** — 从模型加载到解码的全链路机制实操 → `experiments/llm-mechanics`
 
 ### 多模态与微调
-- **video_finetune** — LoRA 微调（视频） → `experiments/video_finetune`
-- **jina_deployment** — 同一 CLIP 的三种部署形态（原生 / ONNX / NNCF INT8） → `experiments/jina_deployment`
+- **video-finetune** — LoRA 微调（视频） → `experiments/video-finetune`
+- **jina-deployment** — 同一 CLIP 的三种部署形态（原生 / ONNX / NNCF INT8） → `experiments/jina-deployment`
 
 ### 判别式模型
-- **test_jev_open_source** — Jev 判别式模型三个开源复刻（Laya / Nimble / metask-jev）在 GB10 上的延迟与准确率实测 → `experiments/test_jev_open_source`
+- **jev-open-source** — Jev 判别式模型三个开源复刻（Laya / Nimble / metask-jev）在 GB10 上的延迟与准确率实测 → `experiments/jev-open-source`
 
 ### 知识图谱
-- **knowledge_graph** — 知识图谱构建与查询（含红楼梦案例） → `experiments/knowledge_graph`
+- **knowledge-graph** — 知识图谱构建与查询（含红楼梦案例） → `experiments/knowledge-graph`
 
 ### 应用
-- **evaluate_rag** — QA 生成 + RAGAs 评估（上下文召回、答案相关性、实体召回） → `experiments/evaluate_rag`
-- **deepsearch_google** — 深度搜索系统设计 + Google 实现 → `experiments/deepsearch_google`
+- **rag-evaluation** — QA 生成 + RAGAs 评估（上下文召回、答案相关性、实体召回） → `experiments/rag-evaluation`
+- **deepsearch-google** — 深度搜索系统设计 + Google 实现 → `experiments/deepsearch-google`
 
 ## 免责声明
 - 部分实验为开发 / 教学性质，可能存在失败案例，均为学习过程。

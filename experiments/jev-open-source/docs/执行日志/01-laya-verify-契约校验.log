@@ -1,0 +1,120 @@
+<venv>/lib/python3.12/site-packages/torch/cuda/__init__.py:68: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+host: gb10-box
+laya: 0.3.5 | torch: 2.14.0+cu130 | cuda: True
+MemAvailable 基线: 44.9 GB
+
+Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]
+Fetching 5 files:  20%|██        | 1/5 [00:00<00:03,  1.05it/s]
+Fetching 5 files:  60%|██████    | 3/5 [00:02<00:01,  1.44it/s]
+Fetching 5 files:  80%|████████  | 4/5 [00:20<00:05,  5.00s/it]
+Fetching 5 files: 100%|██████████| 5/5 [00:31<00:00,  6.22s/it]
+Fetching 5 files: 100%|██████████| 5/5 [00:31<00:00,  6.22s/it]
+~/laya-verify.py:57: RuntimeWarning: laya: this checkpoint ships temperatures outside [0.5, 5] which would distort confidence; clamping choice:11+=0.1006. Treat confidence from the affected buckets as uncalibrated.
+  agent = Agent("convaiinnovations/laya", device="cuda")
+
+english checkpoint 加载: 56.9 s
+
+########## 1. 输出结构 ##########
+顶层 keys: ['answers', 'model', 'usage']
+answers keys: ['churn_risk', 'department', 'refund_requested', 'urgency']
+  department       type=choice  value_keys=['action', 'choice', 'confidence', 'probabilities', 'type']
+  urgency          type=score   value_keys=['action', 'confidence', 'legend', 'probabilities', 'score', 'type']
+  churn_risk       type=noul    value_keys=['action', 'confidence', 'noul', 'type']
+  refund_requested type=noul    value_keys=['action', 'confidence', 'noul', 'type']
+
+########## 2. 四种题型的完整输出（原样 dump）##########
+
+--- department (type=choice) ---
+{
+  "type": "choice",
+  "choice": "billing",
+  "probabilities": {
+    "billing": 0.9646,
+    "technical": 0.0142,
+    "sales": 0.0102,
+    "other": 0.0109
+  },
+  "confidence": 0.8619,
+  "action": {
+    "act_probability": 1.0
+  }
+}
+
+--- urgency (type=score) ---
+{
+  "type": "score",
+  "score": 1.4398,
+  "legend": {
+    "0": "not urgent",
+    "1": "soon",
+    "2": "critical deadline or blocking issue"
+  },
+  "probabilities": {
+    "0": 0.1181,
+    "1": 0.3241,
+    "2": 0.5579
+  },
+  "confidence": 0.1416,
+  "action": {
+    "act_probability": 1.0
+  }
+}
+
+--- churn_risk (type=noul) ---
+{
+  "type": "noul",
+  "noul": 0.8235,
+  "confidence": 0.8235,
+  "action": {
+    "act_probability": 1.0
+  }
+}
+
+########## 3. 取值与自检 ##########
+department.choice      : billing
+department.confidence  : 0.8619
+choice 概率字段名      : probabilities
+choice 概率            : {'billing': 0.9646, 'technical': 0.0142, 'sales': 0.0102, 'other': 0.0109}
+choice 概率和          : 0.999900  OK(≈1)
+urgency.score          : 1.4398
+urgency.confidence     : 0.1416
+churn_risk.noul        : 0.8235
+refund_requested.noul  : 0.8437
+churn_risk.confidence  : 0.8235
+
+########## 4. 延迟（10 次，4 题合并单次 forward）##########
+min 24.1 | p50 24.8 | max 25.9 | mean 24.7 ms
+
+########## 5. Router 模式 ##########
+
+Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]
+Fetching 5 files: 100%|██████████| 5/5 [00:00<00:00, 2410.24it/s]
+<venv>/lib/python3.12/site-packages/laya/router.py:187: RuntimeWarning: laya: this checkpoint ships temperatures outside [0.5, 5] which would distort confidence; clamping choice:11+=0.1006. Treat confidence from the affected buckets as uncalibrated.
+  agent = Agent(repo, device=self.device, token=self.token, subfolder=sub)
+routing 完整: {
+  "model": "english",
+  "repo": "convaiinnovations/laya",
+  "reason": "English Latin text",
+  "detection": {
+    "script": "latin",
+    "script_profile": {
+      "latin": 1.0
+    },
+    "language": "en",
+    "is_english": true,
+    "language_undecided": false,
+    "diacritic_rate": 0.0,
+    "non_latin_fraction": 0.0
+  },
+  "workflow": null
+}
+routed department: billing conf: 0.8619
+
+--- 不跑 forward 的路由判断 ---
+英语态 : English Latin text
+德语态 : Latin script but language looks like 'de', not English
+
+########## 6. 内存 ##########
+基线 44.9 GB -> 现在 38.2 GB（+6.7 GB）
+CUDA 峰值: 3.87 GB
