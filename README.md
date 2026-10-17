@@ -23,7 +23,7 @@
 - **llm_mechanics** — 从模型加载到解码的全链路机制实操 → `experiments/llm_mechanics`
 
 ### 多模态与微调
-- **image_finetune / video_finetune** — LoRA 微调（图文 / 视频） → `experiments/image_finetune`、`experiments/video_finetune`
+- **video_finetune** — LoRA 微调（视频） → `experiments/video_finetune`
 - **jina_deployment** — 同一 CLIP 的三种部署形态（原生 / ONNX / NNCF INT8） → `experiments/jina_deployment`
 
 ### 判别式模型与 Agent
