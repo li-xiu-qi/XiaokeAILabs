@@ -23,6 +23,7 @@
 - **llm-mechanics** — 从模型加载到解码的全链路机制实操 → `experiments/llm-mechanics`
 
 ### 多模态与微调
+- **image-finetune** — LoRA 微调（图片）：人脸身份 LoRA，让底模画出一个它画不出来的人 → `experiments/image-finetune`
 - **video-finetune** — LoRA 微调（视频） → `experiments/video-finetune`
 - **jina-deployment** — 同一 CLIP 的三种部署形态（原生 / ONNX / NNCF INT8） → `experiments/jina-deployment`
 
