@@ -1,18 +1,23 @@
 # 图片微调学习线
 
+> 本目录是图片生成模型 LoRA 微调的学习线索引：在做什么实验、结论是什么、数据在哪。
+> 每个实验一个子目录，自包含（依赖、数据说明、文档、脚本自成一套）。
+
 在 DGX Spark（GB10，121 GB 统一内存）与 proart-temp（RTX Spark N1X，WSL2 arm64）上，
-用 ai-toolkit 对图片生成模型做 LoRA 微调。本目录按「一个实验一个子目录」组织。
+用 ai-toolkit 对图片生成模型做 LoRA 微调。
 
 ## 在做的实验
 
 | 实验 | 任务 | 结论 | 报告 |
 |---|---|---|---|
-| [face_identity_lora_train](face_identity_lora_train/) | 单人身份 LoRA，证明微调对底模盲区有效 | 微调有效：ArcFace 相似度 −0.017 → 0.3232；瓶颈是数据分辨率不是训练参数 | 见该目录 README |
+| [face_identity_lora_train](face_identity_lora_train/) | 单人身份 LoRA：让底模画出一个它画不出来的人 | 微调有效：ArcFace 相似度 −0.017 → 0.3232，负对照 0.0546，净差 0.27；瓶颈是数据分辨率不是训练参数 | [README](face_identity_lora_train/) |
+
+![微调前后对比](face_identity_lora_train/docs/assets_celeb/face_compare.jpg)
 
 ## 已终止并归档的实验
 
 两个风格实验（通用浮世绘、歌川国芳个人风格）已终止，代码与数据随目录删除，
-报告归档在 `pkm-hub-lab/image-style-lora/_归档/`。它们的结论是当前实验的前提：
+完整报告归档在私有档案仓。它们的结论是当前实验的前提：
 
 - **ukiyoe_style_lora_train**（六轮）：数据分辨率封顶风格保真度，作用强于数据量
   （107 张 1024² 全面超过 150 张 256²）；风格强度 20 epoch 见顶
@@ -21,20 +26,6 @@
 
 三条结论共同指向同一个判据：**底模已经能生成的，微调就没有可测量的赢面。**
 当前实验就是按这条判据重新选的靶子。
-
-## 方法论与规范
-
-结论、判据、数据审查规范的唯一权威版在私有库：
-
-```
-pkm-hub-lab/image-style-lora/
-  README.md                    实验定位、当前进度、网络实况
-  notes/数据审查规范.md         上游不信任原则、四项机器检查、抽样级别、判定门槛
-  notes/人脸身份实验设计.md     三对照设计、指标定义、事先写死的判定门槛
-  notes/底模能力探针.md         候选靶子用 3 seed 探针判「底模会不会」
-  notes/数据选择复盘.md         两个风格实验失败的根因
-  _归档/                       两个旧实验的完整报告
-```
 
 ## 数据位置
 
