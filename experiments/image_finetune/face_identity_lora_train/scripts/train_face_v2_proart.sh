@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 单人身份 LoRA 训练：备数据（含 caption）→ 上传配置 → 起训
 set -eu
-EX=/home/ke/XiaokeAILabs/experiments/image_finetune/kuniyoshi_style_lora_train
+EX=/home/ke/XiaokeAILabs/experiments/image_finetune/face_identity_lora_train
 CFG=face_identity_sdxl_lora_v2.yaml
 FT=/home/ke/face_train
 

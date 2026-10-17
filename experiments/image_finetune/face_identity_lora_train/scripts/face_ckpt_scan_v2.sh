@@ -2,7 +2,7 @@
 # 检查点扫描：评 500/1000/1500/2000 四个步数的人脸相似度，找最优点
 set -u
 PY=/home/ke/jevomni-env/bin/python
-EX=/home/ke/XiaokeAILabs/experiments/image_finetune/kuniyoshi_style_lora_train
+EX=/home/ke/XiaokeAILabs/experiments/image_finetune/face_identity_lora_train
 CKPT_DIR=$EX/output_face_v2/face_identity_sdxl_lora_v2
 OUTROOT=/home/ke/face_ckpt_scan_v2
 N_GEN=10
