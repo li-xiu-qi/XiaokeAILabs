@@ -1,114 +1,63 @@
-# 筱可AI工程实验仓库
+# 筱可 AI 工程实验仓库（XiaokeAILabs）
 
-✨【你好，我是筱可，欢迎来到"筱可AI的工程实验仓库"】✨
+> 李秀奇（筱可）的 AI 工程实验集合。以「能跑、能复现、讲得清」为标准，沉淀 embedding / 检索 / 推理成本 / 多模态 / 判别式模型 / Agent 等方向的实验与教学代码。
 
-🌈 期待与你成为"AI+成长"的双向奔赴伙伴！
+## 这是什么
 
-这里是**筱可AI**的工程实验仓库！
+- **定位**：AI 工程实验仓库，不是产品仓库。每个 `experiments/<name>` 是一个自包含实验。
+- **标准**：能跑、能复现、结论经得起复核；配套文章发布在公众号「筱可AI」。
+- **实验分场**：探索性、半成品、单点验证放在**私有**仓 `pkm-hub-lab`；本仓只留**成型、可展示**的内容。
+- 成熟度标记：🟢 成型（结论站得住）｜🟡 教学 / 单点｜🔵 探索中
 
-## 📋 免责声明
+## 实验索引
 
-⚠️ **重要提醒**：
+### 检索与向量
+- 🟢 **embedding_research** — 评测基准 + 微调数据 + 相似度行为专项（句长 / 跨语言 / 代码表格 / NLI 迁移）+ 多模态（BGE-VL、CLIP） → `experiments/embedding_research`
+- 🟢 **retrieval_and_rerank** — 检索链路四环节：FAISS 稠密、BGE-M3 稀疏、ColBERT 晚期交互、BGE Reranker → `experiments/retrieval_and_rerank`
+- 🟢 **test_vector_db_bench** — Milvus / Qdrant / SurrealDB / LanceDB / ChromaDB / sqlite-vec 六库吞吐、延迟、召回实测 → `experiments/test_vector_db_bench`
+- 🟢 **test_text_segmentation** — 语义 + 结构混合分块、迟分等策略对比 → `experiments/test_text_segmentation`
+- 🟡 **test_simhash** — LSH / winnowing 近似相似度 → `experiments/test_simhash`
+- 🟡 **clustering_and_dimreduction** — K-means 路由 + UMAP 降维可视化 → `experiments/clustering_and_dimreduction`
 
-- 实验代码中部分项目可能处于开发阶段或实验性质
-- 部分实验可能存在失败案例，这些都是学习过程的一部分
-- 请以公众号文章说明为准，代码仅供学习参考
-- 在生产环境中使用前，请进行充分的测试和验证
+### 推理成本与模型理论
+- 🟢 **test_inference_theory** — 12 个可计算推理性能模型（Roofline、显存、KV Cache、吞吐、Scaling Laws、量化），GB10 实测锚点 → `experiments/test_inference_theory`
+- 🟢 **test_index_theory** — 45 个数据结构 / 算法成本模型与实测（公式迁知识库，本仓留复现脚本） → `experiments/test_index_theory`
+- 🟢 **llm_inference_perf** — 推理成本分阶段报告（MTP、DeepSeek 等） → `experiments/llm_inference_perf`
+- 🟢 **llm_mechanics** — 从模型加载到解码的全链路机制实操 → `experiments/llm_mechanics`
 
-## 📚 技术学习与实验代码
+### 多模态与微调
+- 🟢 **image_finetune / video_finetune** — LoRA 微调（图文 / 视频） → `experiments/image_finetune`、`experiments/video_finetune`
+- 🟢 **jina_deployment** — 同一 CLIP 的三种部署形态（原生 / ONNX / NNCF INT8） → `experiments/jina_deployment`
+- 🟡 **mixd_image_text** — Markdown 图片描述增强小工具 → `experiments/mixd_image_text`
 
-### 🔍 向量检索与相似度计算
+### 判别式模型与 Agent
+- 🟢 **test_jev_open_source** — Jev 判别式模型三个开源复刻（Laya / Nimble / metask-jev）在 GB10 上的延迟与准确率实测 → `experiments/test_jev_open_source`
+- 🟢 **test_agent** — MCP 协议 + 记忆机制的 Agent 实现 → `experiments/test_agent`
+- 🟡 **preference_training** — DPO 教学（chosen/rejected 偏好对优化），预留 RLHF 家族入口 → `experiments/preference_training`
 
-1. **K-means聚类检索**：基于聚类的文档分组、查询路由与多样性检索策略，地址： [experiments/clustering_and_dimreduction/test_k_means](experiments/clustering_and_dimreduction/test_k_means)
-2. **SimHash相似度**：局部敏感哈希算法实现，用于近似相似度计算，地址： [experiments/test_simhash](experiments/test_simhash)
-3. **检索与重排实践**：检索链路四环节上手教程（FAISS 稠密库、BGE-M3 稀疏向量、ColBERT 晚期交互、BGE Reranker 重排），地址： [experiments/retrieval_and_rerank](experiments/retrieval_and_rerank)
-4. **文档分块**：结合语义和结构的混合分块、迟分等策略的综合对比（含三个早期分块实验的归档），地址： [experiments/test_text_segmentation](experiments/test_text_segmentation)
-5. **NLI相似度迁移**：基于NLI数据的嵌入相似度迁移学习，地址： [experiments/embedding_research/behavior_tests/test_nli_merge_sim_transfer](experiments/embedding_research/behavior_tests/test_nli_merge_sim_transfer)
+### 知识图谱与文本
+- 🟢 **knowledge_graph** — 知识图谱构建与查询（含红楼梦案例） → `experiments/knowledge_graph`
+- 🟡 **spacy_finetune** — SpaCy 模型微调 → `experiments/spacy_finetune`
 
-### 🗃️ 向量数据库
+### 应用
+- 🟢 **doc_assistant** — Streamlit 文档问答（MinerU PDF 转换 + Markdown 结构切分）；前端为演示层，核心在 RAG 管道与评估 → `experiments/doc_assistant`
+- 🟢 **evaluate_rag** — QA 生成 + RAGAs 评估（上下文召回、答案相关性、实体召回） → `experiments/evaluate_rag`
+- 🟢 **deepsearch_google** — 深度搜索系统设计 + Google 实现 → `experiments/deepsearch_google`
 
-1. **嵌入式数据库学习**：SQLite 与 DuckDB 入门及其向量检索扩展对照（sqlite-vec 虚拟表路线 vs DuckDB ARRAY 列加 HNSW 索引路线），地址： [experiments/embedded_db_tutorials](experiments/embedded_db_tutorials)
-2. **六库向量检索对比**：Milvus、Qdrant、SurrealDB、LanceDB、ChromaDB、sqlite-vec 六个向量库的写入吞吐、查询延迟、召回率实测对比，揭示 HNSW、IVF_PQ、暴力扫描三种索引形态的差异，并验证随机向量作为 ANN 测试数据的缺陷；体积另含 seekdb 共七库快照，地址： [experiments/test_vector_db_bench](experiments/test_vector_db_bench)
+### 基础教学
+- 🟡 **classic_algorithms** — BFPRT（Python / Rust 双实现）+ 图算法（DFS / BFS / Dijkstra / Kruskal） → `experiments/classic_algorithms`
+- 🟡 **test_onnx** — ONNX 模型转换 → `experiments/test_onnx`
+- 🟡 **test_popular_activate_func** — 常见激活函数原理与可视化（.py） → `experiments/test_popular_activate_func`
+- 🟡 **embedded_db_tutorials** — SQLite / DuckDB 向量扩展对照 → `experiments/embedded_db_tutorials`
 
-### 📝 文本处理
+## 免责声明
+- 部分实验为开发 / 教学性质，可能存在失败案例，均为学习过程。
+- 以公众号文章说明为准，代码仅供学习参考；生产环境使用前请充分测试。
 
-1. **布局排序算法**：针对复杂文档布局的智能排序方法，地址： [experiments/layout_sorter](experiments/layout_sorter)
-2. **SpaCy模型微调**：自然语言处理模型的微调和训练，地址： [experiments/spacy_finetune](experiments/spacy_finetune)
+## 许可证
+[Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-### 🎯 检索增强与重排序
-
-1. **深度搜索（设计与实现）**：深度搜索系统的架构设计与 Google 实现，地址： [experiments/deepsearch_google](experiments/deepsearch_google)
-
-### 🎨 多模态AI技术
-
-1. **多模态 Embedding**：BGE-VL 视觉-语言嵌入快速验证与 CLIP 冻结层轻量微调，地址： [experiments/embedding_research/multimodal_embedding](experiments/embedding_research/multimodal_embedding)
-2. **Jina CLIP 部署**：同一图文模型的三种部署形态（原生推理与封装、ONNX/OpenVINO 脚本、NNCF INT8 量化），地址： [experiments/jina_deployment](experiments/jina_deployment)
-3. **图文混合处理**：Markdown 图片描述增强工具与演示应用，地址： [experiments/mixd_image_text](experiments/mixd_image_text)
-
-### ⚙️ 模型优化与部署
-
-1. **ONNX模型转换**：模型格式转换与优化部署，地址： [experiments/test_onnx](experiments/test_onnx)
-
-### 🧮 算法基础与数学原理
-
-1. **LLM机制系列**：从模型加载到解码的全链路机制实操（bitsandbytes 8bit 加载、BPE 从零实现与多种 tokenizer、logits 到采样解码、手动 KV Cache 与耗时实测），地址： [experiments/llm_mechanics](experiments/llm_mechanics)
-2. **推理成本模型系列**：12 个可计算性能模型（Roofline、显存、KV Cache、吞吐规模化、Scaling Laws、量化等），输入模型配置与硬件规格即可外推显存、速度与服务吞吐，GB10 实测锚点自测，地址： [experiments/test_inference_theory](experiments/test_inference_theory)
-3. **索引成本模型系列**：45 个数据结构与算法的成本模型与实测（公式推导已迁知识库，本仓保留复现脚本与 GB10/faiss 版本绑定实测），地址： [experiments/test_index_theory](experiments/test_index_theory)
-4. **知识图谱构建**：知识图谱的构建与查询技术，地址： [experiments/knowledge_graph/test_kg](experiments/knowledge_graph/test_kg)
-5. **红楼梦知识图谱**：基于红楼梦的知识图谱构建案例，地址： [experiments/knowledge_graph/test_hong_lou_meng_kg](experiments/knowledge_graph/test_hong_lou_meng_kg)
-6. **function call**：Agent函数调用，地址： [experiments/test_agent/function_calling](experiments/test_agent/function_calling)
-7. **UMAP降维**：使用UMAP进行高维数据降维与三维可视化，包含降维前后相似度与距离分析，地址： [experiments/clustering_and_dimreduction/test_umap](experiments/clustering_and_dimreduction/test_umap)
-8. **经典算法系列**：BFPRT 选择算法的 Python/Rust 双实现与实测对比、图算法的从零实现（DFS/BFS、Dijkstra、Kruskal），地址： [experiments/classic_algorithms](experiments/classic_algorithms)
-9. **激活函数**：常见激活函数的原理与实现，地址： [experiments/test_popular_activate_func](experiments/test_popular_activate_func)
-10. **Agent实现**：MCP协议与记忆机制的Agent实现，地址： [experiments/test_agent](experiments/test_agent)
-
-### 📊 模型微调训练与评估
-
-1. **Embedding 研究总组**：评测基准与微调数据、相似度行为专项（句子长度含跨语言扩展、代码与表格、NLI 迁移）、嵌入与 Reranker 微调、多模态图文（BGE-VL、CLIP），地址： [experiments/embedding_research](experiments/embedding_research)
-2. **偏好训练**：用 chosen/rejected 偏好对直接优化策略的对齐训练（DPO 教学脚本），预留 RLHF 家族其他变体的入口，地址： [experiments/preference_training](experiments/preference_training)
-
-### ⚡ 判别式决策模型
-
-1. **开源版 Jev 横向测评**：Jev（TypeSafe System One，不生成文本只输出概率的判别式模型）的三个开源复刻路线 Laya 1.1B、Nimble 9B、metask-jev-4B 在同一台 aarch64 GB10 上的延迟与准确率实测，Qwen3-VL-4B 作生成式基线对照，含中文 Noul 题型失效、Nimble CUDA 逐字段无并行等结构性结论，地址： [experiments/test_jev_open_source](experiments/test_jev_open_source)
-
-### 💾 数据存储与格式选型
-
-1. **xlsx、sqlite、json、jsonl 的体积与速度实测**：同一份数据在四种格式下的体积换算与读写耗时，含 xlsx 压缩率上限（500字节约110倍）、索引对查询速度的真实影响（点查快217倍，范围过滤与分组聚合反而变慢4倍以上）、jsonl 的增量能力（追加一行快三个数量级，只取前1000行快66~239倍），地址： [experiments/test_index_theory](experiments/test_index_theory)（数据格式实测已并入该实验）
-
-### 🚀 完整应用
-
-以下是可以直接运行的应用，不是单点实验：
-
-1. **文档智能助手**：Streamlit 文档问答应用的三个演进版本（无检索教学版、BM25 稀疏检索完整版、FAISS 向量检索开发中），支持 MinerU PDF 转换、Markdown 结构切分，地址： [experiments/doc_assistant](experiments/doc_assistant)
-2. **RAG 评估工具**：QA 数据集生成与 RAGAs 评估，覆盖上下文召回、答案相关性、实体召回等指标，地址： [experiments/evaluate_rag](experiments/evaluate_rag)
-
-## 🤝 贡献指南
-
-我们欢迎所有形式的贡献，包括但不限于：
-
-- 🐛 问题反馈
-- 💡 新功能建议
-- 🔧 代码优化
-- 📝 文档完善
-
-请通过Issue或Pull Request的方式参与贡献。
-
-## 📄 许可证
-
-本项目基于 [Apache 2.0 许可证](http://www.apache.org/licenses/LICENSE-2.0) 开源。
-
-## 📞 联系我
-
-- 🧑‍💻 作者：**li-xiu-qi**
-- 📧 邮箱：<lixiuqixiaoke@qq.com>
-- 📢 公众号：**筱可AI**
-- 🌐 仓库地址：[GitHub](https://github.com/li-xiu-qi/XiaokeAILabs)
-
----
-
-公众号：
-![公众号](https://oss-liuchengtu.hudunsoft.com/userimg/cd/cd7e1ea8a192f17bbdf8efe8418449e8.jpg)
-
----
-
-感谢您的关注和支持！让我们一起探索AI的无限可能！🚀
+## 联系
+- 作者：li-xiu-qi（筱可）｜邮箱：lixiuqixiaoke@qq.com｜公众号：**筱可AI**
+- 仓库：https://github.com/li-xiu-qi/XiaokeAILabs
+- 实验室介绍页：https://li-xiu-qi.github.io/XiaokeAILabs-website/
