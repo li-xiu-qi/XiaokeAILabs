@@ -100,8 +100,7 @@ onnxruntime + insightface；安装见 `scripts/install_face_stack.sh` 与
 | proart-temp | RTX Spark N1X，64 GB，WSL2 arm64 | 训练与评估 |
 | dgx-spark | GB10 | 备用，被本地 llama-server 占 72 GiB |
 
-训练机不通 huggingface.co 与 commons.wikimedia.org，只通 metmuseum.org 与
-mirrors.aliyun.com；HF 数据走「本地镜像下载 → scp 到训练机」。
+训练机不通 huggingface.co，HF 数据走「本地镜像下载 → scp 到训练机」。
 
 ## 目录结构
 
@@ -110,18 +109,13 @@ config/
   face_identity_sdxl_lora.yaml        v1：2000 步 / lr 1e-4 / 无 caption dropout
   face_identity_sdxl_lora_v2.yaml     v2：800 步 / lr 5e-5 / dropout 0.15
 docs/
-  assets_celeb/                       数据集联系表、基线图、微调对比图、原始 metrics
+  assets_celeb/                       对比图、训练/测试集、基线图、原始 metrics
 scripts/
-  # 数据获取与切分
+  # 数据
   pick_celeb.sh                        读 parquet，按 celeb_id 找样本量合适的身份
   export_celeb_person.sh               导出指定身份的图，交替切分训练/测试
-  # 数据审查
   qc_celeb_annotations.sh              四项机器检查：身份一致性/跨类污染/重复泄漏/质量
-  make_celeb_sheet.sh                  训练+测试合并联系表
-  make_celeb_split_sheet.sh            训练/测试分开放大，供人工目检
-  # 底模能力探针（立项前用）
-  probe_candidates.sh                  候选风格各生成 3 seed，判断底模会不会
-  make_probe_sheet.sh                 探针结果联系表
+  make_celeb_sheet.sh                  训练+测试联系表
   # 训练
   train_face_proart.sh                 v1 训练入口
   train_face_v2_proart.sh              v2 训练入口
@@ -130,7 +124,7 @@ scripts/
   face_eval.sh                         微调后评估，与基线同提示词同 seed
   face_ckpt_scan.sh  face_ckpt_scan_v2.sh   检查点扫描，零成本定最优点
   make_face_compare.sh                 微调前后对比图（本页首图）
-  # 人脸识别栈安装
+  # 环境
   install_face_stack.sh                onnxruntime + insightface（走阿里云 pypi 镜像）
   install_face_models.sh               ArcFace 权重装入 insightface 模型目录
 ```
