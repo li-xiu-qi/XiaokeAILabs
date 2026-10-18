@@ -112,7 +112,6 @@ docs/
   assets_celeb/                       对比图、训练/测试集、基线图、原始 metrics
 scripts/
   # 数据
-  pick_celeb.sh                        读 parquet，按 celeb_id 找样本量合适的身份
   export_celeb_person.sh               导出指定身份的图，交替切分训练/测试
   qc_celeb_annotations.sh              四项机器检查：身份一致性/跨类污染/重复泄漏/质量
   make_celeb_sheet.sh                  训练+测试联系表
