@@ -1,0 +1,20 @@
+#!/bin/sh
+# 提交前体积闸门。由 `bash scripts/install-hooks.sh` 安装，不要手工复制。
+#
+# 为什么不用 pre-commit：本仓实测 pre-commit 从未装过，
+# .pre-commit-config.yaml 里的 check-added-large-files 一次都没执行，
+# .git 因此涨到 608MB。依赖「每台机器自己 pip install pre-commit + install」
+# 的规则等于没有规则。这个钩子只用 git 和 python 标准库，克隆后一条命令装好。
+
+python scripts/check_large_files.py || {
+    echo ""
+    echo "提交被拦截。确认这些文件确实必须入库时："
+    echo "  - 数据集/模型 → 走 Release，仓里留下载脚本"
+    echo "  - 图片 → 转 JPEG 或裁掉留白"
+    echo "  - 确需例外 → 加进 scripts/check_large_files.py 的 ALLOWLIST 并写理由"
+    echo "临时跳过（不推荐）：git commit --no-verify"
+    exit 1
+}
+
+# notebook 输出检查：防止带执行结果的 ipynb 回流
+python scripts/check_notebook_outputs.py || exit 1
