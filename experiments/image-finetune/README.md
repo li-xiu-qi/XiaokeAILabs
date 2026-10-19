@@ -3,8 +3,8 @@
 > 本目录是图片生成模型 LoRA 微调的学习线索引：在做什么实验、结论是什么、数据在哪。
 > 每个实验一个子目录，自包含（依赖、数据说明、文档、脚本自成一套）。
 
-在 DGX Spark（GB10，121 GB 统一内存）与 proart-temp（RTX Spark N1X，WSL2 arm64）上，
-用 ai-toolkit 对图片生成模型做 LoRA 微调。
+用 [ai-toolkit](https://github.com/ostris/ai-toolkit) 对图片生成模型做 LoRA 微调。
+脚本不绑定具体机器：路径走环境变量，任何有 CUDA GPU 的机器都能复现。
 
 ## 在做的实验
 
