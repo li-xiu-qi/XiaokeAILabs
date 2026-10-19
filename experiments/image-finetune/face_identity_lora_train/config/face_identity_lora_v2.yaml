@@ -1,23 +1,21 @@
 ---
 job: extension
 config:
-  name: "face_identity_sdxl_lora_v2"
+  name: "face_identity_lora_v2"
   process:
     - type: 'sd_trainer'
-      training_folder: "output_face_v2"
+      training_folder: "output/face_identity_lora_v2"
       device: cuda:0
-      # v1（2000 步 / lr 1e-4 / dropout 0.05 / caption_dropout 0）检查点扫描结果：
-      #   500 步 0.3110、1000 步 0.3232、1500 步 0.2518、2000 步 0.2461
-      # 1000 步见顶后下滑，是过拟合。生成图表面有细密噪点伪影，
-      # 人脸检测检出率也从基线的 12/20 掉到 6-9/10。
+      # Second run: same data, three changes aimed at the overfitting seen after
+      # step 1000 in the first run. All three reduce how hard the LoRA memorises.
       #
-      # v2 的三项改动都指向同一个病因（过拟合强度），视为一次改动：
-      #   1. lr 1e-4 -> 5e-5       单人 20 张的数据量撑不住原学习率
-      #   2. steps 2000 -> 800     按扫描的最优点区间取中，留出早停余地
-      #   3. caption_dropout 0 -> 0.15   原来 20 张共用同一句 caption 且无 dropout，
-      #      模型会把 prompt 的每个词都当身份信号
+      #   steps 2000 -> 800          stop before the decline, rather than after it
+      #   lr 1e-4 -> 5e-5            smaller steps, less memorisation per image
+      #   caption dropout 0 -> 0.15  force the model to rely on the trigger token
+      #                              less, which trades identity for prompt control
       #
-      # 数据、分辨率、网络结构、底模一律不动，保证差异可归因。
+      # Result: 0.2623 vs 0.3232. Lower, not higher — the ceiling is the source
+      # resolution, not the training schedule. Kept as a documented negative result.
       network:
         type: "lora"
         linear: 32
@@ -26,10 +24,10 @@ config:
       save:
         dtype: float16
         save_every: 200
-        max_step_saves_to_keep: 5
+        max_step_saves_to_keep: 4
         push_to_hub: false
       datasets:
-        - folder_path: "/home/ke/face_train"
+        - folder_path: "../data/celeb_14/train"
           caption_ext: "txt"
           caption_dropout_rate: 0.15
           shuffle_tokens: false
@@ -50,7 +48,7 @@ config:
           ema_decay: 0.99
         dtype: bf16
       model:
-        name_or_path: "/home/ke/models/SDXL-base-vkqzm"
+        name_or_path: "stabilityai/stable-diffusion-xl-base-1.0"
         is_xl: true
         is_v2: false
         quantize: false
@@ -61,8 +59,9 @@ config:
         width: 512
         height: 512
         prompts:
-          - "vkqzm, a photo of a man"
-          - "vkqzm, a photo of a man smiling"
+          - "vkqzm, a photo of a person"
+          - "vkqzm, a photo of a person smiling"
+          - "vkqzm, a person wearing a black jacket"
         neg: ""
         seed: 42
         walk_seed: true

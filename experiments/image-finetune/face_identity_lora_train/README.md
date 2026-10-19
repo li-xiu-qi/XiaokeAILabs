@@ -1,14 +1,13 @@
 # 人脸身份 LoRA 微调实验
 
-> 本目录是图片微调学习线当前唯一在做的实验：用 20 张照片让 SDXL 底模学会画一个
-> 它本来画不出来的人。这里写清测什么、当前结论、怎么复现。前两个风格实验已终止，
-> 结论见 `../README.md`。
+> 用 20 张照片让 SDXL 底模学会画一个它本来画不出来的人。这里写清测什么、
+> 结论是什么、怎么复现。
 
 ## 效果
 
 数据：CelebA 单人身份（`celeb_id=14`），20 张训练 / 10 张测试。下面四列共用同一个
 提示词、同一个随机种子、同一套生成参数，唯一差别是有没有挂 LoRA。
-相似度 = 生成图与本人测试集的 ArcFace embedding 余弦相似度（与本人测试集均值算）。
+相似度 = 生成图与本人测试集的 ArcFace embedding 余弦相似度。
 
 ![微调前后对比](docs/assets_celeb/face_compare.jpg)
 
@@ -46,10 +45,10 @@
 
 ## 训练配置
 
-- 底模：SDXL base（本地合并 `vkqzm` 词元的版本，复用时直接当 trigger）
+- 底模：SDXL base
 - LoRA：linear rank 32 / alpha 32 / dropout 0.05，lr 1e-4 adamw，bf16，EMA 0.99
 - 步数 2000（20 张 × 100 epoch），save_every 500；分辨率 512
-- caption：`vkqzm, a photo of a man`
+- caption：`vkqzm, a photo of a person`
 - 评估与基线严格同口径：同提示词（仅多 trigger）、同 seed（1000+i）、同生成参数
 
 ## 结论与局限
@@ -67,63 +66,63 @@
 
 ## 复现
 
-按顺序跑（脚本内的路径变量按作者训练机编写，复现时按自己的环境调整）：
+环境：Python 3.10+、CUDA GPU、[ai-toolkit](https://github.com/ostris/ai-toolkit)。
 
 ```bash
-# 1. 数据：从 HF parquet 按 celeb_id 切出，交替划分训练/测试
-bash scripts/export_celeb_person.sh 14
+# 0. 依赖：onnxruntime + insightface，并检查 ArcFace 权重是否就位
+bash scripts/setup_env.sh
 
-# 2. 数据审查：四项机器检查 + 生成联系表
-bash scripts/qc_celeb_annotations.sh
-bash scripts/make_celeb_sheet.sh
+# 1. 数据：从 HF parquet 切出一个身份，交替划分训练/测试，写训练 caption
+python scripts/prepare_data.py --parquet /path/to/celeba_shard0.parquet --also-negative
 
-# 3. 训练（ai-toolkit，配置见 config/face_identity_sdxl_lora.yaml）
-bash scripts/train_face_proart.sh
+# 2. 审查：四项机器检查（不过审不开训），再出联系表人工目检
+python scripts/audit_data.py
+python scripts/make_contact_sheet.py
 
-# 4. 评估：三对照（底模基线 / 微调后 / 负对照）
-bash scripts/face_baseline.sh          # 底模基线，三个对照一起算
-bash scripts/face_eval.sh              # 微调后，与基线同提示词同 seed
-bash scripts/face_ckpt_scan.sh         # 检查点扫描，零训练成本定最优点
+# 3. 训练（配置见 config/face_identity_lora.yaml）
+AI_TOOLKIT=/path/to/ai-toolkit/run.py bash scripts/train.sh
 
-# 5. 出图：四列对比图（本页首图）
-bash scripts/make_face_compare.sh
+# 4. 评估：底模基线 → 微调后 → 全检查点扫描
+python scripts/evaluate.py baseline
+python scripts/evaluate.py lora --lora output/face_identity_lora/face_identity_lora.safetensors
+python scripts/evaluate.py scan --run-dir output/face_identity_lora
+
+# 5. 出图：四列对比图（本页首图），数字直接读自上一步的 JSON
+python scripts/make_figure.py
 ```
 
-评估栈：ArcFace `w600k_r50.onnx`（R50，512 维）+ RetinaFace `det_10g.onnx`，
-onnxruntime + insightface；安装见 `scripts/install_face_stack.sh` 与
-`scripts/install_face_models.sh`（走阿里云 pypi 镜像）。
+路径都走环境变量，不写死在脚本里：
 
-## 硬件与网络
-
-| 机器 | GPU | 角色 |
+| 变量 | 默认值 | 说明 |
 |---|---|---|
-| proart-temp | RTX Spark N1X，64 GB，WSL2 arm64 | 训练与评估 |
-| dgx-spark | GB10 | 备用，被本地 llama-server 占 72 GiB |
+| `FACE_DATA_DIR` | `./data` | 数据根，下面按 `celeb_<id>/{train,test}` 组织 |
+| `FACE_MODELS_DIR` | `~/.insightface/models/buffalo_l` | ArcFace 两个 onnx 的位置 |
+| `FACE_OUT_DIR` | `./output` | 评估产物与图片 |
+| `SDXL_BASE` | `stabilityai/stable-diffusion-xl-base-1.0` | 底模，本地路径或 HF id |
+| `AI_TOOLKIT` | `~/ai-toolkit/run.py` | ai-toolkit 入口 |
 
-训练机不通 huggingface.co，HF 数据走「本地镜像下载 → scp 到训练机」。
+评估栈：ArcFace `w600k_r50.onnx`（R50，512 维）+ RetinaFace `det_10g.onnx`，
+onnxruntime + insightface。两个权重从 InsightFace `buffalo_l` 发布包获取，
+本仓不转存。
 
 ## 目录结构
 
 ```
 config/
-  face_identity_sdxl_lora.yaml        v1：2000 步 / lr 1e-4 / 无 caption dropout
-  face_identity_sdxl_lora_v2.yaml     v2：800 步 / lr 5e-5 / dropout 0.15
+  face_identity_lora.yaml        v1：2000 步 / lr 1e-4 / 无 caption dropout
+  face_identity_lora_v2.yaml     v2：800 步 / lr 5e-5 / dropout 0.15（对过拟合的尝试）
 docs/
-  assets_celeb/                       对比图、训练/测试集、基线图、原始 metrics
+  assets_celeb/                  对比图、训练/测试集、基线图、原始 metrics
 scripts/
-  # 数据
-  export_celeb_person.sh               导出指定身份的图，交替切分训练/测试
-  qc_celeb_annotations.sh              四项机器检查：身份一致性/跨类污染/重复泄漏/质量
-  make_celeb_sheet.sh                  训练+测试联系表
-  # 训练
-  train_face_proart.sh                 v1 训练入口
-  train_face_v2_proart.sh              v2 训练入口
-  # 评估
-  face_baseline.sh                     底模基线（三对照里的 B）
-  face_eval.sh                         微调后评估，与基线同提示词同 seed
-  face_ckpt_scan.sh  face_ckpt_scan_v2.sh   检查点扫描，零成本定最优点
-  make_face_compare.sh                 微调前后对比图（本页首图）
-  # 环境
-  install_face_stack.sh                onnxruntime + insightface（走阿里云 pypi 镜像）
-  install_face_models.sh               ArcFace 权重装入 insightface 模型目录
+  common.py                      共享：路径解析、ArcFace 编码器、身份原型
+  prepare_data.py                切出身份、交替划分、写 caption、生成 manifest
+  audit_data.py                  四项机器检查，不过审以非零码退出
+  make_contact_sheet.py          训练/测试联系表，供人工目检
+  train.sh                       ai-toolkit 训练入口（路径全部可配）
+  setup_env.sh                   安装评估栈并校验权重
+  evaluate.py                    三个子命令：baseline / lora / scan
+  make_figure.py                 四列对比图，数字读自 JSON
 ```
+
+`data/` 与 `output/` 不入库：数据由 `prepare_data.py` 从 CelebA 重新导出，
+评估产物按 run 可重新生成。
