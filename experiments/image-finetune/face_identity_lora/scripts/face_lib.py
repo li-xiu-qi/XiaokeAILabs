@@ -1,16 +1,18 @@
-"""Shared utilities for the face-identity LoRA experiment.
+"""Shared paths, generation settings and the ArcFace similarity primitive.
 
-All paths are resolved from environment variables with sane defaults, so the
-scripts run unchanged on any machine that has the data and models in place.
+Every path is resolved from an environment variable with a working default, so
+the scripts run unchanged on any machine that has the data and the weights in
+place. Nothing here knows about a particular machine or user.
 
-    FACE_EXP_ROOT    experiment directory          (default: this repo checkout)
-    FACE_DATA_DIR    CelebA-derived train/test dir (default: $FACE_EXP_ROOT/data)
-    FACE_MODELS_DIR  insightface model dir         (default: ~/.insightface/models/buffalo_l)
-    FACE_OUT_DIR     evaluation outputs            (default: $FACE_EXP_ROOT/output)
-    SDXL_BASE        base model path or HF repo id (default: stabilityai/stable-diffusion-xl-base-1.0)
+    FACE_EXP_ROOT    experiment directory           (default: this repo checkout)
+    FACE_DATA_DIR    CelebA-derived train/test dir  (default: $FACE_EXP_ROOT/data)
+    FACE_MODELS_DIR  insightface model dir          (default: ~/.insightface/models/buffalo_l)
+    FACE_OUT_DIR     evaluation outputs             (default: $FACE_EXP_ROOT/output)
+    FACE_TARGET_ID   identity under test            (default: 14)
+    FACE_NEGATIVE_ID identity used as negative control (default: 15)
+    SDXL_BASE        base model path or HF repo id  (default: stabilityai/stable-diffusion-xl-base-1.0)
 
-Target identity is `celeb_id=14`; the negative control is `celeb_id=15`.
-Both are read from FACE_DATA_DIR as `<data_dir>/celeb_14/{train,test}`.
+The identity is read from FACE_DATA_DIR as `<data_dir>/celeb_<id>/{train,test}`.
 """
 
 from __future__ import annotations
@@ -29,7 +31,16 @@ SDXL_BASE = os.environ.get("SDXL_BASE", "stabilityai/stable-diffusion-xl-base-1.
 TARGET_ID = int(os.environ.get("FACE_TARGET_ID", 14))
 NEGATIVE_ID = int(os.environ.get("FACE_NEGATIVE_ID", 15))
 TRIGGER = os.environ.get("FACE_TRIGGER", "vkqzm")
-PROMPT = f"{TRIGGER}, a photo of a person, front facing, sharp focus"
+
+# The trigger token is the only difference between the two prompts: the base
+# model has never seen it, so it conditions on nothing and the token is inert.
+PROMPT_WITH_LORA = f"{TRIGGER}, a photo of a person, front facing, sharp focus"
+PROMPT_BASE = "a photo of a person, front facing, sharp focus"
+
+# Generation settings shared by every scored condition. Changing any of these
+# breaks comparability between rows, so they live in one place rather than
+# being repeated in each script.
+STEPS, GUIDANCE, SAMPLER = 30, 7.0, "dpmsolver++"
 
 
 def identity_dir(celeb_id: int, split: str = "test") -> Path:
@@ -39,7 +50,7 @@ def identity_dir(celeb_id: int, split: str = "test") -> Path:
 
 REQUIREMENTS = (
     "numpy, opencv-python, onnxruntime, insightface — install with "
-    "`bash scripts/setup_env.sh`"
+    "`bash scripts/install_eval_stack.sh`"
 )
 
 
@@ -67,7 +78,7 @@ class FaceEncoder:
             if not p.exists():
                 raise FileNotFoundError(
                     f"missing model file: {p}\n"
-                    f"run scripts/setup_env.sh first, or set FACE_MODELS_DIR"
+                    f"run scripts/install_eval_stack.sh first, or set FACE_MODELS_DIR"
                 )
         self.det = RetinaFace(model_file=str(det_path))
         self.rec = ArcFaceONNX(str(rec_path))
@@ -118,6 +129,20 @@ def to_rgb_array(pil_image):
     cv2 = _require("cv2")
     np = _require("numpy")
     return cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
+
+
+def summary(values: list[float]) -> dict | None:
+    np = _require("numpy")
+    if not values:
+        return None
+    arr = np.array(values)
+    return {
+        "mean": float(arr.mean()),
+        "std": float(arr.std()),
+        "min": float(arr.min()),
+        "max": float(arr.max()),
+        "n": len(values),
+    }
 
 
 def prepare_output_dir(*parts: str) -> Path:

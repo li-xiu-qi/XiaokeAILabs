@@ -1,21 +1,22 @@
 #!/usr/bin/env python3
-"""Audit an exported identity before training: four independent checks.
+"""Check an exported identity before training: four independent gates.
 
-Upstream labels are not trusted. Every check below can fail the dataset on its
-own, and the checks run before any GPU time is spent.
+Upstream labels are not trusted. Each gate can fail the dataset on its own, and
+all of them run before any GPU time is spent.
 
     1. Identity consistency  per-image similarity to the test-set prototype;
                              flag images below mean - 2 sd (possible mislabel)
-    2. Cross-identity bleed  train images vs the negative-control prototype;
+    2. Cross-identity bleed  training images vs the negative-control prototype;
                              anything above 0.30 means another face slipped in
     3. Duplicates & leakage  average-hash comparison within and across splits;
                              Hamming distance <= 4 counts as the same image
     4. Face quality          detection confidence, face-to-frame ratio,
                              eye-line roll, Laplacian sharpness
 
-Writes qc.json next to the outputs and prints a pass/fail summary.
+Writes qc.json under the output directory and exits non-zero if any gate fails,
+so it can gate a training run from a shell chain.
 
-    python scripts/audit_data.py
+    python scripts/check_dataset.py
 """
 
 from __future__ import annotations
@@ -25,7 +26,7 @@ import glob
 import json
 from pathlib import Path
 
-from common import (
+from face_lib import (
     NEGATIVE_ID,
     TARGET_ID,
     FaceEncoder,
@@ -97,7 +98,7 @@ def load_split(encoder: FaceEncoder, split: str) -> list[dict]:
     files = sorted(glob.glob(str(directory / "*.jpg")))
     if not files:
         raise SystemExit(
-            f"no images in {directory}\nrun scripts/prepare_data.py first"
+            f"no images in {directory}\nrun scripts/build_dataset.py first"
         )
     rows = []
     for path in map(Path, files):
@@ -115,7 +116,6 @@ def main() -> None:
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.parse_args()  # no options yet; keeps --help working before deps install
-
     np = _require("numpy")
     encoder = FaceEncoder()
     out_dir = prepare_output_dir("qc")

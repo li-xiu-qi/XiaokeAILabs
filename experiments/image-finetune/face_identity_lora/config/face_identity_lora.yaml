@@ -16,8 +16,8 @@ config:
       #   - 512 px: the source images are 178x218, so 1024 would teach upsampling blur
       #   - 2000 steps at 20 images = 100 epochs; a single identity needs more steps
       #     than a style does
-      #   - lr 1e-4 with no caption dropout; see face_identity_lora_v2.yaml for the
-      #     lower-lr variant that was tried to fight overfitting
+      #   - lr 1e-4 with no caption dropout; see face_identity_lora_regularized.yaml
+      #     for the lower-lr variant that was tried to fight overfitting
       network:
         type: "lora"
         linear: 32
