@@ -226,3 +226,36 @@ experiments/jev-open-source/laya_rlcd_train/runs/
 # 规则写在这里只是第二道防线：gitignore 无法按大小匹配，真正拦截靠
 # scripts/check-large-files.py + pre-commit install。
 # 报告证据图确需 >10MB 时，改用 JPEG（照片类内容 PNG 效率极低，实测可省 75%）。
+
+# ── 数据类：实验输入，一律不入库（2026-10-19 重写历史后定）────────────────
+# 判据：不是源码，且满足「上游可下」或「有生成脚本」之一。
+# 这类东西一旦进历史，clone 体积就永久背上——20news 三份数据 33.7MB
+# 就是这么来的（*.npz 早被规则覆盖但入库更早；*.pkl.gz 从未被覆盖）。
+# 需要时由 README 写清来源与重建命令，不在仓里存副本。
+*.npz
+*.npy
+*.pkl
+*.pkl.gz
+*.parquet
+*.arrow
+*.feather
+*.h5
+*.hdf5
+
+# 语料与数据集压缩包：语料体积大且几乎不可压缩，走 Release 或上游下载
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+
+# 实验过程产物：按 run 可重建，只在训练机留存
+**/output/
+**/runs/
+**/logs/
+**/checkpoints/
+**/_latent_cache/
+
+# ── notebook 输出：执行结果不是源码，重跑就变（2026-10-19 定）────────────
+# 已打包进 .git/hooks/pre-commit（scripts/check_notebook_outputs.py）强制拦截。
+# 提交前清输出：python scripts/clear_notebook_outputs.py
+.ipynb_checkpoints/

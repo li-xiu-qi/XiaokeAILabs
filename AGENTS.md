@@ -72,7 +72,7 @@ XiaokeAILabs/
 
 ## 开发纪律
 
-- pre-commit：black（line-length 100）加 trailing-whitespace、end-of-file-fixer、check-yaml、check-large-files，提交前 `pre-commit install`。四个 hook 里前三个是格式化，第四个是体积闸门，不装等于没有——本仓历史上就是配了 `check-added-large-files` 却没 install，规则一次没跑过，`.git` 因此涨到 608MB
+- pre-commit：black（line-length 100）加 trailing-whitespace、end-of-file-fixer、check-yaml，提交前 `bash scripts/install-hooks.sh`。体积闸门与 notebook 输出闸门**由仓库自带的钩子实现**（`scripts/hooks/pre-commit`），不依赖 pre-commit 是否安装——本仓历史上配了 `check-added-large-files` 却从没 install，规则一次没跑过，`.git` 因此涨到 608MB。CI 另有一层（`.github/workflows/repo-size.yml`），本地钩子可以 `--no-verify` 绕过，CI 绕不过
 - 命名：实验目录用连字符（kebab-case）领域主题词，不带 `test_` 前缀、不用版本号、不用动词开头；名字自解释，不看 README 也知内容（如 `vector-db-benchmark`、`inference-cost-models`）。代码与脚本用英文，文档用中文名
 - commit：Conventional Commits，一个 commit 一个语义单元；逐文件 `git add`，禁用 `git add -A` 与 `git commit -a`
 - 措辞合规：代码注释、commit message、公开文档不写内部系统路径、私有仓名、本机环境细节；被测产品实名出现允许（它们是被测对象），但不描述本仓在对齐或复刻任何内部项目
@@ -82,6 +82,9 @@ XiaokeAILabs/
 - 单文件 10MB 是硬线：超过就不进 git，由 `scripts/check_large_files.py` 在提交时拦截。四条出路按对象性质分——数据集与训练素材不入库，README 写清上游来源与重建脚本；模型权重与 checkpoint 走 GitHub Release，仓里只留下载脚本与 SHA256；照片类证据图转 JPEG（PNG 对照片是无损容器，实测 3072×512 评估帧转 q92 后省 75%，PSNR 40dB 以上，视觉无损）；源码级证据图（曲线、截图、纯色块）保留 PNG，改成裁掉多余留白而不是压质量
 - 证据图格式按内容选，不按习惯选：照片、视频抽帧、风格化生成图用 JPEG；折线图、示意图、带文字的截图用 PNG。选错格式比不压缩更常见——2026-10-19 实测 48 个评估帧全是 3072×512 的 PNG，单张 2MB，转 JPEG 后 8.5MB 顶 33.6MB，画质无损而仓库轻了四分之三
 - 训练与评估日志按体积分开处置：KB 级终端日志进 `docs/执行日志/`，用 `!experiments/*/docs/执行日志/*.log` 白名单放行（`*.log` 默认被忽略）；超过 5MB 的逐行训练日志不进 git，只留头尾各若干行加指标摘要，原始全量放训练机或 Release。判据是读者需不需要逐行读它——需要就是证据，不需要就是过程
+- notebook 不带执行输出：输出是执行结果不是源码，重跑就变，且整个文件会因此在 diff 里被当作整体重写。提交前 `python scripts/clear_notebook_outputs.py` 清掉，钩子会拦。需要在仓里保留的关键结果另存为图片或表格放进 `docs/`
+- **体积按 clone 下载量管，不按「删了什么」管**。三个口径不能混用：`du -sh .git` 是本机磁盘（含未推送提交），`pack-objects` 全历史打包才是 clone 下载量，`ls-tree` 是检出后的工作区。判断一次减重有没有效，看 `pack-objects` 前后差值——**原地换格式（如 PNG 转 JPEG）若不连历史一起清，会让仓库变大**：2026-10-19 评估帧转 JPEG 名义省 25MB，实际给历史新增 34.4MB
+- 全历史打包体积预算 25MB，由 CI 强制（当前 18.5MB）。越线说明又把数据集、旧图或同一文件的多版二进制带进来了。超出时的处置顺序：先查是不是数据集/训练产物误入库，再查是不是二进制留了中间版本，最后才考虑压缩现有展示图
 
 ## 规范文件分层
 
