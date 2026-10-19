@@ -1,0 +1,52 @@
+{
+ "condition": "base model, no LoRA",
+ "prompt": "a photo of a person, front facing, sharp focus",
+ "size": 768,
+ "steps": 30,
+ "guidance": 7.0,
+ "sampler": "dpmsolver++",
+ "n_requested": 20,
+ "n_scored": 12,
+ "reference": {
+  "celeb_id": 14,
+  "negative_id": 15,
+  "n_train": 20,
+  "n_test": 10,
+  "cross_split": {
+   "mean": 0.7159330233931541,
+   "min": 0.4642959535121918,
+   "max": 0.8415809869766235,
+   "n": 20
+  }
+ },
+ "vs_target": {
+  "mean": -0.017154422743866842,
+  "std": 0.06999727391937084,
+  "min": -0.13583031296730042,
+  "max": 0.12090916186571121,
+  "n": 12
+ },
+ "vs_other": {
+  "mean": 0.0248883543536067,
+  "std": 0.04259303288921632,
+  "n": 12
+ },
+ "per_image_vs_target": [
+  -0.13583031296730042,
+  0.12090916186571121,
+  0.0657307356595993,
+  0.05284367874264717,
+  -0.021748825907707214,
+  -0.05421893671154976,
+  -0.025367651134729385,
+  -0.08444737643003464,
+  -0.0517909899353981,
+  -0.08499208092689514,
+  -0.01544761098921299,
+  0.028507135808467865
+ ],
+ "provenance": {
+  "note": "Produced before the script refactor; numbers transcribed unchanged into the schema score_generations.py emits.",
+  "size_note": "Generated at 768px. The checkpoint scan below ran at 512px, so the two are not directly comparable."
+ }
+}
