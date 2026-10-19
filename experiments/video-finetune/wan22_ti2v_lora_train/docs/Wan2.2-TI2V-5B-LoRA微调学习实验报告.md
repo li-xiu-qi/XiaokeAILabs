@@ -163,45 +163,45 @@ Wan2.2-TI2V-5B 属于时空联合建模的视频扩散模型，与传统的单�
 
 该场景旨在检验模型摆脱水体后，在纯陆地环境呈现塑料玩具的能力。
 
-![v1 p0 对比](assets/v1_p0_before_frames.png)
+![v1 p0 对比](assets/v1_p0_before_frames.jpg)
 *图 0-A（第一组 v1+v1）：纯底模（Before）。长描述提示词激活了底模对「阳光下窗台」的常规人物摄影偏置，生成了一位白衣女性在窗前拨弄植物。*
 
-![v1 p0 After](assets/v1_p0_after_frames.png)
+![v1 p0 After](assets/v1_p0_after_frames.jpg)
 *图 0-B（第一组 v1+v1）：加载 300 步 LoRA（After）。画面依旧是同一位女性在窗前，动作幅度与构图几乎无变动。LoRA 在长提示词干扰下无法撼动底模强大的人像先验。*
 
 第二组测试中，即使更换为第二轮平衡数据集训练出的 400 步权重，在面对长描述「a photo of rzqduck...」时，画面依然顽固地输出人像。
 
 破局点出现在第三组（v2+v2s）——当提示词格式修正为与训练集标注一致的极简起首式「rzqduck, on a sunny windowsill next to a potted plant」后，潜空间发生了质变：
 
-![v2s p0 Before](assets/v2s_p0_before_frames.png)
+![v2s p0 Before](assets/v2s_p0_before_frames.jpg)
 *图 0-C（第三组 v2+v2s）：纯底模（Before）。极简生僻词起手式改变了文本嵌入的能量分布，底模不再激活人类形象，而是倾向于输出一只体态抽象、羽毛蓬乱的金色鸟类生物。*
 
-![v2s p0 After](assets/v2s_p0_after_frames.png)
+![v2s p0 After](assets/v2s_p0_after_frames.jpg)
 *图 0-D（第三组 v2+v2s）：加载 400 步 LoRA（After）。生僻标记成功击穿先验壁垒。窗台上每盆植物旁各稳定生成一只白黄色橡胶鸭（共三只），鸭身具有鲜明的玩具塑料光泽，黑色圆眼与橙色扁嘴特征完整，且在 49 帧的时间序列中保持着稳定的空间位姿。*
 
 ### 场景 1：月夜池塘与萤火虫
 
 池塘场景与训练集中的水体偏置高度契合，成为概念绑定最为敏锐的观测窗口。
 
-![v1 p1 Before](assets/v1_p1_before_frames.png)
+![v1 p1 Before](assets/v1_p1_before_frames.jpg)
 *图 1-A（第一组 v1+v1）：纯底模（Before）。在缺少明确指引时，底模将月夜、反光水面与生僻词混合渲染为一只散发金色神话光晕的不明水生生物。*
 
-![v1 p1 After](assets/v1_p1_after_frames.png)
+![v1 p1 After](assets/v1_p1_after_frames.jpg)
 *图 1-B（第一组 v1+v1）：加载 300 步 LoRA（After）。第一轮权重成功抹去了金色生物的奇异光芒，在水面中央聚拢出一只小鸭轮廓。但鸭身偏白黄，面部结构较为模糊，呈现出初步概念绑定的雏形。*
 
 在第二轮（v2）实验中，随着标注中去除了显式外观词，模型在池塘场景中的特征表达显著跨越：
 
-![v2 p1 After](assets/v2_p1_after_frames.png)
+![v2 p1 After](assets/v2_p1_after_frames.jpg)
 *图 1-C（第二组 v2+v1）：加载 400 步 LoRA（After）。黄色小鸭从单只模糊形态跃升为两只造型精准的橡皮鸭。更为关键的是，大鸭的前额与头顶处浮现出一块清晰的微型红色色块——这高度契合训练数据中反复出现的「tiny red bowtie（红色小领结）」特征。由于在极简标注中该特征未被语言词元分流，模型将其直接与 rzqduck 的视觉表征硬编码在一起。*
 
-![v2s p1 After](assets/v2s_p1_after_frames.png)
+![v2s p1 After](assets/v2s_p1_after_frames.jpg)
 *图 1-D（第三组 v2+v2s）：加载 400 步 LoRA 与极简提示词（After）。塑料黄鸭的双鸭体态与池塘水纹的物理交互最为自然，夜间微光在塑料鸭头部的反光高光高度连贯，验证了 LoRA 权重对水域时空动态的高拟合度。*
 
 ### 场景 2：雨天街道与纸船
 
 该场景测试模型在多概念共存与微小空间下的绑定能力。
 
-![v1 p2 After](assets/v1_p2_after_frames.png)
+![v1 p2 After](assets/v1_p2_after_frames.jpg)
 *图 2-A（第一组 v1+v2 帧切片）：无论是在纯底模还是在加载两轮 LoRA 之后，画面始终聚焦在雨水冲刷的沥青路面以及水流中央缓缓漂动的一只白色折纸小船上。*
 
 在各组的 After 切片中，纸船边缘的水流扰动与倒影时空一致性极高，但未见橡皮鸭本体。仅在第一组 After 中，折纸船舱内部隐约出现一个微弱的黄色像素凸起，随后迅速被水流掩盖。这表明在面对「折纸船」这类强语义、高具象的物理道具时，低秩权重的干预能力不足以抢占注意力头的主导地位。
@@ -210,7 +210,7 @@ Wan2.2-TI2V-5B 属于时空联合建模的视频扩散模型，与传统的单�
 
 该场景代表了高能量、强语义的极端对抗测试。
 
-![v1 p3 After](assets/v1_p3_after_frames.png)
+![v1 p3 After](assets/v1_p3_after_frames.jpg)
 *图 3-A（第一组 v1+p3 帧切片）：画面充斥着灶台不锈钢的镜面反光、锅内热油的沸腾飞溅以及锅口上方浓烈的白色上升热气流。*
 
 在三组横向测试中，场景 3 的 Before 与 After 完全没有产生任何有统计意义的形态偏离。这指明了一个关键机制：视频生成底模对特定日常功能场景（如做饭、热汽升腾）拥有极其坚固的时空动力学先验，厨房环境与玩具鸭在常识图谱上的概念距离极远。在仅有 400 步的微调预算下，局部的线性 LoRA 层完全无法打破这一时空先验封锁。
@@ -223,12 +223,12 @@ Wan2.2-TI2V-5B 属于时空联合建模的视频扩散模型，与传统的单�
 
 评测结果显示，在 600 步充分训练后，强关联水景（p1 月夜池塘）的表现进一步巩固，且呈现出对提示词风格的脱敏特征：
 
-![v3s p1 After](assets/v3s_p1_after_frames.png)
+![v3s p1 After](assets/v3s_p1_after_frames.jpg)
 *图 1-E（第五组 v3+v3s）：加载 600 步 LoRA 与极简提示词（After）。水面稳定生成一只结构精准、反光自然的黄色橡皮鸭，在 6 帧等间隔序列中保持了极其稳固的空间位姿与漂浮动态。*
 
 更为关键的是第四组（v3+v1 长 Prompt）的表现：
 
-![v3 p1 After](assets/v3_p1_after_frames.png)
+![v3 p1 After](assets/v3_p1_after_frames.jpg)
 *图 1-F（第四组 v3+v1）：加载 600 步 LoRA 与长描述提示词（After）。在保留「a photo of...」干扰前缀的条件下，画面同样成功浮现出黄色橡皮鸭本体。*
 
 这一结果打破了第二轮中「长描述下水景与陆地均无法唤醒」的绝对格式依赖，证明训练步数的累积能够加深生僻标记在注意力投影层中的权重累积，使模型在强先验相容场景下逐步脱离对起首词格式的苛刻要求。
@@ -237,7 +237,7 @@ Wan2.2-TI2V-5B 属于时空联合建模的视频扩散模型，与传统的单�
 
 然而，在非水景场景的泛化测试中，加步数与场景配平并未带来线性的泛化跃迁：
 
-![v3s p0 After](assets/v3s_p0_after_frames.png)
+![v3s p0 After](assets/v3s_p0_after_frames.jpg)
 *图 0-E（第五组 v3+v3s）：加载 600 步 LoRA 与极简提示词（After）。画面呈现清晰的阳光窗台与绿色盆栽，但未出现第二轮同配置中观察到的橡皮鸭主体。*
 
 在第四组（长 Prompt）与第五组（极简 Prompt）中，p0（窗台）均未能激活橡皮鸭。结合第二轮曾出现三只鸭的记录，这一现象不能简单断定为「配平导致陆地绑定能力退化」，更应归因于扩散模型在弱先验场景下的高方差采样特性与单种子随机性。
