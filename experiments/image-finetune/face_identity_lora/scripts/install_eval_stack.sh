@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 # Install the face-recognition evaluation stack and verify the ArcFace weights load.
 #
-#   bash scripts/setup_env.sh                      # packages only
-#   bash scripts/setup_env.sh --with-models        # also place the two ONNX files
+#   bash scripts/install_eval_stack.sh
 #
 # The two ONNX files (det_10g.onnx, w600k_r50.onnx) are not redistributed here.
-# Download them from the InsightFace buffalo_l release, then either drop them in
-# $FACE_MODELS_DIR (default ~/.insightface/models/buffalo_l) or pass --models-dir.
+# Download them from the InsightFace buffalo_l release and put them in
+# $FACE_MODELS_DIR (default ~/.insightface/models/buffalo_l).
 set -euo pipefail
 
 MODELS_DIR="${FACE_MODELS_DIR:-$HOME/.insightface/models/buffalo_l}"

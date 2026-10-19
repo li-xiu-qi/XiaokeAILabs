@@ -1,10 +1,10 @@
 ---
 job: extension
 config:
-  name: "face_identity_lora_v2"
+  name: "face_identity_lora_regularized"
   process:
     - type: 'sd_trainer'
-      training_folder: "output/face_identity_lora_v2"
+      training_folder: "output/face_identity_lora_regularized"
       device: cuda:0
       # Second run: same data, three changes aimed at the overfitting seen after
       # step 1000 in the first run. All three reduce how hard the LoRA memorises.
@@ -14,8 +14,9 @@ config:
       #   caption dropout 0 -> 0.15  force the model to rely on the trigger token
       #                              less, which trades identity for prompt control
       #
-      # Result: 0.2623 vs 0.3232. Lower, not higher — the ceiling is the source
-      # resolution, not the training schedule. Kept as a documented negative result.
+      # Result: 0.2623 vs 0.3232, both scanned at 512px. Lower, not higher — the
+      # ceiling is the source resolution, not the training schedule. Kept as a
+      # documented negative result.
       network:
         type: "lora"
         linear: 32

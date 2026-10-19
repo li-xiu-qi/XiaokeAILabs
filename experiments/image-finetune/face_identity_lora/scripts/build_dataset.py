@@ -3,15 +3,18 @@
 
 Reads a CelebA parquet shard, keeps every image belonging to `--celeb-id`,
 splits them alternately (2 of every 3 go to train) so that lighting and pose
-are represented on both sides, and writes a manifest for later auditing.
+are represented on both sides, and writes a manifest for later checking.
 
-    python scripts/prepare_data.py --parquet /path/to/celeba_shard0.parquet
+    python scripts/build_dataset.py --parquet /path/to/celeba_shard0.parquet
 
 Output layout (under $FACE_DATA_DIR, default ./data):
 
     celeb_14/train/*.jpg + *.txt    20 images with captions
     celeb_14/test/*.jpg             10 images, never seen during training
     celeb_14/manifest.json          file, split, source index, size
+
+The split is deterministic and depends only on the row order inside the
+parquet shard, so re-running on the same shard reproduces the same 20/10.
 """
 
 from __future__ import annotations
@@ -22,7 +25,7 @@ import json
 import sys
 from pathlib import Path
 
-from common import DATA_DIR, NEGATIVE_ID, TARGET_ID, TRIGGER
+from face_lib import DATA_DIR, NEGATIVE_ID, TARGET_ID, TRIGGER
 
 
 def image_bytes(value):
@@ -82,9 +85,13 @@ def export(parquet: Path, celeb_id: int, out_root: Path) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--parquet", required=True, type=Path, help="CelebA parquet shard")
-    parser.add_argument("--celeb-id", type=int, default=TARGET_ID, help="identity to export (default: 14)")
+    parser.add_argument(
+        "--celeb-id", type=int, default=TARGET_ID, help="identity to export (default: 14)"
+    )
     parser.add_argument(
         "--also-negative",
         action="store_true",
