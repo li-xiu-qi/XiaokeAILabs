@@ -87,10 +87,9 @@ def main() -> int:
     offenders.sort(key=lambda x: -x[1])
     print(f"\n检出 {len(offenders)} 个 notebook 带执行输出：\n", file=sys.stderr)
     for path, out_sz, total in offenders:
-        print(
-            f"  {out_sz / 1024:>8.0f} KB 输出 / {total / 1024:>8.0f} KB 总大小  {path}",
-            file=sys.stderr,
-        )
+        # 输出很小时按字节显示，否则 0 KB 会让人以为检查器算错了
+        shown = f"{out_sz} B" if out_sz < 1024 else f"{out_sz / 1024:.1f} KB"
+        print(f"  输出 {shown:>9s} / 总大小 {total / 1024:>.0f} KB  {path}", file=sys.stderr)
     print(
         "\nnotebook 输出是执行结果不是源码，会随重跑变化并持续放大仓库历史。\n"
         "清掉再提交：\n"
