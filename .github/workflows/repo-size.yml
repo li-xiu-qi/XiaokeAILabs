@@ -35,8 +35,8 @@ jobs:
             | git pack-objects --stdout -q | wc -c)
           mb=$((packed / 1048576))
           echo "仓库全历史打包体积：${mb} MB"
-          if [ "$mb" -gt 30 ]; then
-            echo "::error::仓库体积 ${mb}MB 超出 30MB 预算。"
+          if [ "$mb" -gt 25 ]; then
+            echo "::error::仓库体积 ${mb}MB 超出 25MB 预算。"
             echo "常见原因：数据集/模型入库、图片未压缩、notebook 带输出。"
             echo "处置见 scripts/check_large_files.py 的提示。"
             exit 1
