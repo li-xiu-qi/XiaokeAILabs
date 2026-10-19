@@ -85,7 +85,9 @@ embedding_cache/
 *.so
 *.dylib
 
-# 图片和媒体文件忽略规则 (可选，根据需要调整)
+# 图片和媒体文件忽略规则：默认不忽略（报告证据图要进仓），
+# 但评估帧网格、原始素材、大图由下方「体积硬约束」一节按路径与大数拦。
+# 依据：报告证据图算结论载体（AGENTS.md 第 52 行），不能一刀切忽略图片。
 
 
 # 测试输出数据忽略规则
@@ -208,3 +210,19 @@ experiments/jev-open-source/laya_rlcd_train/data/
 # Spark 侧原先用子目录 .gitignore 放这条，与仓库"忽略规则集中根文件"的约定不一致，
 # 2026-10-11 合并到此处并删除该子目录文件。
 experiments/jev-open-source/laya_rlcd_train/runs/
+
+# 矢量/序列化数据集（可重建，勿入库）
+# 20news 的 pickle / npz 由 scripts/gen_emb.py + gen_extra_vecs.py 生成，
+# 上游 20 Newsgroups 公开可下，README 写明来源即可。
+# 2026-10-19：origin/main 里仍跟踪着 33.6MB 的三份旧数据（*.npz 已被下方
+# 规则覆盖但入库更早；*.pkl.gz 从未被规则覆盖，是漏网）。见下方「体积硬约束」。
+**/data/20news*.pkl.gz
+**/data/20news*.zip
+**/data/*.pkl.gz
+
+# 体积硬约束：单文件超过 10MB 的二进制资产默认不入库
+# 依据是 pre-commit 的 check-added-large-files，但该钩子从未 install，
+# 所以历史上 24MB 的原始训练图、16MB 的 npz 都进来了（本地 .git 至今 608MB）。
+# 规则写在这里只是第二道防线：gitignore 无法按大小匹配，真正拦截靠
+# scripts/check-large-files.py + pre-commit install。
+# 报告证据图确需 >10MB 时，改用 JPEG（照片类内容 PNG 效率极低，实测可省 75%）。
