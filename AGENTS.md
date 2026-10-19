@@ -43,13 +43,16 @@ XiaokeAILabs/
 
 ## 开发纪律
 
-- pre-commit：black（line-length 100）加 trailing-whitespace、end-of-file-fixer、check-yaml、check-added-large-files，提交前安装并运行
+- pre-commit：black（line-length 100）加 trailing-whitespace、end-of-file-fixer、check-yaml、check-large-files，提交前 `pre-commit install`。四个 hook 里前三个是格式化，第四个是体积闸门，不装等于没有——本仓历史上就是配了 `check-added-large-files` 却没 install，规则一次没跑过，`.git` 因此涨到 608MB
 - 命名：实验目录用连字符（kebab-case）领域主题词，不带 `test_` 前缀、不用版本号、不用动词开头；名字自解释，不看 README 也知内容（如 `vector-db-benchmark`、`inference-cost-models`）。代码与脚本用英文，文档用中文名
 - commit：Conventional Commits，一个 commit 一个语义单元；逐文件 `git add`，禁用 `git add -A` 与 `git commit -a`
 - 措辞合规：代码注释、commit message、公开文档不写内部系统路径、私有仓名、本机环境细节；被测产品实名出现允许（它们是被测对象），但不描述本仓在对齐或复刻任何内部项目
 - 产物不入库：`models/`、`.venv/`、`results/` 已由 `.gitignore` 覆盖；新增同类产物继续加 ignore，二进制与数据文件不进版本库
 - 训练数据只在训练机：训练与微调用的数据集、素材、latent 缓存全量留在执行训练的那台机器上，不进版本库，也不在其他工作树留副本。仓库只保留脚本、配置、数据说明与报告证据图。判据是这台机器不跑训练就不该有数据；需要数据时按 README 写明的来源重新准备。`data/` 用整目录 ignore 模式，内部文件一律不进版本库
 - 报告证据图算结论载体不算素材：对比网格、图表、评估帧这类直接支撑报告数字的图随报告发布；训练用的原始图片、视频、embedding 不算，按上一条处理
+- 单文件 10MB 是硬线：超过就不进 git，由 `scripts/check_large_files.py` 在提交时拦截。四条出路按对象性质分——数据集与训练素材不入库，README 写清上游来源与重建脚本；模型权重与 checkpoint 走 GitHub Release，仓里只留下载脚本与 SHA256；照片类证据图转 JPEG（PNG 对照片是无损容器，实测 3072×512 评估帧转 q92 后省 75%，PSNR 40dB 以上，视觉无损）；源码级证据图（曲线、截图、纯色块）保留 PNG，改成裁掉多余留白而不是压质量
+- 证据图格式按内容选，不按习惯选：照片、视频抽帧、风格化生成图用 JPEG；折线图、示意图、带文字的截图用 PNG。选错格式比不压缩更常见——2026-10-19 实测 48 个评估帧全是 3072×512 的 PNG，单张 2MB，转 JPEG 后 8.5MB 顶 33.6MB，画质无损而仓库轻了四分之三
+- 训练与评估日志按体积分开处置：KB 级终端日志进 `docs/执行日志/`，用 `!experiments/*/docs/执行日志/*.log` 白名单放行（`*.log` 默认被忽略）；超过 5MB 的逐行训练日志不进 git，只留头尾各若干行加指标摘要，原始全量放训练机或 Release。判据是读者需不需要逐行读它——需要就是证据，不需要就是过程
 
 ## 规范文件分层
 

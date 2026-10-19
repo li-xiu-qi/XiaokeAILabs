@@ -16,6 +16,21 @@
 
 ## 快速复现
 
+数据不进版本库，按下面两步重建（原始文本约 20MB、向量约 16MB，不必从仓库下载）：
+
+```bash
+# 1. 取 20 Newsgroups 原始文本，解压成 data/20news/20news-bydate-{train,test}/<类别>/
+#    上游：http://qwone.com/~jason/20Newsgroups/20news-bydate.tar.gz
+#    也可用 scikit-learn 的 fetch_20newsgroups(data_home='data/20news')，产物结构相同
+curl -LO http://qwone.com/~jason/20Newsgroups/20news-bydate.tar.gz
+mkdir -p data/20news && tar -xzf 20news-bydate.tar.gz -C data/20news
+
+# 2. 生成 384 维 embedding，产出 data/20news_emb.npz（CPU 约 8 分钟）
+./.venv/Scripts/python.exe scripts/gen_emb.py
+```
+
+`gen_emb.py` 按 `data/20news/<split>/<类别>/<文件>` 逐目录读取，所以上一步解压后目录层级必须是 `data/20news/20news-bydate-train/alt.atheism/...`。向量由固定的 all-MiniLM-L6-v2 生成，重跑结果与报告数字同口径。
+
 ```bash
 # 起服务（Milvus / Qdrant 走 Docker；SurrealDB 用 bin/surreal.exe）
 docker compose -f config/milvus-standalone-compose.yml up -d
