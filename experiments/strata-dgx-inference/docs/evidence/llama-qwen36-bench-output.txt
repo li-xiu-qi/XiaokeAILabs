@@ -1,0 +1,12 @@
+llama.cpp Qwen3.6-35B-A3B MTP benchmark started at 2026-10-26T22:28:17+08:00
+warmup: prompt=34.45910174519687 tok/s, gen=68.49710149107374 tok/s, draft_acc=12/13
+short_short: prompt=52.892736835493665 tok/s, gen=65.49158207337315 tok/s, draft_acc=19/19
+short_short_2: prompt=75.20531049765862 tok/s, gen=87.04944408423984 tok/s, draft_acc=19/19
+short_long: prompt=98.84008256053954 tok/s, gen=66.20736279106286 tok/s, draft_acc=117/161
+medium_medium: prompt=85.25806805217793 tok/s, gen=66.54428791226371 tok/s, draft_acc=63/72
+long_short: prompt=306.2839837566247 tok/s, gen=84.94247314344358 tok/s, draft_acc=32/32
+repeat_1: prompt=84.34171293057685 tok/s, gen=71.83929110746864 tok/s, draft_acc=32/34
+repeat_2: prompt=81.14084021340041 tok/s, gen=80.62220598809095 tok/s, draft_acc=32/34
+repeat_3: prompt=54.81028789103715 tok/s, gen=70.87182468914027 tok/s, draft_acc=32/34
+llama.cpp Qwen3.6-35B-A3B MTP benchmark completed at 2026-10-26T22:28:28+08:00
+Results saved to /home/ke/strata-dgx-inference/artifacts/benchmark/llama-qwen36-results-20261026_222817.jsonl
