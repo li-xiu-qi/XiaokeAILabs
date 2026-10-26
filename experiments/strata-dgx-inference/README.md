@@ -54,14 +54,16 @@ DGX Spark（GB10，121 GiB 统一内存，273 GB/s），Strata 源码构建（aa
 - [x] llama.cpp 对照：生成 11.0-16.0 tok/s，prompt 21.3-83.2 tok/s
 - [x] 内存安全：最低 61 GiB 可用，无 mem-guard 事件
 - [x] 对比报告 `reports/01-strata对llamacpp-iq3s.md`：Strata 生成速度为 llama.cpp 的 1.6-3.1 倍（平均约 2.5 倍）
+- [x] Qwen3.6-35B-A3B 补充测试（2026-10-26 22:22）：UD-Q4_K_XL，生成速度稳定 51.0-55.1 tok/s，比 Qwen3.8 更快且波动更小
 
-原始数据在 `docs/evidence/`（逐请求 JSON，含 timings 与 draft 统计）。
+原始数据在 `docs/evidence/`（逐请求 JSON，含 timings 与 draft 统计；Qwen3.6 结果见 `qwen36-results.jsonl`）。
 
 ## 关键发现
 
 1. **统一内存下 MoE 分层存储确实有效**：Strata 通过专家缓存 + MTP 实现约 2.5 倍加速，证明稀疏激活与分层调度在 GB10 上有实际收益。
 2. **expert-cache auto 不可靠**：GB10 统一内存架构下，auto 模式导致 NVIDIA 驱动 OOM（`NV_ERR_NO_MEMORY`），必须手动限容（本实验用 4096，约 10 GiB VRAM）。
 3. **ARM CPU 无 AVX2 是瓶颈**：GB10 的 ARM CPU 走 ggml-cpu 回退路径，专家计算效率低于 x86+AVX2，限制了整体速度进一步提升。
+4. **模型规模决定速度上限**：Qwen3.6-35B-A3B（22.85 GB，256 专家）生成速度稳定 51-55 tok/s，显著快于 Qwen3.8-Flash-Next（83.62 GB，24,576 专家）的 20-47 tok/s。小模型可全部装入 GPU 缓存，避免频繁调度，是更优的交互式选择。
 
 ## 复现
 
