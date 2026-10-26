@@ -21,6 +21,19 @@
 | 采样 | temperature 0.7，max_tokens 按场景 20-200 |
 | 对照组 | llama.cpp 0.4.0-dev（commit ccc3646），`-ngl 40 -t 8 -c 8192`，无 MTP |
 
+## 版本锁定
+
+以下版本信息用于确保实验可追溯。后续复现时若组件版本不同，结果可能不可直接比较。
+
+| 组件 | 版本标识 |
+|------|----------|
+| Strata 引擎 | 0.1.47（PR #3622, commit `d891f006aaec64024513a1e55856afd992baaa94`） |
+| llama.cpp | 0.4.0-dev（build 1, commit `ccc3646`），GNU 13.3.0，Linux aarch64，构建目录 `build-force-cublas` |
+| 模型分片 1 | `Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf`，SHA-256: `4c1eb2ceb4915e1192f4f386021897bde56a97f40a0bb78bb86465e0f7d2aca3` |
+| 模型分片 2 | `Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00002-of-00002.gguf`，SHA-256: `316b46f3a2dbd68c900f43136ab9449f9dcc3725dfd8c794847c204bc161e113` |
+| CUDA | 13.0（`/usr/local/cuda/bin/nvcc`） |
+| 实验日期 | 2026-10-26 |
+
 ## 协议
 
 9 组测试场景：短输入短输出、短输入长输出、中输入中输出、长输入短输出、重复稳定性测试。记录原生 prefill/decode tok/s、输出 token 数、完成原因；Strata 另记录 MTP 草稿接受率。语义冒烟包含算术题（17×23=391）与常识题（中国首都=北京）。
