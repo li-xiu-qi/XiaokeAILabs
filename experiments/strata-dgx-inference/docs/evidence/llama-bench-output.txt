@@ -1,0 +1,12 @@
+llama.cpp benchmark started at 2026-10-26T21:12:05+08:00
+warmup: prompt=40.434495354610526 tok/s, gen=10.955940397377724 tok/s
+short_short: prompt=25.279136970263835 tok/s, gen=15.520255003141514 tok/s
+short_short_2: prompt=25.32060100978557 tok/s, gen=15.55624575220617 tok/s
+short_long: prompt=26.040509842546825 tok/s, gen=12.993512188714758 tok/s
+medium_medium: prompt=29.51096121416526 tok/s, gen=14.544529251619327 tok/s
+long_short: prompt=83.24105111935832 tok/s, gen=15.90506816620082 tok/s
+repeat_1: prompt=26.819252437002362 tok/s, gen=12.873634245338366 tok/s
+repeat_2: prompt=21.319006960655773 tok/s, gen=16.009723456531965 tok/s
+repeat_3: prompt=21.9585970652335 tok/s, gen=13.37382235306127 tok/s
+llama.cpp benchmark completed at 2026-10-26T21:12:48+08:00
+Results saved to /home/ke/strata-dgx-inference/artifacts/benchmark/llama_results_20261026_211205.jsonl
