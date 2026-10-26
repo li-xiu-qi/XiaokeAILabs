@@ -1,0 +1,12 @@
+Benchmark started at 2026-10-26T20:57:16+08:00
+warmup: prompt=88.0 tok/s, gen=34.2 tok/s, draft_acc=8/12
+short_short: prompt=91.0 tok/s, gen=40.8 tok/s, draft_acc=18/26
+short_short_2: prompt=49.1 tok/s, gen=31.3 tok/s, draft_acc=19/30
+short_long: prompt=50.7 tok/s, gen=20.5 tok/s, draft_acc=45/67
+medium_medium: prompt=92.5 tok/s, gen=33.1 tok/s, draft_acc=48/89
+long_short: prompt=166.3 tok/s, gen=47.3 tok/s, draft_acc=29/42
+repeat_1: prompt=100.3 tok/s, gen=37.5 tok/s, draft_acc=26/51
+repeat_2: prompt=89.6 tok/s, gen=41.7 tok/s, draft_acc=28/41
+repeat_3: prompt=98.8 tok/s, gen=33.2 tok/s, draft_acc=22/37
+Benchmark completed at 2026-10-26T20:57:37+08:00
+Results saved to /home/ke/strata-dgx-inference/artifacts/benchmark/results_20261026_205716.jsonl
