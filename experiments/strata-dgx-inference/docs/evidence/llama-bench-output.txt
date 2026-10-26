@@ -9,4 +9,4 @@ repeat_1: prompt=26.819252437002362 tok/s, gen=12.873634245338366 tok/s
 repeat_2: prompt=21.319006960655773 tok/s, gen=16.009723456531965 tok/s
 repeat_3: prompt=21.9585970652335 tok/s, gen=13.37382235306127 tok/s
 llama.cpp benchmark completed at 2026-10-26T21:12:48+08:00
-Results saved to /home/ke/strata-dgx-inference/artifacts/benchmark/llama_results_20261026_211205.jsonl
+Results saved to <work-dir>/artifacts/benchmark/llama_results_20261026_211205.jsonl
