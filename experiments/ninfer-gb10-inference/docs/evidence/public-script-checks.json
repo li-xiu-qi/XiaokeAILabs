@@ -1,0 +1,10 @@
+{
+  "ninfer_openai_smoke": "passed",
+  "sglang_openai_smoke": "passed",
+  "ninfer_stop_without_model_environment": "passed",
+  "ninfer_restart": "passed",
+  "sglang_stop_without_model_environment": "passed",
+  "download_fixed_revision_sha256": "passed: 1 NInfer, 19 NVFP4, 21 FP8 files at 196cc2ce161d7239976fcd5dc07adf06ae31a35c",
+  "sglang_quality_and_functional": "passed: NVFP4 automated 10/10, code syntax 2/2, functional 10/10",
+  "note": "Validated with the public script copies. SGLang image smoke uses --max-tokens 1536 to avoid truncating the answer."
+}

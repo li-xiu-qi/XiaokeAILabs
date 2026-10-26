@@ -1,0 +1,11 @@
+{
+  "automated_passed": 10,
+  "automated_total": 10,
+  "automated_truncated": 0,
+  "automated_empty": 0,
+  "code_syntax_passed": 2,
+  "code_total": 2,
+  "scope": "small deterministic probe; not GPQA/MMLU/LCB and not a global accuracy estimate",
+  "code_cases_note": "code cases check syntax and required function name only; runtime behavior needs separate review",
+  "failed_case_ids": []
+}

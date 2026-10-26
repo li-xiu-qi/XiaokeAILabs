@@ -1,0 +1,3 @@
+modelscope
+huggingface_hub
+Pillow
