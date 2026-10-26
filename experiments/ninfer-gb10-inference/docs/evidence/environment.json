@@ -1,0 +1,28 @@
+{
+  "machine": "aarch64",
+  "gpu_name": "NVIDIA GB10",
+  "gpu_capability": [
+    12,
+    1
+  ],
+  "python": "3.12.3",
+  "torch": "2.13.0+cu130",
+  "torch_cuda": "13.0",
+  "sglang": "0.5.19",
+  "transformers": "5.12.1",
+  "ninja": "1.13.2.git.kitware.jobserver-pipe-1",
+  "nvcc": "Build cuda_13.0.r13.0/compiler.36424714_0",
+  "ninfer_fork": "baristahaus/ninfer-gb10",
+  "ninfer_fork_commit": "4c2fc2f9504d2f373c84e896bf18523906a646d7",
+  "model_revision": "196cc2ce161d7239976fcd5dc07adf06ae31a35c",
+  "model_files_verified": {
+    "NVFP4-NInfer/W4A4": 1,
+    "NVFP4/W4A4": 19,
+    "FP8": 21
+  },
+  "model_sha256_verified": {
+    "NVFP4-NInfer/W4A4": true,
+    "NVFP4/W4A4": true,
+    "FP8": true
+  }
+}

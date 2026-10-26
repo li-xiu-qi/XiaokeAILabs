@@ -1,0 +1,98 @@
+{
+  "model": "qwen3.8-27b-nvfp4-dflash2",
+  "text_content": "投机解码是一种通过小模型快速生成候选文本、再由大模型并行验证以加速推理的技术。\n391",
+  "image_content": "Based on the image provided, here are the details:\n\n- **Shape 1:** A circle, colored red.\n- **Shape 2:** A square, colored blue.\n- **Text:** \"DGX 19410\"",
+  "text_response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "投机解码是一种通过小模型快速生成候选文本、再由大模型并行验证以加速推理的技术。\n391",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1792872381,
+    "id": "chatcmpl-548bcc43e5ead3bb",
+    "model": "qwen3.8-27b-nvfp4-dflash2",
+    "object": "chat.completion",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 104,
+      "draft_n_accepted": 13,
+      "predicted_ms": 1301.182679,
+      "predicted_n": 26,
+      "predicted_per_second": 19.21328988118201,
+      "predicted_per_token_ms": 52.04730716,
+      "prompt_ms": 356.128836,
+      "prompt_n": 34,
+      "prompt_per_second": 95.47106710561344,
+      "prompt_per_token_ms": 10.474377529411765
+    },
+    "usage": {
+      "completion_tokens": 26,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 34,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 60
+    }
+  },
+  "image_response": {
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "Based on the image provided, here are the details:\n\n- **Shape 1:** A circle, colored red.\n- **Shape 2:** A square, colored blue.\n- **Text:** \"DGX 19410\"",
+          "refusal": null,
+          "role": "assistant"
+        }
+      }
+    ],
+    "created": 1792872383,
+    "id": "chatcmpl-766783dc3b1b8cde",
+    "model": "qwen3.8-27b-nvfp4-dflash2",
+    "object": "chat.completion",
+    "timings": {
+      "cache_n": 0,
+      "draft_n": 80,
+      "draft_n_accepted": 43,
+      "predicted_ms": 1001.5334140000001,
+      "predicted_n": 53,
+      "predicted_per_second": 51.9203845554373,
+      "predicted_per_token_ms": 19.260257961538464,
+      "prompt_ms": 438.136326,
+      "prompt_n": 254,
+      "prompt_per_second": 579.7282373705758,
+      "prompt_per_token_ms": 1.7249461653543308
+    },
+    "usage": {
+      "completion_tokens": 53,
+      "completion_tokens_details": {
+        "reasoning_tokens": 0
+      },
+      "prompt_tokens": 254,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 307
+    }
+  },
+  "checks": {
+    "text_has_391": true,
+    "text_finished": true,
+    "image_finished": true,
+    "image_has_red_circle": true,
+    "image_has_blue_square": true,
+    "image_has_text": true
+  },
+  "passed": true
+}

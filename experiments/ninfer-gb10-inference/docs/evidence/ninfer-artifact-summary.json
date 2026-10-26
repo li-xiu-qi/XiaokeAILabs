@@ -1,0 +1,21 @@
+{
+  "path": "model.ninfer",
+  "version": 3,
+  "artifact_id": "b7c88a4e31b84064916f0f4e675d3489",
+  "name": "qwen3.8-27b-coder390-w4a4-mtp-dflash2",
+  "file_bytes": 23773675264,
+  "payload_bytes": 23773277952,
+  "objects": 1256,
+  "tensors": 1250,
+  "resources": 6,
+  "bindings": 1513,
+  "uses": 844,
+  "components": [
+    "text",
+    "mtp",
+    "dflash2",
+    "vision"
+  ],
+  "sha256_verified": true,
+  "source_sha256": "3c2d39f364a8932c82b41d4c424c940285573b0309481a67c2fde048368bf808"
+}
