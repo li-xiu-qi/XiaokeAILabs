@@ -1,0 +1,14 @@
+{
+  "code_palindrome": {
+    "tests": 5,
+    "passed": 5,
+    "all_passed": true,
+    "review": "manually reviewed before execution; no imports or I/O"
+  },
+  "code_binary_search": {
+    "tests": 5,
+    "passed": 5,
+    "all_passed": true,
+    "review": "manually reviewed before execution; no imports or I/O"
+  }
+}

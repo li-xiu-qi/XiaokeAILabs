@@ -1,0 +1,15 @@
+[
+  {
+    "role": "user",
+    "content": [
+      {
+        "type": "image",
+        "image": "images/ninfer-vision-smoke.png"
+      },
+      {
+        "type": "text",
+        "text": "List the two shapes, their colors, and the text shown in this image. Answer in English."
+      }
+    ]
+  }
+]

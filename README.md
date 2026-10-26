@@ -20,6 +20,7 @@
 - **inference-cost-models** — 12 个可计算的推理成本模型（Roofline、显存、KV Cache、吞吐、Scaling Laws、量化），GB10 实测锚点 → `experiments/inference-cost-models`
 - **data-structure-costs** — 45 个数据结构 / 算法成本模型与实测（公式迁知识库，本仓留复现脚本） → `experiments/data-structure-costs`
 - **llm-inference-perf** — 推理成本分阶段报告（MTP、DeepSeek 等） → `experiments/llm-inference-perf`
+- **ninfer-gb10-inference** — NInfer 在 GB10 上的 27B W4A4 + DFlash2 + Vision 部署、百 TPS 复现与 SGLang 对照 → `experiments/ninfer-gb10-inference`
 - **llm-mechanics** — 从模型加载到解码的全链路机制实操 → `experiments/llm-mechanics`
 
 ### 多模态与微调
