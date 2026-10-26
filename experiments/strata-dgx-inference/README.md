@@ -5,8 +5,10 @@
 同一台 DGX Spark（GB10，统一内存）、同一个模型（Qwen3.8-Flash-Next IQ3_S）、同一套压测协议下：
 
 1. Strata 的 ARM64 社区移植能否在 GB10（aarch64、sm_121）上完成构建与推理；
-2. 与 llama.cpp 相比，Strata 的 MoE 稀疏激活 + 专家缓存 + MTP 投机解码能带来多少实际加速；
+2. Strata 完整方案（MoE 稀疏激活 + 专家缓存 + MTP 投机解码）相比 llama.cpp 基础方案能带来多少实际加速；
 3. 统一内存架构下，Strata 的 expert-cache 自动分配是否可靠，需要怎样的手动调优。
+
+**口径说明**：Strata 的 IQ 原生包强制要求 MTP（`--spec >= 2`），llama.cpp 无法加载该模型的 MTP 架构，因此对比为"Strata 启用 MTP vs llama.cpp 无 MTP"，不是同条件开关投机的公平对照。
 
 ## 实验对象
 
@@ -19,7 +21,8 @@
 | 软件 | Ubuntu 24.04，CUDA 13.0，源码构建 |
 | 上下文 | 8,192 token，单请求，关闭视觉 |
 | 采样 | temperature 0.7，max_tokens 按场景 20-200 |
-| 对照组 | llama.cpp 0.4.0-dev（commit ccc3646），`-ngl 40 -t 8 -c 8192`，无 MTP |
+| Strata 投机 | `--spec 4 --spec-min-p 0.5 --mtp <path>`（强制启用，无法关闭） |
+| 对照组 | llama.cpp 0.4.0-dev（commit ccc3646），`-ngl 40 -t 8 -c 8192`，无 MTP（架构不支持该模型 MTP） |
 
 ## 版本锁定
 
