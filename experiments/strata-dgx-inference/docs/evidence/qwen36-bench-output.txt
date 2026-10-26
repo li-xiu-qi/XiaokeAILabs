@@ -1,0 +1,12 @@
+Qwen3.6-35B-A3B benchmark started at 2026-10-26T22:22:18+08:00
+warmup: prompt=87.4 tok/s, gen=55.1 tok/s, draft_acc=0/0
+short_short: prompt=112.8 tok/s, gen=54.5 tok/s, draft_acc=0/0
+short_short_2: prompt=103.1 tok/s, gen=52.6 tok/s, draft_acc=0/0
+short_long: prompt=107.1 tok/s, gen=51.0 tok/s, draft_acc=0/0
+medium_medium: prompt=113.2 tok/s, gen=51.3 tok/s, draft_acc=0/0
+long_short: prompt=155.9 tok/s, gen=51.7 tok/s, draft_acc=0/0
+repeat_1: prompt=101.6 tok/s, gen=51.9 tok/s, draft_acc=0/0
+repeat_2: prompt=105.8 tok/s, gen=51.9 tok/s, draft_acc=0/0
+repeat_3: prompt=102.0 tok/s, gen=51.9 tok/s, draft_acc=0/0
+Qwen3.6-35B-A3B benchmark completed at 2026-10-26T22:22:31+08:00
+Results saved to /home/ke/strata-dgx-inference/artifacts/benchmark/qwen36-results-20261026_222218.jsonl
