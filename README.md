@@ -6,7 +6,7 @@
 
 - **定位**：AI 工程实验仓库，不是产品仓库。每个 `experiments/<name>` 是一个自包含实验。
 - **标准**：能跑、能复现、结论经得起复核；配套文章发布在公众号「筱可AI」。
-- **实验分场**：教学、单点验证、探索中的实验放在**私有**仓 `pkm-hub-lab`；本仓只留**成型、可展示**的实验。
+- **实验分场**：教学、单点验证、探索中的实验放在**私有实验区**；本仓只留**成型、可展示**的实验。
 
 ## 实验索引
 
@@ -21,21 +21,17 @@
 - **data-structure-costs** — 45 个数据结构 / 算法成本模型与实测（公式迁知识库，本仓留复现脚本） → `experiments/data-structure-costs`
 - **llm-inference-perf** — 推理成本分阶段报告（MTP、DeepSeek 等） → `experiments/llm-inference-perf`
 - **ninfer-gb10-inference** — NInfer 在 GB10 上的 27B W4A4 + DFlash2 + Vision 部署、百 TPS 复现与 SGLang 对照 → `experiments/ninfer-gb10-inference`
+- **strata-dgx-inference** — Strata 在 GB10 上的 Qwen3.8-Flash-Next IQ3_S 部署与 llama.cpp 对照，生成速度 2.5 倍 → `experiments/strata-dgx-inference`
 - **llm-mechanics** — 从模型加载到解码的全链路机制实操 → `experiments/llm-mechanics`
 
 ### 多模态与微调
+- **jina-clip-openvino** — Jina CLIP 在 Intel CPU/NPU 上的正确性验证、驱动 A/B 与同机重复性能基准 → `experiments/jina-clip-openvino`
 - **image-finetune** — LoRA 微调（图片）：人脸身份 LoRA，让底模画出一个它画不出来的人 → `experiments/image-finetune`
-- **video-finetune** — LoRA 微调（视频） → `experiments/video-finetune`
-- **jina-deployment** — 同一 CLIP 的三种部署形态（原生 / ONNX / NNCF INT8） → `experiments/jina-deployment`
 
 ### 判别式模型
 - **jev-open-source** — Jev 判别式模型三个开源复刻（Laya / Nimble / metask-jev）在 GB10 上的延迟与准确率实测 → `experiments/jev-open-source`
 
-### 知识图谱
-- **knowledge-graph** — 知识图谱构建与查询（含红楼梦案例） → `experiments/knowledge-graph`
-
 ### 应用
-- **rag-evaluation** — QA 生成 + RAGAs 评估（上下文召回、答案相关性、实体召回） → `experiments/rag-evaluation`
 - **deepsearch-google** — 深度搜索系统设计 + Google 实现 → `experiments/deepsearch-google`
 
 ## 免责声明
