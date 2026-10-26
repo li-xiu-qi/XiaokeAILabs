@@ -1,6 +1,6 @@
 # Strata 对 llama.cpp：Qwen3.8-Flash-Next IQ3_S 在 GB10 上的性能对照
 
-**职责声明**：本报告测量了 Strata 0.1.47 与 llama.cpp 0.4.0-dev 在同一台 DGX Spark、同一份 IQ3_S 权重下的单请求推理性能，用于评估 MoE 分层存储与投机解码在统一内存硬件上的实际收益。不测量并发扩展、长上下文（>8K）或不同量化格式的表现，相关结论不外推到 x86 独立显卡。
+**职责声明**：本报告测量了 Strata 0.1.47（启用 MTP）与 llama.cpp 0.4.0-dev（无 MTP）在同一台 DGX Spark、同一份 IQ3_S 权重下的单请求推理性能，用于评估 Strata 完整方案（MoE 分层存储 + 专家缓存 + 投机解码）相对于 llama.cpp 基础方案的实际收益。**这不是同条件开关 MTP 的公平对照**：Strata 的 IQ 原生包强制要求 MTP（`--spec >= 2`），而 llama.cpp 当前版本无法加载该模型的 MTP 架构（`qwen4exp-mtp`）。不测量并发扩展、长上下文（>8K）或不同量化格式的表现，相关结论不外推到 x86 独立显卡。
 
 ## 测试环境
 
@@ -55,10 +55,10 @@ Strata 的优势主要来自三个层面：
 
 ## 局限
 
-1. 仅测试单请求，未测并发；Strata 的 `--parallel` 参数可能进一步拉开差距，但不在本次范围。
-2. llama.cpp 的 `-ngl 40` 是手动调优值，不同值可能影响对比结果；未做参数扫描。
-3. ARM CPU 无 AVX2 是共同瓶颈，两引擎均受影响；在 x86+AVX2 平台上，绝对速度可能更高，但加速比趋势预计一致。
-4. 未测试 Strata 无 MTP 的独立表现，无法精确拆分"专家缓存"与"MTP"各自的贡献比例。
+1. **MTP 对比不同口径**：Strata 的 IQ 原生包（`data/packs/iq3_s`）强制要求 `--spec >= 2`，无法关闭 MTP 做无投机基线；llama.cpp 加载 `mtp-q2_0.gguf` 时报错 `unknown model architecture: 'qwen4exp-mtp'`，无法启用同模型 MTP。因此本报告是"Strata 完整方案 vs llama.cpp 基础方案"的对比，不能精确拆分"专家缓存"与"MTP"各自的贡献比例，也不能回答"同开 MTP 时谁更快"。
+2. 仅测试单请求，未测并发；Strata 的 `--parallel` 参数可能进一步拉开差距，但不在本次范围。
+3. llama.cpp 的 `-ngl 40` 是手动调优值，不同值可能影响对比结果；未做参数扫描。
+4. ARM CPU 无 AVX2 是共同瓶颈，两引擎均受影响；在 x86+AVX2 平台上，绝对速度可能更高，但加速比趋势预计一致。
 
 ## 原始数据
 
