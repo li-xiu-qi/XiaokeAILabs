@@ -61,10 +61,24 @@ DGX Spark（GB10，121 GiB 统一内存，273 GB/s），Strata 源码构建（aa
 
 ## 关键发现
 
-1. **统一内存下 MoE 分层存储确实有效**：Strata 通过专家缓存 + MTP 实现约 2.5 倍加速，证明稀疏激活与分层调度在 GB10 上有实际收益。
-2. **expert-cache auto 不可靠**：GB10 统一内存架构下，auto 模式导致 NVIDIA 驱动 OOM（`NV_ERR_NO_MEMORY`），必须手动限容（本实验用 4096，约 10 GiB VRAM）。
-3. **ARM CPU 无 AVX2 是瓶颈**：GB10 的 ARM CPU 走 ggml-cpu 回退路径，专家计算效率低于 x86+AVX2，限制了整体速度进一步提升。
-4. **模型规模决定速度上限，也决定引擎选择**：Qwen3.6-35B-A3B（22.85 GB，256 专家）可全部装入 GPU，llama.cpp + MTP（65-87 tok/s）比 Strata（51-55 tok/s）快 30-60%；Strata 的优势仅体现在无法全部装入 GPU 的超大 MoE 模型（如 Qwen3.8-Flash-Next 的 24,576 专家、83.62 GB），此时分层存储是刚需。小模型上 llama.cpp 是更优选择。
+1. **Strata 的核心优势是显存效率，不是绝对速度**：在 Qwen3.8-Flash-Next 上，Strata 显存占用仅 **7.3 GB**，llama.cpp 需要 **43.3 GB**（约 6 倍）。Strata 将 83.62 GB 模型的大部分专家存放在系统 RAM（46.84 GB），仅将高频专家缓存到 GPU，使 8-16 GB 显存的消费级显卡也能运行超大 MoE 模型。
+2. **统一内存下 MoE 分层存储确实有效**：Strata 通过专家缓存 + MTP 实现约 2.5 倍加速（对比 llama.cpp 无 MTP 基线），证明稀疏激活与分层调度在 GB10 上有实际收益。
+3. **expert-cache auto 不可靠**：GB10 统一内存架构下，auto 模式导致 NVIDIA 驱动 OOM（`NV_ERR_NO_MEMORY`），必须手动限容（本实验用 4096，约 10 GiB VRAM）。
+4. **ARM CPU 无 AVX2 是瓶颈**：GB10 的 ARM CPU 走 ggml-cpu 回退路径，专家计算效率低于 x86+AVX2，限制了整体速度进一步提升。
+5. **模型规模决定引擎选择**：Qwen3.6-35B-A3B（22.85 GB，256 专家）可全部装入 GPU，llama.cpp + MTP（65-87 tok/s）比 Strata（51-55 tok/s）快 30-60%；Strata 的优势仅体现在无法全部装入 GPU 的超大 MoE 模型（如 Qwen3.8-Flash-Next 的 24,576 专家、83.62 GB），此时分层存储是刚需。小模型上 llama.cpp 是更优选择。
+
+## 显存效率实测
+
+| 引擎 | 模型 | 显存占用 | 内存占用（专家数据） |
+|------|------|---------|---------------------|
+| **Strata** | Qwen3.8-Flash-Next IQ3_S | **7.3 GB** | 46.84 GB（RAM） |
+| **llama.cpp** | Qwen3.8-Flash-Next IQ3_S | **43.3 GB** | 较少（主要在 GPU） |
+| llama.cpp | Qwen3.6-35B-A3B UD-Q4_K_XL | 21.6 GB | 较少 |
+
+**选型建议**：
+- **显存 ≤ 16 GB，需跑超大 MoE**：Strata（唯一选择，显存效率 1/6）
+- **显存充足（≥ 48 GB），追求速度**：llama.cpp（GPU 计算占比更高）
+- **中小模型（≤ 24 GB）**：llama.cpp（速度和显存效率全面占优）
 
 ## 复现
 
