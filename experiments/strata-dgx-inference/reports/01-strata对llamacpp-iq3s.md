@@ -7,10 +7,12 @@
 | 项目 | 配置 |
 |------|------|
 | 硬件 | DGX Spark，GB10，20 核 ARM64，121 GiB 统一内存 |
-| Strata | 0.1.47（PR #3622, commit d891f006），expert-cache 4096（10.16 GiB VRAM） |
-| llama.cpp | 0.4.0-dev（commit ccc3646），`-ngl 40 -t 8 -c 8192`，无 MTP |
-| 模型 | Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S，83.62 GB，2 个 GGUF 分片 |
+| Strata | 0.1.47（PR #3622, commit `d891f006aaec64024513a1e55856afd992baaa94`），expert-cache 4096（10.16 GiB VRAM） |
+| llama.cpp | 0.4.0-dev（build 1, commit `ccc3646`），GNU 13.3.0，Linux aarch64，`-ngl 40 -t 8 -c 8192`，无 MTP |
+| 模型 | Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S，83.62 GB，2 个 GGUF 分片（SHA-256 见 README 版本锁定节） |
+| CUDA | 13.0 |
 | 协议 | 9 组场景，temperature 0.7，单请求，context 8192 |
+| 实验日期 | 2026-10-26 |
 
 ## 性能对照
 
