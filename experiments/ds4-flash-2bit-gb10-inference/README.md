@@ -2,10 +2,10 @@
 
 ## 要回答的问题
 
-iggerask 发布的 [DeepSeek-V4-Flash-2bit-GB10](https://huggingface.co/iggerask/DeepSeek-V4-Flash-2bit-GB10) 是一个 2-bit VQ 量化的 299B MoE 检查点，作者声称可在单台 DGX Spark（GB10，128 GB 统一内存）上以约 22 tok/s 服务。本实验独立复现，回答三个问题：
+iggerask 发布的 [DeepSeek-V4-Flash-2bit-GB10](https://huggingface.co/iggerask/DeepSeek-V4-Flash-2bit-GB10) 是一个 2-bit VQ 量化的 299B MoE 检查点，公布口径是能在单台 DGX Spark（GB10，128 GB 统一内存）上以约 22 tok/s 服务。我们在一台 GB10 上从零跑了一遍，回答三个问题：
 
 1. 该检查点能否在一台干净的 GB10 上从零跑通（环境安装、101 GB 权重下载、加载、推理）；
-2. 实际解码速度、显存占用与输出连贯性是多少，与作者口径差多少；
+2. 实际解码速度、显存占用与输出连贯性是多少，与公布数字差多少；
 3. 模型自带的 MTP 投机解码在本环境是否可用，增益方向如何。
 
 **结论先行**：能跑通。非投机解码 20.16 tok/s、权重常驻 94.69 GiB、语义冒烟通过。MTP K=2 可运行但为净负收益（13.42 tok/s），根因是 vLLM 0.23.0 拒绝 drafter FULL cudagraph 导致降级，详见报告。
@@ -35,7 +35,7 @@ iggerask 发布的 [DeepSeek-V4-Flash-2bit-GB10](https://huggingface.co/iggerask
 | CUDA / 驱动 | 13.0（V13.0.88）/ 580.173.02 |
 | 实验日期 | 2026-10-27 |
 
-作者参考口径（README/ARCHITECTURE.md，2026-06-24 版）：非投机 17.4 tok/s、MTP K=2 22.5 tok/s；PPL 4.64（源 FP8+MXFP4 为 3.66）；GSM8K 95.0%、MMLU-Pro 66.4%、HumanEval 65.2%。
+发布方公布口径（README/ARCHITECTURE.md，2026-06-24 版）：非投机 17.4 tok/s、MTP K=2 22.5 tok/s；PPL 4.64（源 FP8+MXFP4 为 3.66）；GSM8K 95.0%、MMLU-Pro 66.4%、HumanEval 65.2%。
 
 ## 结果
 
@@ -46,7 +46,7 @@ iggerask 发布的 [DeepSeek-V4-Flash-2bit-GB10](https://huggingface.co/iggerask
 | 非投机（K=0） | **20.16** | 49.61 | 通过（Paris + 俳句，finish_reason=stop） |
 | MTP K=2 | **13.42** | 74.52 | 通过（Paris + 三行俳句，finish_reason=stop） |
 
-权重加载后常驻 94.69 GiB（45 个 safetensors 分片）。MTP 增量 −33%，与作者 +29% 方向相反；根因与完整证据链见 `reports/01-2bit-moe-单卡推理复现.md`。
+权重加载后常驻 94.69 GiB（45 个 safetensors 分片）。MTP 增量 −33%，与发布方公布的 +29% 方向相反；根因与完整证据链见 `reports/01-2bit-moe-单卡推理复现.md`。
 
 ## 环境
 
@@ -103,12 +103,14 @@ VLLM_SHARED_EXPERTS_STREAM_TOKEN_THRESHOLD=0 GPU_UTIL=0.85 \
 
 ## 已知限制
 
-- MTP K=2 增益为负，未复现作者 +29%；作者口径依赖 `VQ2_DRAFTER_FULL_CG=1`（drafter FULL cudagraph），vLLM 0.23.0 在 DeepseekV4IndexerBackend 上拒绝该组合并降级为 FULL_DECODE_ONLY。这是版本行为差异，未在作者 pinned 环境上验证。
+- MTP K=2 增益为负，没有拿到发布方公布的 +29%；那个数字依赖 `VQ2_DRAFTER_FULL_CG=1`（drafter FULL cudagraph），vLLM 0.23.0 在 DeepseekV4IndexerBackend 上拒绝该组合并降级为 FULL_DECODE_ONLY。这是版本行为差异，未在发布方那套固定依赖组合上验证。
 - 上下文 2,048 token（默认 4,096 在统一内存余量下不可用），长上下文场景未测。
 - 数据为单机单次测量，未做多次重复与方差统计；diff 方法计时，prefill 不计入 decode 速度。
 
 ## 目录
 
-- `reports/01-2bit-moe-单卡推理复现.md`：主报告（唯一被引用作结论的文档）
+- `reports/01-2bit-moe-单卡推理复现.md`：主报告，结论以此为准
 - `scripts/run_bench_pair.sh`：一键跑两组 bench（环境变量与单组参数见脚本头注释）
+- `scripts/min_repro.py`：最小复现，只验「能加载 + 能出一次 token」，用于隔离环境问题
+- `scripts/launch_repro2.sh`：带诊断开关启动 min_repro.py，挂住时用 SIGUSR1 打线程栈
 - `docs/evidence/`：两组 bench 原始输出（bench-output-*.txt）与结果 JSONL
