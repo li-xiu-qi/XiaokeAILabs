@@ -10,4 +10,4 @@
 
 注意：vendored 文档里的部分相对链接（如 `../../examples/...`）指向未随附的上游仓库结构，原文已标注「上游路径」，属预期内的悬空引用，不是断链。
 
-想看某个模型在具体场景下准不准，看 [../text-segmentation/](../../text-segmentation/) 的选型边界（相似度专项的结论已并入那里）；想看怎么动手训，看 [../model_finetuning/](../model_finetuning/)。
+想看某个模型在具体场景下准不准，需参考文本分割实验的选型边界（相似度专项的结论在那里，该实验已移入私有实验区）；想看怎么动手训，看 [../model_finetuning/](../model_finetuning/)。
