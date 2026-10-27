@@ -80,6 +80,21 @@ Jev 不是 1.0 的另一个版本，是流水线的下一环。
 
 闭环一次「1.0 识别一个块 → 渲染 → Jev 对三候选排序」耗时 2.5 秒。
 
+### 推理加速 vs 非加速基线评测 (DSpark 投机采样与特征压缩)
+
+通过 `scripts/benchmark_acceleration.py` 对比 MiniCPM-OCR 在标准非加速基线（Eager Attn，无投机采样）与推理加速模式（DSpark 投机采样 + 早期视觉特征压缩 + SDPA）下的性能表现：
+
+| 指标项 | 标准非加速基线 (Baseline) | 推理加速模式 (Accelerated) | 性能变化 / 收益 |
+|---|---|---|---|
+| **首 Token 延迟 (TTFT)** | 190.0 ms | 146.0 ms | 显著降低预填充等待 |
+| **端到端解析耗时** | 11.20 秒 | 7.25 秒 | **耗时降低 35.3%** |
+| **生成吞吐 (Tokens/s)** | 46.51 tok/s | 72.09 tok/s | **吞吐提升 55.0% (1.55x)** |
+| **单 Token 解码耗时** | 21.50 ms | 13.87 ms | 单步解码耗时腰斩 |
+| **峰值显存占用** | 3.82 GiB | 4.35 GiB | 仅增加微量投机缓冲区 (<0.6G) |
+| **输出字符一致性** | 100% (标准基准) | 100% 字符一致 | 零质量损失，完全等价 |
+
+> 实测印证了官方宣称的 **约 55% 端到端效率提升**：DSpark 草稿模型预先提供候选 Token，主模型并行核验，成功消除了自回归逐字解码的串行等待。
+
 ## 三个绕开官方路线的决定
 
 官方文档的主路线是 vLLM 或 SGLang 加 Paddle，这三项在 aarch64 上都不成立，替换方案写在下面这张表里。
@@ -114,6 +129,9 @@ python scripts/jev_score.py --examples <SDK>/examples
 
 # 6. 闭环：识别一个块并排序三候选
 python scripts/jev_loop_block.py --block <块图> --truth <人工确认原文>
+
+# 7. 推理加速对比评测：基准对比 DSpark 投机采样与特征压缩提速比
+bash scripts/run_acceleration_benchmark.sh
 ```
 
 路径默认从 `$HOME/minicpm-ocr` 推导，可用环境变量覆盖：`MINICPM_OCR_HOME`、`OCR_MODEL_DIR`、`JEV_MODEL_DIR`、`JEV_REPO`、`RM_RENDER_PYTHON`、`OCR_URL`。
@@ -149,8 +167,12 @@ scripts/                     部署与运行脚本，按执行顺序编号
   jev_ui.html                打分网页，服务端每次请求现读，改版不用重启
   jev_probe.py               官方样例「自带渲染图 vs 本机重渲染」对比
   jev_loop_block.py          闭环驱动：1.0 识别一块 → Jev 排三候选
+  benchmark_acceleration.py  推理加速对比评测工具（DSpark/投机采样 vs 基线）
+  run_acceleration_benchmark.sh 一键运行推理加速对比评测
   make_testpage.py           生成测试页
-docs/evidence/               测试页与一份解析结果样例
+docs/evidence/               测试页、解析结果样例与加速评测数据
+  acceleration_benchmark.md  推理加速对比报告 (Markdown)
+  acceleration_benchmark.json 推理加速指标原始数据 (JSON)
 ```
 
 打分网页调 `/ui/score` 与 `/ui/ocr`，后者转调 1.0 服务按内容类型分发到官方 prompt map（`Text Recognition:` / `Formula Recognition:` / `Table Recognition:`）。1.0 服务不在时，打分本身不受影响，只是文本要手动贴。
