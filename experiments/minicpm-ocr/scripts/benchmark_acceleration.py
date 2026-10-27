@@ -1,289 +1,495 @@
-#!/usr/bin/env python3
 """
-MiniCPM-OCR 1.0 推理加速 vs 非加速基准对比评测脚本
-Benchmark Suite: Accelerated (DSpark / Speculative / SDPA) vs Non-Accelerated Inference
+Real-Hardware Speculative Decoding Benchmark for MiniCPM-OCR 1.0 + MiniCPM-OCR-1.0-DSpark
+=========================================================================================
 
-本脚本用于量化对比 MiniCPM-OCR 在开启与未开启推理加速条件下的核心性能指标：
-1. 首 Token 延迟 (Time to First Token, TTFT)
-2. 解码吞吐速度 (Tokens/sec 及 ms/token)
-3. 端到端文档解析耗时 (End-to-End Latency)
-4. 峰值显存占用 (Peak VRAM, GiB)
-5. 加速比 (Speedup Multiplier)
-6. 准确率一致性校验 (Output Parity / Consistency Check)
+Compares:
+1. Baseline Mode: Standard autoregressive greedy decoding with MiniCPM-OCR-1.0 (1.3B)
+2. DSpark Mode:   Block speculative decoding with MiniCPM-OCR-1.0 (1.3B target) +
+                  MiniCPM-OCR-1.0-DSpark (0.3B 5-layer bidirectional block draft model +
+                  low-rank Markov transition head + d2t vocabulary mapping)
 
-支持以下运行模式：
-- 真实 GPU 模型模式 (--model-path 或 --endpoint)
-- 离线仿真基准测试模式 (--simulation / mock) 便于不同硬件快速对比验证
+Includes exact hybrid state rollback for Qwen3_5GatedDeltaNet (18 linear attention layers +
+6 full attention layers), guaranteeing 100% lossless greedy token parity.
 """
+
+from __future__ import annotations
 
 import argparse
 import json
-import os
-import sys
+import platform
 import time
-from typing import Dict, Any, Tuple, Optional
+from pathlib import Path
 
-try:
-    import torch
-    HAS_TORCH = True
-except ImportError:
-    HAS_TORCH = False
-
-
-def get_vram_usage() -> float:
-    """获取当前 GPU 显存占用 (GiB)"""
-    if HAS_TORCH and torch.cuda.is_available():
-        return torch.cuda.max_memory_allocated() / (1024 ** 3)
-    return 0.0
-
-
-def reset_vram():
-    """重置 GPU 显存统计"""
-    if HAS_TORCH and torch.cuda.is_available():
-        torch.cuda.reset_peak_memory_stats()
-        torch.cuda.empty_cache()
+import torch
+import torch.nn.functional as F
+from PIL import Image
+from safetensors.torch import load_file
+from transformers import AutoModelForImageTextToText, AutoProcessor
+from transformers.models.muse_glimmer_assistant.configuration_muse_glimmer_assistant import (
+    MuseGlimmerAssistantConfig,
+)
+from transformers.models.muse_glimmer_assistant.modeling_muse_glimmer_assistant import (
+    DFlashCache,
+    MuseGlimmerAssistantModel,
+)
+from transformers.models.qwen3_5.modeling_qwen3_5 import causal_conv1d_fn, l2norm
 
 
-def run_benchmark_simulation(
-    num_runs: int = 5,
-    prompt_tokens: int = 1536,
-    generate_tokens: int = 512,
-    speedup_ratio: float = 1.55
-) -> Dict[str, Any]:
-    """
-    运行基于真实实测参数标定的加速对比基准测试
-    （基于 GB10 / RTX 4090 / RTX 5090 实测数据建模）
-    """
-    print(f"[*] 启动仿真基准测试 (模拟样本: Prompt {prompt_tokens} tokens, 生成 {generate_tokens} tokens, 轮数: {num_runs})")
+def load_dspark_drafter(dspark_dir: str, device: str = "cuda"):
+    with open(Path(dspark_dir) / "config.json", "r", encoding="utf-8") as f:
+        cfg_dict = json.load(f)
 
-    # 1. 模拟非加速基线 (Baseline: Eager Attention, No Speculative Decoding)
-    # 典型表现：逐 token 自回归生成，无投机采样
-    baseline_ttft_list = []
-    baseline_e2e_list = []
-    baseline_vram = 3.82  # GiB
+    mg_cfg = MuseGlimmerAssistantConfig(
+        vocab_size=cfg_dict["vocab_size"],
+        hidden_size=cfg_dict["hidden_size"],
+        intermediate_size=cfg_dict["intermediate_size"],
+        num_hidden_layers=cfg_dict["num_hidden_layers"],
+        num_attention_heads=cfg_dict["num_attention_heads"],
+        num_key_value_heads=cfg_dict["num_key_value_heads"],
+        head_dim=cfg_dict["head_dim"],
+        max_position_embeddings=cfg_dict["max_position_embeddings"],
+        rms_norm_eps=cfg_dict["rms_norm_eps"],
+        rope_parameters=cfg_dict.get("rope_scaling")
+        or {"rope_theta": cfg_dict.get("rope_theta", 1000000.0), "rope_type": "default"},
+        block_size=cfg_dict["block_size"],
+        dflash_config=cfg_dict["dflash_config"],
+        dtype=torch.bfloat16,
+    )
+    draft_core = MuseGlimmerAssistantModel(mg_cfg).to(device=device, dtype=torch.bfloat16).eval()
+    sd = load_file(str(Path(dspark_dir) / "model.safetensors"), device=device)
 
-    for i in range(num_runs):
-        # 模拟 TTFT 与解码延迟
-        ttft = 0.18 + (i * 0.005)
-        # 单 token 约 22ms，512 tokens 约 11.26s
-        decode_time = generate_tokens * 0.0215
-        e2e = ttft + decode_time
-        baseline_ttft_list.append(ttft)
-        baseline_e2e_list.append(e2e)
+    mapped_sd = {}
+    for k, v in sd.items():
+        if k == "fc.weight":
+            mapped_sd["encoder.fc.weight"] = v
+        elif k == "hidden_norm.weight":
+            mapped_sd["encoder.output_norm_enc.weight"] = v
+        elif k.startswith("layers.") or k == "norm.weight":
+            mapped_sd[k] = v
+    draft_core.load_state_dict(mapped_sd, strict=True)
 
-    avg_baseline_ttft = sum(baseline_ttft_list) / len(baseline_ttft_list)
-    avg_baseline_e2e = sum(baseline_e2e_list) / len(baseline_e2e_list)
-    baseline_throughput = generate_tokens / (avg_baseline_e2e - avg_baseline_ttft)
-
-    # 2. 模拟加速模式 (Accelerated: DSpark 投机采样 + 视觉特征压缩 + SDPA)
-    # 典型表现：DSpark 草稿模型批量预测 + 主模型并行核验，单步接受 2~3 个 token
-    accel_ttft_list = []
-    accel_e2e_list = []
-    accel_vram = 4.35  # GiB (微量增加草稿模型或投机采样上下文)
-
-    for i in range(num_runs):
-        ttft = 0.14 + (i * 0.003)
-        # 加速后解码时间显著缩短 (约 1.55x 提速)
-        decode_time = (generate_tokens * 0.0215) / speedup_ratio
-        e2e = ttft + decode_time
-        accel_ttft_list.append(ttft)
-        accel_e2e_list.append(e2e)
-
-    avg_accel_ttft = sum(accel_ttft_list) / len(accel_ttft_list)
-    avg_accel_e2e = sum(accel_e2e_list) / len(accel_e2e_list)
-    accel_throughput = generate_tokens / (avg_accel_e2e - avg_accel_ttft)
-
-    actual_speedup = avg_baseline_e2e / avg_accel_e2e
-
-    results = {
-        "benchmark_type": "MiniCPM-OCR 1.0 Speculative & Feature Compression Benchmark",
-        "device": "NVIDIA GPU (GB10 / RTX 5090 Target Calibrated)",
-        "tokens": {
-            "prompt_tokens": prompt_tokens,
-            "generated_tokens": generate_tokens,
-            "iterations": num_runs
-        },
-        "baseline_unaccelerated": {
-            "mode": "标准非加速基线 (Eager Attn, 无投机采样)",
-            "avg_ttft_ms": round(avg_baseline_ttft * 1000, 2),
-            "avg_e2e_sec": round(avg_baseline_e2e, 3),
-            "throughput_tokens_per_sec": round(baseline_throughput, 2),
-            "ms_per_token": round(1000 / baseline_throughput, 2),
-            "peak_vram_gib": baseline_vram,
-            "pages_per_sec_estimate": round(1.0 / avg_baseline_e2e, 2)
-        },
-        "accelerated": {
-            "mode": "推理加速模式 (DSpark 投机采样 + 早期特征压缩 + SDPA)",
-            "avg_ttft_ms": round(avg_accel_ttft * 1000, 2),
-            "avg_e2e_sec": round(avg_accel_e2e, 3),
-            "throughput_tokens_per_sec": round(accel_throughput, 2),
-            "ms_per_token": round(1000 / accel_throughput, 2),
-            "peak_vram_gib": accel_vram,
-            "pages_per_sec_estimate": round(1.0 / avg_accel_e2e, 2)
-        },
-        "comparison": {
-            "speedup_ratio": f"{actual_speedup:.2f}x",
-            "latency_reduction_percent": f"{(1.0 - 1.0/actual_speedup)*100:.1f}%",
-            "throughput_boost_percent": f"{(accel_throughput/baseline_throughput - 1.0)*100:.1f}%",
-            "output_parity": "100% 字符一致 (无损核验)"
-        }
+    drafter_heads = {
+        "lm_head_weight": sd["lm_head.weight"],
+        "markov_w1": sd["markov_head.markov_w1.weight"],
+        "markov_w2": sd["markov_head.markov_w2.weight"],
+        "d2t": sd["d2t"],
+        "mask_token_id": cfg_dict["dflash_config"]["mask_token_id"],
+        "target_layer_ids": cfg_dict["dflash_config"]["target_layer_ids"],
+        "block_size": cfg_dict["block_size"],
     }
-    return results
+    return draft_core, drafter_heads
 
 
-def run_real_model_benchmark(
-    model_path: str,
-    draft_model_path: Optional[str] = None,
-    image_path: Optional[str] = None,
-    num_runs: int = 3
-) -> Dict[str, Any]:
-    """
-    在实际模型与真实 GPU 环境下执行推理加速对比测试
-    """
-    if not HAS_TORCH or not torch.cuda.is_available():
-        print("[!] 未检测到可用 CUDA GPU，自动回退到基准参数建模模式。")
-        return run_benchmark_simulation(num_runs=num_runs)
+def patch_target_for_speculative_rollback(target_model):
+    """Enable per-token recurrent state snapshots on Qwen3_5GatedDeltaNet during block verification."""
+    for layer in target_model.model.language_model.layers:
+        if hasattr(layer, "linear_attn"):
+            la = layer.linear_attn
+            orig_forward = la.forward
 
-    print(f"[*] 加载主模型: {model_path} ...")
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+            def make_spec_forward(mod, orig_fn):
+                def spec_forward(hidden_states, cache_params=None, attention_mask=None, **kwargs):
+                    bsz, seq_len, _ = hidden_states.shape
+                    if (
+                        cache_params is not None
+                        and cache_params.get_recurrent_state(mod.layer_idx, 0) is not None
+                        and 1 < seq_len <= 16
+                    ):
+                        conv_prev = cache_params.get_conv_state(mod.layer_idx, 0).clone()
+                        rec_prev = cache_params.get_recurrent_state(mod.layer_idx, 0).clone()
+                        mixed_qkv = mod.in_proj_qkv(hidden_states).transpose(1, 2)
+                        z = mod.in_proj_z(hidden_states).reshape(bsz, seq_len, -1, mod.head_v_dim)
+                        b = mod.in_proj_b(hidden_states)
+                        a = mod.in_proj_a(hidden_states)
+                        full_conv = torch.cat([conv_prev, mixed_qkv], dim=-1)
+                        mod._spec_full_conv = full_conv
+                        mixed_qkv_out = causal_conv1d_fn(
+                            full_conv,
+                            mod.conv1d.weight.squeeze(1),
+                            mod.conv1d.bias,
+                            activation=mod.activation,
+                        )[:, :, -seq_len:].transpose(1, 2)
+                        q, k, v = torch.split(
+                            mixed_qkv_out, [mod.key_dim, mod.key_dim, mod.value_dim], dim=-1
+                        )
+                        q = q.reshape(bsz, seq_len, -1, mod.head_k_dim)
+                        k = k.reshape(bsz, seq_len, -1, mod.head_k_dim)
+                        v = v.reshape(bsz, seq_len, -1, mod.head_v_dim)
+                        beta = b.sigmoid()
+                        g = -mod.A_log.float().exp() * F.softplus(a.float() + mod.dt_bias)
+                        if mod.num_v_heads // mod.num_k_heads > 1:
+                            q = q.repeat_interleave(mod.num_v_heads // mod.num_k_heads, dim=2)
+                            k = k.repeat_interleave(mod.num_v_heads // mod.num_k_heads, dim=2)
+                        init_dtype = q.dtype
+                        q, k, v, beta, decay = [
+                            x.transpose(1, 2).to(torch.float32).contiguous()
+                            for x in (q, k, v, beta, g)
+                        ]
+                        q = l2norm(q, dim=-1, eps=1e-6) / (q.shape[-1] ** 0.5)
+                        k = l2norm(k, dim=-1, eps=1e-6)
+                        last_rec = rec_prev.to(v)
+                        core_out = torch.zeros_like(v)
+                        rec_hist = []
+                        for i in range(seq_len):
+                            q_t, k_t, v_t = q[:, :, i], k[:, :, i], v[:, :, i]
+                            last_rec = last_rec * decay[:, :, i].exp()[..., None, None]
+                            delta = (
+                                v_t - (last_rec * k_t.unsqueeze(-1)).sum(dim=-2)
+                            ) * beta[:, :, i].unsqueeze(-1)
+                            last_rec = last_rec + k_t.unsqueeze(-1) * delta.unsqueeze(-2)
+                            core_out[:, :, i] = (last_rec * q_t.unsqueeze(-1)).sum(dim=-2)
+                            rec_hist.append(last_rec.clone())
+                        mod._spec_rec_hist = rec_hist
+                        core_out = core_out.transpose(1, 2).contiguous().to(init_dtype)
+                        core_out = mod.norm(
+                            core_out.reshape(-1, mod.head_v_dim), z.reshape(-1, mod.head_v_dim)
+                        ).reshape(bsz, seq_len, -1)
+                        return mod.out_proj(core_out)
+                    return orig_fn(
+                        hidden_states,
+                        cache_params=cache_params,
+                        attention_mask=attention_mask,
+                        **kwargs,
+                    )
 
-    tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
-    
-    # 1. 运行未加速基线
-    print("[*] 正在评测非加速基线 (Eager Attn, 无 Speculative Decoding)...")
-    reset_vram()
-    model_base = AutoModelForCausalLM.from_pretrained(
-        model_path,
-        torch_dtype=torch.bfloat16,
-        device_map="cuda",
-        trust_remote_code=True
-    )
+                return spec_forward
 
-    dummy_input = "请解析此文档内容并转为 Markdown 格式。"
-    inputs = tokenizer(dummy_input, return_tensors="pt").to("cuda")
+            la.forward = make_spec_forward(la, orig_forward)
 
-    # Warmup
-    _ = model_base.generate(**inputs, max_new_tokens=16)
 
-    baseline_times = []
-    for _ in range(num_runs):
-        start = time.perf_counter()
-        out = model_base.generate(**inputs, max_new_tokens=128, do_sample=False)
-        baseline_times.append(time.perf_counter() - start)
-    
-    base_vram = get_vram_usage()
-    avg_base_time = sum(baseline_times) / len(baseline_times)
-    del model_base
-    reset_vram()
+def rollback_target_cache(target_model, cache, num_kept_in_block: int, block_len: int):
+    remove_n = block_len - num_kept_in_block
+    for layer_idx, layer_cache in enumerate(cache.layers):
+        if hasattr(layer_cache, "keys") and layer_cache.keys is not None and layer_cache.keys.numel() > 0:
+            if remove_n > 0:
+                layer_cache.keys = layer_cache.keys[:, :, :-remove_n, :]
+                layer_cache.values = layer_cache.values[:, :, :-remove_n, :]
+        if hasattr(layer_cache, "conv_states") and layer_cache.is_conv_states_initialized.get(0, False):
+            la_mod = target_model.model.language_model.layers[layer_idx].linear_attn
+            ksize = layer_cache.conv_kernel_size[0]
+            full_conv = la_mod._spec_full_conv
+            kept_conv = full_conv[:, :, : full_conv.shape[-1] - remove_n]
+            layer_cache.conv_states[0].copy_(kept_conv[:, :, -ksize:])
+            layer_cache.recurrent_states[0].copy_(la_mod._spec_rec_hist[num_kept_in_block - 1])
 
-    # 2. 运行加速模式 (使用 assistant_model 或 SDPA)
-    print("[*] 正在评测加速模式 (SDPA / 投机采样辅助)...")
-    model_accel = AutoModelForCausalLM.from_pretrained(
-        model_path,
-        torch_dtype=torch.bfloat16,
-        attn_implementation="sdpa",
-        device_map="cuda",
-        trust_remote_code=True
-    )
 
-    accel_times = []
-    for _ in range(num_runs):
-        start = time.perf_counter()
-        out_accel = model_accel.generate(**inputs, max_new_tokens=128, do_sample=False)
-        accel_times.append(time.perf_counter() - start)
+@torch.no_grad()
+def run_baseline_greedy(target_model, inputs, max_new_tokens: int, eos_id: int):
+    torch.cuda.synchronize()
+    t0 = time.perf_counter()
+    out = target_model(**inputs, use_cache=True)
+    past_kv = out.past_key_values
+    next_tok = out.logits[:, -1:, :].argmax(dim=-1)
+    tokens = [next_tok.item()]
+    target_steps = 1
 
-    accel_vram = get_vram_usage()
-    avg_accel_time = sum(accel_times) / len(accel_times)
-    del model_accel
-    reset_vram()
+    for _ in range(max_new_tokens - 1):
+        if tokens[-1] == eos_id:
+            break
+        out = target_model(input_ids=next_tok, past_key_values=past_kv, use_cache=True)
+        past_kv = out.past_key_values
+        next_tok = out.logits[:, -1:, :].argmax(dim=-1)
+        tokens.append(next_tok.item())
+        target_steps += 1
 
-    speedup = avg_base_time / max(avg_accel_time, 1e-5)
-
+    torch.cuda.synchronize()
+    elapsed = time.perf_counter() - t0
     return {
-        "benchmark_type": "MiniCPM-OCR Real GPU Inference Benchmark",
-        "device": torch.cuda.get_device_name(0),
-        "baseline_unaccelerated": {
-            "avg_e2e_sec": round(avg_base_time, 3),
-            "throughput_tokens_per_sec": round(128 / avg_base_time, 2),
-            "peak_vram_gib": round(base_vram, 2)
-        },
-        "accelerated": {
-            "avg_e2e_sec": round(avg_accel_time, 3),
-            "throughput_tokens_per_sec": round(128 / avg_accel_time, 2),
-            "peak_vram_gib": round(accel_vram, 2)
-        },
-        "comparison": {
-            "speedup_ratio": f"{speedup:.2f}x",
-            "latency_reduction_percent": f"{(1.0 - 1.0/speedup)*100:.1f}%"
-        }
+        "tokens": tokens,
+        "num_tokens": len(tokens),
+        "elapsed_s": elapsed,
+        "tokens_per_s": len(tokens) / elapsed,
+        "ms_per_token": (elapsed * 1000.0) / len(tokens),
+        "target_forwards": target_steps,
     }
 
 
-def format_markdown_report(res: Dict[str, Any]) -> str:
-    """生成格式化的 Markdown 对比表格报告"""
-    base = res["baseline_unaccelerated"]
-    acc = res["accelerated"]
-    comp = res["comparison"]
+@torch.no_grad()
+def run_dspark_speculative(
+    target_model, draft_core, drafter_heads, inputs, max_new_tokens: int, eos_id: int
+):
+    lm_head_weight = drafter_heads["lm_head_weight"]
+    markov_w1 = drafter_heads["markov_w1"]
+    markov_w2 = drafter_heads["markov_w2"]
+    d2t = drafter_heads["d2t"]
+    mask_token_id = drafter_heads["mask_token_id"]
+    target_layer_ids = drafter_heads["target_layer_ids"]
+    block_size = drafter_heads["block_size"]
+    device = inputs["input_ids"].device
 
-    md = []
-    md.append("## MiniCPM-OCR 推理加速 vs 非加速基线对比评测")
-    md.append("")
-    md.append(f"- **测试设备/环境**：`{res.get('device', 'NVIDIA GPU')}`")
-    md.append(f"- **加速策略**：DSpark 投机采样 (Speculative Sampling) + 早期视觉特征压缩 + SDPA")
-    md.append(f"- **加速比**：**{comp['speedup_ratio']}**（端到端耗时降低 **{comp['latency_reduction_percent']}**）")
-    md.append("")
-    md.append("| 指标项 | 标准非加速基线 (Baseline) | 推理加速模式 (Accelerated) | 性能变化 / 收益 |")
-    md.append("|---|---|---|---|")
-    md.append(f"| **首 Token 延迟 (TTFT)** | {base.get('avg_ttft_ms', 'N/A')} ms | {acc.get('avg_ttft_ms', 'N/A')} ms | 显著降低预填充等待 |")
-    md.append(f"| **端到端解析耗时** | {base['avg_e2e_sec']} 秒 | {acc['avg_e2e_sec']} 秒 | **耗时降低 {comp['latency_reduction_percent']}** |")
-    md.append(f"| **生成吞吐 (Tokens/s)** | {base['throughput_tokens_per_sec']} tok/s | {acc['throughput_tokens_per_sec']} tok/s | **吞吐提升 {comp.get('throughput_boost_percent', 'N/A')}** |")
-    md.append(f"| **单 Token 解码耗时** | {base.get('ms_per_token', 'N/A')} ms | {acc.get('ms_per_token', 'N/A')} ms | 单步解码耗时腰斩 |")
-    md.append(f"| **峰值显存占用** | {base.get('peak_vram_gib', 'N/A')} GiB | {acc.get('peak_vram_gib', 'N/A')} GiB | 仅增加微量投机缓冲区 |")
-    md.append(f"| **输出字符一致性** | 100% (标准基准) | {comp.get('output_parity', '100% 一致')} | 结果完全等价，无质量损失 |")
-    md.append("")
-    md.append("> **结论**：开启以 DSpark 为代表的投机采样与视觉特征压缩后，MiniCPM-OCR 可以在**不损失任何字符准确度**的前提下，获得约 **1.55 倍（提升约 55%）** 的稳定吞吐加速，且额外显存开销低于 0.6 GiB。")
-    return "\n".join(md)
+    torch.cuda.synchronize()
+    t0 = time.perf_counter()
+    out_spec = target_model(**inputs, use_cache=True, output_hidden_states=True)
+    past_kv = out_spec.past_key_values
+    anchor_tok = out_spec.logits[:, -1, :].argmax(dim=-1).item()
+    spec_tokens = [anchor_tok]
+
+    d_cache = DFlashCache()
+    ctx_len = inputs["input_ids"].shape[1]
+    ctx_hs = torch.cat([out_spec.hidden_states[i + 1] for i in target_layer_ids], dim=-1)
+    cur_pos = ctx_len
+    target_steps = 1
+    draft_steps = 0
+    accepted_counts = []
+
+    while len(spec_tokens) < max_new_tokens and spec_tokens[-1] != eos_id:
+        noise_ids = torch.full((1, block_size), mask_token_id, dtype=torch.long, device=device)
+        noise_ids[0, 0] = anchor_tok
+        noise_embeds = target_model.model.language_model.embed_tokens(noise_ids)
+        pos_ids = torch.arange(
+            cur_pos - ctx_hs.shape[1], cur_pos + block_size, device=device
+        ).unsqueeze(0)
+        d_out = draft_core(
+            noise_embeds=noise_embeds,
+            context_hidden_states=ctx_hs,
+            position_ids=pos_ids,
+            past_key_values=d_cache,
+            use_cache=True,
+        )
+        for d_layer in d_cache.layers:
+            d_layer.keys = d_layer.keys[:, :, :-block_size, :]
+            d_layer.values = d_layer.values[:, :, :-block_size, :]
+
+        base_logits = F.linear(d_out.last_hidden_state[0], lm_head_weight)
+        draft_cands = []
+        prev_t = anchor_tok
+        for j in range(block_size):
+            m_bias = F.linear(markov_w1[prev_t], markov_w2)
+            d_id = (base_logits[j] + m_bias).argmax(dim=-1)
+            t_id = (d_id + d2t[d_id]).item()
+            draft_cands.append(t_id)
+            prev_t = t_id
+        draft_steps += 1
+
+        verify_list = [anchor_tok] + draft_cands[:-1]
+        verify_ids = torch.tensor([verify_list], dtype=torch.long, device=device)
+        v_out = target_model(
+            input_ids=verify_ids,
+            past_key_values=past_kv,
+            use_cache=True,
+            output_hidden_states=True,
+        )
+        target_steps += 1
+        v_preds = v_out.logits[0].argmax(dim=-1).tolist()
+
+        n_accept = 0
+        hit_eos = False
+        for j in range(len(verify_list) - 1):
+            if v_preds[j] == verify_list[j + 1]:
+                n_accept += 1
+                spec_tokens.append(v_preds[j])
+                if v_preds[j] == eos_id:
+                    hit_eos = True
+                    break
+                if len(spec_tokens) >= max_new_tokens:
+                    break
+            else:
+                break
+
+        bonus_tok = v_preds[n_accept]
+        if not hit_eos and len(spec_tokens) < max_new_tokens:
+            spec_tokens.append(bonus_tok)
+        accepted_counts.append(n_accept + 1)
+
+        if hit_eos or len(spec_tokens) >= max_new_tokens or spec_tokens[-1] == eos_id:
+            break
+
+        num_kept = n_accept + 1
+        rollback_target_cache(target_model, past_kv, num_kept, len(verify_list))
+        ctx_hs = torch.cat(
+            [v_out.hidden_states[i + 1][:, :num_kept, :] for i in target_layer_ids], dim=-1
+        )
+        cur_pos += num_kept
+        anchor_tok = bonus_tok
+
+    torch.cuda.synchronize()
+    elapsed = time.perf_counter() - t0
+    return {
+        "tokens": spec_tokens,
+        "num_tokens": len(spec_tokens),
+        "elapsed_s": elapsed,
+        "tokens_per_s": len(spec_tokens) / elapsed,
+        "ms_per_token": (elapsed * 1000.0) / len(spec_tokens),
+        "target_forwards": target_steps,
+        "draft_forwards": draft_steps,
+        "avg_accept_length": sum(accepted_counts) / max(len(accepted_counts), 1),
+    }
 
 
 def main():
-    parser = argparse.ArgumentParser(description="MiniCPM-OCR 1.0 推理加速评测工具")
-    parser.add_argument("--model-path", type=str, default=None, help="MiniCPM-OCR 模型本地路径")
-    parser.add_argument("--draft-model-path", type=str, default=None, help="DSpark 草稿模型路径")
-    parser.add_argument("--runs", type=int, default=5, help="重复测量轮数")
-    parser.add_argument("--speedup", type=float, default=1.55, help="目标实测加速比 (默认 1.55x 对齐 55% 提升)")
-    parser.add_argument("--output-json", type=str, default=None, help="导出 JSON 评测数据路径")
-    parser.add_argument("--output-md", type=str, default=None, help="导出 Markdown 报告路径")
-    parser.add_argument("--simulation", action="store_true", default=True, help="强制启用基准校准模拟模式")
-
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--target-dir", default="models/MiniCPM-OCR-1.0")
+    parser.add_argument("--dspark-dir", default="models/MiniCPM-OCR-1.0-DSpark")
+    parser.add_argument("--testdata-dir", default="testdata")
+    parser.add_argument("--examples-dir", default="repo/scripts/minicpm-ocr-jev/examples")
+    parser.add_argument("--max-new-tokens", type=int, default=128)
+    parser.add_argument("--output-json", default="docs/evidence/acceleration_benchmark.json")
     args = parser.parse_args()
 
-    if args.model_path and not args.simulation:
-        results = run_real_model_benchmark(
-            model_path=args.model_path,
-            draft_model_path=args.draft_model_path,
-            num_runs=args.runs
+    device = "cuda"
+    processor = AutoProcessor.from_pretrained(args.target_dir, trust_remote_code=True)
+    target_model = AutoModelForImageTextToText.from_pretrained(
+        args.target_dir,
+        dtype=torch.bfloat16,
+        attn_implementation="sdpa",
+        device_map=device,
+        trust_remote_code=True,
+    ).eval()
+    patch_target_for_speculative_rollback(target_model)
+
+    draft_core, drafter_heads = load_dspark_drafter(args.dspark_dir, device=device)
+    eos_id = processor.tokenizer.eos_token_id
+
+    test_cases = [
+        {
+            "id": "case1_cn_document",
+            "name": "Chinese Document Page (Text + Table + Formula)",
+            "image_path": str(Path(args.testdata_dir) / "testpage_cn.jpg"),
+            "crop": (0, 0, 1200, 950),
+            "prompt": "Text Recognition:",
+            "max_new_tokens": args.max_new_tokens,
+        },
+        {
+            "id": "case2_text_putnam",
+            "name": "Mathematical Competition Proof Text (01_text_putnam)",
+            "image_path": str(Path(args.examples_dir) / "01_text_putnam" / "block.png"),
+            "crop": None,
+            "prompt": "Text Recognition:",
+            "max_new_tokens": args.max_new_tokens,
+        },
+        {
+            "id": "case3_formula_putnam",
+            "name": "Multi-line Mathematical Formula Block (02_formula_putnam)",
+            "image_path": str(Path(args.examples_dir) / "02_formula_putnam" / "block.png"),
+            "crop": None,
+            "prompt": "Formula Recognition:",
+            "max_new_tokens": args.max_new_tokens,
+        },
+        {
+            "id": "case4_table_gb_standard",
+            "name": "Chinese National Standard Structured Table (03_table_gb_standard)",
+            "image_path": str(Path(args.examples_dir) / "03_table_gb_standard" / "block.png"),
+            "crop": None,
+            "prompt": "Table Recognition:",
+            "max_new_tokens": args.max_new_tokens,
+        },
+    ]
+
+    warm_img = Image.open(test_cases[0]["image_path"]).convert("RGB").crop((0, 0, 512, 512))
+    warm_msg = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "image", "image": warm_img},
+                {"type": "text", "text": "Text Recognition:"},
+            ],
+        }
+    ]
+    warm_txt = processor.apply_chat_template(warm_msg, tokenize=False, add_generation_prompt=True)
+    warm_in = processor(text=[warm_txt], images=[warm_img], return_tensors="pt").to(device)
+    _ = run_baseline_greedy(target_model, warm_in, 16, eos_id)
+    _ = run_dspark_speculative(target_model, draft_core, drafter_heads, warm_in, 16, eos_id)
+    torch.cuda.reset_peak_memory_stats()
+
+    results = []
+    tot_base_tok = 0
+    tot_base_time = 0.0
+    tot_base_steps = 0
+    tot_spec_tok = 0
+    tot_spec_time = 0.0
+    tot_spec_steps = 0
+    tot_draft_steps = 0
+    all_accept_lens = []
+
+    for tc in test_cases:
+        img = Image.open(tc["image_path"]).convert("RGB")
+        if tc["crop"] is not None:
+            img = img.crop(tc["crop"])
+        messages = [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image", "image": img},
+                    {"type": "text", "text": tc["prompt"]},
+                ],
+            }
+        ]
+        text = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        inputs = processor(text=[text], images=[img], return_tensors="pt").to(device)
+
+        base_res = run_baseline_greedy(target_model, inputs, tc["max_new_tokens"], eos_id)
+        spec_res = run_dspark_speculative(
+            target_model, draft_core, drafter_heads, inputs, len(base_res["tokens"]), eos_id
         )
-    else:
-        results = run_benchmark_simulation(
-            num_runs=args.runs,
-            speedup_ratio=args.speedup
+        spec_tokens = spec_res["tokens"][: len(base_res["tokens"])]
+        parity = spec_tokens == base_res["tokens"]
+        speedup = base_res["elapsed_s"] / spec_res["elapsed_s"]
+
+        tot_base_tok += base_res["num_tokens"]
+        tot_base_time += base_res["elapsed_s"]
+        tot_base_steps += base_res["target_forwards"]
+        tot_spec_tok += len(spec_tokens)
+        tot_spec_time += spec_res["elapsed_s"]
+        tot_spec_steps += spec_res["target_forwards"]
+        tot_draft_steps += spec_res["draft_forwards"]
+        all_accept_lens.append(spec_res["avg_accept_length"])
+
+        case_summary = {
+            "id": tc["id"],
+            "name": tc["name"],
+            "prompt": tc["prompt"],
+            "num_tokens": base_res["num_tokens"],
+            "baseline_elapsed_s": round(base_res["elapsed_s"], 4),
+            "baseline_tok_per_s": round(base_res["tokens_per_s"], 2),
+            "baseline_ms_per_tok": round(base_res["ms_per_token"], 2),
+            "baseline_target_forwards": base_res["target_forwards"],
+            "dspark_elapsed_s": round(spec_res["elapsed_s"], 4),
+            "dspark_tok_per_s": round(len(spec_tokens) / spec_res["elapsed_s"], 2),
+            "dspark_ms_per_tok": round((spec_res["elapsed_s"] * 1000.0) / len(spec_tokens), 2),
+            "dspark_target_forwards": spec_res["target_forwards"],
+            "dspark_draft_forwards": spec_res["draft_forwards"],
+            "dspark_avg_accept_length": round(spec_res["avg_accept_length"], 2),
+            "speedup": round(speedup, 2),
+            "token_parity": parity,
+            "decoded_preview": processor.tokenizer.decode(spec_tokens[:40]),
+        }
+        results.append(case_summary)
+        print(
+            f"[{tc['id']}] {base_res['num_tokens']} tok | "
+            f"Base: {base_res['elapsed_s']:.3f}s ({base_res['tokens_per_s']:.2f} tok/s) | "
+            f"DSpark: {spec_res['elapsed_s']:.3f}s ({case_summary['dspark_tok_per_s']:.2f} tok/s) | "
+            f"Speedup: {speedup:.2f}x | AvgAccept: {spec_res['avg_accept_length']:.2f} | Parity: {parity}"
         )
 
-    # 打印终端报告
-    md_report = format_markdown_report(results)
-    print("\n" + "="*70)
-    print(md_report)
-    print("="*70 + "\n")
-
-    if args.output_json:
-        with open(args.output_json, "w", encoding="utf-8") as f:
-            json.dump(results, f, ensure_ascii=False, indent=2)
-        print(f"[+] JSON 评测数据已保存至: {args.output_json}")
-
-    if args.output_md:
-        with open(args.output_md, "w", encoding="utf-8") as f:
-            f.write(md_report)
-        print(f"[+] Markdown 报告已保存至: {args.output_md}")
+    peak_vram_gib = torch.cuda.max_memory_allocated() / (1024 ** 3)
+    overall = {
+        "hardware": torch.cuda.get_device_name(0),
+        "arch": platform.machine(),
+        "torch_version": torch.__version__,
+        "dtype": "bfloat16",
+        "block_size": drafter_heads["block_size"],
+        "target_layer_ids": drafter_heads["target_layer_ids"],
+        "total_tokens": tot_base_tok,
+        "baseline_total_s": round(tot_base_time, 4),
+        "baseline_avg_tok_per_s": round(tot_base_tok / tot_base_time, 2),
+        "baseline_avg_ms_per_tok": round((tot_base_time * 1000.0) / tot_base_tok, 2),
+        "baseline_total_target_forwards": tot_base_steps,
+        "dspark_total_s": round(tot_spec_time, 4),
+        "dspark_avg_tok_per_s": round(tot_spec_tok / tot_spec_time, 2),
+        "dspark_avg_ms_per_tok": round((tot_spec_time * 1000.0) / tot_spec_tok, 2),
+        "dspark_total_target_forwards": tot_spec_steps,
+        "dspark_total_draft_forwards": tot_draft_steps,
+        "dspark_mean_accept_length": round(sum(all_accept_lens) / len(all_accept_lens), 2),
+        "overall_speedup": round(tot_base_time / tot_spec_time, 2),
+        "all_cases_token_parity": all(r["token_parity"] for r in results),
+        "peak_vram_gib": round(peak_vram_gib, 2),
+        "cases": results,
+    }
+    Path(args.output_json).parent.mkdir(parents=True, exist_ok=True)
+    with open(args.output_json, "w", encoding="utf-8") as f:
+        json.dump(overall, f, ensure_ascii=False, indent=2)
+    print("\n=== OVERALL SUMMARY ===")
+    print(json.dumps({k: v for k, v in overall.items() if k != "cases"}, indent=2))
 
 
 if __name__ == "__main__":
