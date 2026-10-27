@@ -1,0 +1,93 @@
+{
+  "dataset": {
+    "name": "phiyodr/coco2017",
+    "split": "validation",
+    "pair_count": 200
+  },
+  "query_task": "retrieval.query",
+  "document_task": null,
+  "native_cuda": {
+    "text_to_image": {
+      "count": 200,
+      "recall_at_1": 0.81,
+      "recall_at_5": 0.995,
+      "recall_at_10": 0.995,
+      "mrr": 0.8860943396226415,
+      "mrr_at_10": 0.8859999999999999,
+      "ndcg_at_10": 0.9136021849033775,
+      "median_rank": 1.0,
+      "mean_rank": 1.565,
+      "max_rank": 53
+    },
+    "image_to_text": {
+      "count": 200,
+      "recall_at_1": 0.825,
+      "recall_at_5": 0.99,
+      "recall_at_10": 0.995,
+      "mrr": 0.8967833333333333,
+      "mrr_at_10": 0.8965833333333333,
+      "ndcg_at_10": 0.9215119852718467,
+      "median_rank": 1.0,
+      "mean_rank": 1.4,
+      "max_rank": 25
+    },
+    "encoding_seconds": {
+      "query_text_total": 4.938315557999886,
+      "document_text_total": 3.1038945250038523,
+      "images_total": 34.37916102800227,
+      "query_text_per_item": 0.02469157778999943,
+      "document_text_per_item": 0.015519472625019261,
+      "images_per_item": 0.17189580514001135
+    }
+  },
+  "openvino_npu": {
+    "text_to_image": {
+      "count": 200,
+      "recall_at_1": 0.81,
+      "recall_at_5": 0.995,
+      "recall_at_10": 0.995,
+      "mrr": 0.8852592592592592,
+      "mrr_at_10": 0.8851666666666667,
+      "ndcg_at_10": 0.9129475361355204,
+      "median_rank": 1.0,
+      "mean_rank": 1.575,
+      "max_rank": 54
+    },
+    "image_to_text": {
+      "count": 200,
+      "recall_at_1": 0.825,
+      "recall_at_5": 0.99,
+      "recall_at_10": 0.995,
+      "mrr": 0.8970185185185185,
+      "mrr_at_10": 0.8968333333333334,
+      "ndcg_at_10": 0.921731104026041,
+      "median_rank": 1.0,
+      "mean_rank": 1.405,
+      "max_rank": 27
+    },
+    "encoding_seconds": {
+      "query_text_total": 58.163924899999984,
+      "document_text_total": 58.10652150000533,
+      "images_total": 145.32641059999878,
+      "query_text_per_item": 0.29081962449999993,
+      "document_text_per_item": 0.29053260750002663,
+      "images_per_item": 0.7266320529999939
+    }
+  },
+  "rank_agreement": {
+    "text_to_image": {
+      "same_rank_count": 198,
+      "pair_count": 200,
+      "mean_absolute_rank_difference": 0.01
+    },
+    "image_to_text": {
+      "same_rank_count": 198,
+      "pair_count": 200,
+      "mean_absolute_rank_difference": 0.015
+    }
+  },
+  "source_files": [
+    "retrieval-coco200-native-cuda-fp32.json",
+    "retrieval-coco200-NPU.json"
+  ]
+}

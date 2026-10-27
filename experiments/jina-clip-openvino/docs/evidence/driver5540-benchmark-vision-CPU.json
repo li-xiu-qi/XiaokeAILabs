@@ -1,0 +1,48 @@
+{
+  "device": "CPU",
+  "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+  "npu_driver_version": "1005540",
+  "actual_compiler_type": null,
+  "ir": "artifacts/fp16/jina-clip-vision_v2_fp16.xml",
+  "image": "images/beach1.jpg",
+  "image_sha256": "b235c4ce0f6f1a3eb1c57d129571030eac0f10beb2de952afeca129846a37ffc",
+  "input_shape": [
+    1,
+    3,
+    512,
+    512
+  ],
+  "finite": true,
+  "vision_vs_native": {
+    "max_abs": 1.671910285949707e-05,
+    "min_row_cosine": 1.0,
+    "mean_row_cosine": 1.0
+  },
+  "native_ok": true,
+  "ok": true,
+  "compile_seconds_excluded_from_benchmark": 5.151722900001914,
+  "warmup_iterations": 2,
+  "measured_iterations": 10,
+  "latency_seconds": {
+    "min": 10.200822099999641,
+    "p50": 10.2554870999993,
+    "mean": 10.257259539997904,
+    "p90": 10.318050469998706,
+    "p95": 10.32515763499723,
+    "max": 10.332264799995755
+  },
+  "throughput_images_per_second_from_mean": 0.09749192716636712,
+  "raw_latency_seconds": [
+    10.230453600001056,
+    10.239260700000159,
+    10.200822099999641,
+    10.316471099999035,
+    10.267289699993853,
+    10.273436899995431,
+    10.262488599997596,
+    10.332264799995755,
+    10.248485600001004,
+    10.201622299995506
+  ],
+  "notes": "Synchronous batch-1 vision inference after warmup; compile time excluded."
+}

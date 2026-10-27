@@ -1,0 +1,80 @@
+{
+  "timestamp_utc": "2026-10-24T12:12:05.379855+00:00",
+  "model": "jinaai/jina-clip-v2",
+  "revision": "e10d47f5691d0454a0fb5d13f46f2199b74cb436",
+  "code_revisions": {
+    "jinaai/jina-clip-implementation": "39e6a55ae971b59bea6e44675d237c99762e7ee2",
+    "jinaai/xlm-roberta-flash-implementation": "bd55a5ec8e6c0fb1d6c26efb4b6a4a74ce8a88d3"
+  },
+  "device": "NPU",
+  "available_devices": [
+    "CPU",
+    "GPU",
+    "NPU"
+  ],
+  "python": "3.12.10",
+  "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+  "npu_driver_version": "1005540",
+  "torch": "2.14.1+cpu",
+  "transformers": "4.57.6",
+  "image": "images/beach1.jpg",
+  "image_sha256": "b235c4ce0f6f1a3eb1c57d129571030eac0f10beb2de952afeca129846a37ffc",
+  "texts": [
+    "a photo of a beach",
+    "a photo of a dog",
+    "a photo of a seal"
+  ],
+  "input_shapes": {
+    "input_ids": [
+      3,
+      512
+    ],
+    "pixel_values": [
+      1,
+      3,
+      512,
+      512
+    ]
+  },
+  "text_precision": "FP16",
+  "similarities": {
+    "a photo of a beach": 0.27155035734176636,
+    "a photo of a dog": 0.09328995645046234,
+    "a photo of a seal": 0.11256562173366547
+  },
+  "best_label": "a photo of a beach",
+  "expected_label": "a photo of a beach",
+  "ranking_ok": true,
+  "text_shape": [
+    3,
+    1024
+  ],
+  "vision_shape": [
+    1,
+    1024
+  ],
+  "text_vs_native": {
+    "max_abs": 0.000607222318649292,
+    "min_row_cosine": 0.9999920129776001,
+    "mean_row_cosine": 0.9999920725822449
+  },
+  "vision_vs_native": {
+    "max_abs": 0.0009240135550498962,
+    "min_row_cosine": 0.9999769330024719,
+    "mean_row_cosine": 0.9999769330024719
+  },
+  "native_ok": true,
+  "ok": true,
+  "compile_seconds": {
+    "text": 4.441302299994277,
+    "vision": 169.9686473000038
+  },
+  "inference_seconds": {
+    "text_batch3": 1.130531400005566,
+    "vision_batch1": 1.0163003999987268
+  },
+  "ir_files": [
+    "artifacts/fp16/jina-clip-text_v2_fp16.xml",
+    "artifacts/fp16/jina-clip-vision_v2_fp16.xml"
+  ]
+}

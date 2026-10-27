@@ -1,0 +1,10 @@
+openvino==2026.4.1
+torch==2.14.1
+transformers==4.57.6
+einops
+timm
+pillow
+safetensors
+sentencepiece
+numpy
+requests

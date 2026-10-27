@@ -1,0 +1,49 @@
+{
+  "device": "CPU",
+  "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+  "npu_driver_version": "1005540",
+  "actual_compiler_type": null,
+  "ir": "artifacts/fp16/jina-clip-text_v2_fp16.xml",
+  "input_shape": [
+    3,
+    512
+  ],
+  "texts": [
+    "a photo of a beach",
+    "a photo of a dog",
+    "a photo of a seal"
+  ],
+  "finite": true,
+  "text_vs_native": {
+    "max_abs": 8.265674114227295e-05,
+    "min_row_cosine": 0.9999998211860657,
+    "mean_row_cosine": 0.9999998211860657
+  },
+  "native_ok": true,
+  "ok": true,
+  "compile_seconds_excluded_from_benchmark": 11.594205299996247,
+  "warmup_iterations": 2,
+  "measured_iterations": 10,
+  "latency_seconds": {
+    "min": 10.792808499994862,
+    "p50": 10.834997699999803,
+    "mean": 10.84758402999869,
+    "p90": 10.906586490003246,
+    "p95": 10.921449494998887,
+    "max": 10.936312499994528
+  },
+  "throughput_sequences_per_second_from_mean": 0.2765592773195934,
+  "raw_latency_seconds": [
+    10.815196199997445,
+    10.813750599998457,
+    10.936312499994528,
+    10.903283600004215,
+    10.816490799996245,
+    10.792808499994862,
+    10.868841700001212,
+    10.859161000000313,
+    10.82217220000166,
+    10.847823199997947
+  ],
+  "notes": "Synchronous batch-3 inference after warmup; compile time excluded. Padded token counts are not used as a throughput metric."
+}
