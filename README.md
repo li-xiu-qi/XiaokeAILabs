@@ -28,6 +28,9 @@
 - **jina-clip-openvino** — Jina CLIP 在 Intel CPU/NPU 上的正确性验证、驱动 A/B 与同机重复性能基准 → `experiments/jina-clip-openvino`
 - **image-finetune** — LoRA 微调（图片）：人脸身份 LoRA，让底模画出一个它画不出来的人 → `experiments/image-finetune`
 
+### 文档理解与 OCR
+- **minicpm-ocr** — MiniCPM-OCR 1.0 解析 + Jev 一致性判别双模型在 aarch64 GB10 上的部署，绕开 vLLM 与 Paddle，闭环 2.5 秒 → `experiments/minicpm-ocr`
+
 ### 判别式模型
 - **jev-open-source** — Jev 判别式模型三个开源复刻（Laya / Nimble / metask-jev）在 GB10 上的延迟与准确率实测 → `experiments/jev-open-source`
 
