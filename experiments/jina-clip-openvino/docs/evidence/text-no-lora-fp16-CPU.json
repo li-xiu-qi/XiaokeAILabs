@@ -1,0 +1,22 @@
+{
+  "device": "CPU",
+  "precision": "FP16",
+  "task_lora_disabled": true,
+  "equivalence_to_original_model": false,
+  "input_shape": [
+    3,
+    512
+  ],
+  "finite": true,
+  "nan_count": 0,
+  "inf_count": 0,
+  "text_vs_disabled_native": {
+    "max_abs": 1.1667609214782715e-05,
+    "min_row_cosine": 0.9999999403953552,
+    "mean_row_cosine": 1.0
+  },
+  "native_ok": true,
+  "ok": true,
+  "compile_seconds": 10.248278400002164,
+  "inference_seconds": 10.675051500002155
+}

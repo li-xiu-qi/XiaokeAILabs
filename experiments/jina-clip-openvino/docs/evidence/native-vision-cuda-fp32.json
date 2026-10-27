@@ -1,0 +1,52 @@
+{
+  "branch": "vision",
+  "device": "cuda",
+  "dtype": "fp32",
+  "gpu_name": "NVIDIA GB10",
+  "model": "jinaai/jina-clip-v2",
+  "revision": "e10d47f5691d0454a0fb5d13f46f2199b74cb436",
+  "code_revision": "39e6a55ae971b59bea6e44675d237c99762e7ee2",
+  "torch": "2.14.0+cu130",
+  "transformers": "4.57.6",
+  "input_shape": [
+    1,
+    3,
+    512,
+    512
+  ],
+  "finite": true,
+  "native_ok": true,
+  "vision_vs_native": {
+    "max_abs": 3.2395124435424805e-05,
+    "min_row_cosine": 0.9999999403953552,
+    "mean_row_cosine": 0.9999999403953552
+  },
+  "ok": true,
+  "model_load_seconds_excluded_from_benchmark": 9.88101466500666,
+  "warmup_iterations": 2,
+  "measured_iterations": 10,
+  "latency_seconds": {
+    "min": 0.14511952998873312,
+    "p50": 0.14890843850298552,
+    "mean": 0.14873770129779587,
+    "p90": 0.14979292469506617,
+    "p95": 0.14988509235117817,
+    "max": 0.14997726000729017
+  },
+  "throughput_items_per_second_from_mean": 6.723244955882741,
+  "item_unit": "images",
+  "raw_latency_seconds": [
+    0.14977244299370795,
+    0.14511952998873312,
+    0.14941390800231602,
+    0.14959115198871586,
+    0.14849425401189364,
+    0.14907571001094766,
+    0.14863124999101274,
+    0.14997726000729017,
+    0.1485603389883181,
+    0.14874116699502338
+  ],
+  "image_sha256": "b235c4ce0f6f1a3eb1c57d129571030eac0f10beb2de952afeca129846a37ffc",
+  "notes": "Native PyTorch inference after warmup; model loading excluded; CUDA synchronized."
+}
