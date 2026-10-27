@@ -22,7 +22,6 @@
 - **embedding-research** — 评测基准 + 微调数据 + 相似度行为专项（句长 / 跨语言 / 代码表格 / NLI 迁移）+ 多模态（BGE-VL、CLIP） → `experiments/embedding-research`
 - **retrieval-and-rerank** — 检索链路四环节：FAISS 稠密、BGE-M3 稀疏、ColBERT 晚期交互、BGE Reranker → `experiments/retrieval-and-rerank`
 - **vector-db-benchmark** — Milvus / Qdrant / SurrealDB / LanceDB / ChromaDB / sqlite-vec 六库吞吐、延迟、召回实测 → `experiments/vector-db-benchmark`
-- **text-segmentation** — 语义 + 结构混合分块、迟分等策略对比 → `experiments/text-segmentation`
 
 ### 推理成本与模型机制
 - **inference-cost-models** — 12 个可计算的推理成本模型（Roofline、显存、KV Cache、吞吐、Scaling Laws、量化），GB10 实测锚点 → `experiments/inference-cost-models`
