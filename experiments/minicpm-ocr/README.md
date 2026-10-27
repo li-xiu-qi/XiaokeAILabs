@@ -82,7 +82,7 @@ Jev 不是 1.0 的另一个版本，是流水线的下一环。
 
 ## 三个绕开官方路线的决定
 
-官方文档的主路线是 vLLM 或 SGLang 加 Paddle，这三项在 aarch64 上都不成立，各自的替代方案与完整理由见 `docs/notes/部署实录.md`。
+官方文档的主路线是 vLLM 或 SGLang 加 Paddle，这三项在 aarch64 上都不成立，替换方案写在下面这张表里。
 
 | 官方依赖 | 本机问题 | 替代方案 |
 |---|---|---|
@@ -118,7 +118,7 @@ python scripts/jev_loop_block.py --block <块图> --truth <人工确认原文>
 
 路径默认从 `$HOME/minicpm-ocr` 推导，可用环境变量覆盖：`MINICPM_OCR_HOME`、`OCR_MODEL_DIR`、`JEV_MODEL_DIR`、`JEV_REPO`、`RM_RENDER_PYTHON`、`OCR_URL`。
 
-打分与渲染刻意分成两个 venv：渲染侧钉死 `playwright 1.62.0` 与 `Pillow 12.3.0`，避免一次 `pip install -U` 把 Pillow 推走、静默改变分数。这个坑见 `docs/notes/排错记录.md`。
+打分与渲染刻意分成两个 venv：渲染侧钉死 `playwright 1.62.0` 与 `Pillow 12.3.0`，避免一次 `pip install -U` 把 Pillow 推走、静默改变分数。
 
 ## 边界与未验证项
 
@@ -150,7 +150,6 @@ scripts/                     部署与运行脚本，按执行顺序编号
   jev_probe.py               官方样例「自带渲染图 vs 本机重渲染」对比
   jev_loop_block.py          闭环驱动：1.0 识别一块 → Jev 排三候选
   make_testpage.py           生成测试页
-docs/notes/                  部署实录与排错记录（含完整数据与判据）
 docs/evidence/               测试页与一份解析结果样例
 ```
 
