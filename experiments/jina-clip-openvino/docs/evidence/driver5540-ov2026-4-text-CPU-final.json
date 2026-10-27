@@ -1,0 +1,25 @@
+{
+  "device": "CPU",
+  "openvino": "2026.4.1-22982-e213a147257-releases/2026/4",
+  "npu_driver_version": "1005540",
+  "ir": "artifacts/fp16/jina-clip-text_v2_fp16.xml",
+  "input_shape": [
+    3,
+    512
+  ],
+  "compiler_type": null,
+  "actual_compiler_type": null,
+  "activations_scale_factor": null,
+  "finite": true,
+  "nan_count": 0,
+  "inf_count": 0,
+  "text_vs_native": {
+    "max_abs": 8.265674114227295e-05,
+    "min_row_cosine": 0.9999998211860657,
+    "mean_row_cosine": 0.9999998211860657
+  },
+  "native_ok": true,
+  "ok": true,
+  "compile_seconds": 11.53142420000222,
+  "inference_seconds": 10.855205200001365
+}
