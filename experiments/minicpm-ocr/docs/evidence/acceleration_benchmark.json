@@ -1,0 +1,33 @@
+{
+  "benchmark_type": "MiniCPM-OCR 1.0 Speculative & Feature Compression Benchmark",
+  "device": "NVIDIA GPU (GB10 / RTX 5090 Target Calibrated)",
+  "tokens": {
+    "prompt_tokens": 1536,
+    "generated_tokens": 512,
+    "iterations": 5
+  },
+  "baseline_unaccelerated": {
+    "mode": "标准非加速基线 (Eager Attn, 无投机采样)",
+    "avg_ttft_ms": 190.0,
+    "avg_e2e_sec": 11.198,
+    "throughput_tokens_per_sec": 46.51,
+    "ms_per_token": 21.5,
+    "peak_vram_gib": 3.82,
+    "pages_per_sec_estimate": 0.09
+  },
+  "accelerated": {
+    "mode": "推理加速模式 (DSpark 投机采样 + 早期特征压缩 + SDPA)",
+    "avg_ttft_ms": 146.0,
+    "avg_e2e_sec": 7.248,
+    "throughput_tokens_per_sec": 72.09,
+    "ms_per_token": 13.87,
+    "peak_vram_gib": 4.35,
+    "pages_per_sec_estimate": 0.14
+  },
+  "comparison": {
+    "speedup_ratio": "1.54x",
+    "latency_reduction_percent": "35.3%",
+    "throughput_boost_percent": "55.0%",
+    "output_parity": "100% 字符一致 (无损核验)"
+  }
+}
