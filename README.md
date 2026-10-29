@@ -138,7 +138,7 @@ python figures/make_figures.py
 ## 📚 全量实验索引
 
 ### 🔍 检索与向量
-- [**embedding-research**](experiments/embedding-research) — 评测基准 + 微调数据 + 相似度行为专项（句长 / 跨语言 / 代码表格 / NLI 迁移）+ 多模态（BGE-VL、CLIP）
+- [**embedding-research**](experiments/embedding-research) — 评测基准 + 微调数据 + [**相似度动力学与动态长度补偿 (similarity-dynamics)**](experiments/embedding-research/similarity-dynamics) + 多模态（BGE-VL、CLIP） + [**理论文献判据 (REFERENCES)**](experiments/embedding-research/REFERENCES.md)
 - [**retrieval-and-rerank**](experiments/retrieval-and-rerank) — 检索链路四环节：FAISS 稠密、BGE-M3 稀疏、ColBERT 晚期交互、BGE Reranker
 - [**vector-db-benchmark**](experiments/vector-db-benchmark) — Milvus / Qdrant / SurrealDB / LanceDB / ChromaDB / sqlite-vec 六库吞吐、延迟、召回实测
 
