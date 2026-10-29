@@ -22,7 +22,7 @@
 
 ## 协议（与 27B NInfer 实验完全一致，保证跨模型可比）
 
-C1/C2/C4/C8 各 2 轮，每轮请求数等于并发数；`max_tokens=512`，`temperature=1.0`，`top_p=0.95`，`top_k=20`，thinking 开启，`reasoning_effort=xhigh`，seed 20261025，8 条固定 prompt。记录逐请求原生 timings（decode/prefill/草稿接受）与客户端 e2e。脚本 `scripts/bench_ninfer_concurrency.py`（复用自 `ninfer-gb10-inference` 实验，未改动）。
+C1/C2/C4/C8 各 2 轮，每轮请求数等于并发数；`max_tokens=512`，`temperature=1.0`，`top_p=0.95`，`top_k=20`，thinking 开启，`reasoning_effort=xhigh`，seed 20261025，8 条固定 prompt。记录逐请求原生 timings（decode/prefill/草稿接受）与客户端 e2e。脚本 `scripts/bench_ninfer_concurrency.py`（复用自 `ninfer-27b` 实验，未改动）。
 
 口径提醒：客户端总吞吐含 prefill 与排队；llama.cpp 侧 `-np 1`，C2 以上请求串行，聚合吞吐不随并发上升是部署属性不是引擎缺陷。
 

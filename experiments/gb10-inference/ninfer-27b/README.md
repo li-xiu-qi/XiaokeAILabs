@@ -82,7 +82,7 @@ NInfer 官方当前源码把构建目标限定为 `sm_120a`，而 DGX Spark 是 
 需要 DGX Spark 或兼容的 GB10 环境，以及 CMake ≥3.28、GCC/G++、CUDA、Ninja、FFmpeg 开发文件、libcurl ≥7.85、Python 3 和 SGLang 0.5.19。Python 下载与图片依赖安装在实验自己的环境中。
 
 ```bash
-cd experiments/ninfer-gb10-inference
+cd experiments/gb10-inference/ninfer-27b
 python -m pip install -r requirements.txt
 ```
 
