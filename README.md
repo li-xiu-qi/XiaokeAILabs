@@ -42,12 +42,12 @@
 
 1. **vLLM 0.23 的 MTP 投机解码负收益陷阱（-33%）**：
    - 在 DeepSeek-V4-Flash 2-bit (299B MoE) 实验中，非投机解码达 20.16 tok/s，启用官方 MTP (K=2) 后生成速度反而暴跌至 13.42 tok/s。
-   - **根因定位**：vLLM 0.23.0 拒绝了 drafter 的 FULL cudagraph 构建，导致草稿模型反复发生 Host-Device 同步开销，吞噬了所有投机收益。
+   - **根因定位**：vLLM 0.23.0 拒绝了 drafter 的 FULL cudagraph 构建，导致降级（完整证据链见该实验报告）。
 2. **Intel NPU 的驱动 NaN 隐形变量**：
    - 在 Core Ultra 7 155H NPU 上部署 Jina CLIP FP16 时，旧驱动（32.0.100.4023）文本输出全部为 NaN，视觉分支却完全正常。
    - **避坑启示**：设备侧异常切忌盲目改动模型结构，升级驱动至 32.0.100.5540 后即恢复正常，NPU 吞吐达 CPU 的 12.57 倍。
 3. **LoRA 简化的“伪适配”陷阱**：
-   - 为规避端侧算子不支持而关闭 `retrieval.query` 对应的 LoRA 权重，模型虽能顺利转换运行，但向量余弦相似度暴跌至 0.9166~0.9384，失去检索判别力。格式能转不等于语义可用。
+   - 为规避端侧算子不支持而关闭 `retrieval.query` 对应的 LoRA 权重，启用与关闭 LoRA 的输出余弦仅为 0.9166~0.9384，两条路径不能视为等价输出，因此关闭 LoRA 只能用于排障对照，不能当作部署方案。
 4. **混合检索评测的双重数据错位**：
    - 在多库 BM25 + 向量检索评测中，排查出传统基准常见的两大缺陷：“查询文本与向量索引错位”及“相关度阈值未校准”，由此确立了双 Ground Truth 验证标准。
 
@@ -75,9 +75,9 @@
   - 成功跑通 101 GB 权重分片加载与推理，常驻内存 94.69 GiB，非投机解码达 **20.16 tok/s**（49.61 ms/tok）。
 - [**NInfer GB10 移植与百 TPS 复现**](experiments/gb10-inference/ninfer-27b)：
   - 突破官方源码限定 `sm_120a` 导致在 GB10 (`sm_121a`) 上构建被拒的问题，完成 ARM64 与统一内存移植（898/898 构建目标全通）；
-  - 实测 Qwen3.8-27B (W4A4 + DFlash2) 在 C8 并发下达成 **132.1~223.7 tok/s** 聚合吞吐，并证实统一内存环境下 **NVFP4 W4A4 实际吞吐全面超越 FP8**。
+  - 按截图复现配置，Qwen3.8-27B (W4A4 + DFlash2) 在 C8 下聚合 **132.1 tok/s**，同模型 SGLang 参考为 144.6 tok/s；在当前压测协议下 NVFP4 W4A4 比 FP8 更快。
 - [**Qwen3.6-35B-A3B 双引擎 A/B**](experiments/gb10-inference/qwen36-35b-ab)：
-  - 同机同模型压测，NInfer MTP3 单请求达 llama.cpp 的 **1.37 倍**；并发扩展性实测中，NInfer 在 C8 并发下聚合吞吐达 **223.7 tok/s**（相比 llama.cpp 单槽位限制的 54.8 tok/s 带来跨数量级优势）。
+  - 同机同模型压测，NInfer MTP3 单请求达 llama.cpp 的 **1.37 倍**；并发扩展性实测中，NInfer 在 C8 并发下聚合吞吐达 **223.7 tok/s**（对比 llama.cpp 以 `-np 1` 部署时的 54.8 tok/s；后者是部署约束，不是引擎缺陷）。
 - [**Strata 统一内存推理**](experiments/gb10-inference/strata-dgx)：
   - Qwen3.8-Flash-Next IQ3_S 开启稀疏激活与专家缓存，相比基准 llama.cpp 提速 **2.5 倍**。
 
@@ -138,7 +138,7 @@ python figures/make_figures.py
 ## 📚 全量实验索引
 
 ### 🔍 检索与向量
-- [**embedding-research**](experiments/embedding-research) — 评测基准 + 微调数据 + [**相似度动力学与动态长度补偿 (similarity-dynamics)**](experiments/embedding-research/similarity-dynamics) + 多模态（BGE-VL、CLIP） + [**理论文献判据 (REFERENCES)**](experiments/embedding-research/REFERENCES.md)
+- [**embedding-research**](experiments/embedding-research) — 评测基准 + 微调数据 + [相似度动力学 (similarity-dynamics，设计阶段，暂无结论)](experiments/embedding-research/similarity-dynamics) + 多模态（BGE-VL、CLIP） + [**理论文献判据 (REFERENCES)**](experiments/embedding-research/REFERENCES.md)
 - [**retrieval-and-rerank**](experiments/retrieval-and-rerank) — 检索链路四环节：FAISS 稠密、BGE-M3 稀疏、ColBERT 晚期交互、BGE Reranker
 - [**vector-db-benchmark**](experiments/vector-db-benchmark) — Milvus / Qdrant / SurrealDB / LanceDB / ChromaDB / sqlite-vec 六库吞吐、延迟、召回实测
 
