@@ -143,7 +143,7 @@ python -m venv .venv
 ### 2. CPU 转换与双分支验证
 
 ```powershell
-.venv\Scripts\python.exe scripts\run_openvino_smoke.py --device CPU --single-task --image path\to\your-image.jpg --work-dir artifacts --cache-dir models\huggingface
+.venv\Scripts\python.exe scripts\run_openvino_smoke.py --device CPU --single-task --image example-images\illustrated-coast.png --work-dir artifacts --cache-dir models\huggingface
 ```
 
 该命令生成静态 IR、native 参照和预处理器，并完成 CPU 对照。
@@ -153,10 +153,10 @@ python -m venv .venv
 模型和自定义实现已缓存后，使用同一组静态输入：
 
 ```powershell
-.venv\Scripts\python.exe scripts\run_openvino_smoke.py --device NPU --single-task --offline --image path\to\your-image.jpg --work-dir artifacts --cache-dir models\huggingface
+.venv\Scripts\python.exe scripts\run_openvino_smoke.py --device NPU --single-task --offline --image example-images\illustrated-coast.png --work-dir artifacts --cache-dir models\huggingface
 ```
 
-将 `path\to\your-image.jpg` 替换为你有权使用的图片路径。示例不再检查特定标签；图像与历史样本不同，因此结果不能视为原始视觉结果的复现。需要重建 IR 时增加 `--force-convert`。更换图片或文本时，应使用新的 `--work-dir`，避免复用旧 native 参照。
+示例使用仓库内原创插图，也可换成你有权使用的图片。示例不再检查特定标签；图像与历史样本不同，因此结果不能视为原始视觉结果的复现。需要重建 IR 时增加 `--force-convert`。更换图片或文本时，应使用新的 `--work-dir`，避免复用旧 native 参照。
 
 ### 4. 复用现有 IR 做文本对照
 
@@ -177,8 +177,8 @@ python -m venv .venv
 ### 6. 重复视觉基准
 
 ```powershell
-.venv\Scripts\python.exe scripts\benchmark_vision_ir.py --device CPU --ir artifacts\fp16\jina-clip-vision_v2_fp16.xml --reference artifacts\fp16\native_reference.npz --preprocessor artifacts\fp16\preprocessor --image path\to\your-image.jpg --output artifacts\benchmark-vision-CPU.json --warmup 2 --iterations 10
-.venv\Scripts\python.exe scripts\benchmark_vision_ir.py --device NPU --ir artifacts\fp16\jina-clip-vision_v2_fp16.xml --reference artifacts\fp16\native_reference.npz --preprocessor artifacts\fp16\preprocessor --image path\to\your-image.jpg --output artifacts\benchmark-vision-NPU.json --warmup 2 --iterations 10
+.venv\Scripts\python.exe scripts\benchmark_vision_ir.py --device CPU --ir artifacts\fp16\jina-clip-vision_v2_fp16.xml --reference artifacts\fp16\native_reference.npz --preprocessor artifacts\fp16\preprocessor --image example-images\illustrated-coast.png --output artifacts\benchmark-vision-CPU.json --warmup 2 --iterations 10
+.venv\Scripts\python.exe scripts\benchmark_vision_ir.py --device NPU --ir artifacts\fp16\jina-clip-vision_v2_fp16.xml --reference artifacts\fp16\native_reference.npz --preprocessor artifacts\fp16\preprocessor --image example-images\illustrated-coast.png --output artifacts\benchmark-vision-NPU.json --warmup 2 --iterations 10
 ```
 
 ### 7. 真实图文检索
@@ -212,7 +212,8 @@ python scripts/evaluate_retrieval.py --backend native --device cuda --subset dat
 ## 证据与边界
 
 - `docs/evidence/`：当前驱动环境下的结果，公开时仅移除主机名并把路径改为仓库相对路径，数值未改；旧驱动原始结果未包含。
-- `scripts/`：转换、正确性、LoRA、动态节点和重复基准主入口。
+- `scripts/`：转换、正确性、LoRA、动态节点和重复基准主入口；`make_sample_images.py` 可重新生成原创插图。
+- `example-images/`：当前示例所用的原创插图，与历史测试照片不同。
 - 历史视觉测试图片的 SHA-256 记录在结果中；该照片的再分发许可尚未确认，当前工作区不提供该素材。
 
 本实验不证明所有模型都能在 Intel NPU 上运行，也不提供 INT8 部署结论。其他模型、batch 和视觉性能需要分别做正确性与重复基准。生产使用前应重新核对设备、驱动和 OpenVINO 版本。

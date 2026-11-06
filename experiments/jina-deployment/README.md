@@ -6,7 +6,7 @@
 
 | 目录 | 形态 | 内容 |
 |---|---|---|
-| `jina_clip_inference/` | 原生推理加 OpenVINO 封装 | `test_jina_clip_v2.ipynb`（SentenceTransformers 原生推理实测：中文同义句相似度、图文匹配，含两张测试图）、`jina_openvino.py`（`JinaClipOpenVINO` 类，文本视觉双模型分开编译，兼容 SentenceTransformers 调用）、`test_jina_openvino.ipynb`（封装类的使用示例）、`jina_model_path/`（tokenizer 与预处理器配置） |
+| `jina_clip_inference/` | 原生推理加 OpenVINO 封装 | `test_jina_clip_v2.ipynb`（SentenceTransformers 原生推理实测：中文同义句相似度、图文匹配，使用两张原创示例插图）、`jina_openvino.py`（`JinaClipOpenVINO` 类，文本视觉双模型分开编译，兼容 SentenceTransformers 调用）、`test_jina_openvino.ipynb`（封装类的使用示例）、`jina_model_path/`（tokenizer 与预处理器配置） |
 | `onnx_openvino_scripts/` | ONNX 转 OpenVINO 脚本 | 多个 `infer_*.py` 脚本：直接加载 ONNX、走 OpenVINO runtime、预处理与推理流水线验证 |
 | `openvino_nncf_quant/` | NNCF INT8 量化 | `test_openvino-jina-clip.ipynb`：转 OpenVINO IR、文本和图像分支分别量化、量化前后体积与延迟对比、Gradio 演示 |
 
@@ -19,3 +19,5 @@
 ## 模型与数据
 
 模型权重不随仓，按各脚本和 notebook 里的说明下载。`jina_clip_inference/jina_model_path/` 里只有 tokenizer 与预处理器配置，不含权重。OpenVINO 量化 notebook 引用的模型结构按 Jina CLIP 的文本和图像双分支组织，量化也要分两次做，不能当成单塔模型一次量化。
+
+历史示例中的 `beach2.jpg` 来源与使用许可尚未确认；当前 notebook 改用 `../jina-clip-openvino/example-images/` 中的原创插图。旧结果使用的是不同图片，不能把新示例视为同一输入的复现。模型目录中保留的上游模型卡可能含有第三方示例链接，这些链接不是本仓库素材授权证明。
