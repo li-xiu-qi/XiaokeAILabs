@@ -15,6 +15,7 @@
 - [合成数据训练文生图模型](experiments/image-generation-distillation/README.md)：用教师合成数据训练学生 LoRA；结果基于单名 AI 评审。
 - [向量数据库基准](experiments/vector-db-benchmark/README.md)：历史数据缺少原始结果，不用于产品排名。
 - [扩散语言模型速度对照](experiments/diffusion-language-models/README.md)：在三道问题上比较两种生成路径；输出长度与质量不同。
+- [GB10 单槽与八槽推理](experiments/gb10-inference/qwen36-35b-ab/README.md)：同一模型和引擎下比较短请求的吞吐与完成时间。
 - [LLM 推理性能](experiments/llm-inference-perf/README.md)：模型与推理配置的性能分析。
 - [语言模型量化](experiments/llm-mechanics/quantization/README.md)：对照权重体积、困惑度与 CPU 速度；BF16 路径性能异常。
 - [LLM 机制](experiments/llm-mechanics/README.md)：通过示例理解生成机制。

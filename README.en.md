@@ -15,6 +15,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Image generation with synthetic training data](experiments/image-generation-distillation/README.md): Train a student LoRA on teacher-generated data; results rely on one AI reviewer.
 - [Vector database benchmark](experiments/vector-db-benchmark/README.md): Historical records lack raw results and do not support product rankings.
 - [Diffusion language model speed](experiments/diffusion-language-models/README.md): Compare generation paths on three prompts with unequal output lengths and unmeasured quality.
+- [GB10 inference slots](experiments/gb10-inference/qwen36-35b-ab/README.md): Compare throughput and completion times for one versus eight slots on the same model and engine.
 - [LLM inference performance](experiments/llm-inference-perf/README.md): Performance analysis across models and inference configurations.
 - [Language model quantization](experiments/llm-mechanics/quantization/README.md): Compare model size, perplexity, and CPU speed; the BF16 path performed unusually slowly.
 - [LLM mechanics](experiments/llm-mechanics/README.md): Understand text generation through examples.
