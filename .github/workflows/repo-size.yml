@@ -28,16 +28,9 @@ jobs:
       - name: notebook 输出检查
         run: python scripts/check_notebook_outputs.py --all
 
-      - name: 克隆体积预算（全历史打包 >30MB 拦截）
+      - name: 克隆体积预算（全历史打包超过 32 MiB 拦截）
         run: |
           packed=$(git rev-list --objects --all \
             | awk '{print $1}' | sort -u \
             | git pack-objects --stdout -q | wc -c)
-          mb=$((packed / 1048576))
-          echo "仓库全历史打包体积：${mb} MB"
-          if [ "$mb" -gt 25 ]; then
-            echo "::error::仓库体积 ${mb}MB 超出 25MB 预算。"
-            echo "常见原因：数据集/模型入库、图片未压缩、notebook 带输出。"
-            echo "处置见 scripts/check_large_files.py 的提示。"
-            exit 1
-          fi
+          python scripts/check_history_budget.py --bytes "$packed"
