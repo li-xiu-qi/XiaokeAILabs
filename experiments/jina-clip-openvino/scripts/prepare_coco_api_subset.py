@@ -57,6 +57,8 @@ def main() -> None:
                     "filename": filename,
                     "split": args.split,
                     "source_url": row["coco_url"],
+                    "flickr_url": row.get("flickr_url"),
+                    "coco_license_id": row.get("license"),
                 }
             )
             if len(candidates) >= args.limit:
@@ -97,7 +99,7 @@ def main() -> None:
         "dataset_server": API_URL,
         "split": args.split,
         "pair_count": len(candidates),
-        "license": "CC BY 4.0",
+        "license": "Check each source image license and attribution; COCO image licenses vary",
         "caption_selection": "first caption per image",
     }
     (args.output_dir / "subset.meta.json").write_text(

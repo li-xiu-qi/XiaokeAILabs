@@ -1,8 +1,10 @@
 # Jina CLIP 在 Intel CPU 与 NPU 上的部署验证
 
+![多模态向量模型转换与设备验证流程](docs/pipeline.svg)
+
 本实验验证 `jinaai/jina-clip-v2` 在 Intel CPU 与 NPU 上能否产生**正确且可重复加速**的 OpenVINO 推理结果。这里不把“模型能转换”“设备能编译”当作部署成功，验收必须同时通过向量正确性、双分支冒烟和重复性能测试。
 
-> **核心发现：同一份 FP16 模型在旧 NPU 驱动上输出全 NaN，升级驱动后文本与视觉均通过。NPU 的价值不仅是能运行，在本次固定文本负载中，平均吞吐达到 CPU 的 12.57 倍。**
+> **本次固定输入下，FP16 的文本和视觉向量在 NPU 上通过 native 对照；文本 batch-3 的稳态吞吐按平均延迟换算为 CPU 的 12.57 倍。CPU 调优参数缺失，该比值不代表设备性能上限。**
 
 ## 为什么值得做这个实验
 
@@ -31,7 +33,7 @@
 | 文本 IR | FP16，保留 `retrieval.query` LoRA |
 | 视觉 IR | FP16 |
 
-正确性以 native 向量为参照，逐行计算余弦相似度，并检查 NaN/Inf。验收要求为：输出全部为有限值，最大绝对差不超过 0.02，且最小行余弦不低于 0.999。文本和视觉分别判断，不能用某一分支代替完整模型结论。
+正确性以 native 向量为参照，先按行归一化，再计算余弦相似度与归一化向量的最大绝对差，并检查 NaN/Inf。验收要求为：输出全部为有限值，归一化向量的最大绝对差不超过 0.02，且最小行余弦不低于 0.999。文本和视觉分别判断，不能用某一分支代替完整模型结论。
 
 ## 我们做了什么
 
@@ -50,9 +52,9 @@
 
 ### 2. CPU 双分支通过，建立了可靠参照
 
-CPU 文本最小行余弦为 **0.99999982**，视觉为 **1.0**。这证明静态转换链路可以产生与 native 高度一致的向量，也使后续 NPU 异常能够被单独隔离。
+CPU 文本最小行余弦为 **0.99999982**，视觉为 **1.0**。这表明本次输入上静态转换链路可产生与 native 高度一致的向量，为定位 NPU 异常提供参照；有限样本不能证明所有输入均正确。
 
-### 3. 驱动更新直接改变了 NPU 文本的可用性
+### 3. 驱动版本是历史故障线索
 
 旧对照使用 OpenVINO 2026.4.1 + 驱动 32.0.100.4023：视觉通过，但文本 FP16 输出全部 NaN。升级到 32.0.100.5540 后，继续使用同一个 OpenVINO、同一份 IR 和相同输入：
 
@@ -63,11 +65,11 @@ CPU 文本最小行余弦为 **0.99999982**，视觉为 **1.0**。这证明静�
 | 冒烟图片标签 | 正确，最佳标签为 `a photo of a beach` |
 | 实际文本编译器 | `CompilerType.DRIVER` |
 
-这组 A/B 说明旧失败与设备软件栈有关，不能据此宣称 Jina 模型或静态转换整体不可用。它也再次证明：**能编译、能执行，不等于结果正确。**
+旧驱动失败属于历史记录，旧驱动的原始结果未在此目录公开，读者无法仅凭现有文件独立核对该 A/B。新驱动成功的证据在 `docs/evidence/`；因此驱动切换是值得复查的线索，但仅凭当前公开材料不能确定故障根因。它也再次证明：**能编译、能执行，不等于结果正确。**
 
 ### 4. INT8 没有成为可用的替代路径
 
-NNCF INT8 模型虽已生成，旧驱动下 NPU 最小行余弦只有 **0.06670082**；升级到 5540 后提升到 **0.99768680**，但仍低于本实验 0.999 的验收阈值，CPU 为 **0.99777812**。即使输出不再包含 NaN，也不能视为通过验收。
+NNCF INT8 模型虽已生成，历史记录称旧驱动下 NPU 最小行余弦为 **0.06670082**（原始记录未在此目录提供）；5540 下为 **0.99768680**，但仍低于本实验 0.999 的验收阈值，CPU 为 **0.99777812**。即使输出不再包含 NaN，也不能视为通过验收。
 
 因此，当前公开主线是 **驱动 5540 + FP16 双分支**，不是通过关闭 LoRA、切换 FP32 或 INT8 绕过正确性检查。
 
@@ -80,20 +82,20 @@ NNCF INT8 模型虽已生成，旧驱动下 NPU 最小行余弦只有 **0.066700
 | CPU | 10.84758 s | 10.83500 s | 10.92145 s | 0.27656 sequences/s |
 | NPU | 0.86285 s | 0.86276 s | 0.86343 s | 3.47686 sequences/s |
 
-在这组固定文本负载下，NPU 平均延迟约为 CPU 的 **1/12.57**，平均吞吐约为 **12.57 倍**。全部原始耗时保存在 `docs/evidence/` 的基准 JSON 中，加速比由两个平均值直接相除得到。
+在这组固定文本负载下，NPU 平均延迟约为 CPU 的 **1/12.57**，按倒数换算的吞吐约为 **12.57 倍**。CPU 线程数、亲和性、功耗状态等没有完整记录，不能将差距归因于 NPU 架构，也不能视为经过充分调优的设备性能上限。P95 仅由 10 次计算，统计稳定性有限。全部原始耗时保存在 `docs/evidence/` 的基准 JSON 中，加速比由两个平均值直接相除得到。
 
 该结果只适用于本次模型 revision、FP16 IR、batch-3 输入、OpenVINO 2026.4.1 和驱动 5540，不外推到其他 batch、长序列服务或能效。首次驱动切换后的编译时间也不计入稳态性能。
 
 ### 视觉分支
 
-视觉使用同一张 beach1.jpg 和 `1 × 3 × 512 × 512` 输入，采用相同的预热与重复测量口径：
+历史测试视觉使用同一张海滩照片和 `1 × 3 × 512 × 512` 输入，采用相同的预热与重复测量口径：
 
 | 设备 | 平均延迟 | P50 | P95 | 平均吞吐 |
 | --- | ---: | ---: | ---: | ---: |
 | CPU | 10.25726 s | 10.25549 s | 10.32516 s | 0.09749 images/s |
 | NPU | 0.67428 s | 0.67471 s | 0.67514 s | 1.48306 images/s |
 
-视觉 NPU 平均延迟约为 CPU 的 **1/15.21**，平均吞吐约为 **15.21 倍**。视觉 native 对照同样通过，说明加速没有以牺牲输出正确性为代价。
+视觉 NPU 平均延迟约为 CPU 的 **1/15.21**，平均吞吐约为 **15.21 倍**。视觉 native 对照在这一张图上通过，不能据此保证其他图像或任务质量。
 
 ### DGX Spark CUDA native 补充基线
 
@@ -109,7 +111,7 @@ NNCF INT8 模型虽已生成，旧驱动下 NPU 最小行余弦只有 **0.066700
 
 ## 真实 COCO 图文检索
 
-为了验证“向量接近 native”是否也能转化为检索质量，使用 [phiyodr/coco2017](https://huggingface.co/datasets/phiyodr/coco2017) 的 validation 前 200 对图片与英文 caption。每张图片取第一条 caption，查询文本使用 `retrieval.query`，文档文本不加 LoRA，与模型卡的用法一致。图片不随仓库发布，可用下方脚本重建子集。
+为了验证“向量接近 native”是否也能转化为检索质量，使用 [phiyodr/coco2017](https://huggingface.co/datasets/phiyodr/coco2017) 的 validation 前 200 对图片与英文 caption。每张图片取第一条 caption，查询文本使用 `retrieval.query`，文档文本不加 LoRA。图片不随仓库发布，下面的脚本按当前 Dataset Server 顺序获取前 200 条；原始样本清单及数据集 revision 未保存，无法保证重新下载的是完全相同的子集。
 
 | 检索方向 | 后端 | Recall@1 | Recall@5 | Recall@10 | MRR | nDCG@10 |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
@@ -118,17 +120,17 @@ NNCF INT8 模型虽已生成，旧驱动下 NPU 最小行余弦只有 **0.066700
 | 图片查文本 | CUDA native | 0.825 | 0.990 | 0.995 | 0.89678 | 0.92151 |
 | 图片查文本 | OpenVINO NPU | 0.825 | 0.990 | 0.995 | 0.89702 | 0.92173 |
 
-两个方向均有 **198/200 条排名完全一致**，平均绝对排名差分别只有 0.01 和 0.015。这说明 OpenVINO NPU 与 CUDA native 的检索结果不仅汇总指标接近，逐条排序也稳定一致。
+两个方向均有 **198/200 个查询的配对目标名次一致**，平均绝对名次差分别为 0.01 和 0.015。这只比较每个查询的唯一配对目标，不能证明全部候选的排序一致。单对标注会把其他语义合理的候选当作非匹配。
 
-编码总耗时方面，CUDA native 的查询文本、文档文本和图片分别为 4.94、3.10、34.38 秒，OpenVINO NPU 分别为 58.16、58.11、145.33 秒。**NPU 在这批负载上没有超过 CUDA native**；它的价值是提供可用的 Intel 本地推理路径，并在与 Intel CPU 对比时表现出明显加速，而不是宣称优于所有 GPU。
+编码总耗时方面，CUDA native 的查询文本、文档文本和图片分别为 4.94、3.10、34.38 秒，OpenVINO NPU 分别为 58.16、58.11、145.33 秒。**这次记录中 NPU 的编码总耗时高于 CUDA native**；本次 CUDA 文本和图像均使用 batch 8，NPU 文本使用固定 batch 3、图像逐张处理，且设备、后端和精度不同；这些总耗时不能视为公平的硬件性能对比。
 
-该结果只覆盖 200/5000 条验证样本和英文 caption，不代表完整 COCO 或其他语言、其他数据域的表现。
+该结果只覆盖 200/5000 条验证样本和英文 caption，不代表完整 COCO 或其他语言、其他数据域的表现。COCO 图片许可按图片区分，脚本保留来源 URL 和许可编号，发布任何图片前应逐张核验，不要把整个图片集视为单一 CC BY 4.0。
 
 ## 复现
 
 ### 1. 环境与依赖
 
-需要 Windows 11、Intel NPU 和 **32.0.100.5540 或兼容的新驱动**。旧驱动可用于复现历史失败，但不能与当前结果混合报告。Intel 官方驱动入口：[Intel NPU Driver - Windows](https://www.intel.com/content/www/us/en/download/794734/intel-npu-driver-windows.html)。
+复现本次设备结果需要 Windows 11、Intel NPU 和本次使用的 **32.0.100.5540 驱动**；其他版本需要重新验证。旧驱动可用于复现历史失败，但不能与当前结果混合报告。Intel 官方驱动入口：[Intel NPU Driver - Windows](https://www.intel.com/content/www/us/en/download/794734/intel-npu-driver-windows.html)。
 
 ```powershell
 cd experiments/jina-clip-openvino
@@ -136,12 +138,12 @@ python -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements-openvino.txt
 ```
 
-模型权重与自定义实现按脚本中的固定 revision 下载，不随仓库分发。首次运行需要网络；后续可用 `--offline`。
+模型权重与自定义实现按脚本中的固定 revision 下载，不随仓库分发。首次运行需要网络；后续可用 `--offline`。模型卡标注 [CC BY-NC 4.0](https://huggingface.co/jinaai/jina-clip-v2)，商用前需另行确认授权。转换使用 `trust_remote_code=True`，应先审阅固定版本的远程代码。
 
 ### 2. CPU 转换与双分支验证
 
 ```powershell
-.venv\Scripts\python.exe scripts\run_openvino_smoke.py --device CPU --single-task --expected-label "a photo of a beach" --image images\beach1.jpg --work-dir artifacts --cache-dir models\huggingface
+.venv\Scripts\python.exe scripts\run_openvino_smoke.py --device CPU --single-task --image path\to\your-image.jpg --work-dir artifacts --cache-dir models\huggingface
 ```
 
 该命令生成静态 IR、native 参照和预处理器，并完成 CPU 对照。
@@ -151,10 +153,10 @@ python -m venv .venv
 模型和自定义实现已缓存后，使用同一组静态输入：
 
 ```powershell
-.venv\Scripts\python.exe scripts\run_openvino_smoke.py --device NPU --single-task --offline --expected-label "a photo of a beach" --image images\beach1.jpg --work-dir artifacts --cache-dir models\huggingface
+.venv\Scripts\python.exe scripts\run_openvino_smoke.py --device NPU --single-task --offline --image path\to\your-image.jpg --work-dir artifacts --cache-dir models\huggingface
 ```
 
-需要重建 IR 时增加 `--force-convert`。更换图片或文本时，应使用新的 `--work-dir`，避免复用旧 native 参照。
+将 `path\to\your-image.jpg` 替换为你有权使用的图片路径。示例不再检查特定标签；图像与历史样本不同，因此结果不能视为原始视觉结果的复现。需要重建 IR 时增加 `--force-convert`。更换图片或文本时，应使用新的 `--work-dir`，避免复用旧 native 参照。
 
 ### 4. 复用现有 IR 做文本对照
 
@@ -175,8 +177,8 @@ python -m venv .venv
 ### 6. 重复视觉基准
 
 ```powershell
-.venv\Scripts\python.exe scripts\benchmark_vision_ir.py --device CPU --ir artifacts\fp16\jina-clip-vision_v2_fp16.xml --reference artifacts\fp16\native_reference.npz --preprocessor artifacts\fp16\preprocessor --image images\beach1.jpg --output artifacts\benchmark-vision-CPU.json --warmup 2 --iterations 10
-.venv\Scripts\python.exe scripts\benchmark_vision_ir.py --device NPU --ir artifacts\fp16\jina-clip-vision_v2_fp16.xml --reference artifacts\fp16\native_reference.npz --preprocessor artifacts\fp16\preprocessor --image images\beach1.jpg --output artifacts\benchmark-vision-NPU.json --warmup 2 --iterations 10
+.venv\Scripts\python.exe scripts\benchmark_vision_ir.py --device CPU --ir artifacts\fp16\jina-clip-vision_v2_fp16.xml --reference artifacts\fp16\native_reference.npz --preprocessor artifacts\fp16\preprocessor --image path\to\your-image.jpg --output artifacts\benchmark-vision-CPU.json --warmup 2 --iterations 10
+.venv\Scripts\python.exe scripts\benchmark_vision_ir.py --device NPU --ir artifacts\fp16\jina-clip-vision_v2_fp16.xml --reference artifacts\fp16\native_reference.npz --preprocessor artifacts\fp16\preprocessor --image path\to\your-image.jpg --output artifacts\benchmark-vision-NPU.json --warmup 2 --iterations 10
 ```
 
 ### 7. 真实图文检索
@@ -187,11 +189,7 @@ python -m venv .venv
 python scripts/prepare_coco_api_subset.py --output-dir data/coco2017-val200 --limit 200
 ```
 
-OpenVINO 检索前，先生成并验证文档侧无 LoRA 的 IR：
-
-```powershell
-.venv\Scripts\python.exe scripts\validate_text_without_lora.py --device CPU --work-dir artifacts --cache-dir models\huggingface
-```
+OpenVINO 检索需要文档侧无 LoRA 的 IR。目前仓库缺少该 IR 的生成脚本，无法从头完整复现；需先提供已生成且单独验证的文档侧 IR，再运行下方命令。
 
 随后分别运行 OpenVINO NPU 与 CUDA native：
 
@@ -213,8 +211,8 @@ python scripts/evaluate_retrieval.py --backend native --device cuda --subset dat
 
 ## 证据与边界
 
-- `docs/evidence/`：当前驱动环境下的五条核心结果，公开时仅移除主机名并把路径改为仓库相对路径，数值未改。
+- `docs/evidence/`：当前驱动环境下的结果，公开时仅移除主机名并把路径改为仓库相对路径，数值未改；旧驱动原始结果未包含。
 - `scripts/`：转换、正确性、LoRA、动态节点和重复基准主入口。
-- `images/beach1.jpg`：冒烟样例，图片 SHA256 同时记录在结果中。
+- 历史视觉测试图片的 SHA-256 记录在结果中；该照片的再分发许可尚未确认，当前工作区不提供该素材。
 
 本实验不证明所有模型都能在 Intel NPU 上运行，也不提供 INT8 部署结论。其他模型、batch 和视觉性能需要分别做正确性与重复基准。生产使用前应重新核对设备、驱动和 OpenVINO 版本。
