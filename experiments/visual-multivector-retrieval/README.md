@@ -51,7 +51,7 @@ ColSmol 的发布权重是 adapter，需要先加载指定底模，再加载 ada
 
 模型及底模仓库元数据标记 MIT，底模卡正文说明骨干为 Apache-2.0、adapter 为 MIT；模型卡许可正文另有 ColQwen2 文案，重新分发权重前应核对具体文件及上游许可。ViDoRe 数据集卡标记 MIT，仍应遵守原始 DocVQA 及源文档的适用条件。本目录不再分发数据集页面、问题文本或模型权重。
 
-我们还在自生成页面上完成了一个小规模监督微调，见下节。教师分数蒸馏尚未开展。
+我们还在自生成页面上完成了小规模监督微调和教师分数蒸馏，见下文。
 
 ## 合成报表上的 LoRA 微调
 
@@ -80,3 +80,33 @@ python recompute_training.py
 ```
 
 训练脚本依赖前节相同软件和 GPU；运行时保留 50 GiB 可用内存监控。公开的 [synthetic-train-results.json](synthetic-train-results.json) 包含逐查询名次与损失，不含模型权重。复算脚本检查两个指标并统计变化，但无法仅凭名次核实原始模型输出。本机以公开生成脚本重建数据时，`records.json` 的 SHA-256 与原运行一致。合成文本和页面由脚本直接生成，不含外部数据集内容。
+
+## 用多模态重排序教师蒸馏
+
+单向量图文教师 Jina v5 在这组 96 个测试查询上 R@1 为 56/96，明显低于 ColSmol 原模型的 87/96。参数更多不等于适合当前数据。我们改用 Apache-2.0 的 [Qwen3-VL-Reranker-2B](https://huggingface.co/Qwen/Qwen3-VL-Reranker-2B) 作为教师：它逐对判断问题与页面的相关性，学生仍是多向量模型。教师在测试集前 12 条查询上有 12/12 将已知正例排第一，学生是 11/12；这是选教师的初步探测，不是完整测试集教师成绩。由于先前在全部 96 条测试查询上比较 Jina 并据此选择教师，整个测试集已参与教师选择；这 12 条还用于 Qwen 可行性判断。下列结果仅供探索，不能视为独立测试集验证。
+
+对照复用上面的 96 张训练页、32 张验证页和 32 张测试页。每步取两个不同训练页及各自一个查询，固定同一随机种子与批次，共 8 步；教师只为这些训练批次的 32 个问题–页面组合打分。教师先对每一对输出 sigmoid 分数，再对两候选做温度为 0.1 的 softmax；学生的长度归一化 MaxSim 分数以温度 0.02 做 softmax：
+
+$$p^T_{ij}=\operatorname{softmax}_j(t_{ij}/0.1),\qquad p^S_{ij}=\operatorname{softmax}_j(\bar{s}_{ij}/0.02),$$
+$$\mathcal L=0.5\mathcal L_{\mathrm{supervised}}+0.5D_{\mathrm{KL}}(p^T\Vert p^S).$$
+
+教师分数 $t$ 是 0 到 1 的 sigmoid 输出，不是未归一化 logits；这里温度与损失权重是此次固定设置。学生每步除监督信号外还学习教师对同批候选的相对偏好。教师只参与训练，学生推理时无需加载教师。
+
+| 条件 | Recall@1 | Recall@5 |
+|---|---:|---:|
+| 原始 ColSmol | 87/96 | 96/96 |
+| 同预算监督训练 | 88/96 | 96/96 |
+| 监督 + 教师分数蒸馏 | 88/96 | 96/96 |
+
+相对监督组，蒸馏组有 2 条问题进入第 1 名，2 条退出第 1 名，净变化为零。两次原模型逐查询排名完全一致。本次没有显示蒸馏收益；只有 8 步、单种子、每批仅两个候选，合成模板及全部测试查询用于教师选择均限制结论。教师是逐对重排序模型，学生是多向量检索模型，不能由此比较端到端速度。
+
+[qwen-train-scores.json](qwen-train-scores.json) 保存合成训练批次和教师分数；[synthetic-train-results.json](synthetic-train-results.json) 与 [synthetic-distill-results.json](synthetic-distill-results.json) 保存三组匿名逐查询名次。`python recompute_distillation.py` 复算指标、变化数量并检查教师分数对应的全部批次来自训练集。这只能检查记录的一致性，不能单靠排名还原模型推理。
+
+```bash
+# Qwen 2B 先从官方模型仓库下载到 qwen-model；权重不在本仓库。
+PYTHONPATH=../multimodal-reranking/scripts HF_HUB_OFFLINE=1 python qwen_train_scores.py --root synthetic --model qwen-model --out /tmp/qwen-train-scores.json
+HF_HUB_OFFLINE=1 python distill_synthetic.py --root synthetic --base base --adapter model --teacher /tmp/qwen-train-scores.json --out distill-formal --steps 8
+python recompute_distillation.py
+```
+
+教师打分依赖仓库内 `multimodal-reranking/scripts/qwen3_vl_reranker.py` 及其 Qwen 图像处理依赖，教师与学生所需 Transformers 版本不同，实际运行使用独立环境。教师使用 BF16、最大图片像素 65536；学生蒸馏峰值 PyTorch 分配约 7.68 GiB。教师权重和蒸馏后权重不随仓库分发。Jina 教师为 CC BY-NC 4.0，本次只保留非商业研究结果，未用其分数训练上述蒸馏组。
