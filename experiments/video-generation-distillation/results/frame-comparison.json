@@ -1,0 +1,74 @@
+[
+  {
+    "id": "eval-00",
+    "baseline480": {
+      "file_sha256": "41a30012ee9da97c49734fe7d7d8a0cac595fdcd03edef01f63ea5fc14e31249",
+      "unique_frame_hashes": 49,
+      "consecutive_mae_min": 2.878952546296296,
+      "consecutive_mae_max": 11.441610243055555
+    },
+    "lora480": {
+      "file_sha256": "e6472c3015210563f5c3bc18a799cd4d78560e33611ab7d432fae45a3fb36582",
+      "unique_frame_hashes": 49,
+      "consecutive_mae_min": 1.34921875,
+      "consecutive_mae_max": 14.273272569444444
+    },
+    "paired_frame_mae_min": 10.584664351851853,
+    "paired_frame_mae_max": 15.138385416666667,
+    "paired_frame_mae_mean": 12.71727347883598
+  },
+  {
+    "id": "eval-01",
+    "baseline480": {
+      "file_sha256": "b0a7e70e710f4b80173b7c50886e295a0901a3a9088c278c8226625df95a86ef",
+      "unique_frame_hashes": 49,
+      "consecutive_mae_min": 1.113304398148148,
+      "consecutive_mae_max": 2.379905960648148
+    },
+    "lora480": {
+      "file_sha256": "ed1668cdd055d668ed4bdca9d53a2d2e709bd4cd0eb25b5045bb5d84af2dbfc4",
+      "unique_frame_hashes": 49,
+      "consecutive_mae_min": 0.44203269675925927,
+      "consecutive_mae_max": 1.0495789930555555
+    },
+    "paired_frame_mae_min": 1.335060763888889,
+    "paired_frame_mae_max": 3.7660590277777777,
+    "paired_frame_mae_mean": 2.350177419926304
+  },
+  {
+    "id": "eval-02",
+    "baseline480": {
+      "file_sha256": "0356f4e44d39dc63e14f34e38f55455cac41791200942a3b6afe56438e006f5e",
+      "unique_frame_hashes": 49,
+      "consecutive_mae_min": 2.3880049189814816,
+      "consecutive_mae_max": 5.061355613425926
+    },
+    "lora480": {
+      "file_sha256": "d9a3b9c398b23c0ca70323a10d63b85c3b184d3b97f40026330f2736f3ab982d",
+      "unique_frame_hashes": 49,
+      "consecutive_mae_min": 1.7427705439814816,
+      "consecutive_mae_max": 5.298169849537037
+    },
+    "paired_frame_mae_min": 8.492317708333333,
+    "paired_frame_mae_max": 9.870797164351853,
+    "paired_frame_mae_mean": 8.918716074971655
+  },
+  {
+    "id": "eval-03",
+    "baseline480": {
+      "file_sha256": "37dd5f82a757283d53f7f4863b0c46e61150d8a7b2c937d9d9b71a3090b6c587",
+      "unique_frame_hashes": 49,
+      "consecutive_mae_min": 1.4958535879629629,
+      "consecutive_mae_max": 6.628369502314815
+    },
+    "lora480": {
+      "file_sha256": "0fc9e4240db677b74b851f3acfc4be12e41c6d1eeeb9618486451312da6699e0",
+      "unique_frame_hashes": 49,
+      "consecutive_mae_min": 0.6398191550925926,
+      "consecutive_mae_max": 5.504359085648148
+    },
+    "paired_frame_mae_min": 10.802916666666667,
+    "paired_frame_mae_max": 11.977964409722222,
+    "paired_frame_mae_mean": 11.43234838553477
+  }
+]
