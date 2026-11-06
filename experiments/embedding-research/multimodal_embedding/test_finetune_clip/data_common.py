@@ -14,12 +14,13 @@
 from __future__ import annotations
 
 import os
+import random
 from dataclasses import dataclass
 from typing import List, Dict, Any, Optional, Tuple, TypedDict
 import matplotlib.pyplot as plt
 
 import torch
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, Sampler
 from transformers import CLIPModel, CLIPProcessor
 from datasets import load_from_disk, load_dataset, Dataset as HFDataset, DatasetDict
 
@@ -40,6 +41,41 @@ class CaptionPairDataset(Dataset):
 
     def __getitem__(self, idx: int) -> PairRecord:
         return self.pairs[idx]
+
+
+class UniqueImageBatchSampler(Sampler[List[int]]):
+    """Sample one caption per image each epoch, so a batch has no repeated image."""
+
+    def __init__(self, pairs: List[PairRecord], batch_size: int, seed: int = 42):
+        if batch_size < 2:
+            raise ValueError("对比训练批次至少需要两张不同图片")
+        self.groups: Dict[int, List[int]] = {}
+        for index, pair in enumerate(pairs):
+            image_id = pair.get("image_id")
+            if image_id is None:
+                raise ValueError("训练样本缺少 image_id")
+            self.groups.setdefault(image_id, []).append(index)
+        if len(self.groups) < 2:
+            raise ValueError("对比训练至少需要两张不同图片")
+        self.batch_size = batch_size
+        self.seed = seed
+        self.epoch = 0
+
+    def __iter__(self):
+        rng = random.Random(self.seed + self.epoch)
+        self.epoch += 1
+        groups = list(self.groups.values())
+        rng.shuffle(groups)
+        indices = [rng.choice(group) for group in groups]
+        for start in range(0, len(indices), self.batch_size):
+            batch = indices[start : start + self.batch_size]
+            if len(batch) >= 2:
+                yield batch
+
+    def __len__(self):
+        count = len(self.groups)
+        full, remainder = divmod(count, self.batch_size)
+        return full + int(remainder >= 2)
 
 
 @dataclass
@@ -160,7 +196,7 @@ def _evaluate_internal(
         hit = 0
         for img_index, pos_txt_indices in image_to_text_indices.items():
             scores = sim[img_index]
-            topk = scores.topk(k).indices.tolist()
+            topk = scores.topk(min(k, scores.numel())).indices.tolist()
             if any(t in topk for t in pos_txt_indices):
                 hit += 1
         recall_i2t[k] = hit / len(image_to_text_indices)
@@ -171,7 +207,7 @@ def _evaluate_internal(
         hit = 0
         for txt_idx, img_index in enumerate(text_to_image_index):
             scores = sim_t[txt_idx]
-            topk = scores.topk(k).indices.tolist()
+            topk = scores.topk(min(k, scores.numel())).indices.tolist()
             if img_index in topk:
                 hit += 1
         recall_t2i[k] = hit / len(text_to_image_index)
@@ -302,11 +338,31 @@ class Flickr30kDataBuilder(BaseCaptionDataBuilder):
         return load_dataset("WhereIsAI/flickr30k-v2")
 
     def _split(self, raw) -> Tuple[HFDataset, HFDataset, HFDataset]:
-        if "validation" not in raw or "test" not in raw:
-            tt = raw["train"].train_test_split(test_size=0.2, seed=self.seed)
-            tv = tt["test"].train_test_split(test_size=0.5, seed=self.seed)
-            return tt["train"], tv["train"], tv["test"]
-        return raw["train"], raw["validation"], raw["test"]
+        # This dataset stores all images in one outer split; the row field is
+        # the dataset's original partition and must not be randomly reshuffled.
+        if set(raw.keys()) != {"train"}:
+            raise ValueError("预期 Flickr30k 数据集只有一个外层 train 分区")
+        dataset = raw["train"]
+        if not {"split", "img_id"}.issubset(dataset.column_names):
+            raise ValueError("数据集缺少 split 或 img_id 字段")
+        partitions: Dict[str, List[int]] = {"train": [], "val": [], "test": []}
+        owners: Dict[str, str] = {}
+        for index, (split, image_id) in enumerate(zip(dataset["split"], dataset["img_id"])):
+            if split not in partitions:
+                raise ValueError(f"未知数据划分: {split!r}")
+            if image_id is None or str(image_id).strip() == "":
+                raise ValueError(f"第 {index} 条记录缺少 img_id")
+            try:
+                key = str(int(image_id))
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"无效的 img_id: {image_id!r}") from exc
+            if key in owners and owners[key] != split:
+                raise ValueError(f"同一图片 ID 跨数据划分: {key}")
+            owners[key] = split
+            partitions[split].append(index)
+        if any(not indices for indices in partitions.values()):
+            raise ValueError("train、val、test 三个划分都必须非空")
+        return tuple(dataset.select(partitions[name]) for name in ("train", "val", "test"))
 
     def _expand(self, ds: HFDataset) -> List[PairRecord]:
         out: List[PairRecord] = []
@@ -315,7 +371,9 @@ class Flickr30kDataBuilder(BaseCaptionDataBuilder):
             if not caps:
                 continue
             image = rec.get("image")
-            img_id = int(rec.get("img_id", rec.get("image_id", 0)))
+            if rec.get("img_id") is None:
+                raise ValueError("Flickr30k 记录缺少 img_id")
+            img_id = int(rec["img_id"])
             for c in caps:
                 if not c:
                     continue

@@ -20,6 +20,7 @@ from tqdm import tqdm
 from data_common import (
 	PairRecord,
 	CaptionPairDataset,
+	UniqueImageBatchSampler,
 	EvalResult,
 	evaluate_fast_limited,
 	Flickr30kDataBuilder,
@@ -133,7 +134,10 @@ def build_dataloader(ds: CaptionPairDataset, processor: CLIPProcessor, batch_siz
 		enc = processor(images=images, text=texts, return_tensors="pt", padding=True, truncation=True)
 		return enc
 
-	return DataLoader(ds, batch_size=batch_size, shuffle=shuffle, collate_fn=collate, num_workers=4, pin_memory=True)
+	if shuffle:
+		batch_sampler = UniqueImageBatchSampler(ds.pairs, batch_size=batch_size, seed=CONFIG["seed"])
+		return DataLoader(ds, batch_sampler=batch_sampler, collate_fn=collate, num_workers=4, pin_memory=True)
+	return DataLoader(ds, batch_size=batch_size, shuffle=False, collate_fn=collate, num_workers=4, pin_memory=True)
 
 
 def freeze_for_light_tuning(model: CLIPModel, vision_last_n: int, text_last_n: int) -> None:
@@ -180,6 +184,8 @@ def freeze_for_light_tuning(model: CLIPModel, vision_last_n: int, text_last_n: i
 
 def train() -> None:
 	cfg = CONFIG
+	if cfg["grad_accum_steps"] != 1:
+		raise ValueError("当前训练循环仅验证 grad_accum_steps=1，请勿启用梯度累积")
 	set_seed(cfg["seed"])
 	device = DEVICE
 	print(f"使用设备: {device}")
@@ -256,7 +262,7 @@ def train() -> None:
 		improved = metric_value > best_metric
 		if improved:
 			best_metric = metric_value
-			best_state = {k: v.cpu() for k, v in model.state_dict().items()}
+			best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
 			path = os.path.join(cfg["output_dir"], "best.pt")
 			torch.save(best_state, path)
 			print(f"更新最佳模型 ({tag}), 指标={best_metric:.4f} 已保存 best.pt")
@@ -324,6 +330,7 @@ def train() -> None:
 				and not cfg["fast_dev_run"]
 			):
 				metric_now = do_validation(tag=f"step_{global_step}", force_limit=False)
+				model.train()
 				improved = maybe_save_checkpoint(metric_now, tag=f"step_{global_step}")
 				if not improved and cfg["early_stopping_patience"] > 0:
 					no_improve_count += 1
