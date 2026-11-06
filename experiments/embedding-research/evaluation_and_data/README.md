@@ -1,13 +1,9 @@
 # 评测基准与训练数据
 
-嵌入模型的「怎么评」与「怎么备料」：主流评测基准是什么、怎么跑，微调前的训练数据从哪来、怎么处理。内容是中英双语的资料整理与 notebook，不是实测结论。
+了解 MTEB、BEIR 等基准，以及微调前的数据准备。这里保留的基准说明整理自 [FlagEmbedding Tutorials](https://github.com/FlagOpen/FlagEmbedding/tree/master/Tutorials)，不是本项目的实测结论；原始可执行 notebook 请直接阅读上游教程。
 
-| 子目录 | 内容 |
-|---|---|
-| `test_embedding/test_evaluation/` | 评测基准教程（中英）：MSMARCO、MTEB（总览 / 榜单 / C-MTEB）、Sentence Transformers 评估、BEIR、MIRACL、MLDR |
-| `test_embedding/test_embedding_finetune/` | 嵌入模型微调 notebook 与说明 |
-| `test_embedding/test_embedding_fine_tuing_data_prepare/` | 微调训练数据准备 |
+- [基准说明](test_embedding/test_evaluation/zh/markdown/4.2.1_MTEB_Intro.md)：MTEB 入门及其余基准文档。
+- [数据准备脚本](test_embedding/test_embedding_fine_tuing_data_prepare/simcse.py)：本仓保留的准备脚本。
+- [本项目微调实验](../model_finetuning/)：训练流程、数据和实验结果。
 
-注意：vendored 文档里的部分相对链接（如 `../../examples/...`）指向未随附的上游仓库结构，原文已标注「上游路径」，属预期内的悬空引用，不是断链。
-
-想看某个模型在具体场景下准不准，需参考文本分割实验的选型边界（相似度专项的结论在那里，该实验已移入私有实验区）；想看怎么动手训，看 [../model_finetuning/](../model_finetuning/)。
+上游项目采用 MIT 许可，版权与许可文本见 [FLAGEMBEDDING-LICENSE.txt](FLAGEMBEDDING-LICENSE.txt)。保留的上游资料中部分相对路径指向上游仓库，需要结合原项目使用。
