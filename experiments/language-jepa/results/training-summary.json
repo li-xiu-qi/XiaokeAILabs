@@ -1,0 +1,14 @@
+{
+  "description": "Single-run DGX Spark toy-task smoke; timings from Trainer logs, not model quality benchmarks.",
+  "samples_train": 160,
+  "samples_test": 40,
+  "seed": 42,
+  "steps_per_trained_model": 20,
+  "baseline_train_runtime_seconds": 21.42,
+  "jepa_train_runtime_seconds": 39.46,
+  "baseline_correct": 39,
+  "jepa_correct": 40,
+  "untrained_correct": 40,
+  "minimum_sampled_memavailable_gib": 85.46,
+  "loss_scaling_cpu_probe": {"jepa_weight": 0, "accumulation_steps": 4, "baseline_loss": 0.8694286942481995, "jepa_loss": 0.8694286942481995, "compared_parameters": 15, "maximum_gradient_difference": 0.0}
+}

@@ -16,6 +16,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Video generation trained on teacher samples](experiments/video-generation-distillation/README.md): Four held-out video pairs; six post-selected training examples do not establish quality gains.
 - [Image generation with synthetic training data](experiments/image-generation-distillation/README.md): Train a student LoRA on teacher-generated data; results rely on one AI reviewer.
 - [Vector database benchmark](experiments/vector-db-benchmark/README.md): Historical records lack raw results and do not support product rankings.
+- [Language JEPA training](experiments/language-jepa/README.md): A toy arithmetic comparison of the original model, LoRA, and JEPA; not evidence of improvement.
 - [Diffusion language model speed](experiments/diffusion-language-models/README.md): Compare generation paths on three prompts with unequal output lengths and unmeasured quality.
 - [GB10 inference slots](experiments/gb10-inference/qwen36-35b-ab/README.md): Compare throughput and completion times for one versus eight slots on the same model and engine.
 - [LLM inference performance](experiments/llm-inference-perf/README.md): Performance analysis across models and inference configurations.

@@ -1,0 +1,247 @@
+{
+  "count": 40,
+  "strict_exact_match": 1.0,
+  "decoding": "greedy, max_new_tokens=12",
+  "records": [
+    {
+      "input": "What is 4 + 6?",
+      "expected": "10",
+      "generated": "10",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 9 + 1?",
+      "expected": "10",
+      "generated": "10",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 1 + 19?",
+      "expected": "20",
+      "generated": "20",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 8 + 8?",
+      "expected": "16",
+      "generated": "16",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 4 + 7?",
+      "expected": "11",
+      "generated": "11",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 9 + 5?",
+      "expected": "14",
+      "generated": "14",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 2 + 0?",
+      "expected": "2",
+      "generated": "2",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 0 + 1?",
+      "expected": "1",
+      "generated": "1",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 3 + 11?",
+      "expected": "14",
+      "generated": "14",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 7 + 10?",
+      "expected": "17",
+      "generated": "17",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 5 + 14?",
+      "expected": "19",
+      "generated": "19",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 2 + 16?",
+      "expected": "18",
+      "generated": "18",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 5 + 7?",
+      "expected": "12",
+      "generated": "12",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 9 + 11?",
+      "expected": "20",
+      "generated": "20",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 8 + 6?",
+      "expected": "14",
+      "generated": "14",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 2 + 10?",
+      "expected": "12",
+      "generated": "12",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 7 + 3?",
+      "expected": "10",
+      "generated": "10",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 9 + 17?",
+      "expected": "26",
+      "generated": "26",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 7 + 14?",
+      "expected": "21",
+      "generated": "21",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 6 + 9?",
+      "expected": "15",
+      "generated": "15",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 2 + 19?",
+      "expected": "21",
+      "generated": "21",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 2 + 15?",
+      "expected": "17",
+      "generated": "17",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 1 + 3?",
+      "expected": "4",
+      "generated": "4",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 0 + 7?",
+      "expected": "7",
+      "generated": "7",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 0 + 8?",
+      "expected": "8",
+      "generated": "8",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 5 + 8?",
+      "expected": "13",
+      "generated": "13",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 7 + 11?",
+      "expected": "18",
+      "generated": "18",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 1 + 2?",
+      "expected": "3",
+      "generated": "3",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 6 + 19?",
+      "expected": "25",
+      "generated": "25",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 8 + 13?",
+      "expected": "21",
+      "generated": "21",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 1 + 6?",
+      "expected": "7",
+      "generated": "7",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 9 + 8?",
+      "expected": "17",
+      "generated": "17",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 1 + 15?",
+      "expected": "16",
+      "generated": "16",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 2 + 17?",
+      "expected": "19",
+      "generated": "19",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 3 + 2?",
+      "expected": "5",
+      "generated": "5",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 3 + 10?",
+      "expected": "13",
+      "generated": "13",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 9 + 9?",
+      "expected": "18",
+      "generated": "18",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 0 + 6?",
+      "expected": "6",
+      "generated": "6",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 1 + 8?",
+      "expected": "9",
+      "generated": "9",
+      "strict_exact_match": true
+    },
+    {
+      "input": "What is 8 + 3?",
+      "expected": "11",
+      "generated": "11",
+      "strict_exact_match": true
+    }
+  ]
+}

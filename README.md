@@ -16,6 +16,7 @@
 - [教师视频训练水波纹生成模型](experiments/video-generation-distillation/README.md)：对照四组留出视频；事后筛选的六条训练样本不足以证明质量提升。
 - [合成数据训练文生图模型](experiments/image-generation-distillation/README.md)：用教师合成数据训练学生 LoRA；结果基于单名 AI 评审。
 - [向量数据库基准](experiments/vector-db-benchmark/README.md)：历史数据缺少原始结果，不用于产品排名。
+- [语言模型 JEPA 训练通路](experiments/language-jepa/README.md)：在小规模加法题上对照原模型、LoRA 和 JEPA，结果不证明能力提升。
 - [扩散语言模型速度对照](experiments/diffusion-language-models/README.md)：在三道问题上比较两种生成路径；输出长度与质量不同。
 - [GB10 单槽与八槽推理](experiments/gb10-inference/qwen36-35b-ab/README.md)：同一模型和引擎下比较短请求的吞吐与完成时间。
 - [LLM 推理性能](experiments/llm-inference-perf/README.md)：模型与推理配置的性能分析。
