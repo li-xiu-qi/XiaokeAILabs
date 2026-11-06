@@ -22,6 +22,8 @@ From model training and retrieval to multimodal systems and inference deployment
 - [LLM inference performance](experiments/llm-inference-perf/README.md): Performance analysis across models and inference configurations.
 - [Language model quantization](experiments/llm-mechanics/quantization/README.md): Compare model size, perplexity, and CPU speed; the BF16 path performed unusually slowly.
 - [LLM mechanics](experiments/llm-mechanics/README.md): Understand text generation through examples.
+- [Tokenizer mechanics](experiments/tokenizer-mechanics/README.en.md): Explore byte-level BPE, real encodings, and token costs.
+- [KV cache mechanics](experiments/llm-mechanics/kv_cache/README.en.md): Compare cached and full-prefix numerical results.
 - [Inference cost models](experiments/inference-cost-models/README.md): Memory examples and theoretical models; performance estimates have not been independently validated.
 - [Data structure costs](experiments/data-structure-costs/README.md): Analyze the costs of data structures and formats.
 - [Portrait matting](experiments/portrait-matting/README.md): Evaluate subject regions, boundaries, and forward time on 30 still images; results do not establish video performance.

@@ -22,6 +22,8 @@
 - [LLM 推理性能](experiments/llm-inference-perf/README.md)：模型与推理配置的性能分析。
 - [语言模型量化](experiments/llm-mechanics/quantization/README.md)：对照权重体积、困惑度与 CPU 速度；BF16 路径性能异常。
 - [LLM 机制](experiments/llm-mechanics/README.md)：通过示例理解生成机制。
+- [Tokenizer 原理](experiments/tokenizer-mechanics/README.md)：从字节级 BPE 到真实编码与 token 计费。
+- [KV Cache 原理](experiments/llm-mechanics/kv_cache/README.md)：对照缓存与全前缀计算的数值结果。
 - [推理成本模型](experiments/inference-cost-models/README.md)：内存算例与理论模型，性能估算尚未经独立验证。
 - [数据结构成本](experiments/data-structure-costs/README.md)：分析数据结构和数据格式的成本。
 - [人像抠像](experiments/portrait-matting/README.md)：评估 30 张单帧照片的主体、边界与推理时间；不能代表视频性能。
