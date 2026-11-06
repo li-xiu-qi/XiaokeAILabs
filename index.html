@@ -87,7 +87,18 @@ h2{font-size:clamp(28px,3vw,40px);letter-spacing:-.04em}.sub{font-size:16px;marg
 .group{box-shadow:none;border-radius:10px;padding:10px 24px}.group>h3{padding:18px 0 12px}.exp{padding:16px 0;display:grid;grid-template-columns:1fr 2fr;gap:20px}.exp .desc{font-size:14px}.exp .name:after{content:' ↗';font-weight:400}
 a:focus-visible{outline:3px solid #9b77d4;outline-offset:4px}
 @media(max-width:760px){.wrap{padding:0 22px}.nav{height:66px}.hero{grid-template-columns:1fr;gap:28px;min-height:0;padding:66px 0}.hero h1{font-size:clamp(40px,10vw,60px)}.hero p{font-size:16px}.hero-art{justify-self:stretch}.exp{grid-template-columns:1fr;gap:3px}.cards{grid-template-columns:1fr}section{margin-bottom:56px}.nav-links{display:none}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.group{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:0;background:transparent;border:0;overflow:visible;margin-bottom:34px}
+.group>h3{grid-column:1/-1;border:0;font-size:14px;letter-spacing:.08em;color:var(--muted);padding:10px 0}
+.exp{display:flex;flex-direction:column;gap:0;padding:0;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.exp:last-child{border-bottom:1px solid var(--line)}.exp:hover,.exp:focus-within{transform:translateY(-4px);border-color:#d5cbdf;box-shadow:0 14px 34px rgba(35,26,45,.09)}
+.exp img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;background:#f3f1f5;border-bottom:1px solid var(--line)}
+.exp .name{display:block;color:var(--ink);font-size:17px;padding:21px 22px 0}.exp .desc{padding:10px 22px 24px;font-size:14px;line-height:1.7;color:#62635f}
+.exp .name:after{float:right;color:#a59ead}.exp .name:hover{text-decoration:none}
+.eyebrow{color:#70449d}.nav-links a,.sub,.hero p{color:#5b5e5c}
+section{scroll-margin-top:90px}.js-motion .reveal{opacity:0;transform:translateY(18px)}.js-motion .reveal.visible{opacity:1;transform:none;transition:opacity .55s ease,transform .55s ease}
+@media(max-width:900px){.group{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.group{grid-template-columns:1fr}.exp .name{font-size:17px}.exp .desc{font-size:15px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.exp,.js-motion .reveal,.js-motion .reveal.visible{transition:none;transform:none;opacity:1}}
 </style>
 </head>
 <body>
@@ -98,21 +109,30 @@ a:focus-visible{outline:3px solid #9b77d4;outline-offset:4px}
 <section id="results"><h2>实测能告诉我们什么</h2><p class="sub">结果始终对应具体数据、设备和方法；实验内容持续整理更新。</p><div class="cards"><div class="card"><h3>微调需要经过检验</h3><p>SciFact 重排序实验中，固定候选集上的 nDCG@10 从 BM25 的 0.6617 变为微调模型的 0.6375；差异的 95% 置信区间跨过零，不能据此声称改善。完整报告整理中。</p><a href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/embedding-research">探索嵌入实验 →</a></div><div class="card"><h3>加速也要检查输出</h3><p>GB10 上四个 OCR 样本的模型生成总耗时加速 2.36 倍，贪婪输出一致。计时不含图像读取和预处理，结果不能代表所有文档。相关补充报告整理中。</p><a href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/minicpm-ocr">探索 OCR 实验 →</a></div></div></section>
 <section id="index"><h2>实验索引</h2><p class="sub">选择感兴趣的方向，进入仓库查看方法、代码、结果与适用边界。</p>
 <div class="group"><h3>训练、微调与检索</h3>
-<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/embedding-research">嵌入与重排序</a><div class="desc">了解如何准备数据、训练模型并评估检索质量。</div></div>
-<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/retrieval-and-rerank">检索与重排实践</a><div class="desc">从稠密、稀疏和晚期交互检索到重排序，理解多阶段检索。</div></div>
-<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/vector-db-benchmark">向量数据库基准</a><div class="desc">在给定数据和硬件下比较六个数据库的召回、延迟与存储。</div></div>
-<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/image-finetune">图像模型 LoRA 微调</a><div class="desc">查看单一人脸身份的小样本训练与对照。</div></div>
+<div class="exp"><img src="assets/experiment-covers/embedding-research.svg" alt="SciFact 300 条查询的 nDCG@10：BM25 为 0.6617，微调重排为 0.6375" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/embedding-research">嵌入与重排序</a><div class="desc">了解如何准备数据、训练模型并评估检索质量。</div></div>
+<div class="exp"><img src="assets/experiment-covers/retrieval-and-rerank.svg" alt="检索流程：输入查询、召回候选、重排并返回" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/retrieval-and-rerank">检索与重排实践</a><div class="desc">从稠密、稀疏和晚期交互检索到重排序，理解多阶段检索。</div></div>
+<div class="exp"><img src="assets/experiment-covers/vector-db-benchmark.svg" alt="向量数据库比较：建立索引、近邻搜索、比较速度与召回" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/vector-db-benchmark">向量数据库基准</a><div class="desc">在给定数据和硬件下比较六个数据库的召回、延迟与存储。</div></div>
+<div class="exp"><img src="assets/experiment-covers/image-finetune.svg" alt="图像微调流程：底模对照、训练适配器、比较生成图片" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/image-finetune">图像模型 LoRA 微调</a><div class="desc">查看单一人脸身份的小样本训练与对照。</div></div>
 </div>
 <div class="group"><h3>推理、部署与成本</h3>
-<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/qwen36-35b-engine-ab">GB10 单机推理</a><div class="desc">了解大模型在 DGX Spark 上的量化部署与引擎对照。</div></div>
-<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/llm-inference-perf">LLM 推理性能</a><div class="desc">对照模型、任务和投机解码配置，理解速度变化。</div></div>
-<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/llm-mechanics">LLM 机制</a><div class="desc">通过分词、量化、采样与 KV Cache 示例理解推理过程。</div></div>
-<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/inference-cost-models">推理成本模型</a><div class="desc">估算推理内存、带宽与吞吐，结合实测理解限制。</div></div>
-<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/data-structure-costs">数据结构成本</a><div class="desc">使用成本模型与验证脚本分析索引和数据格式的取舍。</div></div>
+<div class="exp"><img src="assets/experiment-covers/gb10-inference.svg" alt="DGX Spark 处理 8 个短请求，两轮平均吞吐：单槽 74.85，八槽 113.96 token 每秒" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/qwen36-35b-engine-ab">GB10 单机推理</a><div class="desc">了解大模型在 DGX Spark 上的量化部署与引擎对照。</div></div>
+<div class="exp"><img src="assets/experiment-covers/llm-inference-perf.svg" alt="投机解码流程：提出候选、批量验证、接受或回退" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/llm-inference-perf">LLM 推理性能</a><div class="desc">对照模型、任务和投机解码配置，理解速度变化。</div></div>
+<div class="exp"><img src="assets/experiment-covers/llm-mechanics.svg" alt="文本生成流程：文本分词、预测下个词元、采样并追加" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/llm-mechanics">LLM 机制</a><div class="desc">通过分词、量化、采样与 KV Cache 示例理解推理过程。</div></div>
+<div class="exp"><img src="assets/experiment-covers/inference-cost-models.svg" alt="推理开销由模型权重、KV 缓存和带宽共同影响" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/inference-cost-models">推理成本模型</a><div class="desc">估算推理内存、带宽与吞吐，结合实测理解限制。</div></div>
+<div class="exp"><img src="assets/experiment-covers/data-structure-costs.svg" alt="索引流程：组织数据、缩小搜索范围、核对结果" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/data-structure-costs">数据结构成本</a><div class="desc">使用成本模型与验证脚本分析索引和数据格式的取舍。</div></div>
 </div>
 <div class="group"><h3>文档解析与多模态</h3>
-<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/minicpm-ocr">MiniCPM-OCR</a><div class="desc">了解文档识别在 GB10 上的部署、质量评估与生成加速。</div></div>
-<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/jina-clip-openvino">Jina CLIP OpenVINO</a><div class="desc">比较 Intel CPU 与 NPU 的正确性、驱动和特定负载性能。</div></div>
-<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/jev-open-source">Jev 开源复刻</a><div class="desc">阅读 Laya、Nimble 与 metask-jev 判别式模型实测。</div></div>
+<div class="exp"><img src="assets/experiment-covers/minicpm-ocr.svg" alt="四个 OCR 样本中，普通生成总耗时是投机生成的 2.36 倍，不含预处理" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/minicpm-ocr">MiniCPM-OCR</a><div class="desc">了解文档识别在 GB10 上的部署、质量评估与生成加速。</div></div>
+<div class="exp"><img src="assets/experiment-covers/jina-clip-openvino.svg" alt="跨设备部署流程：导出模型、运行 CPU 和 NPU、校验输出" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/jina-clip-openvino">Jina CLIP OpenVINO</a><div class="desc">比较 Intel CPU 与 NPU 的正确性、驱动和特定负载性能。</div></div>
+<div class="exp"><img src="assets/experiment-covers/jev-open-source.svg" alt="决策模型流程：输入任务、判别模型输出概率与决策" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/jev-open-source">Jev 开源复刻</a><div class="desc">阅读 Laya、Nimble 与 metask-jev 判别式模型实测。</div></div>
 </div>
-</section></main><footer><div class="wrap cols"><div><b style="color:var(--ink)">筱可 AI（XiaokeAILabs）</b><br>公众号「筱可AI」 · lixiuqixiaoke@qq.com</div><div><a href="https://github.com/li-xiu-qi/XiaokeAILabs">GitHub</a> · Apache 2.0</div></div></footer></body></html>
+</section></main><footer><div class="wrap cols"><div><b style="color:var(--ink)">筱可 AI（XiaokeAILabs）</b><br>公众号「筱可AI」 · lixiuqixiaoke@qq.com</div><div><a href="https://github.com/li-xiu-qi/XiaokeAILabs">GitHub</a> · Apache 2.0</div></div></footer><script>
+if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const items = document.querySelectorAll('section, .exp');
+  const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+  }), { threshold: 0.06 });
+  document.documentElement.classList.add('js-motion');
+  items.forEach(item => { item.classList.add('reveal'); observer.observe(item); });
+}
+</script></body></html>

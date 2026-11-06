@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="490" height="250" viewBox="0 0 490 250" role="img" aria-labelledby="title desc">
+<title id="title">四个 OCR 样本 · 生成耗时</title><desc id="desc">普通生成|2.36；投机生成|1.00；相对投机生成耗时 · 不含预处理</desc>
+<rect width="490" height="250" fill="#edf3ef"/><g fill="#203a32" font-family="system-ui, 'Microsoft YaHei', sans-serif">
+<text x="30" y="34" fill="#426459" font-size="13">实验结果</text><text x="30" y="72" font-size="23" font-weight="700">四个 OCR 样本 · 生成耗时</text>
+<text x="32" y="124" font-size="13">普通生成</text><rect x="121" y="107" width="237" height="23" rx="5" fill="#a1b8ae"/><text x="370" y="124" font-size="14">2.36</text><text x="32" y="171" font-size="13">投机生成</text><rect x="121" y="154" width="100" height="23" rx="5" fill="#365b51"/><text x="370" y="171" font-size="14">1.00</text>
+<text x="32" y="221" font-size="13">相对投机生成耗时 · 不含预处理</text>
+</g></svg>

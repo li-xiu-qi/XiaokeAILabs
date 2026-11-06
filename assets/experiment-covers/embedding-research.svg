@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="490" height="250" viewBox="0 0 490 250" role="img" aria-labelledby="title desc">
+<title id="title">检索排序质量 · nDCG@10</title><desc id="desc">BM25|0.6617；微调重排|0.6375；SciFact · 300 条查询 · 固定候选</desc>
+<rect width="490" height="250" fill="#edf3ef"/><g fill="#203a32" font-family="system-ui, 'Microsoft YaHei', sans-serif">
+<text x="30" y="34" fill="#426459" font-size="13">实验结果</text><text x="30" y="72" font-size="23" font-weight="700">检索排序质量 · nDCG@10</text>
+<text x="32" y="124" font-size="13">BM25</text><rect x="121" y="107" width="237" height="23" rx="5" fill="#a1b8ae"/><text x="370" y="124" font-size="14">0.6617</text><text x="32" y="171" font-size="13">微调重排</text><rect x="121" y="154" width="228" height="23" rx="5" fill="#365b51"/><text x="370" y="171" font-size="14">0.6375</text>
+<text x="32" y="221" font-size="13">SciFact · 300 条查询 · 固定候选</text>
+</g></svg>
