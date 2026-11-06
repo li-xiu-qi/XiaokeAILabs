@@ -1,0 +1,213 @@
+{
+  "description": "Independent standard Gaussian vectors, row-normalized; synthetic, not a semantic retrieval dataset.",
+  "n": 20000,
+  "d": 128,
+  "nq": 200,
+  "k": 10,
+  "seed": 20261107,
+  "repeats": 3,
+  "threads": 1,
+  "metric": "squared L2",
+  "faiss": "1.13.2",
+  "numpy": "2.5.4",
+  "python": "3.13.0 (tags/v3.13.0:60403a5, Oct  7 2024, 09:38:07) [MSC v.1941 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",
+  "results": [
+    {
+      "index": "Flat",
+      "parameters": {},
+      "train_add_s": 0.0024936999834608287,
+      "serialized_bytes": 10240045,
+      "recall_at_10": 1.0,
+      "batch_elapsed_s": [
+        0.013252700009616092,
+        0.013753500010352582,
+        0.01514800000586547
+      ],
+      "batch_ms_per_query_median": 0.06876750005176291
+    },
+    {
+      "index": "SQ8",
+      "parameters": {},
+      "train_add_s": 0.007417900022119284,
+      "serialized_bytes": 2561105,
+      "recall_at_10": 0.983,
+      "batch_elapsed_s": [
+        0.08381399998324923,
+        0.08221120000234805,
+        0.08170730000711046
+      ],
+      "batch_ms_per_query_median": 0.41105600001174025
+    },
+    {
+      "index": "PQ",
+      "parameters": {
+        "m": 8,
+        "nbits": 8
+      },
+      "train_add_s": 0.9665601000015158,
+      "serialized_bytes": 291158,
+      "recall_at_10": 0.1005,
+      "batch_elapsed_s": [
+        0.019253999984357506,
+        0.02081630000611767,
+        0.015880299994023517
+      ],
+      "batch_ms_per_query_median": 0.09626999992178753
+    },
+    {
+      "index": "IVF-Flat",
+      "parameters": {
+        "nlist": 64,
+        "nprobe": 4
+      },
+      "train_add_s": 0.07508599999709986,
+      "serialized_bytes": 10433419,
+      "recall_at_10": 0.215,
+      "batch_elapsed_s": [
+        0.013803599984385073,
+        0.013202000001911074,
+        0.013385500002186745
+      ],
+      "batch_ms_per_query_median": 0.06692750001093373
+    },
+    {
+      "index": "IVF-Flat",
+      "parameters": {
+        "nlist": 64,
+        "nprobe": 16
+      },
+      "train_add_s": 0.12231850001262501,
+      "serialized_bytes": 10433419,
+      "recall_at_10": 0.552,
+      "batch_elapsed_s": [
+        0.04089269999531098,
+        0.04769719997420907,
+        0.04933009998057969
+      ],
+      "batch_ms_per_query_median": 0.23848599987104535
+    },
+    {
+      "index": "IVF-Flat",
+      "parameters": {
+        "nlist": 64,
+        "nprobe": 32
+      },
+      "train_add_s": 0.08450450000236742,
+      "serialized_bytes": 10433419,
+      "recall_at_10": 0.804,
+      "batch_elapsed_s": [
+        0.08123410001280718,
+        0.03850830000010319,
+        0.05152100001578219
+      ],
+      "batch_ms_per_query_median": 0.25760500007891096
+    },
+    {
+      "index": "IVF-PQ",
+      "parameters": {
+        "nlist": 64,
+        "nprobe": 4,
+        "m": 8,
+        "nbits": 8
+      },
+      "train_add_s": 0.8635811999847647,
+      "serialized_bytes": 484532,
+      "recall_at_10": 0.072,
+      "batch_elapsed_s": [
+        0.003647999983513728,
+        0.0034192999883089215,
+        0.005093999992823228
+      ],
+      "batch_ms_per_query_median": 0.01823999991756864
+    },
+    {
+      "index": "IVF-PQ",
+      "parameters": {
+        "nlist": 64,
+        "nprobe": 16,
+        "m": 8,
+        "nbits": 8
+      },
+      "train_add_s": 1.0346420999849215,
+      "serialized_bytes": 484532,
+      "recall_at_10": 0.1115,
+      "batch_elapsed_s": [
+        0.01647999999113381,
+        0.01592569999047555,
+        0.016898399975616485
+      ],
+      "batch_ms_per_query_median": 0.08239999995566905
+    },
+    {
+      "index": "IVF-PQ",
+      "parameters": {
+        "nlist": 64,
+        "nprobe": 32,
+        "m": 8,
+        "nbits": 8
+      },
+      "train_add_s": 1.4959262000047602,
+      "serialized_bytes": 484532,
+      "recall_at_10": 0.12,
+      "batch_elapsed_s": [
+        0.01995859999442473,
+        0.0207632000092417,
+        0.01895699999295175
+      ],
+      "batch_ms_per_query_median": 0.09979299997212365
+    },
+    {
+      "index": "HNSW-Flat",
+      "parameters": {
+        "M": 16,
+        "efConstruction": 64,
+        "efSearch": 16
+      },
+      "train_add_s": 8.829942000011215,
+      "serialized_bytes": 13123834,
+      "recall_at_10": 0.2185,
+      "batch_elapsed_s": [
+        0.011970199993811548,
+        0.013309000001754612,
+        0.014525900012813509
+      ],
+      "batch_ms_per_query_median": 0.06654500000877306
+    },
+    {
+      "index": "HNSW-Flat",
+      "parameters": {
+        "M": 16,
+        "efConstruction": 64,
+        "efSearch": 64
+      },
+      "train_add_s": 10.288481899973704,
+      "serialized_bytes": 13123834,
+      "recall_at_10": 0.529,
+      "batch_elapsed_s": [
+        0.060998400003882125,
+        0.0593778999755159,
+        0.03487580001819879
+      ],
+      "batch_ms_per_query_median": 0.2968894998775795
+    },
+    {
+      "index": "HNSW-Flat",
+      "parameters": {
+        "M": 16,
+        "efConstruction": 64,
+        "efSearch": 128
+      },
+      "train_add_s": 9.902532500011148,
+      "serialized_bytes": 13123834,
+      "recall_at_10": 0.7395,
+      "batch_elapsed_s": [
+        0.07745169999543577,
+        0.07713459999649785,
+        0.06331749999662861
+      ],
+      "batch_ms_per_query_median": 0.3856729999824893
+    }
+  ]
+}

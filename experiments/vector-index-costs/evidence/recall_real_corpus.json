@@ -1,0 +1,156 @@
+{
+  "config": {
+    "n_base": 11293,
+    "n_query": 600,
+    "dim": 384,
+    "topk": 10,
+    "threads": 1,
+    "faiss": "1.15.1",
+    "corpus": "20 Newsgroups",
+    "source": "20news_emb.npz",
+    "model": "all-MiniLM-L6-v2",
+    "replicate": 1,
+    "normalized": true
+  },
+  "ground_truth": {
+    "total_ms": 44.41,
+    "ms_per_query": 0.074
+  },
+  "indexes": [
+    {
+      "index": "HNSW",
+      "params": "M=16 efConstruction=64 efSearch=16",
+      "build_s": 2.51,
+      "total_ms": 39.62,
+      "ms_per_query": 0.066,
+      "recall@10": 0.9333,
+      "speedup_vs_flat": 1.12
+    },
+    {
+      "index": "HNSW",
+      "params": "M=16 efConstruction=64 efSearch=32",
+      "build_s": 2.16,
+      "total_ms": 58.29,
+      "ms_per_query": 0.0972,
+      "recall@10": 0.971,
+      "speedup_vs_flat": 0.76
+    },
+    {
+      "index": "HNSW",
+      "params": "M=16 efConstruction=64 efSearch=64",
+      "build_s": 2.37,
+      "total_ms": 88.19,
+      "ms_per_query": 0.147,
+      "recall@10": 0.9917,
+      "speedup_vs_flat": 0.5
+    },
+    {
+      "index": "HNSW",
+      "params": "M=16 efConstruction=64 efSearch=128",
+      "build_s": 1.98,
+      "total_ms": 179.22,
+      "ms_per_query": 0.2987,
+      "recall@10": 0.9973,
+      "speedup_vs_flat": 0.25
+    },
+    {
+      "index": "HNSW",
+      "params": "M=16 efConstruction=64 efSearch=256",
+      "build_s": 2.2,
+      "total_ms": 385.88,
+      "ms_per_query": 0.6431,
+      "recall@10": 0.9995,
+      "speedup_vs_flat": 0.12
+    },
+    {
+      "index": "IVF",
+      "params": "nlist=1024 nprobe=1",
+      "build_s": 0.5,
+      "total_ms": 4.55,
+      "ms_per_query": 0.0076,
+      "recall@10": 0.3825,
+      "speedup_vs_flat": 9.75
+    },
+    {
+      "index": "IVF",
+      "params": "nlist=1024 nprobe=2",
+      "build_s": 0.51,
+      "total_ms": 6.48,
+      "ms_per_query": 0.0108,
+      "recall@10": 0.5447,
+      "speedup_vs_flat": 6.85
+    },
+    {
+      "index": "IVF",
+      "params": "nlist=1024 nprobe=4",
+      "build_s": 0.49,
+      "total_ms": 9.16,
+      "ms_per_query": 0.0153,
+      "recall@10": 0.7043,
+      "speedup_vs_flat": 4.85
+    },
+    {
+      "index": "IVF",
+      "params": "nlist=1024 nprobe=8",
+      "build_s": 0.54,
+      "total_ms": 14.03,
+      "ms_per_query": 0.0234,
+      "recall@10": 0.818,
+      "speedup_vs_flat": 3.17
+    },
+    {
+      "index": "IVF",
+      "params": "nlist=1024 nprobe=16",
+      "build_s": 0.51,
+      "total_ms": 26.17,
+      "ms_per_query": 0.0436,
+      "recall@10": 0.9032,
+      "speedup_vs_flat": 1.7
+    },
+    {
+      "index": "IVF",
+      "params": "nlist=1024 nprobe=32",
+      "build_s": 0.48,
+      "total_ms": 40.58,
+      "ms_per_query": 0.0676,
+      "recall@10": 0.9555,
+      "speedup_vs_flat": 1.09
+    },
+    {
+      "index": "IVF",
+      "params": "nlist=1024 nprobe=64",
+      "build_s": 0.66,
+      "total_ms": 98.55,
+      "ms_per_query": 0.1642,
+      "recall@10": 0.9817,
+      "speedup_vs_flat": 0.45
+    },
+    {
+      "index": "SQ8",
+      "params": "SQ8 8bit",
+      "build_s": 0.0,
+      "total_ms": 3996.83,
+      "ms_per_query": 6.6614,
+      "recall@10": 0.9948,
+      "speedup_vs_flat": 0.01
+    },
+    {
+      "index": "PQ",
+      "params": "m=32 nbits=8",
+      "build_s": 0.0,
+      "total_ms": 267.17,
+      "ms_per_query": 0.4453,
+      "recall@10": 0.6537,
+      "speedup_vs_flat": 0.17
+    },
+    {
+      "index": "IVF-PQ",
+      "params": "nlist=1024 m=32 nbits=8 nprobe=8",
+      "build_s": 0.0,
+      "total_ms": 331.63,
+      "ms_per_query": 0.5527,
+      "recall@10": 0.5905,
+      "speedup_vs_flat": 0.13
+    }
+  ]
+}

@@ -1,0 +1,240 @@
+{
+  "config": {
+    "n_base": 11293,
+    "n_query": 600,
+    "dim": 384,
+    "topk": 10,
+    "threads": 1,
+    "repeats": 3,
+    "faiss": "1.13.2",
+    "numpy": "2.5.4",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",
+    "corpus": "20 Newsgroups",
+    "source": "20news_emb.npz",
+    "model": "all-MiniLM-L6-v2 (revision unverified)",
+    "replicate": 1,
+    "normalized": true
+  },
+  "ground_truth": {
+    "total_ms": 42.88,
+    "ms_per_query": 0.0715,
+    "batch_times_ms": [
+      42.87940001813695,
+      52.58789999061264,
+      36.664699990069494
+    ]
+  },
+  "indexes": [
+    {
+      "index": "HNSW",
+      "params": "M=16 efConstruction=64 efSearch=16",
+      "build_s": 1.8,
+      "total_ms": 23.03,
+      "ms_per_query": 0.0384,
+      "batch_times_ms": [
+        22.174299985636026,
+        24.901900003897026,
+        23.034199984977022
+      ],
+      "recall@10": 0.9342,
+      "speedup_vs_flat": 1.86
+    },
+    {
+      "index": "HNSW",
+      "params": "M=16 efConstruction=64 efSearch=32",
+      "build_s": 2.24,
+      "total_ms": 81.56,
+      "ms_per_query": 0.1359,
+      "batch_times_ms": [
+        41.13060000236146,
+        81.56059999600984,
+        144.9461999873165
+      ],
+      "recall@10": 0.9712,
+      "speedup_vs_flat": 0.53
+    },
+    {
+      "index": "HNSW",
+      "params": "M=16 efConstruction=64 efSearch=64",
+      "build_s": 1.62,
+      "total_ms": 65.94,
+      "ms_per_query": 0.1099,
+      "batch_times_ms": [
+        68.72469998779707,
+        65.93890002113767,
+        63.72529998770915
+      ],
+      "recall@10": 0.9923,
+      "speedup_vs_flat": 0.65
+    },
+    {
+      "index": "HNSW",
+      "params": "M=16 efConstruction=64 efSearch=128",
+      "build_s": 1.53,
+      "total_ms": 84.16,
+      "ms_per_query": 0.1403,
+      "batch_times_ms": [
+        106.4366000064183,
+        84.15880001848564,
+        79.37809999566525
+      ],
+      "recall@10": 0.9973,
+      "speedup_vs_flat": 0.51
+    },
+    {
+      "index": "HNSW",
+      "params": "M=16 efConstruction=64 efSearch=256",
+      "build_s": 1.5,
+      "total_ms": 288.03,
+      "ms_per_query": 0.48,
+      "batch_times_ms": [
+        297.2494999994524,
+        253.40310001047328,
+        288.02800000994466
+      ],
+      "recall@10": 0.9993,
+      "speedup_vs_flat": 0.15
+    },
+    {
+      "index": "IVF",
+      "params": "nlist=1024 nprobe=1",
+      "build_s": 1.07,
+      "total_ms": 10.25,
+      "ms_per_query": 0.0171,
+      "batch_times_ms": [
+        49.193099985131994,
+        10.253799991915002,
+        6.765300000552088
+      ],
+      "recall@10": 0.3825,
+      "speedup_vs_flat": 4.18
+    },
+    {
+      "index": "IVF",
+      "params": "nlist=1024 nprobe=2",
+      "build_s": 0.68,
+      "total_ms": 13.9,
+      "ms_per_query": 0.0232,
+      "batch_times_ms": [
+        13.898800010792911,
+        17.67110000946559,
+        8.158999989973381
+      ],
+      "recall@10": 0.5447,
+      "speedup_vs_flat": 3.09
+    },
+    {
+      "index": "IVF",
+      "params": "nlist=1024 nprobe=4",
+      "build_s": 0.53,
+      "total_ms": 13.51,
+      "ms_per_query": 0.0225,
+      "batch_times_ms": [
+        13.509200012777,
+        10.712599992984906,
+        14.227000006940216
+      ],
+      "recall@10": 0.7043,
+      "speedup_vs_flat": 3.17
+    },
+    {
+      "index": "IVF",
+      "params": "nlist=1024 nprobe=8",
+      "build_s": 0.73,
+      "total_ms": 14.7,
+      "ms_per_query": 0.0245,
+      "batch_times_ms": [
+        45.92709999997169,
+        14.70489997882396,
+        13.845899986336008
+      ],
+      "recall@10": 0.818,
+      "speedup_vs_flat": 2.92
+    },
+    {
+      "index": "IVF",
+      "params": "nlist=1024 nprobe=16",
+      "build_s": 0.56,
+      "total_ms": 17.36,
+      "ms_per_query": 0.0289,
+      "batch_times_ms": [
+        17.360300000291318,
+        19.97819999814965,
+        17.311999981757253
+      ],
+      "recall@10": 0.9032,
+      "speedup_vs_flat": 2.47
+    },
+    {
+      "index": "IVF",
+      "params": "nlist=1024 nprobe=32",
+      "build_s": 0.61,
+      "total_ms": 37.55,
+      "ms_per_query": 0.0626,
+      "batch_times_ms": [
+        44.64519998873584,
+        37.550399982137606,
+        32.44700000504963
+      ],
+      "recall@10": 0.9555,
+      "speedup_vs_flat": 1.14
+    },
+    {
+      "index": "IVF",
+      "params": "nlist=1024 nprobe=64",
+      "build_s": 0.66,
+      "total_ms": 38.1,
+      "ms_per_query": 0.0635,
+      "batch_times_ms": [
+        42.321300017647445,
+        38.098599994555116,
+        38.02050001104362
+      ],
+      "recall@10": 0.9817,
+      "speedup_vs_flat": 1.13
+    },
+    {
+      "index": "SQ8",
+      "params": "SQ8 8bit metric=IP",
+      "build_s": 0.01,
+      "total_ms": 491.48,
+      "ms_per_query": 0.8191,
+      "batch_times_ms": [
+        471.5814999944996,
+        497.6293000217993,
+        491.4809000038076
+      ],
+      "recall@10": 0.9948,
+      "speedup_vs_flat": 0.09
+    },
+    {
+      "index": "PQ",
+      "params": "m=32 nbits=8 metric=IP",
+      "build_s": 1.4,
+      "total_ms": 80.07,
+      "ms_per_query": 0.1334,
+      "batch_times_ms": [
+        75.36190000246279,
+        80.06519998889416,
+        84.13070000824519
+      ],
+      "recall@10": 0.62,
+      "speedup_vs_flat": 0.54
+    },
+    {
+      "index": "IVF-PQ",
+      "params": "nlist=1024 m=32 nbits=8 nprobe=8 metric=IP",
+      "build_s": 1.92,
+      "total_ms": 14.51,
+      "ms_per_query": 0.0242,
+      "batch_times_ms": [
+        14.511400018818676,
+        14.396600017789751,
+        15.023699990706518
+      ],
+      "recall@10": 0.6332,
+      "speedup_vs_flat": 2.95
+    }
+  ]
+}

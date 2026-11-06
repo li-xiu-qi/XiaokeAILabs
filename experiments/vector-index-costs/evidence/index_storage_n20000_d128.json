@@ -1,0 +1,81 @@
+{
+  "config": {
+    "n": 20000,
+    "d": 128,
+    "seed": 42,
+    "nlist": 100,
+    "pq_m": 8,
+    "pq_nbits": 8,
+    "hnsw_m": 16,
+    "faiss": "1.15.1"
+  },
+  "raw_bytes": 10240000,
+  "results": [
+    {
+      "index": "flat",
+      "n": 20000,
+      "d": 128,
+      "theory_bytes": 10240000,
+      "theory_note": "n*d*4 原始 float32",
+      "serialize_bytes": 10240045,
+      "theory_over_measured": 1.0,
+      "vs_raw": 1.0,
+      "rss_delta_mib": 9.81
+    },
+    {
+      "index": "sq8",
+      "n": 20000,
+      "d": 128,
+      "theory_bytes": 2560000,
+      "theory_note": "n*d*1 每维 1 字节",
+      "serialize_bytes": 2561105,
+      "theory_over_measured": 0.9996,
+      "vs_raw": 0.2501,
+      "rss_delta_mib": 3.4
+    },
+    {
+      "index": "pq",
+      "n": 20000,
+      "d": 128,
+      "theory_bytes": 291072,
+      "theory_note": "n*m 压缩码 + m*2^b*(d/m)*4 码本",
+      "serialize_bytes": 291158,
+      "theory_over_measured": 0.9997,
+      "vs_raw": 0.0284,
+      "rss_delta_mib": 2.65
+    },
+    {
+      "index": "ivf_flat",
+      "n": 20000,
+      "d": 128,
+      "theory_bytes": 10451200,
+      "theory_note": "nlist 中心 + n*d*4 倒排向量 + n*8 id",
+      "serialize_bytes": 10452139,
+      "theory_over_measured": 0.9999,
+      "vs_raw": 1.0207,
+      "rss_delta_mib": 16.72
+    },
+    {
+      "index": "ivf_pq",
+      "n": 20000,
+      "d": 128,
+      "theory_bytes": 502272,
+      "theory_note": "中心 + PQ 码本 + n*m 压缩码 + id",
+      "serialize_bytes": 503252,
+      "theory_over_measured": 0.9981,
+      "vs_raw": 0.0491,
+      "rss_delta_mib": 2.06
+    },
+    {
+      "index": "hnsw_flat",
+      "n": 20000,
+      "d": 128,
+      "theory_bytes": 12960000,
+      "theory_note": "n*d*4 向量 + 图边 n*2M*4 + levels/offset n*8",
+      "serialize_bytes": 13123834,
+      "theory_over_measured": 0.9875,
+      "vs_raw": 1.2816,
+      "rss_delta_mib": 13.52
+    }
+  ]
+}
