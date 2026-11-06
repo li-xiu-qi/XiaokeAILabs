@@ -429,12 +429,11 @@ function renderResults(body, texts) {
     const bodyEl = document.createElement('div');
     bodyEl.className = 'res-body';
     const verdict = body.verdicts[i];
-    const isOk = verdict === 'scored' && (isBest || score >= 0.5);
-    const tagText = verdict !== 'scored' ? '未能打分' : (isBest ? '判为最一致' : (score >= 0.5 ? '判为一致' : '判为不一致'));
-    const tagClass = verdict !== 'scored' ? ' muted' : (isOk ? '' : ' bad');
+    const tagText = verdict !== 'scored' ? '未能打分' : (isBest ? '本组最高分' : '已打分');
+    const tagClass = verdict !== 'scored' ? ' muted' : '';
     bodyEl.innerHTML =
       '<div class="scoreline">' +
-        '<span class="score">' + score.toFixed(3) + '</span>' +
+        '<span class="score">' + (verdict === 'scored' ? score.toFixed(3) : '—') + '</span>' +
         '<span class="tag' + tagClass + '">' + tagText + '</span>' +
       '</div>' +
       '<div class="bar"><i style="width:' + Math.max(0, Math.min(100, score * 100)).toFixed(1) + '%"></i></div>' +

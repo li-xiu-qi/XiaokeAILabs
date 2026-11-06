@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """MiniCPM-OCR-Jev 打分服务（transformers 后端，替代官方 serve/app.py 的 vLLM 后端）。
 
-对外契约与官方 app.py 的 `/v1/rm/score_best`、`/v1/rm/score_best_batch` 一致，
+成功响应字段参考官方 app.py 的 `/v1/rm/score_best`、`/v1/rm/score_best_batch`；所有候选无法打分时返回 HTTP 422，
 MiniCPM-OCR 1.0 SDK 的 `RMClient` 可以直接把 `rm_url` 指过来。
 
 链路：候选文本 → 官方渲染器出图（playwright 1.62.0 + Chromium）
@@ -18,6 +18,7 @@ import io
 import os
 import shutil
 import sys
+import math
 import tempfile
 import time
 import uuid
@@ -37,6 +38,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from rm_render import CATEGORIES, Candidate, render_candidates  # noqa: E402
 
 from jev_score import JevScorer, build_prompt, _assert_prompt_unchanged  # noqa: E402
+from score_selection import best_scored_index
 
 INPUT_FORMS = ("binary", "ternary")
 MAX_ITEMS = 8
@@ -170,13 +172,18 @@ def _score_one_block(req: ScoreBestRequest, include_renders: bool = False):
                 verdicts.append("render_error")
                 continue
             prob, _ = _scorer._forward_one(original, render_path, cand.text)
+            if not math.isfinite(prob):
+                scores.append(0.0)
+                verdicts.append("score_error")
+                continue
             scores.append(prob)
             verdicts.append("scored")
         stage["forward_sec"] = round(time.time() - t1, 3)
         stage["forward_rows"] = float(sum(1 for v in verdicts if v == "scored"))
 
-        ok = [i for i, v in enumerate(verdicts) if v == "scored"]
-        best = max(ok, key=lambda i: scores[i]) if ok else 0
+        best = best_scored_index(scores, verdicts)
+        if best is None:
+            raise HTTPException(422, "No candidate could be scored")
         renders_b64 = None
         if include_renders:
             renders_b64 = [
