@@ -1,5 +1,8 @@
 #!/bin/bash
-source /home/ke/xinfer-env/bin/activate
+echo "UNVALIDATED legacy phase timing disabled; use scripts/compare_engines.py" >&2
+exit 1
+source $HOME/xinfer-env/bin/activate
+MODEL_PATH="${MODEL_PATH:-$HOME/models/Qwen3.8-27B-BF16}"
 
 echo "=== Qwen3.8-27B BF16 vLLM 部署测试（降低显存利用率）==="
 
@@ -9,9 +12,9 @@ sleep 2
 
 # 启动 vLLM 服务器（降低显存利用率到 0.6）
 echo "启动 vLLM 服务器（gpu-memory-utilization=0.6）..."
-cd /home/ke/vllm-env
+cd $HOME/vllm-env
 nohup ./bin/python -m vllm.entrypoints.openai.api_server \
-    --model /home/ke/models/Qwen3.8-27B-BF16 \
+    --model $HOME/models/Qwen3.8-27B-BF16 \
     --trust-remote-code \
     --dtype bfloat16 \
     --max-model-len 2048 \
@@ -43,16 +46,16 @@ echo "Prompt: '你好' | 生成: 128 tokens"
 START_TIME=$(date +%s.%N)
 RESULT=$(curl -s http://localhost:8000/v1/completions \
     -H "Content-Type: application/json" \
-    -d '{
-        "model": "/home/ke/models/Qwen3.8-27B-BF16",
-        "prompt": "你好",
-        "max_tokens": 128,
-        "temperature": 0.7
-    }')
+    -d "{
+        \"model\": \"${MODEL_PATH}\",
+        \"prompt\": \"你好\",
+        \"max_tokens\": 128,
+        \"temperature\": 0.7
+    }")
 END_TIME=$(date +%s.%N)
 ELAPSED=$(echo "$END_TIME - $START_TIME" | bc)
 
-echo "$RESULT" | /home/ke/vllm-env/bin/python -c "
+echo "$RESULT" | $HOME/vllm-env/bin/python -c "
 import sys, json
 r = json.load(sys.stdin)
 text = r['choices'][0]['text']
@@ -70,16 +73,18 @@ echo "32 条 prompt，每条约 128 tokens，生成 1 token"
 START_TIME=$(date +%s.%N)
 RESULT2=$(curl -s http://localhost:8000/v1/completions \
     -H "Content-Type: application/json" \
-    -d '{
-        "model": "/home/ke/models/Qwen3.8-27B-BF16",
-        "prompt": ["你好世界。这是一个测试。"] * 32,
-        "max_tokens": 1,
-        "temperature": 0.7
-    }')
+    PROMPT_BATCH=$(printf '"你好世界。这是一个测试。",%.0s' {1..32})
+    PROMPT_BATCH="[${PROMPT_BATCH%,}]"
+    -d "{
+        \"model\": \"${MODEL_PATH}\",
+        \"prompt\": ${PROMPT_BATCH},
+        \"max_tokens\": 1,
+        \"temperature\": 0.7
+    }")
 END_TIME=$(date +%s.%N)
 ELAPSED=$(echo "$END_TIME - $START_TIME" | bc)
 
-echo "$RESULT2" | /home/ke/vllm-env/bin/python -c "
+echo "$RESULT2" | $HOME/vllm-env/bin/python -c "
 import sys, json
 r = json.load(sys.stdin)
 usage = r['usage']

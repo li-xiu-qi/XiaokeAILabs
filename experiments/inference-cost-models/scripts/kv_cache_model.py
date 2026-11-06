@@ -1,10 +1,11 @@
 """
 KV Cache 显存模型：上下文长度的内存成本，以及它如何随 batch 缩放。
 
-KV cache = 2 (K和V) × num_layers × num_kv_heads × head_dim × seq_len × bytes × batch
+KV cache = 2 (K和V) × num_kv_layers × num_kv_heads × head_dim × seq_len × bytes × batch
 
 这是长上下文推理的内存瓶颈。GQA/MQA 把 num_kv_heads 压小（Qwen3.8-27B
-只有 4 个 KV 头，注意力头 24 个），KV cache 比标准 MHA 小 6 倍。
+只有 4 个 KV 头，注意力头 24 个）。混合架构还要区分总层数与 KV 层数：
+Qwen3.8-27B 的 64 层中只有 16 个 full-attention 层产生 per-token KV cache。
 
 自测：用真实配置算每 token 字节数，验证长上下文下的显存占用。
 """
@@ -64,13 +65,21 @@ def self_test():
     print("KV Cache 显存模型自测")
     print("=" * 64)
 
-    print("\n[1] 每 token KV cache 字节数（GQA 效应）")
+    print("\n[1] 每 token KV cache 字节数（KV 层数与 GQA 效应）")
+    assert Qwen3_8_27B.kv_layers == 16
+    assert GLM5_3_Flash.kv_layers == GLM5_3_Flash.num_layers
+    qwen_expected = 2 * 16 * 4 * 256 * 2
+    assert kv_bytes_per_token(Qwen3_8_27B) == qwen_expected
+    from hybrid_architecture_model import kv_cache_gb as hybrid_kv_cache_gb
+    hybrid_bytes = hybrid_kv_cache_gb(16, 4, 256, 128) * 1e9
+    assert abs(qwen_expected * 128 - hybrid_bytes) < 1e-6
+    print(f"  配置与跨模型一致性断言通过：Qwen KV={qwen_expected} B/token")
     for m in (Qwen3_8_27B, GLM5_3_Flash):
         kb = kv_bytes_per_token(m) / 1024
-        # 对比标准 MHA（KV 头数 = 注意力头数）会占多少
+        # 对比全部层都使用标准 MHA 时的上限
         mha = 2 * m.num_layers * m.num_attention_heads * m.head_dim * 2 / 1024
-        print(f"  {m.name}: {kb:.1f} KB/token (GQA {m.num_key_value_heads} KV头) "
-              f"vs MHA {mha:.1f} KB/token，省 {mha/kb:.1f}x")
+        print(f"  {m.name}: {kb:.1f} KB/token (KV层 {m.kv_layers}/{m.num_layers}, "
+              f"GQA {m.num_key_value_heads} KV头) vs 全层MHA {mha:.1f} KB/token，省 {mha/kb:.1f}x")
 
     print("\n[2] Qwen3.8-27B 不同上下文长度下的 KV cache (bf16, batch=1)")
     print(f"{'上下文':>10} {'KV GB':>8} {'权重 GB':>8} {'总计 GB':>8} {'占121GB':>8}")
@@ -115,4 +124,4 @@ def self_test():
 
 
 if __name__ == "__main__":
-    self_test()
+    raise SystemExit("UNVALIDATED: legacy capacity/activation examples disabled; use hybrid_architecture_model.py for KV arithmetic")

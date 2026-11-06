@@ -1,97 +1,37 @@
-import requests
+"""Request-level HTTP timing; does not measure prefill or decode phases."""
+import argparse
+import json
 import time
-import sys
+import requests
 
-def test_engine(name, url, model, prompt_tokens=128, batch_size=1):
-    """测试单个引擎的 decode 和 prefill 性能。"""
-    print(f"\n{'='*60}")
-    print(f"测试 {name} @ {url}")
-    print(f"{'='*60}")
 
-    # Decode 测试
-    print(f"\n--- Decode (bs=1, {prompt_tokens} tokens) ---")
-    payload = {
-        "model": model,
-        "prompt": "你好",
-        "max_tokens": prompt_tokens,
-        "temperature": 0.7
-    }
-    try:
-        start = time.time()
-        r = requests.post(f"{url}/v1/completions", json=payload, timeout=600)
-        elapsed = time.time() - start
-        result = r.json()
-        usage = result.get('usage', {})
-        completion_tokens = usage.get('completion_tokens', 0)
-        decode_tps = completion_tokens / elapsed if elapsed > 0 else 0
-        print(f"  Completion tokens: {completion_tokens}")
-        print(f"  耗时: {elapsed:.2f}s")
-        print(f"  Decode TPS: {decode_tps:.2f} tok/s")
-    except Exception as e:
-        print(f"  ERROR: {e}")
-        decode_tps = 0
-
-    # Prefill 测试
-    print(f"\n--- Prefill (bs={batch_size}, ~128 tokens) ---")
-    payload2 = {
-        "model": model,
-        "prompt": ["你好世界。这是一个测试。"] * batch_size,
-        "max_tokens": 1,
-        "temperature": 0.7
-    }
-    try:
-        start = time.time()
-        r2 = requests.post(f"{url}/v1/completions", json=payload2, timeout=600)
-        elapsed2 = time.time() - start
-        result2 = r2.json()
-        usage2 = result2.get('usage', {})
-        prompt_tokens_total = usage2.get('prompt_tokens', 0)
-        prefill_tps = prompt_tokens_total / elapsed2 if elapsed2 > 0 else 0
-        print(f"  Prompt tokens: {prompt_tokens_total}")
-        print(f"  耗时: {elapsed2:.2f}s")
-        print(f"  Prefill TPS: {prefill_tps:.2f} tok/s")
-    except Exception as e:
-        print(f"  ERROR: {e}")
-        prefill_tps = 0
-
-    return decode_tps, prefill_tps
+def test_engine(url, model, prompt, max_tokens=128, timeout=600):
+    payload = {"model": model, "prompt": prompt, "max_tokens": max_tokens,
+               "temperature": 0}
+    start = time.perf_counter()
+    response = requests.post(f"{url.rstrip('/')}/v1/completions", json=payload, timeout=timeout)
+    elapsed = time.perf_counter() - start
+    response.raise_for_status()
+    result = response.json()
+    usage = result.get("usage") or {}
+    return {"elapsed_seconds": elapsed, "prompt_tokens": usage.get("prompt_tokens"),
+            "completion_tokens": usage.get("completion_tokens"),
+            "completion_tokens_per_request_second": (
+                usage["completion_tokens"] / elapsed
+                if elapsed > 0 and usage.get("completion_tokens") is not None else None)}
 
 
 def main():
-    model = "/home/ke/models/Qwen3.8-27B-BF16"
-
-    results = {}
-
-    # 测试 vLLM（端口 8000）
-    if "--vllm" in sys.argv or "--all" in sys.argv:
-        try:
-            requests.get("http://localhost:8000/health", timeout=5)
-            dec, pre = test_engine("vLLM 0.28.0", "http://localhost:8000", model)
-            results["vLLM"] = {"decode": dec, "prefill": pre}
-        except:
-            print("vLLM 未就绪，跳过")
-
-    # 测试 SGLang（端口 8001）
-    if "--sglang" in sys.argv or "--all" in sys.argv:
-        try:
-            requests.get("http://localhost:8001/health", timeout=5)
-            dec, pre = test_engine("SGLang 0.5.19", "http://localhost:8001", model)
-            results["SGLang"] = {"decode": dec, "prefill": pre}
-        except:
-            print("SGLang 未就绪，跳过")
-
-    # 汇总
-    if results:
-        print(f"\n{'='*60}")
-        print("汇总对比")
-        print(f"{'='*60}")
-        print(f"{'引擎':<20} {'Decode tok/s':>15} {'Prefill tok/s':>15}")
-        print("-" * 52)
-        for name, r in results.items():
-            print(f"{name:<20} {r['decode']:>13.2f}  {r['prefill']:>13.2f}")
-
-        # 与 llama.cpp 对比
-        print(f"\n{'llama.cpp':<20} {4.30:>13.2f}  {25.80:>13.2f}")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--url", required=True)
+    parser.add_argument("--model", required=True)
+    parser.add_argument("--prompt", required=True)
+    parser.add_argument("--max-tokens", type=int, default=128)
+    args = parser.parse_args()
+    if args.max_tokens <= 0:
+        parser.error("--max-tokens must be positive")
+    print("Request-level timing includes queue, prefill, generation and network.")
+    print(json.dumps(test_engine(args.url, args.model, args.prompt, args.max_tokens), ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

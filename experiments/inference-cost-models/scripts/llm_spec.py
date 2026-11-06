@@ -1,5 +1,5 @@
 """
-LLM 推理性能模型的共享规格与实测锚点。
+LLM 推理性能模型的历史示例规格：数值和性能口径未经独立核实。
 
 所有理论模型脚本（roofline_model / weight_memory_model / ...）都从这里取
 硬件参数、模型配置和实测基准。改锚点只改这一个文件。
@@ -9,7 +9,7 @@ LLM 推理性能模型的共享规格与实测锚点。
 - 模型 Qwen3.8-27B 配置取自 ~/models/Qwen3.8-27B-BF16/config.json
 - 实测吞吐取自 llama.cpp cuBLAS 构建，见 DGX-Spark-llama.cpp部署实录.md
 """
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 # ---------------------------------------------------------------------------
@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 @dataclass(frozen=True)
 class Hardware:
     name: str
-    mem_gb: float            # 统一内存总量 (GB, 十进制 1GB=1e9B)
+    mem_gb: float            # 名义容量 (GB, 十进制 1GB=1e9B)，非可用内存
     bw_gbs: float            # 内存带宽峰值 (GB/s, 十进制)
     peak_tflops_fp16: float  # FP16/BF16 峰值算力 (TFLOPs, 1T=1e12)
     peak_tflops_fp8: float   # FP8 峰值算力
@@ -40,7 +40,7 @@ class Hardware:
 # cpu_tflops_fp16 用于部分卸载时判断 decode 是否从带宽瓶颈转成 CPU 算力瓶颈。
 GB10 = Hardware(
     name="NVIDIA GB10 (DGX Spark)",
-    mem_gb=121.0,
+    mem_gb=128.0,  # nominal decimal GB, not currently available memory
     bw_gbs=273.0,
     peak_tflops_fp16=89.1,   # 2026-09-08 实测
     peak_tflops_fp8=178.2,   # 估为 fp16 两倍
@@ -77,6 +77,16 @@ class ModelConfig:
     moe: bool = False
     num_experts: int = 1
     active_experts: int = 1    # MoE 每 token 激活的 expert 数
+    num_kv_layers: int | None = None  # 产生 context-scaled KV cache 的层数；标准模型为 None
+
+    @property
+    def kv_layers(self) -> int:
+        """实际需要 per-token KV cache 的层数。"""
+        if self.num_kv_layers is None:
+            return self.num_layers
+        if not 1 <= self.num_kv_layers <= self.num_layers:
+            raise ValueError("num_kv_layers must be between 1 and num_layers")
+        return self.num_kv_layers
 
     @property
     def active_params_b(self) -> float:
@@ -92,6 +102,7 @@ class ModelConfig:
 Qwen3_8_27B = ModelConfig(
     name="Qwen3.8-27B",
     num_layers=64,
+    num_kv_layers=16,  # text_config.layer_types：16 full_attention + 48 linear_attention
     hidden_size=5120,
     num_attention_heads=24,
     num_key_value_heads=4,
@@ -173,27 +184,30 @@ BENCHMARKS = [
 
 
 # ---------------------------------------------------------------------------
-# KV cache 每 token 每 batch 的字节数（GQA/MQA 通用公式）
-# KV = 2 (K和V) × num_layers × num_kv_heads × head_dim × bytes
+# KV cache 每 token 每 batch 的字节数（GQA/MQA 与混合架构通用公式）
+# KV = 2 (K和V) × kv_layers × num_kv_heads × head_dim × bytes
+# 混合架构只有 full_attention 层产生 context-scaled KV；linear/state-space
+# 层的固定循环状态不属于这里的 per-token KV cache。
 # ---------------------------------------------------------------------------
 def kv_bytes_per_token(model: ModelConfig, dtype: str = "bf16") -> float:
     bpp = DTYPE_BYTES[dtype]
-    return 2 * model.num_layers * model.num_key_value_heads * model.head_dim * bpp
+    return 2 * model.kv_layers * model.num_key_value_heads * model.head_dim * bpp
 
 
 if __name__ == "__main__":
-    print("=== 硬件 ===")
+    print("=== 历史示例参数（未经独立核实，不用于性能预测） ===")
     for hw in (GB10, RTX4090):
         print(f"{hw.name}: {hw.mem_gb}GB, {hw.bw_gbs}GB/s, "
               f"机器平衡点 {hw.ridge_point:.1f} FLOP/byte")
     print("\n=== 模型 ===")
     for m in (Qwen3_8_27B, GLM5_3_Flash):
-        print(f"{m.name}: {m.total_params_b}B 总参, {m.active_params_b:.1f}B 激活")
+        print(f"{m.name}: {m.total_params_b}B 总参, {m.active_params_b:.1f}B 激活, "
+              f"KV层 {m.kv_layers}/{m.num_layers}")
     print("\n=== KV cache (bf16, 每 token 每 batch) ===")
     for m in (Qwen3_8_27B, GLM5_3_Flash):
         kb = kv_bytes_per_token(m)
         print(f"{m.name}: {kb:.0f} B/token = {kb/1024:.2f} KB/token")
-    print("\n=== 实测锚点 ===")
+    print("\n=== 历史记录（计时口径未核实，不用于验证） ===")
     for b in BENCHMARKS:
         print(f"{b.model.name} {b.dtype}: decode {b.decode_tps} t/s, "
               f"prefill {b.prefill_tps} t/s, file {b.file_gb}GB")

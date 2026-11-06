@@ -1,8 +1,11 @@
+raise SystemExit("UNVALIDATED legacy phase timing disabled; use scripts/compare_engines.py")
+
+import os
 import requests
 import time
 
 url = "http://localhost:8001/v1/completions"
-model = "/home/ke/models/Qwen3.8-27B-BF16"
+model = os.path.expanduser("~/models/Qwen3.8-27B-BF16")
 
 print("=== SGLang 测试 ===")
 print()

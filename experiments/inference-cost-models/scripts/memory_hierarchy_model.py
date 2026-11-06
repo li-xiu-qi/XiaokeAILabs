@@ -160,4 +160,4 @@ def self_test():
 
 
 if __name__ == "__main__":
-    self_test()
+    raise SystemExit("UNVALIDATED historical demonstration disabled; see docs/使用边界与审计.md")
