@@ -27,6 +27,15 @@ def check():
             raise RuntimeError('available system memory below 50 GiB')
 
 samples = json.loads((DATA/'manifest.json').read_text(encoding='utf8'))
+context_path=OUT.with_suffix('.context.json')
+context={'manifest_sha256':hashlib.sha256((DATA/'manifest.json').read_bytes()).hexdigest(),
+         'model_path':str(MODEL.resolve()),'adapter_path':str(Path(adapter).resolve()) if adapter else None,
+         'prompt_sha256':hashlib.sha256(PROMPT.encode('utf8')).hexdigest()}
+if OUT.exists():
+    if not context_path.exists() or json.loads(context_path.read_text(encoding='utf8')) != context:
+        raise RuntimeError('Evaluation output exists without matching context; choose a new GUI_ROOT')
+else:
+    context_path.write_text(json.dumps(context,indent=2),encoding='utf8')
 done = [json.loads(x) for x in OUT.read_text(encoding='utf8').splitlines()] if OUT.exists() else []
 assert len(samples) == 30 and all(done[i]['row_idx'] == samples[i]['row_idx'] for i in range(len(done)))
 check(); torch.cuda.set_per_process_memory_fraction(.20)
