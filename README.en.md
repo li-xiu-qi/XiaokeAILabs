@@ -14,6 +14,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [GUI grounding fine-tuning](experiments/gui-grounding-finetuning/README.md): Train screenshot-and-instruction grounding; 30 held-out samples do not establish generalization gains.
 - [Image generation with synthetic training data](experiments/image-generation-distillation/README.md): Train a student LoRA on teacher-generated data; results rely on one AI reviewer.
 - [Vector database benchmark](experiments/vector-db-benchmark/README.md): Historical records lack raw results and do not support product rankings.
+- [Diffusion language model speed](experiments/diffusion-language-models/README.md): Compare generation paths on three prompts with unequal output lengths and unmeasured quality.
 - [LLM inference performance](experiments/llm-inference-perf/README.md): Performance analysis across models and inference configurations.
 - [LLM mechanics](experiments/llm-mechanics/README.md): Understand text generation through examples.
 - [Inference cost models](experiments/inference-cost-models/README.md): Memory examples and theoretical models; performance estimates have not been independently validated.

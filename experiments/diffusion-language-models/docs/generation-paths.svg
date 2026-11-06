@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 290" role="img" aria-labelledby="title desc">
+  <title id="title">两种语言模型生成路径</title>
+  <desc id="desc">自回归模型顺序生成 token；分块扩散模型迭代更新块中的多个位置。</desc>
+  <rect width="900" height="290" rx="24" fill="#101d27"/>
+  <g font-family="system-ui,sans-serif" fill="#f4f7f5">
+    <text x="36" y="51" font-size="23" font-weight="700">两种生成路径</text>
+    <text x="36" y="102" font-size="17">自回归</text><text x="36" y="198" font-size="17">分块扩散</text>
+  </g>
+  <g fill="#66d0b8"><rect x="180" y="77" width="56" height="36" rx="8"/><rect x="250" y="77" width="56" height="36" rx="8"/><rect x="320" y="77" width="56" height="36" rx="8"/><rect x="390" y="77" width="56" height="36" rx="8"/></g>
+  <g fill="#f4f7f5" font-family="system-ui,sans-serif" font-size="15"><text x="194" y="100">t₁</text><text x="264" y="100">t₂</text><text x="334" y="100">t₃</text><text x="404" y="100">t₄</text><text x="490" y="100">按顺序生成</text></g>
+  <rect x="180" y="166" width="266" height="48" rx="12" fill="#263f50" stroke="#f2b76f" stroke-width="2"/>
+  <g fill="#f2b76f"><rect x="192" y="173" width="48" height="34" rx="7"/><rect x="256" y="173" width="48" height="34" rx="7"/><rect x="320" y="173" width="48" height="34" rx="7"/><rect x="384" y="173" width="48" height="34" rx="7"/></g>
+  <g fill="#101d27" font-family="system-ui,sans-serif" font-size="16"><text x="208" y="196">?</text><text x="272" y="196">?</text><text x="336" y="196">?</text><text x="400" y="196">?</text></g>
+  <text x="490" y="196" fill="#f4f7f5" font-family="system-ui,sans-serif" font-size="15">块内多次更新位置</text>
+  <text x="36" y="262" fill="#a5bac3" font-family="system-ui,sans-serif" font-size="13">示意图：块内更新仍需多次前向计算，不代表一次生成整段文本。</text>
+</svg>

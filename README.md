@@ -14,6 +14,7 @@
 - [GUI 定位微调](experiments/gui-grounding-finetuning/README.md)：训练截图与指令到坐标的映射；30 个留出样本不足以证明泛化提升。
 - [合成数据训练文生图模型](experiments/image-generation-distillation/README.md)：用教师合成数据训练学生 LoRA；结果基于单名 AI 评审。
 - [向量数据库基准](experiments/vector-db-benchmark/README.md)：历史数据缺少原始结果，不用于产品排名。
+- [扩散语言模型速度对照](experiments/diffusion-language-models/README.md)：在三道问题上比较两种生成路径；输出长度与质量不同。
 - [LLM 推理性能](experiments/llm-inference-perf/README.md)：模型与推理配置的性能分析。
 - [LLM 机制](experiments/llm-mechanics/README.md)：通过示例理解生成机制。
 - [推理成本模型](experiments/inference-cost-models/README.md)：内存算例与理论模型，性能估算尚未经独立验证。
