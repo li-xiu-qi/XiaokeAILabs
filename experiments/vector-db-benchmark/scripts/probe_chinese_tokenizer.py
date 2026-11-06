@@ -8,6 +8,8 @@
 用法:
   ./.venv/Scripts/python.exe scripts/probe_chinese_tokenizer.py
 """
+
+raise SystemExit("Historical benchmark disabled: it can delete existing collections or files. Use safe_sqlite_bench.py.")
 import shutil
 import sys
 import time

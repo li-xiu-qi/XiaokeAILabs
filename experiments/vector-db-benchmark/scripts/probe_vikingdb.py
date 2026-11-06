@@ -22,6 +22,8 @@ src/index/detail/vector/common/bruteforce.h:433：
 用法（用隔离的 .venv-viking）：
   ./.venv-viking/Scripts/python.exe scripts/probe_vikingdb.py
 """
+
+raise SystemExit("Historical benchmark disabled: it can delete existing collections or files. Use safe_sqlite_bench.py.")
 import shutil
 import sys
 import time

@@ -6,6 +6,8 @@
 用法:
   ./.venv/Scripts/python.exe scripts/bench.py --scale 10k --dim 768
 """
+
+raise SystemExit("Historical benchmark disabled: it can delete existing collections or files. Use safe_sqlite_bench.py.")
 import argparse
 import json
 import platform

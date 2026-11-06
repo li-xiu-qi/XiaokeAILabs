@@ -4,6 +4,8 @@
 
 用法: ./.venv/Scripts/python.exe scripts/probe_index.py
 """
+
+raise SystemExit("Historical benchmark disabled: it can delete existing collections or files. Use safe_sqlite_bench.py.")
 import json
 import time
 import warnings

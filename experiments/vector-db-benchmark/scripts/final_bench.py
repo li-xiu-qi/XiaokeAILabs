@@ -1,4 +1,6 @@
 """最终对比：同数据集、同查询集、同 ef，SurrealDB vs Milvus。"""
+
+raise SystemExit("Historical benchmark disabled: it can delete existing collections or files. Use safe_sqlite_bench.py.")
 import sys, time
 import numpy as np
 from surrealdb import Surreal

@@ -19,6 +19,8 @@ adapter 接口：
   ./.venv/Scripts/python.exe scripts/index_bench.py --only milvus qdrant
   ./.venv/Scripts/python.exe scripts/index_bench.py --index HNSW IVF_PQ FLAT
 """
+
+raise SystemExit("Historical benchmark disabled: it can delete existing collections or files. Use safe_sqlite_bench.py.")
 import argparse
 import importlib
 import json

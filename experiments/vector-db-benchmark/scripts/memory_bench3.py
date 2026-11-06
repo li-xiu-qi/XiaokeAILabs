@@ -11,6 +11,8 @@ OS 回收全部内存。父进程收集结果。
   ./.venv/Scripts/python.exe scripts/memory_bench3.py
   ./.venv/Scripts/python.exe scripts/memory_bench3.py --only lance milvus --sizes 50000 100000
 """
+
+raise SystemExit("Historical benchmark disabled: it can delete existing collections or files. Use safe_sqlite_bench.py.")
 import argparse
 import json
 import subprocess

@@ -11,6 +11,8 @@ Qdrant / LanceDB / sqlite-vec。
   ./.venv/Scripts/python.exe scripts/multi_bench.py --n 30000 --dim 768
   ./.venv/Scripts/python.exe scripts/multi_bench.py --only qdrant lancedb
 """
+
+raise SystemExit("Historical benchmark disabled: it can delete existing collections or files. Use safe_sqlite_bench.py.")
 import argparse
 import importlib
 import json

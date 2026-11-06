@@ -16,6 +16,8 @@
   ./.venv/Scripts/python.exe scripts/probe_bm25.py
   ./.venv/Scripts/python.exe scripts/probe_bm25.py --only milvus qdrant
 """
+
+raise SystemExit("Historical benchmark disabled: it can delete existing collections or files. Use safe_sqlite_bench.py.")
 import argparse
 import json
 import sys

@@ -21,6 +21,8 @@ BM25 那一路搜的是无关文本，结论无效。现版本由 load_real(retu
 用法:
   ./.venv/Scripts/python.exe scripts/hybrid_search_bench.py
 """
+
+raise SystemExit("Historical benchmark disabled: it can delete existing collections or files. Use safe_sqlite_bench.py.")
 import json
 import sys
 import time

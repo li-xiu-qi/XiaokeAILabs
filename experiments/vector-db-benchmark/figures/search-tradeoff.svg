@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" role="img" aria-labelledby="title desc">
+<title id="title">向量检索：精确搜索与近似索引</title><desc id="desc">同一问题向量分别进入精确搜索和近似索引，比较召回率、延迟与资源成本。</desc>
+<rect width="760" height="300" rx="22" fill="#11221f"/>
+<text x="30" y="40" fill="#a8c7b4" font-family="Arial, Microsoft YaHei, sans-serif" font-size="16" letter-spacing="2">VECTOR SEARCH · 01</text>
+<text x="30" y="76" fill="#f5f5e9" font-family="Arial, Microsoft YaHei, sans-serif" font-size="23" font-weight="700">搜索更快，代价是什么？</text>
+<rect x="30" y="112" width="162" height="88" rx="13" fill="#24463d" stroke="#618e78"/><text x="111" y="147" text-anchor="middle" fill="#f5f5e9" font-family="Arial, Microsoft YaHei, sans-serif" font-size="18" font-weight="700">同一批向量</text><text x="111" y="177" text-anchor="middle" fill="#bbd4c4" font-family="Arial, Microsoft YaHei, sans-serif" font-size="14">文档 + 查询</text>
+<path d="M192 138 H230 V124 H268 M192 174 H230 V188 H268" fill="none" stroke="#8aad97" stroke-width="2"/>
+<rect x="268" y="101" width="190" height="54" rx="11" fill="#f0eee0"/><text x="363" y="135" text-anchor="middle" fill="#17362d" font-family="Arial, Microsoft YaHei, sans-serif" font-size="17" font-weight="700">精确搜索 · 基准</text>
+<rect x="268" y="163" width="190" height="54" rx="11" fill="#b8dfc1"/><text x="363" y="197" text-anchor="middle" fill="#17362d" font-family="Arial, Microsoft YaHei, sans-serif" font-size="17" font-weight="700">近似索引 · 加速</text>
+<path d="M458 128 H492 M458 190 H492" stroke="#8aad97" stroke-width="2"/>
+<rect x="492" y="101" width="238" height="116" rx="12" fill="#203a33" stroke="#496b59"/><text x="513" y="134" fill="#f5f5e9" font-family="Arial, Microsoft YaHei, sans-serif" font-size="16" font-weight="700">比较结果与成本</text><text x="513" y="163" fill="#c2d7c7" font-family="Arial, Microsoft YaHei, sans-serif" font-size="15">召回率  /  查询延迟</text><text x="513" y="190" fill="#c2d7c7" font-family="Arial, Microsoft YaHei, sans-serif" font-size="15">构建时间  /  存储占用</text>
+<text x="30" y="265" fill="#a8c7b4" font-family="Arial, Microsoft YaHei, sans-serif" font-size="15">近邻召回率衡量索引逼近精确搜索的程度，不等同于语义相关性。</text>
+</svg>

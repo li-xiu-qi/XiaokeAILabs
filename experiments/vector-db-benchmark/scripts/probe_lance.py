@@ -1,4 +1,6 @@
 """LanceDB IVF_PQ 参数对照：定位 30000/768 召回 0.04 的根因。"""
+
+raise SystemExit("Historical benchmark disabled: it can delete existing collections or files. Use safe_sqlite_bench.py.")
 import shutil
 import time
 import warnings

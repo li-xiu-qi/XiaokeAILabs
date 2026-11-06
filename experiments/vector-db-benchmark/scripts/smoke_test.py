@@ -2,6 +2,8 @@
 
 用法: ./.venv/Scripts/python.exe scripts/smoke_test.py
 """
+
+raise SystemExit("Historical benchmark disabled: it can delete existing collections or files. Use safe_sqlite_bench.py.")
 import sys
 import time
 
