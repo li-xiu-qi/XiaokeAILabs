@@ -36,6 +36,6 @@ python scripts/inspect_padding_loss.py --trainer /path/to/patched-finetune.py --
 python scripts/inspect_padding_loss.py --trainer /path/to/patched-finetune.py --model /path/to/model --data /path/to/train.jsonl --device cuda
 ```
 
-The public script was rerun on CPU for 16 conditions and the first-layer check. The CUDA numbers came from the original diagnostic scripts; the public CUDA path has not been separately rerun. Its optional `--first-layer-check` covers length 128 only and cannot directly recreate the CUDA length-32 first-layer figure. The script performs read-only forward passes and prints input and label hashes.
+The public script was rerun on CPU and CUDA for 16 conditions and the first-layer check. Its CUDA results matched the original diagnostic records case by case. Its optional `--first-layer-check` covers length 128 only and cannot directly recreate the CUDA length-32 first-layer figure. The script performs read-only forward passes and prints input and label hashes.
 
 Sample indices depend on the generated data order. The model revision was not recorded, and differences in dependencies, hardware or weights may change results; check available memory before GPU use. Model weights and training outputs are not included. This is a single small diagnostic run, not a new comparison of trained-model capabilities. The historical loss difference remains unresolved.

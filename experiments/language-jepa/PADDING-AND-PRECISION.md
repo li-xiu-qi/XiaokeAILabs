@@ -38,7 +38,7 @@ python scripts/inspect_padding_loss.py --trainer /path/to/patched-finetune.py --
 python scripts/inspect_padding_loss.py --trainer /path/to/patched-finetune.py --model /path/to/model --data /path/to/train.jsonl --device cuda
 ```
 
-公开脚本已在 CPU 上复跑 16 组条件和首层检查；CUDA 记录来自原排查脚本，公开脚本的 CUDA 路径尚未单独回归。首层检查只运行长度 128 的输入，不能直接复现上文长度 32 的 CUDA 首层数值。
+公开脚本已在 CPU 和 CUDA 上分别复跑 16 组条件与首层检查；CUDA 结果与原排查记录逐项一致。首层检查只运行长度 128 的输入，不能直接复现上文长度 32 的 CUDA 首层数值。
 
 脚本对模型只读前向，输出输入和标签哈希；追加 `--first-layer-check` 可以比较首层 BF16 注意力输出与 FP32 参照。样本索引依赖原始生成数据的顺序；模型 revision 当时未记录，依赖版本、硬件或权重不同时不保证重现相同数字。GPU 运行前需确认可用内存。模型权重、训练输出和私有机器路径不包含在本仓库中。
 
