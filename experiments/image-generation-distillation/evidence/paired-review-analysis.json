@@ -1,0 +1,170 @@
+{
+  "n_prompts": 32,
+  "n_reviewed_images": 96,
+  "note": "Single AI reviewer; four object categories share one prompt template. Sign test is exploratory and assumes exchangeable paired changes; it does not establish model generalization or human preference.",
+  "metrics": {
+    "object_correct": {
+      "overall": {
+        "unchanged": 23,
+        "before_positive": 24,
+        "after_positive": 27,
+        "n": 32,
+        "worsened": 3,
+        "improved": 6
+      },
+      "by_object": {
+        "camera": {
+          "unchanged": 3,
+          "before_positive": 3,
+          "after_positive": 6,
+          "n": 8,
+          "improved": 4,
+          "worsened": 1
+        },
+        "perfume bottle": {
+          "unchanged": 8,
+          "before_positive": 8,
+          "after_positive": 8,
+          "n": 8
+        },
+        "sneaker": {
+          "unchanged": 4,
+          "before_positive": 5,
+          "after_positive": 5,
+          "n": 8,
+          "worsened": 2,
+          "improved": 2
+        },
+        "sunglasses": {
+          "unchanged": 8,
+          "before_positive": 8,
+          "after_positive": 8,
+          "n": 8
+        }
+      },
+      "exploratory_exact_sign_p_two_sided": 0.5078125
+    },
+    "background_correct": {
+      "overall": {
+        "unchanged": 28,
+        "before_positive": 13,
+        "after_positive": 15,
+        "n": 32,
+        "improved": 3,
+        "worsened": 1
+      },
+      "by_object": {
+        "camera": {
+          "unchanged": 7,
+          "before_positive": 2,
+          "after_positive": 3,
+          "n": 8,
+          "improved": 1
+        },
+        "perfume bottle": {
+          "unchanged": 6,
+          "before_positive": 2,
+          "after_positive": 4,
+          "n": 8,
+          "improved": 2
+        },
+        "sneaker": {
+          "unchanged": 8,
+          "before_positive": 4,
+          "after_positive": 4,
+          "n": 8
+        },
+        "sunglasses": {
+          "unchanged": 7,
+          "before_positive": 5,
+          "after_positive": 4,
+          "n": 8,
+          "worsened": 1
+        }
+      },
+      "exploratory_exact_sign_p_two_sided": 0.625
+    },
+    "complete_subject": {
+      "overall": {
+        "unchanged": 23,
+        "before_positive": 21,
+        "after_positive": 26,
+        "n": 32,
+        "improved": 7,
+        "worsened": 2
+      },
+      "by_object": {
+        "camera": {
+          "worsened": 2,
+          "before_positive": 3,
+          "after_positive": 6,
+          "n": 8,
+          "improved": 5,
+          "unchanged": 1
+        },
+        "perfume bottle": {
+          "unchanged": 7,
+          "before_positive": 7,
+          "after_positive": 8,
+          "n": 8,
+          "improved": 1
+        },
+        "sneaker": {
+          "unchanged": 7,
+          "before_positive": 6,
+          "after_positive": 7,
+          "n": 8,
+          "improved": 1
+        },
+        "sunglasses": {
+          "unchanged": 8,
+          "before_positive": 5,
+          "after_positive": 5,
+          "n": 8
+        }
+      },
+      "exploratory_exact_sign_p_two_sided": 0.1796875
+    },
+    "obvious_artifact": {
+      "overall": {
+        "unchanged": 25,
+        "before_positive": 20,
+        "after_positive": 25,
+        "n": 32,
+        "worsened": 1,
+        "improved": 6
+      },
+      "by_object": {
+        "camera": {
+          "unchanged": 7,
+          "before_positive": 1,
+          "after_positive": 2,
+          "n": 8,
+          "improved": 1
+        },
+        "perfume bottle": {
+          "unchanged": 6,
+          "before_positive": 6,
+          "after_positive": 8,
+          "n": 8,
+          "improved": 2
+        },
+        "sneaker": {
+          "unchanged": 7,
+          "before_positive": 8,
+          "after_positive": 7,
+          "n": 8,
+          "worsened": 1
+        },
+        "sunglasses": {
+          "unchanged": 5,
+          "before_positive": 5,
+          "after_positive": 8,
+          "n": 8,
+          "improved": 3
+        }
+      },
+      "exploratory_exact_sign_p_two_sided": 0.125
+    }
+  }
+}
