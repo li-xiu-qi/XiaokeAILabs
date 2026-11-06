@@ -9,14 +9,14 @@ dgx-spark 已由用户重启恢复，内存 118 GB 可用，无残留进程。
 训练命令（正在跑，batch 2，1200 步）：
 
 ```bash
-cd /home/ke/vision_jev && ~/xinfer-env/bin/python train_vision_v2.py \
-  --model /home/ke/models/Qwen3.5-2B \
-  --data /home/ke/vision_jev/prepared \
-  --out /home/ke/vision_jev/runs/v1 \
+cd $HOME/vision_jev && ~/xinfer-env/bin/python train_vision_v2.py \
+  --model $HOME/models/Qwen3.5-2B \
+  --data $HOME/vision_jev/prepared \
+  --out $HOME/vision_jev/runs/v1 \
   --steps 1200 --bs 2 --mem-cap 45 --mem-min-run 45
 ```
 
-日志在 `/home/ke/vision_jev/v1.log`，逐步记录在 `/home/ke/vision_jev/runs/v1/events.jsonl`。
+日志在 `$HOME/vision_jev/v1.log`，逐步记录在 `$HOME/vision_jev/runs/v1/events.jsonl`。
 
 ## 关键实测数据
 
@@ -30,7 +30,7 @@ Qwen3.5-2B，ScienceQA，平均每问题 3.2 候选：
 
 4B 模型单独加载只占 8.46 GB，加载后很空，第一个 backward 就 OOM，说明 4B 的问题在激活不在权重。2B 是 24 层 hidden 2048，激活量约为 4B 的 0.48 倍。
 
-完整的显存纪律和方法论写在 pkm-hub 的 `Projects/001_AI与工具/AI协作学/Qwen3.5多模态微调显存纪律.md`。
+显存纪律包括：启动前拒绝低内存任务、训练中按绝对阈值停训、定期保存现场，以及区分权重占用与激活占用。
 
 ## 修掉的三个 bug
 
@@ -42,7 +42,7 @@ Qwen3.5-2B，ScienceQA，平均每问题 3.2 候选：
 
 训练：1200 步完成，46.6 分钟，峰值 40.93 GB，可用内存全程 63 GB 以上，闸门未触发。
 
-Adapter：`/home/ke/vision_jev/runs/v1/final/adapter_model.safetensors`，43.7 MB。
+Adapter：`$HOME/vision_jev/runs/v1/final/adapter_model.safetensors`，43.7 MB。
 
 校准温度：best_T=4.5（网格 0.5 到 4.5 的 41 点，calib_soft_ce=1.11191）。
 train.py 内置网格上限只有 2.0，会触顶给出假的最优值。
@@ -67,7 +67,7 @@ acc 比随机基线（ScienceQA 平均 3.2 选项，随机约 0.31）高得有�
 ## 醒来后的验收
 
 ```bash
-ssh ke@192.168.1.170 "tail -30 /home/ke/vision_jev/v1.log; echo '--- report ---'; cat /home/ke/vision_jev/runs/v1/report.json"
+ssh <user>@<dgx-host> "tail -30 $HOME/vision_jev/v1.log; echo '--- report ---'; cat $HOME/vision_jev/runs/v1/report.json"
 ```
 
 report.json 里看 `temperature`（校准温度）、`test_calibrated.acc`（校准后测试准确率）、`peak_gb`（峰值内存 GB）、`minutes`（耗时）。
@@ -78,4 +78,4 @@ report.json 里看 `temperature`（校准温度）、`test_calibrated.acc`（校
 
 1. 训练完成后记录准确率、峰值内存（GB）、耗时，作为教程素材。
 2. 训练期间没留配图，下次跑训练类教程要在开跑前规划截图位：loss 曲线、内存曲线、report 数字、推理示例。
-3. 文章目录参照文本版建在 `pkm-hub-write/datawhale-公众号写作项目/02_文章/非商业稿/` 下。
+3. 文章按公开文档结构补齐实验截图、loss 曲线、内存曲线、report 数字和推理示例。

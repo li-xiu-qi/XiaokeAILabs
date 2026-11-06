@@ -1,0 +1,155 @@
+{
+  "eval_source": "data/typed_decisions_test.jsonl",
+  "eval_mode": "held_out",
+  "is_held_out": true,
+  "eval_items": 2000,
+  "note": "Metrics reflect independent held-out evaluation.",
+  "before": {
+    "items": 2000,
+    "loss": 1.3348,
+    "accuracy": 0.3625,
+    "mean_confidence": 0.5362,
+    "ece": 0.1737,
+    "brier": 0.3155,
+    "brier_top1": 0.2673,
+    "by_type": {
+      "choice": {
+        "items": 600,
+        "loss": 1.5483,
+        "accuracy": 0.29,
+        "mean_confidence": 0.4527,
+        "ece": 0.166,
+        "brier": 0.3305,
+        "brier_top1": 0.2221
+      },
+      "score": {
+        "items": 800,
+        "loss": 1.5194,
+        "accuracy": 0.325,
+        "mean_confidence": 0.5168,
+        "ece": 0.204,
+        "brier": 0.2957,
+        "brier_top1": 0.2718
+      },
+      "noul": {
+        "items": 600,
+        "loss": 0.875,
+        "accuracy": 0.485,
+        "mean_confidence": 0.6454,
+        "ece": 0.1797,
+        "brier": 0.3269,
+        "brier_top1": 0.3067
+      }
+    }
+  },
+  "after": {
+    "items": 2000,
+    "loss": 0.8725,
+    "accuracy": 0.751,
+    "mean_confidence": 0.6195,
+    "ece": 0.1321,
+    "brier": 0.0576,
+    "brier_top1": 0.1755,
+    "by_type": {
+      "choice": {
+        "items": 600,
+        "loss": 0.998,
+        "accuracy": 0.7383,
+        "mean_confidence": 0.5857,
+        "ece": 0.1584,
+        "brier": 0.0672,
+        "brier_top1": 0.1837
+      },
+      "score": {
+        "items": 800,
+        "loss": 1.0538,
+        "accuracy": 0.7075,
+        "mean_confidence": 0.5563,
+        "ece": 0.1526,
+        "brier": 0.0634,
+        "brier_top1": 0.2072
+      },
+      "noul": {
+        "items": 600,
+        "loss": 0.5051,
+        "accuracy": 0.8217,
+        "mean_confidence": 0.7375,
+        "ece": 0.1052,
+        "brier": 0.0404,
+        "brier_top1": 0.1249
+      }
+    }
+  },
+  "comparison": {
+    "delta_accuracy": 0.3885,
+    "delta_loss": -0.4623,
+    "delta_ece": -0.0416,
+    "delta_brier": -0.2579,
+    "delta_brier_top1": -0.0918,
+    "delta_mean_confidence": 0.0833
+  },
+  "calibration": {
+    "choice": {
+      "items": 123,
+      "temperature": 1.0818207263946533,
+      "issues": [],
+      "accuracy": 0.8699186991869918,
+      "mean_confidence": 0.5904083550727142
+    },
+    "score": {
+      "items": 152,
+      "temperature": 1.0313830375671387,
+      "issues": [],
+      "accuracy": 0.7960526315789473,
+      "mean_confidence": 0.5568271781252377
+    },
+    "noul": {
+      "items": 125,
+      "temperature": 1.0962826013565063,
+      "issues": [],
+      "accuracy": 0.824,
+      "mean_confidence": 0.7479348395149574
+    }
+  },
+  "abstention_thresholds": {
+    "choice:3-5": 0.3861,
+    "noul:2": 0.6433,
+    "score:3-5": 0.5512
+  },
+  "training": {
+    "epochs": 4,
+    "micro_batch": 8,
+    "grad_accum": 8,
+    "encoder_lr": 2.5e-05,
+    "head_lr": 0.0001,
+    "min_lr": 1e-06,
+    "weight_decay": 0.01,
+    "grad_clip": 1.0,
+    "loss": "rlcd",
+    "rl_samples": 4,
+    "sigma_start": 0.4,
+    "sigma_end": 0.1,
+    "w_sph": 0.75,
+    "w_rps": 1.0,
+    "shuffle_options": [],
+    "option_layout": null,
+    "freeze_encoder": false,
+    "calib_max": 400,
+    "calib_frac": 0.1,
+    "calib_seed": 0,
+    "seed": 0,
+    "max_len": 512,
+    "head_max_len": 192,
+    "amp": null,
+    "gradient_checkpointing": null,
+    "log_every": 100,
+    "label_smoothing": 0.0,
+    "text_column": "text",
+    "label_column": "label",
+    "question_id": "label",
+    "instructions": null,
+    "eval_data": "data/typed_decisions_test.jsonl",
+    "target_error": 0.1,
+    "min_abstain_n": 10
+  }
+}

@@ -184,7 +184,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", default="prepared")
     ap.add_argument("--out", default="runs/v2")
-    ap.add_argument("--model", default=os.environ.get("JEVMODEL", "/home/ke/models/Qwen3.5-4B"))
+    ap.add_argument("--model", default=os.environ.get("JEVMODEL", os.path.expanduser("~/models/Qwen3.5-4B")))
     ap.add_argument("--steps", type=int, default=1200)
     ap.add_argument("--bs", type=int, default=4)
     ap.add_argument("--lr-lora", type=float, default=1e-4)

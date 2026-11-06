@@ -5,7 +5,7 @@
 - micro_batch=8 x grad_accum=8 = 有效 batch 64（train.py 注释确认的单卡等效）
 - loss="rlcd"（默认）：GRPO 风格高斯噪声采样 + proper scoring rule 奖励 + soft CE
 - epochs=4，rl_samples=4，sigma 0.4 -> 0.1，w_sph=0.75，w_rps=1.0
-- train split 训练，10% 案例切校准，test split 做 held-out 评估
+- train split 展开题目后划分校准（默认上限 400 题），test split 做 held-out 评估；同案例可能跨训练与校准
 
 用法（DGX Spark 上，laya-rlcd-env）：
     HF_ENDPOINT=https://hf-mirror.com python run_rlcd_train.py \

@@ -3,16 +3,16 @@
 配方与 notebooks/laya_finetune_typed_decisions_2xT4_kaggle.ipynb 对齐：
 - 底座 convaiinnovations/laya 的 English checkpoint（max_len 512 / head_max_len 192）
 - micro_batch=8 x grad_accum=8 = 有效 batch 64（train.py 注释确认的单卡等效）
-- loss="rlcd"（默认）：GRPO 风格高斯噪声采样 + proper scoring rule 奖励 + soft CE
+- loss="rlcd"：GRPO 风格高斯噪声采样 + proper scoring rule 奖励 + soft CE
 - epochs=4，rl_samples=4，sigma 0.4 -> 0.1，w_sph=0.75，w_rps=1.0
-- train split 训练，10% 案例切校准，test split 做 held-out 评估
+- train split 展开题目后划分校准（默认上限 400 题），test split 做 held-out 评估；同案例可能跨训练与校准
 
 用法（DGX Spark 上，laya-rlcd-env）：
-    HF_ENDPOINT=https://hf-mirror.com python run_rlcd_train.py \
+    HF_ENDPOINT=https://hf-mirror.com python scripts/run_rlcd_train.py \
         --data data/typed_decisions_train.jsonl \
         --eval-data data/typed_decisions_test.jsonl \
         --model-dir models/laya \
-        --output-dir runs/agentjev_v1
+        --output-dir runs/rlcd
 """
 import argparse
 import os

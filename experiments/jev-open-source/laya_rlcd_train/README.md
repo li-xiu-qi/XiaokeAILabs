@@ -1,10 +1,12 @@
 # laya RLCD 微调复现
 
-## 这个实验是什么
+## 为什么做这个实验
+
+在分类、打分或选项决策中，模型除了给出答案，还可能需要输出概率，供下游按风险选择行动。本实验比较两种训练方式：RLCD 在蒸馏损失之外加入基于评分规则的策略梯度，soft-ce 只保留蒸馏损失。问题是前者在同一数据集上是否能带来更好的准确率或概率校准。
 
 在 DGX Spark（GB10，128 GB 统一内存，aarch64）上单卡复现 laya 的 RLCD 微调：从公开的
 typed-decisions 数据集与 laya English checkpoint 出发，用 RLCD（proper scoring rule 奖励
-的 GRPO 风格策略梯度加 soft CE）训练一个决策模型，对照 Jev 官方数字验证可复现性。
+的 GRPO 风格策略梯度加 soft CE）训练一个决策模型，比较其对参考分布的拟合。
 
 RLCD 是 TypeSafe Jev 官方的训练法（Reinforcement Learning for Calibrated Decisions）。laya
 是目前开源生态里把 RLCD 训练代码完整放出来的项目，训练实现在 `laya/train.py`，notebook
@@ -36,6 +38,16 @@ Kaggle 免费 2xT4 DDP）。本实验把它改成单卡 CUDA 路径（无 DDP）
 | torch | 2.14.0+cu130（aarch64 CUDA 13 wheel） |
 | laya | 0.4.1（仓库 main，tarball 落位 `~/laya-main`） |
 
+## 数据准备与运行
+
+在本目录安装兼容的 PyTorch、`datasets`、`huggingface_hub` 和上游 Laya 训练包，然后执行：
+
+```bash
+python scripts/prepare_data.py --out-dir data
+bash scripts/run_ab_compare.sh
+```
+
+数据下载和默认模型下载均未锁定 revision；重跑前应记录上游版本与文件哈希。脚本默认使用 `$HOME/laya-rlcd-env/bin/python`，可设置 `PYTHON` 指向已有环境；在 Linux 上按 `/proc/meminfo` 检查可用内存，默认至少 50 GiB，可通过 `MIN_AVAILABLE_GIB` 调整。该检查只在启动前执行，不是训练期间的持续内存监控。为避免覆盖，已有 `runs/rlcd`、`runs/soft-ce` 或对应日志时脚本会退出。上游当前源码和历史运行的精确提交未核实，上述命令是复现路径，不保证数值完全一致。
 ## 文件
 
 ```
@@ -51,11 +63,11 @@ laya_rlcd_train/
 
 ## 已跑出的结果（seed 0，held-out 2000 题）
 
-RLCD 臂两次运行准确率 0.751 与 0.770（同配方重跑差 1.9 点，GPU 训练非确定性），超过
-Jev 官方 0.727 与教师上限 0.735，官方 2xT4 的 0.766 落在两次实测区间内。A/B 对照
-（唯一变量为 loss）中 soft-ce 纯蒸馏 0.7855 数值略高，但差距小于运行间波动，无证据
-表明 RLCD 策略梯度项在此数据集带来准确率增益（ECE 上 rlcd 略优，仅方向性观察）。
-详见 `docs/RLCD微调报告.md`；重跑对照用 `bash scripts/run_ab_compare.sh`，约 54 分钟。
+RLCD 两次运行的 top-1 参考标签一致率为 0.7510 和 0.7700；soft-ce 单次为 0.7855。数据来自合成案例，标签是教师模型生成的软分布，并非真实事件结果；ECE 和 brier 也针对参考分布，不能证明现实概率校准。现存上游实现按展开后的题目划分训练与校准，同案例可能跨越两者。两次 RLCD 运行
+记录的配置和 seed 相同，但差异原因尚未定位。现有重复次数不足以判断两种损失的普遍优劣，
+也不足以证明它们等价。RLCD 两次相对于参考标签的 ECE 数值低于 soft-ce，仍需多次重复才能判断稳定性。
+与外部结果的比较受评测口径及可追溯证据限制，不能将标注者一致性直接视为能力上限。
+详见 `docs/RLCD微调报告.md`；历史对照约 54 分钟，重跑耗时取决于环境。
 
 上游：laya 仓库 `github.com/NandhaKishorM/laya`（Apache-2.0），数据集
 `huggingface.co/datasets/LocalLLaMA/typed-decisions`，权重

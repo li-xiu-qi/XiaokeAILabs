@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# A/B 对照：同一数据、同一 seed、同一一切超参，唯一变量是 loss。
+# A/B 对照：使用同一数据、seed 和记录的超参，比较不同 loss。
 #   rlcd    = notebook 配方（GRPO 策略梯度项 + soft CE）
 #   soft-ce = 纯蒸馏（soft cross-entropy 单独）
 # 串行执行（两臂同时跑会抢 GPU 并引入系统噪声，破坏对照公平性）。
@@ -14,16 +14,28 @@ HERE="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$HERE"
 export HF_HUB_DISABLE_XET=1
 
-PY=/home/ke/laya-rlcd-env/bin/python
+PY="${PYTHON:-$HOME/laya-rlcd-env/bin/python}"
 DATA=data/typed_decisions_train.jsonl
 EVAL=data/typed_decisions_test.jsonl
 
-bash ~/preflight.sh laya-ab-compare 50 || exit 1
+mkdir -p runs
+for ARM in rlcd soft-ce; do
+  if [ -e "runs/$ARM" ] || [ -e "runs/${ARM}.log" ]; then
+    echo "runs/$ARM or its log already exists; use a fresh experiment directory" >&2
+    exit 1
+  fi
+done
+MEM_KB=$(awk '/^MemAvailable:/ {print $2}' /proc/meminfo)
+MIN_KB=$(( ${MIN_AVAILABLE_GIB:-50} * 1024 * 1024 ))
+if [ -z "$MEM_KB" ] || [ "$MEM_KB" -lt "$MIN_KB" ]; then
+  echo "Insufficient available system memory for configured threshold" >&2
+  exit 1
+fi
 
 for ARM in rlcd soft-ce; do
   LOSS="$ARM"
   echo "=== arm: $ARM (loss=$LOSS) ==="
-  $PY scripts/run_finetune.py \
+  "$PY" scripts/run_finetune.py \
     --data "$DATA" --eval-data "$EVAL" \
     --output-dir "runs/$ARM" \
     --loss "$LOSS" --epochs 4 --seed 0 --device cuda \
@@ -31,8 +43,8 @@ for ARM in rlcd soft-ce; do
 done
 
 echo
-echo "=== A/B 对比（held-out 2000 题，唯一变量 loss）==="
-$PY - <<'EOF'
+echo "=== A/B 对比（held-out 2000 题，训练配置差异为 loss）==="
+"$PY" - <<'EOF'
 import json
 
 def report(arm):
