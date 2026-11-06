@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>筱可 AI 工程实验仓库 · XiaokeAILabs</title>
+<meta name="description" content="AI 工程开放实验：模型训练与微调、推理部署与性能、检索重排序、文档解析与多模态。">
+<style>
+  :root{
+    --bg:#f7f8fa; --surface:#ffffff; --ink:#1a1f2b; --muted:#5b6472;
+    --line:#e6e9ef; --accent:#3b5bdb; --accent-2:#5c7cfa; --chip:#eef1fb;
+    --shadow:0 1px 3px rgba(20,30,60,.06),0 8px 24px rgba(20,30,60,.06);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px}
+
+  header{position:sticky;top:0;z-index:10;background:rgba(247,248,250,.85);
+    backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{font-weight:700;letter-spacing:.2px;display:flex;align-items:center;gap:10px}
+  .logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px}
+  .nav-links{display:flex;gap:20px;font-size:14px;color:var(--muted)}
+  .nav-links a{color:var(--muted)}
+  .nav-links a:hover{color:var(--accent)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;
+    font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+  .btn:hover{text-decoration:none;border-color:var(--accent-2)}
+  .btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
+
+  .hero{padding:72px 0 48px;text-align:center}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:600;color:var(--accent);
+    background:var(--chip);padding:6px 12px;border-radius:999px;margin-bottom:20px}
+  .hero h1{font-size:40px;line-height:1.15;margin:0 0 16px;letter-spacing:-.5px}
+  .hero p{max-width:640px;margin:0 auto 28px;color:var(--muted);font-size:17px}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:8px 0 64px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center;box-shadow:var(--shadow)}
+  .stat b{display:block;font-size:24px;color:var(--accent)}
+  .stat span{font-size:13px;color:var(--muted)}
+
+  section{margin:0 0 56px}
+  h2{font-size:22px;margin:0 0 6px;letter-spacing:-.2px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 20px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 6px;font-size:16px}
+
+  .group{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:8px 20px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .group > h3{padding:14px 0 6px;margin:0;font-size:16px;border-bottom:1px solid var(--line)}
+  .exp{padding:11px 0;border-bottom:1px dashed var(--line)}
+  .exp:last-child{border-bottom:none}
+  .exp .name{font-weight:600}
+  .exp .desc{color:var(--muted);font-size:13.5px}
+  .exp a.name:hover{color:var(--accent)}
+
+  footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--muted);font-size:13.5px}
+  footer .cols{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+
+  @media (max-width:680px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .cards{grid-template-columns:1fr}
+    .hero h1{font-size:30px}
+    .nav-links{display:none}
+  }
+/* Editorial landing page: a clear entry into the experiments, with a diagram rather than decorative metrics. */
+:root{--bg:#fbfaf8;--surface:#fff;--ink:#171718;--muted:#666967;--line:#e6e5e1;--accent:#7852b5;--accent-2:#5e3f90;--chip:#f0ebf7;--shadow:0 5px 24px rgba(23,23,24,.04)}
+.wrap{max-width:1320px;padding:0 32px}
+header{background:rgba(251,250,248,.94)}
+.nav{height:76px}.brand{font-size:19px;letter-spacing:-.5px}.logo{background:#171718;border-radius:6px}
+.nav-links{gap:30px}.btn{border-radius:8px;padding:12px 19px}.btn-primary{background:#171718;border-color:#171718}.btn-primary:hover{background:#45404b;border-color:#45404b}
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:8%;align-items:center;min-height:650px;text-align:left;padding:88px 0 100px}
+.hero h1{font-size:clamp(46px,5.5vw,78px);line-height:1.12;letter-spacing:-.055em;max-width:650px;margin-bottom:26px}
+.hero p{margin:0 0 30px;font-size:18px;line-height:1.8;max-width:540px}.eyebrow{padding:0;background:none;letter-spacing:.12em;font-size:12px;margin-bottom:22px}.cta{justify-content:flex-start}
+.hero-art{width:100%;max-width:580px;justify-self:end;margin:0;min-width:0}.hero-art svg{display:block;width:100%;height:auto}.hero-art figcaption{color:var(--muted);font-size:12px;margin-top:12px;letter-spacing:.04em}
+section{padding-top:40px;margin-bottom:80px;border-top:1px solid var(--line)}
+h2{font-size:clamp(28px,3vw,40px);letter-spacing:-.04em}.sub{font-size:16px;margin:8px 0 30px}.cards{gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.card{box-shadow:none;border:0;border-radius:0;padding:28px;min-height:156px}.card h3{font-size:18px;margin-bottom:10px}.card p{color:var(--muted)}
+.group{box-shadow:none;border-radius:10px;padding:10px 24px}.group>h3{padding:18px 0 12px}.exp{padding:16px 0;display:grid;grid-template-columns:1fr 2fr;gap:20px}.exp .desc{font-size:14px}.exp .name:after{content:' ↗';font-weight:400}
+a:focus-visible{outline:3px solid #9b77d4;outline-offset:4px}
+@media(max-width:760px){.wrap{padding:0 22px}.nav{height:66px}.hero{grid-template-columns:1fr;gap:28px;min-height:0;padding:66px 0}.hero h1{font-size:clamp(40px,10vw,60px)}.hero p{font-size:16px}.hero-art{justify-self:stretch}.exp{grid-template-columns:1fr;gap:3px}.cards{grid-template-columns:1fr}section{margin-bottom:56px}.nav-links{display:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav"><div class="brand"><span class="logo">筱</span> XiaokeAILabs</div><nav class="nav-links" aria-label="主导航"><a href="#about">研究方向</a><a href="#results">实验结果</a><a href="#index">实验索引</a></nav><a class="btn btn-primary" href="https://github.com/li-xiu-qi/XiaokeAILabs">GitHub 仓库</a></div></header>
+<main class="wrap">
+<div class="hero"><div><span class="eyebrow">OPEN EXPERIMENTS · 持续更新</span><h1>用实验理解<br>AI 工程的取舍。</h1><p>从模型训练、检索到推理部署，我们用代码和测量回答实际问题：哪些方法有效，效果在什么条件下成立，又如何在自己的数据和设备上验证？</p><div class="cta"><a class="btn btn-primary" href="#index">探索实验 ↓</a><a class="btn" href="https://github.com/li-xiu-qi/XiaokeAILabs">查看 GitHub ↗</a></div></div><figure class="hero-art"><svg viewBox="0 0 600 460" role="img" aria-labelledby="art-title art-desc" xmlns="http://www.w3.org/2000/svg"><title id="art-title">从问题到可复核结果</title><desc id="art-desc">实验过程示意：提出问题、设计对照、运行测试、理解结果。</desc><rect x="1" y="1" width="598" height="458" rx="14" fill="#fff" stroke="#e5e3df"/><path d="M1 48H599" stroke="#e5e3df"/><circle cx="24" cy="24" r="4" fill="#d6d2cc"/><circle cx="39" cy="24" r="4" fill="#d6d2cc"/><circle cx="54" cy="24" r="4" fill="#d6d2cc"/><text x="88" y="29" font-family="sans-serif" font-size="12" fill="#777">XIAOKE AI LABS / EXPERIMENT NOTES</text><text x="38" y="98" font-family="sans-serif" font-size="13" fill="#8062a4">FROM QUESTION TO EVIDENCE</text><text x="38" y="137" font-family="sans-serif" font-size="28" font-weight="700" fill="#202024">让每个结论都有来处</text><path d="M68 196H533 M68 272H533 M68 348H533" stroke="#ece9e5"/><circle cx="68" cy="196" r="17" fill="#eee8f7"/><circle cx="68" cy="272" r="17" fill="#eee8f7"/><circle cx="68" cy="348" r="17" fill="#eee8f7"/><text x="63" y="201" font-family="sans-serif" font-size="12" fill="#69459d">1</text><text x="63" y="277" font-family="sans-serif" font-size="12" fill="#69459d">2</text><text x="63" y="353" font-family="sans-serif" font-size="12" fill="#69459d">3</text><text x="105" y="191" font-family="sans-serif" font-size="16" font-weight="700" fill="#202024">提出问题</text><text x="105" y="213" font-family="sans-serif" font-size="12" fill="#777">明确目标与适用场景</text><text x="105" y="267" font-family="sans-serif" font-size="16" font-weight="700" fill="#202024">设计并运行对照</text><text x="105" y="289" font-family="sans-serif" font-size="12" fill="#777">记录数据、配置与测量方式</text><text x="105" y="343" font-family="sans-serif" font-size="16" font-weight="700" fill="#202024">理解结果与边界</text><text x="105" y="365" font-family="sans-serif" font-size="12" fill="#777">开放代码，保留证据</text><path d="M470 171v26h10v-26zm15-17v43h10v-43zm15 11v32h10v-32zm15-31v63h10v-63z" fill="#ae9ac7"/></svg><figcaption>从问题出发，让方法、数据和结论可以被检查。</figcaption></figure></div>
+<section id="about"><h2>从问题出发</h2><p class="sub">找到适合的问题和方法，再查看具体数据、配置与结果。</p><div class="cards"><div class="card"><h3>训练与微调</h3>了解如何准备数据、调整嵌入与重排序模型，并用检索指标判断是否有帮助。</div><div class="card"><h3>推理与性能</h3>比较量化、部署引擎与并发配置，估算内存和带宽，为单机部署提供参考。</div><div class="card"><h3>检索与存储</h3>探索多阶段检索，比较向量数据库的召回、延迟与存储成本。</div><div class="card"><h3>文档与多模态</h3>从 OCR、图像模型微调到跨模态部署，观察不同设备上的效果和限制。</div></div></section>
+<section id="results"><h2>实测能告诉我们什么</h2><p class="sub">结果始终对应具体数据、设备和方法；实验内容持续整理更新。</p><div class="cards"><div class="card"><h3>微调需要经过检验</h3><p>SciFact 重排序实验中，固定候选集上的 nDCG@10 从 BM25 的 0.6617 变为微调模型的 0.6375；差异的 95% 置信区间跨过零，不能据此声称改善。完整报告整理中。</p><a href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/embedding-research">探索嵌入实验 →</a></div><div class="card"><h3>加速也要检查输出</h3><p>GB10 上四个 OCR 样本的模型生成总耗时加速 2.36 倍，贪婪输出一致。计时不含图像读取和预处理，结果不能代表所有文档。相关补充报告整理中。</p><a href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/minicpm-ocr">探索 OCR 实验 →</a></div></div></section>
+<section id="index"><h2>实验索引</h2><p class="sub">选择感兴趣的方向，进入仓库查看方法、代码、结果与适用边界。</p>
+<div class="group"><h3>训练、微调与检索</h3>
+<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/embedding-research">嵌入与重排序</a><div class="desc">了解如何准备数据、训练模型并评估检索质量。</div></div>
+<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/retrieval-and-rerank">检索与重排实践</a><div class="desc">从稠密、稀疏和晚期交互检索到重排序，理解多阶段检索。</div></div>
+<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/vector-db-benchmark">向量数据库基准</a><div class="desc">在给定数据和硬件下比较六个数据库的召回、延迟与存储。</div></div>
+<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/image-finetune">图像模型 LoRA 微调</a><div class="desc">查看单一人脸身份的小样本训练与对照。</div></div>
+</div>
+<div class="group"><h3>推理、部署与成本</h3>
+<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/qwen36-35b-engine-ab">GB10 单机推理</a><div class="desc">了解大模型在 DGX Spark 上的量化部署与引擎对照。</div></div>
+<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/llm-inference-perf">LLM 推理性能</a><div class="desc">对照模型、任务和投机解码配置，理解速度变化。</div></div>
+<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/llm-mechanics">LLM 机制</a><div class="desc">通过分词、量化、采样与 KV Cache 示例理解推理过程。</div></div>
+<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/inference-cost-models">推理成本模型</a><div class="desc">估算推理内存、带宽与吞吐，结合实测理解限制。</div></div>
+<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/data-structure-costs">数据结构成本</a><div class="desc">使用成本模型与验证脚本分析索引和数据格式的取舍。</div></div>
+</div>
+<div class="group"><h3>文档解析与多模态</h3>
+<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/minicpm-ocr">MiniCPM-OCR</a><div class="desc">了解文档识别在 GB10 上的部署、质量评估与生成加速。</div></div>
+<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/jina-clip-openvino">Jina CLIP OpenVINO</a><div class="desc">比较 Intel CPU 与 NPU 的正确性、驱动和特定负载性能。</div></div>
+<div class="exp"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/jev-open-source">Jev 开源复刻</a><div class="desc">阅读 Laya、Nimble 与 metask-jev 判别式模型实测。</div></div>
+</div>
+</section></main><footer><div class="wrap cols"><div><b style="color:var(--ink)">筱可 AI（XiaokeAILabs）</b><br>公众号「筱可AI」 · lixiuqixiaoke@qq.com</div><div><a href="https://github.com/li-xiu-qi/XiaokeAILabs">GitHub</a> · Apache 2.0</div></div></footer></body></html>
