@@ -6,7 +6,7 @@
 
 ## 实验索引
 
-- [Embedding 蒸馏](experiments/embedding-distillation/README.md)：用大模型分数训练小型向量模型；数据准备尚未完整公开。
+- [Embedding 蒸馏](experiments/embedding-distillation/README.md)：用大模型分数训练小型向量模型；提供候选池准备脚本。
 - [重排序蒸馏](experiments/reranker-distillation/README.md)：对照监督训练与教师分数蒸馏，了解固定候选上的排序变化。
 - [ColBERT 蒸馏](experiments/colbert-distillation/README.md)：比较教师分数蒸馏与标签监督；本次蒸馏未超过监督基线。
 - [多模态 Embedding 蒸馏](experiments/multimodal-embedding-distillation/README.md)：探索图文检索教师与轻量学生之间的知识迁移。

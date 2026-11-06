@@ -50,7 +50,7 @@ $$
 
 运行 `python scripts/verify.py` 可直接用随附的每查询指标复算表格与配对 bootstrap；证据包含查询 ID 和指标，不含原始文本、模型或数据集。复算只核对聚合和区间，不能独立验证原始模型推理与标注。本次公开脚本由设备侧脚本参数化整理，尚未重新完成端到端训练，下面是复现路径而非已验证的一键流程。
 
-在 Linux CUDA 环境中准备 PyTorch、NumPy 和 Sentence Transformers。本次使用预先准备的 `pools.json` 确定训练正例和 BM25 候选；候选文件及准备脚本尚未随此实验发布，目前不能仅凭本仓库从原始数据完整复现此次训练输入。数据集及模型按各自许可从原始来源获取，不包含在本仓库内。BEIR 数据卡标注 CC BY-SA 4.0；原始 SciFact 的标注与语料许可不同，使用前请参照[原始许可](https://github.com/allenai/scifact/blob/master/LICENSE.md)。
+在 Linux CUDA 环境中准备 PyTorch、NumPy 和 Sentence Transformers。按照 [ColBERT 实验的数据准备步骤](../colbert-distillation/README.md#从数据准备候选与教师分数)下载并校验输入，再运行候选池准备脚本；生成的 `pools.json` 决定训练正例和 BM25 候选。数据集及模型按各自许可从原始来源获取，不包含在本仓库内。BEIR 数据卡标注 CC BY-SA 4.0；原始 SciFact 的标注与语料许可不同，使用前请参照[原始许可](https://github.com/allenai/scifact/blob/master/LICENSE.md)。
 
 下载两个模型到本机并固定版本，例如：
 
@@ -66,4 +66,6 @@ python scripts/train.py --stage teacher --data "$DATA" --pools "$POOLS" --out ou
 python scripts/train.py --stage student --data "$DATA" --pools "$POOLS" --out output --teacher models/teacher --student models/student
 ```
 
-两条命令加 `--smoke` 可做两条查询、两步训练的管线检查；它不能代替正式实验。教师阶段生成分数，学生阶段依次评价原模型、监督组和蒸馏组。训练要求 CUDA、Linux `/proc/meminfo` 和至少约 50 GiB 系统可用内存；不同硬件、依赖版本与随机性会影响结果。
+两条命令加 `--smoke` 可做两条查询、两步训练的管线检查；再加 `--device cpu` 可在 CPU 上验证。小模型替代教师和学生的 CPU 冒烟已跑通打分、基线和两种训练，仅验证管线，不能用于比较效果。正式实验使用 CUDA；两种模式都要求 Linux `/proc/meminfo` 和至少约 50 GiB 系统可用内存。
+
+教师阶段生成分数，学生阶段依次评价原模型、监督组和蒸馏组。两阶段会核对语料、查询和候选池的 SHA-256、模型路径与教师输出完整性；同一路径下模型内容发生变化不会被路径检查发现，仍需自行核验模型 revision 和权重。不同硬件、依赖版本与随机性会影响结果。

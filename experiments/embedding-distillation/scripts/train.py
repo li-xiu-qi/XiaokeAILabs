@@ -1,4 +1,4 @@
-import argparse, json, math, os, random, time, gc, threading
+import argparse, json, math, os, random, time, gc, threading, hashlib
 from pathlib import Path
 import numpy as np
 import torch
@@ -6,6 +6,7 @@ import torch.nn.functional as F
 from sentence_transformers import SentenceTransformer
 
 ROOT = DATA = POOLS = TEACHER = STUDENT = None
+DEVICE = 'cuda'
 SEED = 20261107
 PROMPT = 'Instruct: Given a scientific claim, retrieve documents that support or refute the claim\nQuery: '
 
@@ -54,7 +55,7 @@ def embed(model, texts, batch, prompt=''):
         assert np.isfinite(a).all()
         outputs.append(a)
         if offset % (batch*50) == 0: print('encoded', offset, '/', len(texts), flush=True)
-    torch.cuda.synchronize()
+    if DEVICE == 'cuda': torch.cuda.synchronize()
     return np.concatenate(outputs), time.perf_counter()-start
 
 def calc(model, docs, queries, train, test, batch, teacher=False):
@@ -78,7 +79,7 @@ def metrics(rows, scores):
     return result
 
 def load_student():
-    model = SentenceTransformer(STUDENT, device='cuda', local_files_only=False)
+    model = SentenceTransformer(STUDENT, device=DEVICE, local_files_only=True)
     model.max_seq_length=192
     return model
 
@@ -92,34 +93,43 @@ def train_student(model, mode, rows, docs, queries, teacher_scores, smoke):
             order=list(range(len(rows))); rng.shuffle(order); permutation.extend(order)
         selected=[rows[permutation.pop(0)] for _ in range(4)]
         texts=[queries[row['id']] for row in selected]+[docs[d] for row in selected for d in row['candidates']]
-        features={k:v.to('cuda') if isinstance(v,torch.Tensor) else v for k,v in model.tokenize(texts).items()}
+        features={k:v.to(DEVICE) if isinstance(v,torch.Tensor) else v for k,v in model.tokenize(texts).items()}
         embeddings=F.normalize(model(features)['sentence_embedding'], p=2, dim=-1)
         q=embeddings[:4]; d=embeddings[4:].reshape(4,4,-1)
         logits=torch.einsum('bd,bkd->bk',q,d)/0.05
-        if mode=='supervised': loss=F.cross_entropy(logits,torch.zeros(4,dtype=torch.long,device='cuda'))
+        if mode=='supervised': loss=F.cross_entropy(logits,torch.zeros(4,dtype=torch.long,device=DEVICE))
         else:
-            teacher=torch.tensor([teacher_scores[row['id']] for row in selected],device='cuda')/0.05
+            teacher=torch.tensor([teacher_scores[row['id']] for row in selected],device=DEVICE)/0.05
             loss=-(F.softmax(teacher,dim=-1)*F.log_softmax(logits,dim=-1)).sum(dim=-1).mean()
         if not torch.isfinite(loss): raise RuntimeError('nonfinite loss')
         opt.zero_grad(set_to_none=True);loss.backward();opt.step();loss_last=float(loss.detach().cpu())
         if step%20==0: print(mode,step,'loss',loss_last,flush=True)
-    torch.cuda.synchronize()
+    if DEVICE == 'cuda': torch.cuda.synchronize()
     return {'steps':steps,'batch_queries':4,'lr':2e-5,'last_loss':loss_last,'training_s':time.perf_counter()-t0}
 
 def main():
-    global ROOT, DATA, POOLS, TEACHER, STUDENT
-    parser=argparse.ArgumentParser();parser.add_argument('--stage',choices=['teacher','student'],required=True);parser.add_argument('--smoke',action='store_true');parser.add_argument('--data',type=Path,required=True);parser.add_argument('--pools',type=Path,required=True);parser.add_argument('--out',type=Path,required=True);parser.add_argument('--teacher',required=True);parser.add_argument('--student',required=True);args=parser.parse_args()
+    global ROOT, DATA, POOLS, TEACHER, STUDENT, DEVICE
+    parser=argparse.ArgumentParser();parser.add_argument('--stage',choices=['teacher','student'],required=True);parser.add_argument('--smoke',action='store_true');parser.add_argument('--device',choices=['cuda','cpu'],default='cuda');parser.add_argument('--data',type=Path,required=True);parser.add_argument('--pools',type=Path,required=True);parser.add_argument('--out',type=Path,required=True);parser.add_argument('--teacher',required=True);parser.add_argument('--student',required=True);args=parser.parse_args()
+    DEVICE=args.device
     ROOT, DATA, POOLS, TEACHER, STUDENT = args.out, args.data, args.pools, args.teacher, args.student
     root=ROOT/('smoke' if args.smoke else 'formal');root.mkdir(parents=True,exist_ok=True)
     random.seed(SEED);np.random.seed(SEED);torch.manual_seed(SEED);torch.cuda.manual_seed_all(SEED)
-    check();threading.Thread(target=watch_memory,daemon=True).start();torch.cuda.set_per_process_memory_fraction(.20)
+    check();threading.Thread(target=watch_memory,daemon=True).start()
+    if DEVICE == 'cuda': torch.cuda.set_per_process_memory_fraction(.20)
     docs,queries,train,test=data(args.smoke)
-    atomic(root/'manifest.json', {'seed':SEED,'train':train,'test':test,'teacher':TEACHER,'student':STUDENT,'max_length':192,'temperature':0.05})
+    manifest={'seed':SEED,'train':train,'test':test,'teacher':TEACHER,'student':STUDENT,'max_length':192,'temperature':0.05,'pools_sha256':hashlib.sha256(POOLS.read_bytes()).hexdigest(),'corpus_sha256':hashlib.sha256((DATA/'corpus.jsonl').read_bytes()).hexdigest(),'queries_sha256':hashlib.sha256((DATA/'queries.jsonl').read_bytes()).hexdigest()}
     if args.stage=='teacher':
-        t=time.perf_counter();model=SentenceTransformer(TEACHER,device='cuda',local_files_only=False,model_kwargs={'dtype':torch.bfloat16});model.max_seq_length=192
+        atomic(root/'manifest.json', manifest); atomic(root/'teacher-status.json', {'state':'running'})
+    else:
+        if json.loads((root/'manifest.json').read_text(encoding='utf8')) != manifest: raise SystemExit('Data, pools, or model paths differ from teacher stage')
+        status=json.loads((root/'teacher-status.json').read_text(encoding='utf8'))
+        if status != {'state':'complete','sha256':hashlib.sha256((root/'teacher.json').read_bytes()).hexdigest()}: raise SystemExit('Teacher stage incomplete or output changed')
+    if args.stage=='teacher':
+        t=time.perf_counter();model=SentenceTransformer(TEACHER,device=DEVICE,local_files_only=True,model_kwargs={'dtype':torch.bfloat16} if DEVICE=='cuda' else {});model.max_seq_length=192
         check();print('teacher loaded seconds',time.perf_counter()-t,flush=True)
         scores,timing=calc(model,docs,queries,train,test,2,teacher=True)
         atomic(root/'teacher.json',{'scores':scores,'timing':timing,'test_metrics':metrics(test,scores),'peak_allocated':torch.cuda.max_memory_allocated()})
+        atomic(root/'teacher-status.json',{'state':'complete','sha256':hashlib.sha256((root/'teacher.json').read_bytes()).hexdigest()})
     else:
         teacher=json.loads((root/'teacher.json').read_text(encoding='utf8'))['scores']
         for mode in ['baseline','supervised','distilled']:

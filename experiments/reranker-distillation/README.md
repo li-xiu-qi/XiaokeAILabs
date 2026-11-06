@@ -41,7 +41,7 @@ $$\mathcal L_{\mathrm{KD}}=T^2\,D_{\mathrm{KL}}\!\left(\operatorname{softmax}(z_
 
 ## 复现
 
-需要 Linux、CUDA PyTorch、Transformers、NumPy 和 Hugging Face Hub。本次需要预先准备 `scifact/` 和 `prepared/pools.json`；候选文件及准备脚本尚未随此实验发布，当前仓库不能独立重建本次训练输入。该候选文件的 SHA-256 应为 `e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8`；不同版本或候选池不能直接对比本文数字。
+需要 Linux、CUDA PyTorch、Transformers、NumPy 和 Hugging Face Hub。按 [ColBERT 实验的数据准备步骤](../colbert-distillation/README.md#从数据准备候选与教师分数)准备 `scifact/` 和 `prepared/pools.json`，只需运行候选池准备脚本，不必运行教师打分或训练。该候选文件的 SHA-256 应为 `e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8`；不同版本或候选池不能直接对比本文数字。
 
 从本实验目录运行，使用已准备数据的目录替换 `DATA_ROOT`：
 
@@ -55,6 +55,8 @@ python scripts/run.py --data-root "$DATA_ROOT" --teacher output/teacher \
   --student output/student --out output/run
 ```
 
-脚本先保存教师和学生的开发/测试评估；当教师开发集 nDCG@10 不高于学生时停止训练，否则执行普通监督与蒸馏两组。输出含逐查询指标、各模型逐候选分数、训练曲线、参数清单和模型权重。设备、软件版本和非确定性计算会影响结果；参数清单中的模型标识对应上述固定版本，换成本地其他权重时不能沿用该标识作为来源证明。
+默认 `--stage all` 依次进行教师打分和学生实验；也可先运行 `--stage teacher`，再以相同参数运行 `--stage student`，复用教师分数。脚本核对候选池、语料和查询文件的 SHA-256、模型路径及教师输出的完整性；模型目录内容仍需自行核验版本，单凭路径不能证明权重一致。教师开发集 nDCG@10 不高于学生时停止训练，否则执行普通监督与蒸馏两组。输出含逐查询指标、各模型逐候选分数、训练曲线、参数清单和模型权重。设备、软件版本和非确定性计算会影响结果。
+
+两阶段命令均可追加 `--device cpu --smoke` 检查流程：每个划分只取两个查询、训练最多两步，需使用**独立输出目录**，不能覆盖正式结果。CPU 冒烟测试中教师与学生的开发集分数相同，训练按预设门槛跳过；这不是效果比较。正式运行应使用上面指定的模型版本与完整数据。
 
 [历史评估与逐查询数据](docs/evidence/)保留本次实际结果及配对 bootstrap 分析。历史运行保留了逐查询指标与教师分数，但没有保存学生的逐候选分数，因此无法独立从学生的排名重新计算这些指标；复现脚本已补充保存。BEIR 数据卡标注 CC BY-SA 4.0；原始 SciFact 标注与摘要语料有各自许可，参见[原始许可](https://github.com/allenai/scifact/blob/master/LICENSE.md)。公开证据不包含原始文献正文或模型权重。

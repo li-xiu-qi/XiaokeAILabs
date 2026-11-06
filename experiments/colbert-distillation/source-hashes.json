@@ -1,0 +1,9 @@
+{
+  "corpus.jsonl": "dec31c8182f3d744c7d2c09423756fd1d17cbef75808db13ba01cc0aab4d1ac6",
+  "queries.jsonl": "8ff84a7c903f722981cd8d595c022660140c51867b27608a6d4910db86080313",
+  "qrels/train.tsv": "a53f2114831916c096b6c37d9e54da68cef4efdcdbd5ed46533601af972acf1d",
+  "qrels/test.tsv": "0864bb985e0ca2367ba217977e72004d549054b2b06666ed9d4825ac7c21284c",
+  "original_claims_train.jsonl": "f4c8fa82d8bd0653a9cc8d61a6ea48c25eacea64e90af5dbf390ebb1b74372f0",
+  "original_pool_config.json": "b1afc15a37cf4172447f1947b78b63c5a302ca652e404f70d399fcef366b3dc0",
+  "pools.json": "e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8"
+}

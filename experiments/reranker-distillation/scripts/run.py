@@ -10,6 +10,7 @@ ROOT=Path('.')
 DATA=Path('.')
 TEACHER=Path('.')
 STUDENT=Path('.')
+DEVICE='cuda'
 SEED=20261107; MAXLEN=192; STEPS=180; BATCH=8; TEMP=2.0; WEIGHT=0.5
 
 def read_jsonl(path):
@@ -18,22 +19,23 @@ def write(name, obj): (ROOT/name).write_text(json.dumps(obj,ensure_ascii=False,i
 def sha(path): return hashlib.sha256(path.read_bytes()).hexdigest()
 def tok(t, pairs):
     q,d=zip(*pairs)
-    return t(list(q),list(d),padding=True,truncation='only_second',max_length=MAXLEN,return_tensors='pt').to('cuda')
+    return t(list(q),list(d),padding=True,truncation='only_second',max_length=MAXLEN,return_tensors='pt').to(DEVICE)
 def model(path):
     t=AutoTokenizer.from_pretrained(path,local_files_only=True)
-    m=AutoModelForSequenceClassification.from_pretrained(path,local_files_only=True).cuda().eval()
+    m=AutoModelForSequenceClassification.from_pretrained(path,local_files_only=True).to(DEVICE).eval()
     return t,m
 
 def score(model, tokenizer, entries):
     output={}; model.eval()
-    torch.cuda.synchronize(); start=time.perf_counter()
+    if DEVICE=='cuda': torch.cuda.synchronize()
+    start=time.perf_counter()
     with torch.inference_mode():
         for i in range(0,len(entries),32):
             batch=entries[i:i+32]
             logits=model(**tok(tokenizer, [(queries[q],docs[d]) for q,d in batch])).logits.flatten().float().cpu().tolist()
             assert all(math.isfinite(v) for v in logits)
             output.update((f'{q}:{d}',v) for (q,d),v in zip(batch,logits))
-    torch.cuda.synchronize()
+    if DEVICE=='cuda': torch.cuda.synchronize()
     return output,time.perf_counter()-start
 
 def metrics(part,scores):
@@ -64,9 +66,9 @@ def train(mode,teacher_scores):
                 row=pools['train'][q]; batch.append((q,rng.choice(row['relevant']),rng.choice(row['unjudged'])))
             pairs=[(q,d) for q,p,neg in batch for d in (p,neg)]
             s=m(**tok(t,[(queries[q],docs[d]) for q,d in pairs])).logits.reshape(-1,2)
-            supervised=F.cross_entropy(s,torch.zeros(len(batch),device='cuda',dtype=torch.long))
+            supervised=F.cross_entropy(s,torch.zeros(len(batch),device=DEVICE,dtype=torch.long))
             if mode=='distilled':
-                teacher=torch.tensor([[teacher_scores[f'{q}:{p}'],teacher_scores[f'{q}:{neg}']] for q,p,neg in batch],device='cuda')
+                teacher=torch.tensor([[teacher_scores[f'{q}:{p}'],teacher_scores[f'{q}:{neg}']] for q,p,neg in batch],device=DEVICE)
                 soft=F.kl_div(F.log_softmax(s/TEMP,dim=-1), F.softmax(teacher/TEMP,dim=-1),reduction='batchmean')*TEMP**2
                 loss=(1-WEIGHT)*supervised+WEIGHT*soft
             else: loss=supervised
@@ -77,27 +79,43 @@ def train(mode,teacher_scores):
     return t,m
 
 def main():
-    global queries,docs,pools,ROOT,DATA,TEACHER,STUDENT
+    global queries,docs,pools,ROOT,DATA,TEACHER,STUDENT,DEVICE,STEPS
     ap=argparse.ArgumentParser()
     ap.add_argument('--data-root', required=True, help='Directory containing scifact/ and prepared/pools.json')
     ap.add_argument('--teacher', required=True, help='Local MiniLM-L12 teacher snapshot')
     ap.add_argument('--student', required=True, help='Local TinyBERT student snapshot')
     ap.add_argument('--out', required=True)
+    ap.add_argument('--stage', choices=['teacher','student','all'], default='all')
+    ap.add_argument('--device', choices=['cuda','cpu'], default='cuda')
+    ap.add_argument('--smoke', action='store_true', help='Two queries per split and two training steps; no performance conclusions')
     args=ap.parse_args()
     ROOT=Path(args.out); ROOT.mkdir(parents=True,exist_ok=True)
     DATA=Path(args.data_root); TEACHER=Path(args.teacher); STUDENT=Path(args.student)
-    teacher_id='cross-encoder/ms-marco-MiniLM-L12-v2@7b0235231ca2674cb8ca8f022859a6eba2b1c968'
-    if not torch.cuda.is_available(): raise SystemExit('CUDA unavailable')
+    DEVICE=args.device
+    if DEVICE=='cuda' and not torch.cuda.is_available(): raise SystemExit('CUDA unavailable')
+    if args.smoke: STEPS=2
     torch.set_num_threads(2); reset()
     queries={x['_id']:x['text'] for x in read_jsonl(DATA/'scifact/queries.jsonl')}
     docs={x['_id']:(x.get('title','')+' '+x['text']).strip() for x in read_jsonl(DATA/'scifact/corpus.jsonl')}
     pools=json.loads((DATA/'prepared/pools.json').read_text())
     assert not (set(pools['train']) & (set(pools['dev'])|set(pools['test'])))
+    if args.smoke: pools={s:dict(list(rows.items())[:2]) for s,rows in pools.items()}
     trainpairs=list(dict.fromkeys((q,str(d)) for q,row in pools['train'].items() for d in row['relevant']+row['unjudged']))
     evalpairs=list(dict.fromkeys((q,str(d)) for split in ('dev','test') for q,row in pools[split].items() for d,_ in row['pool']))
     allpairs=list(dict.fromkeys(trainpairs+evalpairs))
-    write('manifest.json',{'seed':SEED,'max_length':MAXLEN,'steps':STEPS,'batch_queries':BATCH,'temperature':TEMP,'distill_weight':WEIGHT,'teacher':teacher_id,'student':'cross-encoder/ms-marco-TinyBERT-L2-v2@81d1926f67cb8eee2c2be17ca9f793c7c3bd20cc','pools_sha256':sha(DATA/'prepared/pools.json'),'counts':{s:len(pools[s]) for s in pools},'pairs':{'teacher_train':len(trainpairs),'eval':len(evalpairs)},'caveats':'student trained on MS MARCO; unjudged != guaranteed negative; query-held-out, documents can overlap'})
-    t,m=model(TEACHER); eval_ts,eval_seconds=score(m,t,evalpairs); train_ts,train_seconds=score(m,t,trainpairs); ts={**eval_ts,**train_ts}; teacher_eval={'seconds':eval_seconds,'train_scoring_seconds':train_seconds,**{s:metrics(pools[s],eval_ts) for s in ('dev','test')}}; write('teacher-scores.json',ts); write('teacher-eval.json',teacher_eval); del m,t; torch.cuda.empty_cache()
+    manifest={'seed':SEED,'max_length':MAXLEN,'steps':STEPS,'batch_queries':BATCH,'temperature':TEMP,'distill_weight':WEIGHT,'teacher_path':str(TEACHER.resolve()),'student_path':str(STUDENT.resolve()),'pools_sha256':sha(DATA/'prepared/pools.json'),'corpus_sha256':sha(DATA/'scifact/corpus.jsonl'),'queries_sha256':sha(DATA/'scifact/queries.jsonl'),'counts':{s:len(pools[s]) for s in pools},'pairs':{'teacher_train':len(trainpairs),'eval':len(evalpairs)},'smoke':args.smoke,'caveats':'unjudged != guaranteed negative; query-held-out, documents can overlap'}
+    if args.stage in ('teacher','all'):
+        write('manifest.json',manifest)
+        write('teacher-status.json',{'state':'running'})
+        t,m=model(TEACHER); eval_ts,eval_seconds=score(m,t,evalpairs); train_ts,train_seconds=score(m,t,trainpairs); ts={**eval_ts,**train_ts}; teacher_eval={'seconds':eval_seconds,'train_scoring_seconds':train_seconds,**{s:metrics(pools[s],eval_ts) for s in ('dev','test')}}; write('teacher-scores.json',ts); write('teacher-eval.json',teacher_eval); del m,t; torch.cuda.empty_cache()
+        write('teacher-status.json',{'state':'complete','scores_sha256':sha(ROOT/'teacher-scores.json'),'eval_sha256':sha(ROOT/'teacher-eval.json')})
+        if args.stage=='teacher': return
+    else:
+        if json.loads((ROOT/'manifest.json').read_text()) != manifest: raise SystemExit('Data, pools, models or run settings differ from teacher stage')
+        status=json.loads((ROOT/'teacher-status.json').read_text())
+        if status != {'state':'complete','scores_sha256':sha(ROOT/'teacher-scores.json'),'eval_sha256':sha(ROOT/'teacher-eval.json')}: raise SystemExit('Teacher stage incomplete or outputs changed')
+        ts=json.loads((ROOT/'teacher-scores.json').read_text()); teacher_eval=json.loads((ROOT/'teacher-eval.json').read_text())
+        if set(ts)!={f'{q}:{d}' for q,d in allpairs}: raise SystemExit('Teacher scores do not match candidate pairs')
     t,m=model(STUDENT); ss,seconds=score(m,t,evalpairs); student_eval={'seconds':seconds,**{s:metrics(pools[s],ss) for s in ('dev','test')}}; write('student-before-scores.json',ss); write('student-before.json',student_eval); del m,t; torch.cuda.empty_cache()
     if teacher_eval['dev']['ndcg10'] <= student_eval['dev']['ndcg10']:
         write('stopped.json',{'reason':'teacher dev NDCG@10 not greater than student; training skipped','teacher':teacher_eval['dev']['ndcg10'],'student':student_eval['dev']['ndcg10']}); return

@@ -33,7 +33,7 @@ $$s_S(q,d)=\sum_i\max_j \widehat{q_i}^{\mathsf T}\widehat{d_j}.$$
 
 [run.py](run.py) 是本次训练与评估脚本，需提供 `--data`（包含 corpus.jsonl、queries.jsonl）、`--source`（包含 manifest.json、teacher.json）、`--model` 和 `--output`；加 `--smoke` 先运行小样本。脚本要求 Linux、CUDA、PyLate，默认离线读取模型；数据清单应记录每条查询的 `id`、`candidates` 和 `relevant`，教师文件需要按查询 ID 保存候选顺序一致的 `scores`。脚本含 50 GiB 可用内存下限，这是此次设备上的保护设置，不是模型的普遍最低配置。
 
-**复现边界：**当前没有公开生成固定候选清单和教师打分的完整流水线，教师权重 revision 也尚未完全核定，因此现有脚本不能从零一键精确复现结果。更换清单、教师模型版本或环境后，应重新生成分数并单独报告结果；不要把本次数值视为所有场景的模型排名。
+**复现边界：**已提供候选池和教师打分脚本，但真实 8B 教师打分的新脚本尚未重新运行验证，因此现阶段不能声称从零精确复现原分数。更换清单、教师模型版本或环境后，应重新生成分数并单独报告结果；不要把本次数值视为所有场景的模型排名。
 
 模型卡分别标记学生为 MIT、教师为 Apache-2.0；数据集使用请同时遵循其原始来源许可。
 
@@ -46,3 +46,17 @@ python recompute_metrics.py
 ```
 
 脚本以固定种子进行 10,000 次配对 bootstrap，并检查均值、区间和变化方向数量与汇总文件一致。该文件可复算汇总统计，无法单独验证每条指标由候选排序和标签正确计算；学生三组的逐条指标此前已使用原始 qrels 独立复算，教师逐条指标沿用教师运行记录。
+
+## 从数据准备候选与教师分数
+
+候选准备脚本 [prepare_pools.py](prepare_pools.py) 使用 [BEIR SciFact](https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/scifact.zip) 和 [SciFact 原始训练 claims](https://github.com/allenai/scifact)；先按证据句筛选正例，过滤跨分组高相似查询，再用 BM25 生成候选。配置见 [pool_config.json](pool_config.json)。BEIR 的四个输入文件 SHA-256 和原始 claims 的 SHA-256 见 [source-hashes.json](source-hashes.json)。本次复算在 CPU 上重建的 pools.json 与原始运行文件 SHA-256 完全一致（`e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8`）。
+
+```bash
+python prepare_pools.py --data /path/to/scifact --original-claims /path/to/claims_train.jsonl --config pool_config.json --out /path/to/prepared
+python prepare_teacher.py --data /path/to/scifact --pools /path/to/prepared/pools.json --model /path/to/Qwen3-Embedding-8B --device cuda --out /path/to/source
+python run.py --data /path/to/scifact --source /path/to/source --model /path/to/colbert --output /path/to/output --smoke
+```
+
+[prepare_teacher.py](prepare_teacher.py) 以种子 20261107 选训练查询，编码带任务指令的查询与标题加摘要，输出按候选顺序排列的余弦分数。它的 `--synthetic-encoder` 使用确定性伪向量，仅用于 CPU 数据接口冒烟，不能用于模型评估；本次 CPU 冒烟生成的训练及测试候选清单与原实验逐项一致。真实模型打分路径尚未重跑，且计算实现与原始向量点积不同，结果可能存在浮点误差。
+
+本机教师的四片 safetensors SHA-256 与 [Hugging Face revision 1d8ad4ca](https://huggingface.co/Qwen/Qwen3-Embedding-8B/tree/1d8ad4ca9b3dd8059ad90a75d4983776a23d44af) 的 LFS 元数据一致；配置、分词器及池化配置也完成内容哈希对照。匹配这些文件支持模型权重与关键配置的来源判断，但并非对运行环境和仓库中全部文件的完整复现证明。
