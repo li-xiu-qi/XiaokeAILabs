@@ -36,6 +36,8 @@ $$L=L_{LM}+0.1\left(1-\frac{1}{B}\sum_{i=1}^{B}\cos(z_{q,i},z_{a,i})\right)$$
 
 进一步检查发现，同一组样本的前向损失会随设备、批处理、填充长度和注意力实现明显变化。对照过程及其局限见[填充与精度排查](PADDING-AND-PRECISION.md)；历史训练日志差异的完整原因仍未确定。
 
+[逐层与局部归约对照](PADDING-LAYER-PROBE.md)将观察缩小到首层基础投影，但局部数值变化不代表整模型已经修复。
+
 ## 复现路径
 
 1. 准备单 GPU 环境及本地 Qwen2.5-1.5B-Instruct 模型，记录模型修订和许可；本次运行未记录模型 revision，不能保证逐位复现；依赖应与上面的版本对齐。作者代码为 [Apache-2.0](https://github.com/galilai-group/llm-jepa/blob/main/LICENSE)，模型和依赖各有自己的许可。
