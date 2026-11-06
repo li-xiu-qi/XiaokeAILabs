@@ -1,0 +1,66 @@
+[
+  {
+    "id": "eval-00",
+    "prompt": "Soft ripples widen across a tranquil pond, fixed camera.",
+    "seed": 810,
+    "sha256": "2b8ba677bc4041571ead7975d1e3f904f5a407c38af622b1fcda6587ecba42cb",
+    "video": {
+      "width": 512,
+      "height": 512,
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "49"
+    },
+    "steps": 30,
+    "cfg": 5.0,
+    "sampler": "euler",
+    "scheduler": "simple"
+  },
+  {
+    "id": "eval-01",
+    "prompt": "Gentle circular waves expand on pale blue water, fixed camera.",
+    "seed": 811,
+    "sha256": "7d698732eb9ce5e03de12af68aeb03ad1c10c49864eedb896abf3f1fcf7820b9",
+    "video": {
+      "width": 512,
+      "height": 512,
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "49"
+    },
+    "steps": 30,
+    "cfg": 5.0,
+    "sampler": "euler",
+    "scheduler": "simple"
+  },
+  {
+    "id": "eval-02",
+    "prompt": "Water rings spread slowly over a smooth reflective pond, fixed camera.",
+    "seed": 812,
+    "sha256": "6c8d80818d42a5f94241bfaadb2636bf35c0c6c8fbb9e6999eaa4f2c56a2d1ab",
+    "video": {
+      "width": 512,
+      "height": 512,
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "49"
+    },
+    "steps": 30,
+    "cfg": 5.0,
+    "sampler": "euler",
+    "scheduler": "simple"
+  },
+  {
+    "id": "eval-03",
+    "prompt": "A quiet pool shows slowly expanding circular ripples, fixed camera.",
+    "seed": 813,
+    "sha256": "b6bcf28c14fc26ac0c65349777900a9eef8cd181d69f76af0c33a9d1b44c01b7",
+    "video": {
+      "width": 512,
+      "height": 512,
+      "r_frame_rate": "24/1",
+      "nb_read_frames": "49"
+    },
+    "steps": 30,
+    "cfg": 5.0,
+    "sampler": "euler",
+    "scheduler": "simple"
+  }
+]

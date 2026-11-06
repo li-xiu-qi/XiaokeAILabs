@@ -70,14 +70,16 @@ python scripts/compare.py --baseline results/baseline --lora results/lora
 
 ### 视频与许可
 
-四组均提供训练前和训练后完整输出，可直接审阅：
+四组均提供教师、学生训练前和训练后的完整输出，可直接审阅。教师视频以 ComfyUI 在 512 × 512 下生成，学生视频以 Diffusers 在 480 × 480 下生成；两者模型和采样路径不同，相同 seed 不代表相同噪声轨迹。教师输出用于观察样本而非公平画质排名，学生训练前后才共享模型、尺寸和采样设置。
 
-| 留出组 | 学生基线 | LoRA 后 |
-| --- | --- | --- |
-| 00 | [视频](results/baseline/eval-00.mp4) | [视频](results/lora/eval-00.mp4) |
-| 01 | [视频](results/baseline/eval-01.mp4) | [视频](results/lora/eval-01.mp4) |
-| 02 | [视频](results/baseline/eval-02.mp4) | [视频](results/lora/eval-02.mp4) |
-| 03 | [视频](results/baseline/eval-03.mp4) | [视频](results/lora/eval-03.mp4) |
+| 留出组 | 教师 | 学生基线 | LoRA 后 |
+| --- | --- | --- | --- |
+| 00 | [视频](results/teacher/eval-00.mp4) | [视频](results/baseline/eval-00.mp4) | [视频](results/lora/eval-00.mp4) |
+| 01 | [视频](results/teacher/eval-01.mp4) | [视频](results/baseline/eval-01.mp4) | [视频](results/lora/eval-01.mp4) |
+| 02 | [视频](results/teacher/eval-02.mp4) | [视频](results/baseline/eval-02.mp4) | [视频](results/lora/eval-02.mp4) |
+| 03 | [视频](results/teacher/eval-03.mp4) | [视频](results/baseline/eval-03.mp4) | [视频](results/lora/eval-03.mp4) |
+
+教师视频的提示词、种子、采样配置和 SHA-256 见[留出记录](results/teacher/manifest.json)。
 
 视频由本次实验的文本提示生成，不含实拍人物。教师和学生模型卡分别标注 [Wan2.2 TI2V 5B](https://huggingface.co/Wan-AI/Wan2.2-TI2V-5B) 与 [Wan2.1 T2V 1.3B](https://huggingface.co/Wan-AI/Wan2.1-T2V-1.3B-Diffusers) 为 Apache-2.0；实际运行的教师文件来自 [Comfy-Org 的适配发布](https://huggingface.co/Comfy-Org/Wan-2.2)。使用和再分发模型时仍应遵守相应许可及署名要求。仓库中的视频是实验输出，不包含模型权重。
 
