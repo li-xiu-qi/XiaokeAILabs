@@ -1,0 +1,31 @@
+{
+  "model": "<USER_HOME>/.cache/huggingface/hub/models--stable-diffusion-v1-5--stable-diffusion-v1-5/snapshots/451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+  "revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+  "lora": "runs/student-lora",
+  "torch": "2.14.0+cu130",
+  "diffusers": "0.39.0.dev0",
+  "scheduler": "PNDMScheduler",
+  "scheduler_config": {
+    "num_train_timesteps": 1000,
+    "beta_start": 0.00085,
+    "beta_end": 0.012,
+    "beta_schedule": "scaled_linear",
+    "trained_betas": null,
+    "skip_prk_steps": true,
+    "set_alpha_to_one": false,
+    "prediction_type": "epsilon",
+    "timestep_spacing": "leading",
+    "steps_offset": 1,
+    "_use_default_values": [
+      "timestep_spacing",
+      "prediction_type"
+    ],
+    "_class_name": "PNDMScheduler",
+    "_diffusers_version": "0.6.0",
+    "clip_sample": false
+  },
+  "device": "NVIDIA GB10",
+  "steps": 30,
+  "guidance": 7.5,
+  "size": 512
+}

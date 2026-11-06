@@ -1,0 +1,75 @@
+{
+  "queries": 300,
+  "metrics": {
+    "baseline": {
+      "ndcg10": 0.6535620970230077,
+      "mrr10": 0.6261746031746032
+    },
+    "supervised": {
+      "ndcg10": 0.6685718213649874,
+      "mrr10": 0.6452195767195767
+    },
+    "distilled": {
+      "ndcg10": 0.6653103237837339,
+      "mrr10": 0.642079365079365
+    },
+    "teacher": {
+      "ndcg10": 0.7340567992140955,
+      "mrr10": 0.7043624338624338
+    }
+  },
+  "comparisons": {
+    "distilled_vs_baseline": {
+      "mean": 0.011748226760726212,
+      "paired_bootstrap_95": [
+        0.0012127474571352055,
+        0.02218470308389879
+      ],
+      "up": 32,
+      "down": 19,
+      "same": 249
+    },
+    "distilled_vs_supervised": {
+      "mean": -0.003261497581253513,
+      "paired_bootstrap_95": [
+        -0.011334204961709513,
+        0.004103879014589087
+      ],
+      "up": 16,
+      "down": 17,
+      "same": 267
+    }
+  },
+  "target_met": false,
+  "runtime": {
+    "baseline": {
+      "training": {},
+      "eval_seconds": 34.435794834047556,
+      "peak_allocated": 571849216,
+      "parameter_count": 109580544
+    },
+    "supervised": {
+      "training": {
+        "steps": 128,
+        "batch_queries": 4,
+        "lr": 3e-06,
+        "seconds": 26.34242674615234
+      },
+      "eval_seconds": 34.82985994196497,
+      "peak_allocated": 3734425088,
+      "parameter_count": 109580544
+    },
+    "distilled": {
+      "training": {
+        "steps": 128,
+        "batch_queries": 4,
+        "lr": 3e-06,
+        "seconds": 26.338305382989347
+      },
+      "eval_seconds": 35.13425442785956,
+      "peak_allocated": 3734425088,
+      "parameter_count": 109580544
+    }
+  },
+  "limitations": "One seed, test queries held out, shared documents, fixed candidate reranking; 39 candidate pools have no labelled relevant document."
+}

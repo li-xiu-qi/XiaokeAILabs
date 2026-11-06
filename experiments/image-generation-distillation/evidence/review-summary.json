@@ -1,0 +1,98 @@
+{
+  "n_prompts": 32,
+  "n_images": 96,
+  "by_arm": {
+    "teacher": {
+      "object_correct": {
+        "yes": 23,
+        "no": 9,
+        "missing": 0
+      },
+      "background_correct": {
+        "yes": 11,
+        "no": 21,
+        "missing": 0
+      },
+      "complete_subject": {
+        "yes": 25,
+        "no": 7,
+        "missing": 0
+      },
+      "obvious_artifact": {
+        "yes": 14,
+        "no": 18,
+        "missing": 0
+      }
+    },
+    "student-before": {
+      "object_correct": {
+        "yes": 24,
+        "no": 8,
+        "missing": 0
+      },
+      "background_correct": {
+        "yes": 13,
+        "no": 19,
+        "missing": 0
+      },
+      "complete_subject": {
+        "yes": 21,
+        "no": 11,
+        "missing": 0
+      },
+      "obvious_artifact": {
+        "yes": 12,
+        "no": 20,
+        "missing": 0
+      }
+    },
+    "student-after": {
+      "object_correct": {
+        "yes": 27,
+        "no": 5,
+        "missing": 0
+      },
+      "background_correct": {
+        "yes": 15,
+        "no": 17,
+        "missing": 0
+      },
+      "complete_subject": {
+        "yes": 26,
+        "no": 6,
+        "missing": 0
+      },
+      "obvious_artifact": {
+        "yes": 7,
+        "no": 25,
+        "missing": 0
+      }
+    }
+  },
+  "student_before_after_pairs": {
+    "object_correct": {
+      "before_0_after_1": 6,
+      "before_1_after_0": 3,
+      "unchanged": 23,
+      "missing": 0
+    },
+    "background_correct": {
+      "before_0_after_1": 3,
+      "before_1_after_0": 1,
+      "unchanged": 28,
+      "missing": 0
+    },
+    "complete_subject": {
+      "before_0_after_1": 7,
+      "before_1_after_0": 2,
+      "unchanged": 23,
+      "missing": 0
+    },
+    "obvious_artifact": {
+      "before_0_after_1": 1,
+      "before_1_after_0": 6,
+      "unchanged": 25,
+      "missing": 0
+    }
+  }
+}

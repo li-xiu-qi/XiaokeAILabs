@@ -1,0 +1,386 @@
+{
+  "dfb651fb29db": {
+    "id": "heldout-000",
+    "arm": "teacher"
+  },
+  "9563b0830194": {
+    "id": "heldout-000",
+    "arm": "student-before"
+  },
+  "fef208b2b305": {
+    "id": "heldout-000",
+    "arm": "student-after"
+  },
+  "88365660e3d0": {
+    "id": "heldout-001",
+    "arm": "teacher"
+  },
+  "943041fe3c59": {
+    "id": "heldout-001",
+    "arm": "student-before"
+  },
+  "229faa1ec783": {
+    "id": "heldout-001",
+    "arm": "student-after"
+  },
+  "83bf488109dd": {
+    "id": "heldout-002",
+    "arm": "teacher"
+  },
+  "188ff01a4156": {
+    "id": "heldout-002",
+    "arm": "student-before"
+  },
+  "fdfafad2135c": {
+    "id": "heldout-002",
+    "arm": "student-after"
+  },
+  "ad9ce263a4ec": {
+    "id": "heldout-003",
+    "arm": "teacher"
+  },
+  "0ca9960bc8e4": {
+    "id": "heldout-003",
+    "arm": "student-before"
+  },
+  "9fdbb2fd443a": {
+    "id": "heldout-003",
+    "arm": "student-after"
+  },
+  "ddd3f7c08ebe": {
+    "id": "heldout-004",
+    "arm": "teacher"
+  },
+  "8736849b6694": {
+    "id": "heldout-004",
+    "arm": "student-before"
+  },
+  "363824cd362d": {
+    "id": "heldout-004",
+    "arm": "student-after"
+  },
+  "741bfae47ad9": {
+    "id": "heldout-005",
+    "arm": "teacher"
+  },
+  "ddd6cceea0b4": {
+    "id": "heldout-005",
+    "arm": "student-before"
+  },
+  "c1f00e0ea8ba": {
+    "id": "heldout-005",
+    "arm": "student-after"
+  },
+  "65aee5c5a6bd": {
+    "id": "heldout-006",
+    "arm": "teacher"
+  },
+  "09843d99a280": {
+    "id": "heldout-006",
+    "arm": "student-before"
+  },
+  "a7b892291993": {
+    "id": "heldout-006",
+    "arm": "student-after"
+  },
+  "01d0f652dfac": {
+    "id": "heldout-007",
+    "arm": "teacher"
+  },
+  "0825f8367fd2": {
+    "id": "heldout-007",
+    "arm": "student-before"
+  },
+  "ca3280c97f4e": {
+    "id": "heldout-007",
+    "arm": "student-after"
+  },
+  "e8daaae2d635": {
+    "id": "heldout-008",
+    "arm": "teacher"
+  },
+  "dc52b572eab9": {
+    "id": "heldout-008",
+    "arm": "student-before"
+  },
+  "5959ca419347": {
+    "id": "heldout-008",
+    "arm": "student-after"
+  },
+  "fabcdf6cf933": {
+    "id": "heldout-009",
+    "arm": "teacher"
+  },
+  "520023fdd2ef": {
+    "id": "heldout-009",
+    "arm": "student-before"
+  },
+  "39d86c1d82e4": {
+    "id": "heldout-009",
+    "arm": "student-after"
+  },
+  "3699f968e29d": {
+    "id": "heldout-010",
+    "arm": "teacher"
+  },
+  "6449ac7d2aad": {
+    "id": "heldout-010",
+    "arm": "student-before"
+  },
+  "03459aab493d": {
+    "id": "heldout-010",
+    "arm": "student-after"
+  },
+  "a7d66685efda": {
+    "id": "heldout-011",
+    "arm": "teacher"
+  },
+  "e505dbf535a3": {
+    "id": "heldout-011",
+    "arm": "student-before"
+  },
+  "b252f14ba541": {
+    "id": "heldout-011",
+    "arm": "student-after"
+  },
+  "50d82b57c0a7": {
+    "id": "heldout-012",
+    "arm": "teacher"
+  },
+  "821e335eabba": {
+    "id": "heldout-012",
+    "arm": "student-before"
+  },
+  "95440407ba4d": {
+    "id": "heldout-012",
+    "arm": "student-after"
+  },
+  "cfc0fb21f6ff": {
+    "id": "heldout-013",
+    "arm": "teacher"
+  },
+  "4a3f000505cf": {
+    "id": "heldout-013",
+    "arm": "student-before"
+  },
+  "814135025914": {
+    "id": "heldout-013",
+    "arm": "student-after"
+  },
+  "e1e362978ccc": {
+    "id": "heldout-014",
+    "arm": "teacher"
+  },
+  "240a06ea7859": {
+    "id": "heldout-014",
+    "arm": "student-before"
+  },
+  "624b26191bbc": {
+    "id": "heldout-014",
+    "arm": "student-after"
+  },
+  "834dec86cad3": {
+    "id": "heldout-015",
+    "arm": "teacher"
+  },
+  "47c146d628a5": {
+    "id": "heldout-015",
+    "arm": "student-before"
+  },
+  "5f2e97a19e80": {
+    "id": "heldout-015",
+    "arm": "student-after"
+  },
+  "8e7bd83e9468": {
+    "id": "heldout-016",
+    "arm": "teacher"
+  },
+  "0758e553e9e6": {
+    "id": "heldout-016",
+    "arm": "student-before"
+  },
+  "207e19d8b2aa": {
+    "id": "heldout-016",
+    "arm": "student-after"
+  },
+  "8bad27bb62c3": {
+    "id": "heldout-017",
+    "arm": "teacher"
+  },
+  "1686615588fd": {
+    "id": "heldout-017",
+    "arm": "student-before"
+  },
+  "0eb52124ff38": {
+    "id": "heldout-017",
+    "arm": "student-after"
+  },
+  "f5bcc4c69981": {
+    "id": "heldout-018",
+    "arm": "teacher"
+  },
+  "028be0481ed9": {
+    "id": "heldout-018",
+    "arm": "student-before"
+  },
+  "32def3118d0d": {
+    "id": "heldout-018",
+    "arm": "student-after"
+  },
+  "784c2582403e": {
+    "id": "heldout-019",
+    "arm": "teacher"
+  },
+  "d4939eac0334": {
+    "id": "heldout-019",
+    "arm": "student-before"
+  },
+  "8af3b87fa17f": {
+    "id": "heldout-019",
+    "arm": "student-after"
+  },
+  "fc8de80448fa": {
+    "id": "heldout-020",
+    "arm": "teacher"
+  },
+  "088db5b2e178": {
+    "id": "heldout-020",
+    "arm": "student-before"
+  },
+  "a4a6a697157b": {
+    "id": "heldout-020",
+    "arm": "student-after"
+  },
+  "83952a81b08b": {
+    "id": "heldout-021",
+    "arm": "teacher"
+  },
+  "bbdefa372305": {
+    "id": "heldout-021",
+    "arm": "student-before"
+  },
+  "b1d05dd09524": {
+    "id": "heldout-021",
+    "arm": "student-after"
+  },
+  "8f344ddb46f8": {
+    "id": "heldout-022",
+    "arm": "teacher"
+  },
+  "9dc39d3f9aa3": {
+    "id": "heldout-022",
+    "arm": "student-before"
+  },
+  "9df57355841b": {
+    "id": "heldout-022",
+    "arm": "student-after"
+  },
+  "3c351bf96cea": {
+    "id": "heldout-023",
+    "arm": "teacher"
+  },
+  "73bfddefa99c": {
+    "id": "heldout-023",
+    "arm": "student-before"
+  },
+  "10975c2ec05a": {
+    "id": "heldout-023",
+    "arm": "student-after"
+  },
+  "79d1b9561563": {
+    "id": "heldout-024",
+    "arm": "teacher"
+  },
+  "3711e847c542": {
+    "id": "heldout-024",
+    "arm": "student-before"
+  },
+  "9db25c2cc1f3": {
+    "id": "heldout-024",
+    "arm": "student-after"
+  },
+  "619819bf27a3": {
+    "id": "heldout-025",
+    "arm": "teacher"
+  },
+  "ef182dd3eb0f": {
+    "id": "heldout-025",
+    "arm": "student-before"
+  },
+  "ed8ee39b3310": {
+    "id": "heldout-025",
+    "arm": "student-after"
+  },
+  "c3270c0f1fb2": {
+    "id": "heldout-026",
+    "arm": "teacher"
+  },
+  "b51c18eaa924": {
+    "id": "heldout-026",
+    "arm": "student-before"
+  },
+  "73cea91a45af": {
+    "id": "heldout-026",
+    "arm": "student-after"
+  },
+  "cb70f60db045": {
+    "id": "heldout-027",
+    "arm": "teacher"
+  },
+  "1daaff7baa09": {
+    "id": "heldout-027",
+    "arm": "student-before"
+  },
+  "67aaf98bb48d": {
+    "id": "heldout-027",
+    "arm": "student-after"
+  },
+  "1ec0fea5aa50": {
+    "id": "heldout-028",
+    "arm": "teacher"
+  },
+  "446e08a33b9a": {
+    "id": "heldout-028",
+    "arm": "student-before"
+  },
+  "f37adaf747cf": {
+    "id": "heldout-028",
+    "arm": "student-after"
+  },
+  "ccf367fad0ad": {
+    "id": "heldout-029",
+    "arm": "teacher"
+  },
+  "00800ca186f9": {
+    "id": "heldout-029",
+    "arm": "student-before"
+  },
+  "88b0232857f8": {
+    "id": "heldout-029",
+    "arm": "student-after"
+  },
+  "ecda853d0d6b": {
+    "id": "heldout-030",
+    "arm": "teacher"
+  },
+  "b9c0b4a97403": {
+    "id": "heldout-030",
+    "arm": "student-before"
+  },
+  "5494cf4b8c44": {
+    "id": "heldout-030",
+    "arm": "student-after"
+  },
+  "fef7bbaeaf9d": {
+    "id": "heldout-031",
+    "arm": "teacher"
+  },
+  "15c8ad32eca5": {
+    "id": "heldout-031",
+    "arm": "student-before"
+  },
+  "6470aabc77c5": {
+    "id": "heldout-031",
+    "arm": "student-after"
+  }
+}

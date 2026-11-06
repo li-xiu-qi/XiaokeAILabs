@@ -1,0 +1,50 @@
+{
+  "baseline": {
+    "hit": 24,
+    "total": 30,
+    "invalid_coordinates": 0,
+    "per_source": {
+      "gitlab": {
+        "hits": 5,
+        "total": 10
+      },
+      "ios": {
+        "hits": 9,
+        "total": 10
+      },
+      "windows": {
+        "hits": 10,
+        "total": 10
+      }
+    },
+    "median_generation_seconds": 0.3778935639420524
+  },
+  "finetuned": {
+    "hit": 25,
+    "total": 30,
+    "invalid_coordinates": 0,
+    "per_source": {
+      "gitlab": {
+        "hits": 6,
+        "total": 10
+      },
+      "ios": {
+        "hits": 9,
+        "total": 10
+      },
+      "windows": {
+        "hits": 10,
+        "total": 10
+      }
+    },
+    "median_generation_seconds": 0.4002410840475932
+  },
+  "paired_improvements": 2,
+  "paired_regressions": 1,
+  "hit_rate_delta": 0.03333333333333333,
+  "paired_bootstrap_95": [
+    -0.06666666666666667,
+    0.16666666666666666
+  ],
+  "limits": "30 non-random examples; confidence interval samples only these examples; point-in-box is not task success."
+}

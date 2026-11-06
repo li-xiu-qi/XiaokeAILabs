@@ -1,0 +1,20 @@
+{
+  "dataset": "PrentisAI/GroundGUI_RL",
+  "dataset_revision": "6ecc90819dca07dc92d69d6ec8df4a951c9715d2",
+  "train_samples": 128,
+  "seed": 20261107,
+  "batch": 1,
+  "gradient_accumulation": 4,
+  "steps": 32,
+  "lr": 0.0002,
+  "lora_r": 8,
+  "lora_alpha": 16,
+  "loss": "causal LM cross entropy on assistant coordinate tokens only",
+  "elapsed_seconds": 49.966534873936325,
+  "device": "NVIDIA GB10",
+  "torch": "2.14.0+cu130",
+  "transformers": "5.16.1",
+  "peft": "0.20.0",
+  "dtype": "bfloat16",
+  "peak_allocated_bytes": 5701475328
+}
