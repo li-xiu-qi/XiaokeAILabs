@@ -51,4 +51,32 @@ ColSmol 的发布权重是 adapter，需要先加载指定底模，再加载 ada
 
 模型及底模仓库元数据标记 MIT，底模卡正文说明骨干为 Apache-2.0、adapter 为 MIT；模型卡许可正文另有 ColQwen2 文案，重新分发权重前应核对具体文件及上游许可。ViDoRe 数据集卡标记 MIT，仍应遵守原始 DocVQA 及源文档的适用条件。本目录不再分发数据集页面、问题文本或模型权重。
 
-微调和蒸馏尚未开展。后续若做对照，需要先固定与测试文档来源隔离的训练集，比较原模型、同预算监督训练和教师分数蒸馏，再使用独立留出文档评估。
+我们还在自生成页面上完成了一个小规模监督微调，见下节。教师分数蒸馏尚未开展。
+
+## 合成报表上的 LoRA 微调
+
+为了检查多向量模型能否按页面内容学习检索，我们生成了 160 张虚构运营报表，每页有站点编号及收入、发货量、库存三个字段。查询要求找到包含指定字段和数值的报表。480 个字段数值全局唯一，也与所有页眉编号不同，不能只靠站点编号匹配。数据由 [generate_synthetic.py](generate_synthetic.py) 生成，不使用上述 DocVQA 页面。
+
+按站点实体划分：训练 96 页、验证 32 页、测试 32 页，每页三条查询；页面哈希全部不同，三个分组的实体互不重合。相同版式和提问模板仍贯穿分组，数字匹配也可能形成捷径，因此这只是受控流程测试，不代表对真实文档、不同版式或语义理解的泛化能力。生成脚本使用本机 DejaVu Sans 字体；字体版本不同可能改变图片像素。
+
+从已训练 ColSmol adapter 继续做 LoRA 监督训练，使用查询与配对页面的多向量，以及同批另一页面作为负例。ColPali Engine 的 `ColbertLoss` 对按查询长度归一化的 MaxSim 分数做批内交叉熵：
+
+$$\mathcal L=-\frac{1}{B}\sum_i\log\frac{\exp(\bar{s}(q_i,d_i)/\tau)}{\sum_j\exp(\bar{s}(q_i,d_j)/\tau)},\quad\tau=0.02.$$
+
+训练固定 8 步、批次 2、AdamW 学习率 1e-5、种子 20261107。先用验证页做 2 步 smoke，再比较训练前后 96 条测试问题对同一组 32 页的检索结果：
+
+| 条件 | Recall@1 | Recall@5 |
+|---|---:|---:|
+| 原模型 | 87/96 = 0.9063 | 96/96 = 1.0000 |
+| 微调后 | 88/96 = 0.9167 | 96/96 = 1.0000 |
+
+共有 3 条由非第一名变为第一名、2 条从第一名下降，净增 **1/96**。这不是足以证明稳定收益的结果：只训练一个种子，96 条问题来自 32 张页面，样本也并不独立。原模型的高基线和单一模板进一步限制判断。峰值 PyTorch 分配约 7.68 GiB，不等于整机内存占用；没有做教师蒸馏或等预算其他方法对照。
+
+```bash
+python generate_synthetic.py --output synthetic
+HF_HUB_OFFLINE=1 python train_synthetic.py --root synthetic --base base --adapter model --out train-smoke --smoke
+HF_HUB_OFFLINE=1 python train_synthetic.py --root synthetic --base base --adapter model --out train-formal --steps 8
+python recompute_training.py
+```
+
+训练脚本依赖前节相同软件和 GPU；运行时保留 50 GiB 可用内存监控。公开的 [synthetic-train-results.json](synthetic-train-results.json) 包含逐查询名次与损失，不含模型权重。复算脚本检查两个指标并统计变化，但无法仅凭名次核实原始模型输出。本机以公开生成脚本重建数据时，`records.json` 的 SHA-256 与原运行一致。合成文本和页面由脚本直接生成，不含外部数据集内容。
