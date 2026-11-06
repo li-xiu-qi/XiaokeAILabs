@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-07",
+  "model": "Wan2.2 TI2V 5B FP16",
+  "text_encoder": "UMT5 XXL FP16",
+  "vae": "Wan2.2 VAE",
+  "weights_sha256": {
+    "diffusion_model": "456f901338bd9eadbded3828b819109a9b68e8a525ca5cf8d0049a69fcfeca1e",
+    "text_encoder": "7b8850f1961e1cf8a77cca4c964a358d303f490833c6c087d0cff4b2f99db2af",
+    "vae": "e40321bd36b9709991dae2530eb4ac303dd168276980d3e9bc4b6e2b75fed156"
+  },
+  "adapter": null,
+  "width": 512,
+  "height": 512,
+  "frames": 49,
+  "fps": 24,
+  "steps": 30,
+  "seed": 42,
+  "sampler": "euler",
+  "scheduler": "simple",
+  "shift": 5.0,
+  "guidance": 5.0,
+  "runs": [
+    {
+      "prompt": "mivora, a 2D illustrated person standing in a garden and turning around.",
+      "file": "prompt01_00001_.mp4",
+      "sha256": "95107f1724651afdd4aaffc6a6b292da4c0ccfe13c4510f25239642630373f1a",
+      "minimum_available_kib": 95538812
+    },
+    {
+      "prompt": "mivora, a 2D illustrated person walking beside a blue lake.",
+      "file": "prompt02_00001_.mp4",
+      "sha256": "ca088bff60cbcb7433948711e8eecd4d637e13fce3c6697a9436c6c1d1ea80bc",
+      "minimum_available_kib": 95152564
+    }
+  ]
+}
