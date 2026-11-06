@@ -1,0 +1,12 @@
+0.00.018.291 E ggml_cuda_init: failed to initialize CUDA: no CUDA-capable device is detected
+warning: no usable GPU found, --gpu-layers option will be ignored
+warning: one possible reason is that llama.cpp was compiled without GPU support
+warning: consult docs/build.md for compilation instructions
+0.00.304.615 W load: control-looking token: 128247 '</s>' was not control-type; this is probably a bug in the model. its type will be overridden
+0.00.379.136 I cmn          init: llama threadpool init, n_threads = 4
+0.00.397.034 I
+0.00.397.113 I system_info: n_threads = 4 (n_threads_batch = 4) / 20 | CUDA : ARCHS = 1210 | USE_GRAPHS = 1 | CPU : NEON = 1 | ARM_FMA = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 |
+0.00.397.122 I perplexity: tokenizing the input ..
+0.00.739.577 I perplexity: tokenization took 342.449 ms
+0.00.739.641 I perplexity: calculating perplexity over 4 chunks, n_ctx=512, batch_size=128, n_seq=1
+0.03.515.413 I perplexity: 2.78 seconds per pass - ETA 0.11.540.341 I Final estimate: PPL = 20.8566 +/- 2.33258

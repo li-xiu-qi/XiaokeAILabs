@@ -16,6 +16,7 @@
 - [向量数据库基准](experiments/vector-db-benchmark/README.md)：历史数据缺少原始结果，不用于产品排名。
 - [扩散语言模型速度对照](experiments/diffusion-language-models/README.md)：在三道问题上比较两种生成路径；输出长度与质量不同。
 - [LLM 推理性能](experiments/llm-inference-perf/README.md)：模型与推理配置的性能分析。
+- [语言模型量化](experiments/llm-mechanics/quantization/README.md)：对照权重体积、困惑度与 CPU 速度；BF16 路径性能异常。
 - [LLM 机制](experiments/llm-mechanics/README.md)：通过示例理解生成机制。
 - [推理成本模型](experiments/inference-cost-models/README.md)：内存算例与理论模型，性能估算尚未经独立验证。
 - [数据结构成本](experiments/data-structure-costs/README.md)：分析数据结构和数据格式的成本。

@@ -6,7 +6,7 @@
 
 | 目录 | 环节 | 内容 |
 |---|---|---|
-| `quantization/` | 加载侧：模型怎么进显存 | bitsandbytes 8bit 量化配置、量化与不量化加载对照 |
+| [`quantization/`](quantization/README.md) | 模型权重：体积与精度如何取舍 | Qwen3-0.6B 的 BF16、Q4_K_M 与 Q8_0 CPU 实测 |
 | `tokenizer/` | 输入侧：文本怎么变成 token id | BPE 从零实现与库训练、SentencePiece、tiktoken、Qwen tokenizer 实测、jieba 与 ngram 对照 |
 | `logit_and_sampling/` | 输出侧：模型怎么选出下一个词 | logits 到概率分布、argmax 贪心解码、temperature 与 top_k 采样 |
 | `kv_cache/` | 推理性能：自回归为什么重复计算、怎么省 | 手动实现 KV Cache、有无缓存的实测对比、预测机制拆解 |
@@ -21,7 +21,7 @@
 
 `kv_cache/`：`test_kv_cache.ipynb` 是核心，先写无缓存生成（每步重算全序列），再手写 KV Cache 版本逐 token 拼接，最后实测耗时差异并澄清缓存的真实适用场景；`model_predict.ipynb` 解释一次前向为什么能给出所有位置的预测，是缓存生效的前提。
 
-`quantization/`：`quantize_qwen.py` 单文件。用 `BitsAndBytesConfig` 配 8bit（`llm_int8_threshold=6.0`），同一脚本封装量化开关与 4bit/8bit/bf16/fp16/fp32 多条加载路径，跑之前把权重放到 `MODEL_PATH` 指向的本地目录。与 `inference-cost-models` 的量化成本模型互补：那边算「量化省多少显存」的公式，这边跑「怎么加载」。
+`quantization/`：以相同 Qwen3-0.6B 权重比较 GGUF 文件体积、WikiText-2 小样本困惑度与 CPU 推理速度。BF16 路径速度异常，不能把本次速度差推广为通用量化收益。
 
 ## 运行环境
 
