@@ -1,0 +1,18 @@
+{
+  "train": [
+    {"id":"train-00","seed":610,"prompt":"Small circular ripples spread slowly on calm blue water, fixed camera."},
+    {"id":"train-01","seed":611,"prompt":"Soft rings spread across a still pond in daylight, fixed camera."},
+    {"id":"train-02","seed":612,"prompt":"Gentle concentric ripples expand on a quiet blue pond, fixed camera."},
+    {"id":"train-03","seed":613,"prompt":"A small water ripple slowly expands on a calm pond, fixed camera."},
+    {"id":"train-04","seed":614,"prompt":"Circular ripples drift outward on smooth water under soft light, fixed camera."},
+    {"id":"train-05","seed":615,"prompt":"A close view of gentle rings spreading on still water, fixed camera."},
+    {"id":"train-06","seed":616,"prompt":"Ripples spread over a calm blue water surface, fixed camera."},
+    {"id":"train-07","seed":617,"prompt":"Slow concentric waves move outward on a quiet pond, fixed camera."}
+  ],
+  "eval": [
+    {"id":"eval-00","seed":810,"prompt":"Soft ripples widen across a tranquil pond, fixed camera."},
+    {"id":"eval-01","seed":811,"prompt":"Gentle circular waves expand on pale blue water, fixed camera."},
+    {"id":"eval-02","seed":812,"prompt":"Water rings spread slowly over a smooth reflective pond, fixed camera."},
+    {"id":"eval-03","seed":813,"prompt":"A quiet pool shows slowly expanding circular ripples, fixed camera."}
+  ]
+}

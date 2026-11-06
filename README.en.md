@@ -12,6 +12,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Multimodal embedding distillation](experiments/multimodal-embedding-distillation/README.md): Explore knowledge transfer from a vision-language retrieval teacher to a compact student.
 - [Multimodal reranking](experiments/multimodal-reranking/README.md): Explore reranking image-text candidates with anonymized evaluation results.
 - [GUI grounding fine-tuning](experiments/gui-grounding-finetuning/README.md): Train screenshot-and-instruction grounding; 30 held-out samples do not establish generalization gains.
+- [Video generation trained on teacher samples](experiments/video-generation-distillation/README.md): Four held-out video pairs; six post-selected training examples do not establish quality gains.
 - [Image generation with synthetic training data](experiments/image-generation-distillation/README.md): Train a student LoRA on teacher-generated data; results rely on one AI reviewer.
 - [Vector database benchmark](experiments/vector-db-benchmark/README.md): Historical records lack raw results and do not support product rankings.
 - [Diffusion language model speed](experiments/diffusion-language-models/README.md): Compare generation paths on three prompts with unequal output lengths and unmeasured quality.

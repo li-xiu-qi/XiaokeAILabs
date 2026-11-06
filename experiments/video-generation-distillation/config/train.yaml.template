@@ -1,0 +1,42 @@
+job: extension
+config:
+  name: water_exploratory_wan21_lora
+  process:
+    - type: sd_trainer
+      training_folder: __OUTPUT__
+      device: cuda:0
+      network:
+        type: lora
+        linear: 8
+        linear_alpha: 8
+      save:
+        dtype: float16
+        save_every: 50
+        max_step_saves_to_keep: 4
+        push_to_hub: false
+      datasets:
+        - folder_path: __DATA__
+          caption_ext: txt
+          caption_dropout_rate: 0.0
+          num_frames: 49
+          fps: 24
+          resolution: [480]
+      train:
+        batch_size: 1
+        steps: 200
+        gradient_accumulation_steps: 1
+        train_unet: true
+        train_text_encoder: false
+        gradient_checkpointing: true
+        cache_text_embeddings: true
+        noise_scheduler: flowmatch
+        optimizer: adamw
+        lr: 0.0001
+        dtype: bf16
+        skip_first_sample: true
+        disable_sampling: true
+      model:
+        name_or_path: __MODEL__
+        arch: wan21
+        quantize: false
+        quantize_te: false

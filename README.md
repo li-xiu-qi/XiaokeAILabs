@@ -12,6 +12,7 @@
 - [多模态 Embedding 蒸馏](experiments/multimodal-embedding-distillation/README.md)：探索图文检索教师与轻量学生之间的知识迁移。
 - [多模态重排序](experiments/multimodal-reranking/README.md)：探索图文候选的重排序，并查看匿名化评测结果。
 - [GUI 定位微调](experiments/gui-grounding-finetuning/README.md)：训练截图与指令到坐标的映射；30 个留出样本不足以证明泛化提升。
+- [教师视频训练水波纹生成模型](experiments/video-generation-distillation/README.md)：对照四组留出视频；事后筛选的六条训练样本不足以证明质量提升。
 - [合成数据训练文生图模型](experiments/image-generation-distillation/README.md)：用教师合成数据训练学生 LoRA；结果基于单名 AI 评审。
 - [向量数据库基准](experiments/vector-db-benchmark/README.md)：历史数据缺少原始结果，不用于产品排名。
 - [扩散语言模型速度对照](experiments/diffusion-language-models/README.md)：在三道问题上比较两种生成路径；输出长度与质量不同。
