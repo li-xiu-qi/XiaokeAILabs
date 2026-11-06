@@ -1,154 +1,58 @@
-# 人脸身份 LoRA 微调实验
+# 用 LoRA 微调 SDXL 的人物身份
 
-> 用 20 张照片让 SDXL 底模学会画一个它本来画不出来的人。这里写清测什么、
-> 结论是什么、数字怎么来的。
+[English](README.en.md) · [图片微调入口](../README.md)
 
-## 20 张照片把相似度从 −0.017 拉到 0.3232
+给通用图像生成模型一小组人物照片和一个触发词，能否让它生成带有该人物特征的画面？本实验以一个身份为例，介绍数据准备、LoRA 训练、生成和人脸特征评估。该方法可用于经授权的人物内容制作，是否可用仍取决于身份相似度、生成质量和测试场景。
 
-数据：CelebA 单人身份（`celeb_id=14`），20 张训练 / 10 张测试。数据集照片及包含照片的比较图未在当前版本分发；已有 Git 历史中仍包含旧文件。
+## 结果与限制
 
-相似度 = 生成图与本人测试集的 ArcFace embedding 余弦相似度。
+历史记录采用 CelebA 的一个身份，20 张训练照片、10 张留出参考照片。ArcFace 将人脸编码为向量，以生成图和目标参考向量的余弦相似度衡量接近程度。均值只包含检测到人脸的生成图。
 
-| 生成方式 | vs 本人 | 分辨率 | 说明 |
-|---|---|---|---|
-| 底模（无 LoRA） | **−0.017** | 768px | 画出来的是另一个人 |
-| 微调后 1000 步（扫描峰值） | **0.3232** | 512px | 同一个人 |
-| 微调后 2000 步（过训） | 0.2461 | 512px | 训练过量的反例 |
-| 参照：这个人自己的照片之间 | 0.7159 | 原图 | 「同一个人」的水平线 |
+| 条件 | 分辨率 | 检出数 | 目标相似度均值 |
+|---|---:|---:|---:|
+| 未微调基线 | 768×768 | 12/20 | −0.0172 |
+| LoRA 500 步 | 512×512 | 6/10 | 0.3110 |
+| LoRA 1000 步 | 512×512 | 7/10 | 0.3232 |
+| LoRA 2000 步 | 512×512 | 9/10 | 0.2461 |
 
-「扫描峰值」不等于唯一最优：500 步的 0.3110 与 1000 步的 0.3232 之差检验不过
-（Welch t，p≈0.76，n=6 对 7），而 1000 步到 2000 步的 0.0772 下降是实的
-（p≈0.009）。也就是说数据支持「1000 附近达到平台、再往后掉」，不支持「1000 是精确
-最优点」。详见下面「步间 0.01 量级的差异」一节。
+来源：[基线记录](docs/evidence/baseline.json)及[检查点记录](docs/evidence/checkpoint_scan.json)。这些汇总由旧脚本结果转录，原始生成图片、模型 revision、依赖版本和完整训练日志没有全部保存。表中两个分辨率不同，**不能把基线与 LoRA 分数相减视为微调带来的提升**。扫描结果显示不同检查点的观测均值不同，但每步有效样本只有 6 至 9 张、仅一个身份，不能确定最佳步数，也不能确定下降是否由过拟合造成。
 
-**前两行不能直接相减。** 底模基线在 768px 生成，检查点扫描在 512px 生成。分辨率
-影响 ArcFace 可用的像素量，所以 0.3232 与 −0.017 之间的差距里含有分辨率的贡献，
-不能全部算作微调的效果。
+1000 步记录中，同一批可检测生成图对目标和一个其他身份的平均相似度分别为 0.3232 和 0.0546，说明此批次更接近目标参考；这不能证明人物身份可靠识别或证明对其他身份同样有效。20 张训练照片对目标测试参考的相似度均值为 0.7159，但这不是生成结果的理论上限，不应据此计算「学会百分之多少」。原图为 178×218，低分辨率值得关注，但现有实验未控制原图分辨率，因此不能断言它是主要瓶颈。
 
-同一分辨率内部的比较不受影响：500 / 1000 / 1500 / 2000 步都在 512px 下测，净差
-（同一批生成图对本人 vs 对他人的相似度之差）也在同一批图内部计算。要让底模基线与
-微调结果同口径，用 `score_generations.py baseline --size 512` 生成 512px 基线；
-脚本会拒绝把不同分辨率的两个数并列成一个差值。
+训练图和测试参考按照片划分，来源仍是同一身份：同一拍摄环境或近似照片可能让结果偏乐观。该实验没有多身份、跨场景或人工身份评价；人脸未检出的生成图也不应被忽略。
 
-## 两个对照排除「脸本来就像」的假阳性
+## 原理与输入输出
 
-评估同时算两个对照，原始数据在 `docs/evidence/baseline.json` 与
-`checkpoint_scan.json`：
+SDXL 从噪声出发，在文本条件引导下逐步去噪生成图像。LoRA 不直接更新全部权重，而用低秩增量近似部分权重的变化：
 
-- **负对照**：同一批微调后的生成图，与另一个人的相似度只有 0.0546——模型学到的
-  是这个特定身份，不是一张通用的人脸。0.3232 与 0.0546 的净差 0.27。
-- **正对照**：这个人自己的训练集 vs 测试集相似度 0.7159，是「同一个人」的上界。
-  微调后 0.3232 约为上界的 45%——方向对，但没学满，这也是下一步的靶子。
+$$W_{\mathrm{adapted}} = W_0 + \frac{\alpha}{r}BA$$
 
-底模对这一身份的输出与对陌生人无法区分（−0.017 vs 0.0249，p≈0.075），说明靶子是真的：
-提示词描述不出一张具体的脸，而 20 张照片的 LoRA 可以。
+其中 $W_0$ 是冻结的原权重，$A$ 和 $B$ 是训练的低秩矩阵，$r$ 是秩；实际实现的缩放还取决于训练框架。训练输入为图像及 caption，训练过程对加噪图像及文本条件计算去噪目标，具体预测目标与损失应以所用工具和版本为准。本次配置训练 UNet，不训练文本编码器。
 
-两个对照都在同一批生成图内部比较，因此不受上面那个分辨率差异影响。
+推理时输入文字提示词、随机种子及 LoRA 权重，输出生成图片。触发词是 caption 的一部分，不是内置的身份数据库；模型是否真的学到身份，需要在未见照片、不同提示词和同条件底模对照中验证。
 
-## 源图 178×218，放大到 512 训练
+## 数据与配置
 
-20 张训练图全部来自 CelebA（HuggingFace `flwrlabs/celeba`），按 `celeb_id` 切出、
-交替切分，测试集不进训练。训练时放大到 512——源数据本身撑不住更高清晰度，这是
-实验的主要瓶颈。
+- 数据：CelebA 单个身份，20 张训练、10 张测试参考；数据按照片而非身份划分。[数据集协议](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html)限定非商业研究并禁止进一步发布或分发数据集，使用时也应核对人物授权。
+- 底模：SDXL base；本次未保留模型 revision。LoRA rank 32、alpha 32、dropout 0.05。
+- 训练：512×512、batch 1、学习率 1e-4、2000 步，每 500 步保存一次；详细配置见 [YAML](config/face_identity_lora.yaml)。
+- 评估：RetinaFace 检测后用 ArcFace 编码；目标、负对照与同人参考的原始聚合数据见上面的 JSON。InsightFace 权重及底模均有各自许可。
 
-训练前对数据做过审查：身份一致性、跨身份污染、重复与训练/测试泄漏、质量四项机器
-检查全部通过（`check_dataset.py`，不过审非零退出），训练集与测试集联系表经人工
-目检后才开训。
+## 操作路径
 
-## 训练配置：rank 32、lr 1e-4、2000 步
-
-- 底模：SDXL base
-- LoRA：linear rank 32 / alpha 32 / dropout 0.05，lr 1e-4 adamw，bf16，EMA 0.99
-- 步数 2000（20 张 × 100 epoch），save_every 500
-- 训练分辨率 512（源图 178×218）
-- caption：`vkqzm, a photo of a person`
-- 评估：同提示词模板（仅多 trigger）、同 seed（1000+i）、同采样器、同分辨率
-
-## 微调有效，但只学到正对照的 45%
-
-底模对该身份的输出与陌生人无法区分（−0.017 vs 0.0249，Welch t 检验 p≈0.075，分不开），
-微调后 0.3232，与负对照的净差 0.27（p<0.001）。方向是对的，但 0.3232 对正对照
-0.7159 只有约 45%——没学满。检查点扫描每轮生成 10 张，人脸检出 6 到 9 张（1000 步 7
-张），检出率本身也说明生成的人脸还不够稳。
-
-## 瓶颈是源图分辨率，不是训练参数
-
-检查点扫描 500 / 1000 / 1500 / 2000 步 → 0.3110 / 0.3232 / 0.2518 / 0.2461，1000 步
-之后下滑，是过拟合（1000 vs 2000：p≈0.009）。第二组实验降 lr、减步数、加 caption
-dropout 想压过拟合，结果反而略降（800 步 0.2623）——说明限制不在训练参数。原图仅
-178×218，放大训练时 LoRA 学到的是插值模糊，这个上限不是调参能突破的。
-
-## 步间 0.01 量级的差异超出样本量能区分的范围
-
-按 `vs target` 选峰值是 1000 步（0.3232），按 `net gain`（对本人减去对他人）
-则是 500 步（+0.3114），两个指标不一致。原因是负对照本身在 ±0.05 间浮动，而 500 步
-那批图的负对照恰好接近 0。取 1000 步的理由是 `vs target` 更直接对应「像不像这个人」，
-且 1500 / 2000 步的下降是单调的，峰值位置比具体差值可靠。
-
-用 Welch t 检验逐对核过（n=6 到 9，样本小，结论只作参考）：500 vs 1000 的 0.0122
-差距 p≈0.76，分不出；1000 vs 2000 的 0.0772 差距 p≈0.009，站得住。这与「1000 附近
-是平台、2000 明显掉下来」一致，但不足以支持在 500 与 1000 之间做取舍。
-
-样本量是这份结论最大的软肋：每行 5 到 12 张图，标准差 0.05 量级，步与步之间
-0.01 到 0.02 的差别不足以下判断。要更硬的结论，应把每步生成数提到 50 张以上。
-
-下一步：换 1024² 数据源（如 CelebA-HQ）或同一身份更多张，重跑同口径评估。
-
-## 复现
-
-环境：Python 3.10+、CUDA GPU、[ai-toolkit](https://github.com/ostris/ai-toolkit)。
+以下命令应从本目录运行；需要提前安装相应 Python 依赖、获得数据和模型权重，并按训练环境检查 YAML 中的数据路径。逐张原始训练图与模型权重不随仓库发布，现有记录无法确保精确复跑。评估脚本拒绝复用已有输出目录；如需再跑，设置新的 `FACE_OUT_DIR`。
 
 ```bash
-# 0. 评估栈：onnxruntime + insightface，并检查 ArcFace 权重是否就位
-bash scripts/install_eval_stack.sh
-
-# 1. 数据：从 HF parquet 切出一个身份，交替划分训练/测试，写训练 caption
 python scripts/build_dataset.py --parquet /path/to/celeba_shard0.parquet --also-negative
-
-# 2. 审查：四项机器检查，不过审非零退出（train_lora.sh 会自动再跑一遍）
 python scripts/check_dataset.py
-
-# 3. 训练（配置见 config/face_identity_lora.yaml）
 AI_TOOLKIT=/path/to/ai-toolkit/run.py bash scripts/train_lora.sh
 
-# 4. 评估：底模基线 → 微调后 → 全检查点扫描（三者必须同 --size）
-python scripts/score_generations.py baseline --size 512
-python scripts/score_generations.py lora --size 512 --lora output/face_identity_lora/face_identity_lora.safetensors
-python scripts/score_generations.py scan --size 512 --run-dir output/face_identity_lora
+# 全局参数放在子命令之前；同分辨率下重新生成基线和检查点
+python scripts/score_generations.py --size 512 baseline
+python scripts/score_generations.py --size 512 lora --lora /path/to/adapter.safetensors
+python scripts/score_generations.py --size 512 scan --run-dir /path/to/checkpoints
 ```
 
-路径都走环境变量，不写死在脚本里：
+评估脚本现在显式配置 DPM-Solver++；历史结果在脚本重构前生成，本次未用修正后的脚本重新生成旧数据。要评估微调效果，应重新运行同尺寸、采样器、随机种子和提示词模板匹配的底模与 LoRA 对照，并报告所有生成图片及检测失败数。
 
-| 变量 | 默认值 | 说明 |
-|---|---|---|
-| `FACE_EXP_ROOT` | 本仓检出目录 | 实验根目录 |
-| `FACE_DATA_DIR` | `$FACE_EXP_ROOT/data` | 数据根，下面按 `celeb_<id>/{train,test}` 组织 |
-| `FACE_MODELS_DIR` | `~/.insightface/models/buffalo_l` | ArcFace 两个 onnx 的位置 |
-| `FACE_OUT_DIR` | `$FACE_EXP_ROOT/output` | 评估产物与图片 |
-| `FACE_TARGET_ID` | `14` | 被测身份 |
-| `FACE_NEGATIVE_ID` | `15` | 负对照身份 |
-| `SDXL_BASE` | `stabilityai/stable-diffusion-xl-base-1.0` | 底模，本地路径或 HF id |
-| `AI_TOOLKIT` | `~/ai-toolkit/run.py` | ai-toolkit 入口 |
-
-评估栈：ArcFace `w600k_r50.onnx`（R50，512 维）+ RetinaFace `det_10g.onnx`，
-onnxruntime + insightface。两个权重从 InsightFace `buffalo_l` 发布包获取，
-本仓不转存。
-
-## 目录结构
-
-```
-config/
-  face_identity_lora.yaml              2000 步 / lr 1e-4 / 无 caption dropout
-  face_identity_lora_regularized.yaml  800 步 / lr 5e-5 / dropout 0.15（对过拟合的尝试）
-docs/evidence/                         对比图、训练/测试集、原始 metrics JSON
-scripts/
-  face_lib.py            共享：路径解析、生成参数、ArcFace 编码器、相似度统计
-  build_dataset.py       切出身份、交替划分、写 caption、生成 manifest
-  check_dataset.py       四项机器检查，不过审以非零码退出
-  install_eval_stack.sh  安装评估栈并校验权重
-  train_lora.sh          ai-toolkit 训练入口，开训前跑一遍数据检查
-  score_generations.py   三个子命令：baseline / lora / scan
-```
-
-`data/` 与 `output/` 不入库：数据由 `build_dataset.py` 从 CelebA 重新导出，
-评估产物按 run 可重新生成。
+主要脚本：`build_dataset.py` 导出数据与 caption，`check_dataset.py` 检查样本，`train_lora.sh` 调用训练器，`score_generations.py` 生成并评估。训练器、模型和评估权重的使用条件应分别查看上游许可。

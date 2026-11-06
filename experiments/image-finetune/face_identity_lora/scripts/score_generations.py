@@ -54,7 +54,7 @@ DEFAULT_SIZE = 512
 def load_pipeline(lora: str | Path | None = None):
     torch = _require("torch")
     try:
-        from diffusers import StableDiffusionXLPipeline
+        from diffusers import DPMSolverMultistepScheduler, StableDiffusionXLPipeline
     except ImportError as exc:
         raise SystemExit(
             "missing dependency: diffusers\nthe evaluation stack needs "
@@ -64,6 +64,11 @@ def load_pipeline(lora: str | Path | None = None):
     pipe = StableDiffusionXLPipeline.from_pretrained(
         SDXL_BASE, torch_dtype=torch.bfloat16, use_safetensors=True, variant=None
     ).to("cuda")
+    # The recorded sampler must describe what actually runs, rather than the
+    # scheduler shipped as the checkpoint's default.
+    pipe.scheduler = DPMSolverMultistepScheduler.from_config(
+        pipe.scheduler.config, algorithm_type="dpmsolver++"
+    )
     if lora is not None:
         pipe.load_lora_weights(str(lora))
     pipe.set_progress_bar_config(disable=True)
@@ -147,7 +152,7 @@ def print_gain(scored: dict, size: int, baseline: dict | None) -> None:
         print(
             f"\n  baseline was generated at {baseline.get('size')}px, this run at {size}px.\n"
             "  Similarity is not comparable across resolutions, so no difference is shown.\n"
-            f"  Re-run `score_generations.py baseline --size {size}` to get a matching one."
+            f"  Re-run `score_generations.py --size {size} baseline` in a fresh output directory."
         )
         return
     print(f"  base model         : {baseline['vs_target']['mean']:+.4f}   <- same settings")
@@ -158,7 +163,7 @@ def cmd_baseline(args) -> None:
     refs = references(encoder)
     report_reference(refs)
 
-    out_dir = prepare_output_dir("baseline")
+    out_dir = prepare_output_dir("baseline", reject_existing=True)
     pipe = load_pipeline()
     records = generate(pipe, PROMPT_BASE, args.n, args.size, out_dir, "base_s")
     scored = score(records, refs)
@@ -189,11 +194,10 @@ def cmd_baseline(args) -> None:
     print("\n=== base model, no LoRA ===")
     print(f"  vs target identity : {scored['vs_target']['mean']:+.4f}")
     print(f"  vs other identity  : {scored['vs_other']['mean']:+.4f}")
-    print(f"  same-person ceiling: {refs['cross_split']['mean']:.4f}")
+    print(f"  same-person reference: {refs['cross_split']['mean']:.4f}")
     print(
-        "\nInterpretation: if the base model scores near zero against the target and\n"
-        "no higher than against a stranger, it cannot draw this person — the target\n"
-        "is real and the LoRA has something to prove."
+        "\nInterpret scores for this sample alongside detection rate and matched\n"
+        "generation settings. They do not establish identity accuracy on their own."
     )
     print(f"result -> {path}")
 
@@ -203,7 +207,7 @@ def cmd_lora(args) -> None:
     refs = references(encoder)
     report_reference(refs)
 
-    out_dir = prepare_output_dir("lora")
+    out_dir = prepare_output_dir("lora", reject_existing=True)
     pipe = load_pipeline(args.lora)
     records = generate(pipe, PROMPT_WITH_LORA, args.n, args.size, out_dir, "lora_s")
     scored = score(records, refs)
@@ -245,7 +249,7 @@ def cmd_scan(args) -> None:
     encoder = FaceEncoder()
     refs = references(encoder)
     report_reference(refs)
-    out_root = prepare_output_dir("scan")
+    out_root = prepare_output_dir("scan", reject_existing=True)
 
     rows = []
     for ckpt in checkpoints:
@@ -300,10 +304,8 @@ def cmd_scan(args) -> None:
             "  the `vs target` peak, and read `n` before trusting either."
         )
     print(
-        "\nA peak followed by a decline is overfitting; stop at the peak.\n"
-        "Big n differences between steps are generation luck, not a property of the\n"
-        "checkpoint — the same seed can yield a detectable face at one step and not\n"
-        "at another."
+        "\nReview checkpoint differences alongside sample counts and detection failures.\n"
+        "A small scan alone does not establish the cause of a decline."
     )
 
 

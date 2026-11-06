@@ -145,7 +145,8 @@ def summary(values: list[float]) -> dict | None:
     }
 
 
-def prepare_output_dir(*parts: str) -> Path:
+def prepare_output_dir(*parts: str, reject_existing: bool = False) -> Path:
     path = OUT_DIR.joinpath(*parts)
-    path.mkdir(parents=True, exist_ok=True)
+    # Evaluation uses reject_existing to preserve previous measurements.
+    path.mkdir(parents=True, exist_ok=not reject_existing)
     return path

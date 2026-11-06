@@ -9,13 +9,15 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Embedding distillation](experiments/embedding-distillation/README.md): Transfer teacher scores to a smaller embedding model; candidate preparation scripts are included.
 - [Reranker distillation](experiments/reranker-distillation/README.md): Compare supervised training and score distillation on a fixed candidate pool.
 - [ColBERT distillation](experiments/colbert-distillation/README.md): Compare score distillation with supervised learning; distillation did not beat the supervised baseline.
-- [Visual multi-vector document retrieval](experiments/visual-multivector-retrieval/README.en.md): A ColSmol baseline on 100 fixed candidate pages; no fine-tuning.
+- [Visual multi-vector document retrieval](experiments/visual-multivector-retrieval/README.en.md): A page-retrieval baseline plus supervised fine-tuning and distillation comparisons on synthetic pages.
 - [Multimodal embedding distillation](experiments/multimodal-embedding-distillation/README.md): Explore knowledge transfer from a vision-language retrieval teacher to a compact student.
 - [Multimodal reranking](experiments/multimodal-reranking/README.md): Explore reranking image-text candidates with anonymized evaluation results.
 - [GUI grounding fine-tuning](experiments/gui-grounding-finetuning/README.md): Train screenshot-and-instruction grounding; 30 held-out samples do not establish generalization gains.
 - [Video generation trained on teacher samples](experiments/video-generation-distillation/README.md): Four held-out teacher, before, and after videos; six post-selected training examples do not establish quality gains. Teacher and student use different resolutions and inference engines.
 - [Image generation with synthetic training data](experiments/image-generation-distillation/README.md): Train a student LoRA on teacher-generated data; results rely on one AI reviewer. See the [paired analysis](experiments/image-generation-distillation/PAIRED-ANALYSIS.md#english) for an exploratory category breakdown and its limits.
+- [Identity image fine-tuning](experiments/image-finetune/README.en.md): Train an identity LoRA; the historical base and adapted outputs use different resolutions and are not directly comparable.
 - [Vector database benchmark](experiments/vector-db-benchmark/README.md): Historical records lack raw results and do not support product rankings.
+- [Vector index costs](experiments/vector-index-costs/README.md): Compare recall, time and storage across Flat, IVF, HNSW and quantized indexes.
 - [Language JEPA training](experiments/language-jepa/README.md): A toy arithmetic comparison of the original model, LoRA, and JEPA; not evidence of improvement.
 - [Diffusion language model speed](experiments/diffusion-language-models/README.md): Compare generation paths on three prompts with unequal output lengths and unmeasured quality.
 - [GB10 inference slots](experiments/gb10-inference/qwen36-35b-ab/README.md): Compare throughput and completion times for one versus eight slots on the same model and engine.
