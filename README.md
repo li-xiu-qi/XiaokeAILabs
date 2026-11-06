@@ -21,6 +21,7 @@
 - [推理成本模型](experiments/inference-cost-models/README.md)：内存算例与理论模型，性能估算尚未经独立验证。
 - [数据结构成本](experiments/data-structure-costs/README.md)：分析数据结构和数据格式的成本。
 - [人像抠像](experiments/portrait-matting/README.md)：评估 30 张单帧照片的主体、边界与推理时间；不能代表视频性能。
+- [表格结构识别](experiments/table-structure-recognition/README.md)：用一张合成表格观察裁剪与结构预测，不涵盖文字识别。
 - [MiniCPM-OCR](experiments/minicpm-ocr/README.md)：文档识别部署与生成加速。
 - [Jina CLIP OpenVINO](experiments/jina-clip-openvino/README.md)：比较 CPU 和 NPU 的正确性与特定负载性能。
 - [Jev 开源方案评测](experiments/jev-open-source/README.md)：比较社区方案的小样本决策表现。

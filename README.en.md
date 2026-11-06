@@ -21,6 +21,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Inference cost models](experiments/inference-cost-models/README.md): Memory examples and theoretical models; performance estimates have not been independently validated.
 - [Data structure costs](experiments/data-structure-costs/README.md): Analyze the costs of data structures and formats.
 - [Portrait matting](experiments/portrait-matting/README.md): Evaluate subject regions, boundaries, and forward time on 30 still images; results do not establish video performance.
+- [Table structure recognition](experiments/table-structure-recognition/README.md): Examine cropping and structure predictions on one synthetic table; text recognition is out of scope.
 - [MiniCPM-OCR](experiments/minicpm-ocr/README.md): Document recognition deployment and generation acceleration.
 - [Jina CLIP OpenVINO](experiments/jina-clip-openvino/README.md): Compare CPU and NPU correctness and workload-specific performance.
 - [Jev open-source evaluation](experiments/jev-open-source/README.md): Compare community implementations on a small decision-making sample.
