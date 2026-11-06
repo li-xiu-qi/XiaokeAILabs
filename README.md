@@ -9,6 +9,7 @@
 - [Embedding 蒸馏](experiments/embedding-distillation/README.md)：用大模型分数训练小型向量模型；提供候选池准备脚本。
 - [重排序蒸馏](experiments/reranker-distillation/README.md)：对照监督训练与教师分数蒸馏，了解固定候选上的排序变化。
 - [ColBERT 蒸馏](experiments/colbert-distillation/README.md)：比较教师分数蒸馏与标签监督；本次蒸馏未超过监督基线。
+- [视觉文档多向量检索](experiments/visual-multivector-retrieval/README.md)：ColSmol 在 100 页固定候选集上的检索基线；未开展微调。
 - [多模态 Embedding 蒸馏](experiments/multimodal-embedding-distillation/README.md)：探索图文检索教师与轻量学生之间的知识迁移。
 - [多模态重排序](experiments/multimodal-reranking/README.md)：探索图文候选的重排序，并查看匿名化评测结果。
 - [GUI 定位微调](experiments/gui-grounding-finetuning/README.md)：训练截图与指令到坐标的映射；30 个留出样本不足以证明泛化提升。

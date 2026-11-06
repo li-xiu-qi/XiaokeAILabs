@@ -9,6 +9,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Embedding distillation](experiments/embedding-distillation/README.md): Transfer teacher scores to a smaller embedding model; candidate preparation scripts are included.
 - [Reranker distillation](experiments/reranker-distillation/README.md): Compare supervised training and score distillation on a fixed candidate pool.
 - [ColBERT distillation](experiments/colbert-distillation/README.md): Compare score distillation with supervised learning; distillation did not beat the supervised baseline.
+- [Visual multi-vector document retrieval](experiments/visual-multivector-retrieval/README.en.md): A ColSmol baseline on 100 fixed candidate pages; no fine-tuning.
 - [Multimodal embedding distillation](experiments/multimodal-embedding-distillation/README.md): Explore knowledge transfer from a vision-language retrieval teacher to a compact student.
 - [Multimodal reranking](experiments/multimodal-reranking/README.md): Explore reranking image-text candidates with anonymized evaluation results.
 - [GUI grounding fine-tuning](experiments/gui-grounding-finetuning/README.md): Train screenshot-and-instruction grounding; 30 held-out samples do not establish generalization gains.
