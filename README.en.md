@@ -23,7 +23,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Vector index costs](experiments/vector-index-costs/README.en.md): Compare recall, time and storage across Flat, IVF, HNSW and quantized indexes.
 - [Language JEPA training](experiments/language-jepa/README.md): A toy arithmetic comparison of the original model, LoRA, and JEPA; not evidence of improvement.
 - [Diffusion language model speed](experiments/diffusion-language-models/README.md): Compare generation paths on three prompts with unequal output lengths and unmeasured quality.
-- [GB10 inference slots](experiments/gb10-inference/qwen36-35b-ab/README.md): Compare throughput and completion times for one versus eight slots on the same model and engine.
+- [GB10 inference slots](experiments/gb10-inference/qwen36-35b-ab/README.en.md): Compare throughput and completion times for one versus eight slots on the same model and engine.
 - [LLM inference performance](experiments/llm-inference-perf/README.en.md): Performance analysis across models and inference configurations.
 - [Language model quantization](experiments/llm-mechanics/quantization/README.md): Compare model size, perplexity, and CPU speed; the BF16 path performed unusually slowly.
 - [LLM mechanics](experiments/llm-mechanics/README.md): Understand text generation through examples.
