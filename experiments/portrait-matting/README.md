@@ -75,6 +75,7 @@ python scripts/run_rvm_ppm.py \
 ```bash
 python scripts/test_score_mattes.py
 python scripts/test_run_rvm_ppm.py
+python scripts/audit_summary.py
 ```
 
-这些测试使用合成数据与模拟预测器，检查指标、预处理衔接、结果写出和校验失败；它们不运行 RVM，不能代替真实模型与设备测试。
+前两个测试使用合成数据与模拟预测器，检查指标、预处理衔接、结果写出和校验失败。最后一个脚本从公开的逐图数值复算宏平均及前向时间，不需要原始人物图片；由于原始图像和预测 alpha 不公开，它不能重新计算每张图的指标。这些检查都不运行 RVM，不能代替真实模型与设备测试。

@@ -75,6 +75,7 @@ Metrics are calculated per image, then averaged equally. A missing intermediate 
 ```bash
 python scripts/test_score_mattes.py
 python scripts/test_run_rvm_ppm.py
+python scripts/audit_summary.py
 ```
 
-These synthetic tests cover metrics, preprocessing, output and integrity checks using a mock predictor. They do not run RVM or replace a real model and hardware evaluation.
+The first two synthetic tests cover metrics, preprocessing, output and integrity checks using a mock predictor. The last script recomputes aggregate metrics and forward times from the published per-image numbers without the original portraits. It cannot recalculate individual metrics because the source images and predicted alpha mattes are not public. None of these checks runs RVM or replaces a real model and hardware evaluation.
