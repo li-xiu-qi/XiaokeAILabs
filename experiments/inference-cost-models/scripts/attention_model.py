@@ -4,7 +4,7 @@ Counts QK^T and AV multiply-adds for full, non-causal matrices only.
 GQA still has one score matrix per query head. Hybrid linear-attention layers,
 projections, masks and kernel-specific intermediates are not included.
 """
-from llm_spec import Qwen3_8_27B
+from types import SimpleNamespace
 
 
 def attention_flops(model, ctx_len: int, batch: int = 1) -> float:
@@ -22,8 +22,10 @@ def attn_score_matrix_gb(model, ctx_len: int, batch: int = 1, bytes_per_element:
 
 
 def self_test():
-    m = Qwen3_8_27B
-    print("Dense non-causal attention estimate; excludes hybrid linear layers")
+    # Synthetic dimensions, not a claim about a particular published model.
+    m = SimpleNamespace(head_dim=256, num_attention_heads=24, kv_layers=16)
+    print("Synthetic example: 16 full-attention layers, 24 query heads, head dim 256")
+    print("Dense non-causal attention estimate; excludes other layer types")
     for s in (1024, 8192, 32768):
         print(f"S={s:6d}: attention={attention_flops(m, s):.3e} FLOPs; "
               f"one-layer BF16 score matrix={attn_score_matrix_gb(m, s):.3f} GB")

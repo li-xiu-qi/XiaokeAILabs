@@ -55,6 +55,12 @@ class CostTests(unittest.TestCase):
     def test_rejects_unsupported_inputs_and_unverified_fit(self):
         with self.assertRaises(ValueError):
             kv_cache_gb(16, 4, 256, 1, kv_quant='unknown')
+        for invalid in (float('nan'), float('inf'), 1.5, -1, True):
+            with self.assertRaises(ValueError):
+                kv_cache_gb(16, 4, 256, invalid)
+        for invalid in (float('nan'), float('inf'), -1):
+            with self.assertRaises(ValueError):
+                estimate_memory_gb(1, 2, invalid)
         with self.assertRaises(NotImplementedError):
             predict_throughput(200, batch_size=1, seq_len=16)
 

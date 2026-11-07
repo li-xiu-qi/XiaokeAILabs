@@ -33,7 +33,15 @@ cd experiments/inference-cost-models
 python scripts/attention_model.py
 ```
 
-内存算例还可运行 `python scripts/hybrid_architecture_model.py`；请求级 HTTP 计时使用 `python scripts/compare_engines.py --help`，并需安装 requests。前者不包含其他层状态与运行时开销，后者不拆分推理阶段。
+上例是合成的维度示例，不代表某个模型的已核实配置。内存算例默认对应首页的 4 GiB，并可按实际配置修改：
+
+```bash
+python scripts/hybrid_architecture_model.py --layers 16 --kv-heads 4 --head-dim 256 --context 65536 --batch 8 --kv-dtype bf16
+```
+
+输出是等长序列的标准 KV 数据体积；FP8、FP4 只按理想元素位宽计算，量化比例因子和元数据未计入，不能据此判断引擎是否支持该精度。它不包含其他层状态与运行时开销。
+
+请求级 HTTP 计时需要先安装 `python -m pip install requests`，再运行 `python scripts/compare_engines.py --help`；它不拆分推理阶段。
 
 更多原理、输入输出和测量方案见[推理成本估算指南](docs/推理成本估算指南.md)。已有其他脚本是研究草稿，其参数与输出尚待逐项审计；运行前请先阅读[使用边界与审计](docs/使用边界与审计.md)。
 
