@@ -59,6 +59,8 @@ The evaluation script now explicitly configures DPM-Solver++; historical results
 
 `build_dataset.py` refuses to overwrite an existing identity directory; choose a new `FACE_DATA_DIR` for another export. `check_dataset.py` stops if a training or test face is not detected or no negative-control face can be detected. Face size, roll and sharpness are flags for manual review, not automatic failures; passing the checks does not guarantee dataset quality.
 
+The export reads only the selected identity's photos in the supplied parquet shard, assigning every third row for that identity to the held-out reference set. The historical 20/10 count is not guaranteed for another shard or identity. `FACE_TRIGGER` changes exported captions and evaluation prompts, but training-preview prompts in both YAML files still use `vkqzm`. If changing the trigger, update the preview prompts in the chosen YAML as well; otherwise those previews will use the old trigger.
+
 The baseline and LoRA prompts differ by the trigger phrase, which may also affect the base model. The comparison checks recorded resolution, steps, guidance, sampler, sample count and identity IDs; it does not verify the reference image bytes or model weights, which must be fixed separately.
 
 `build_dataset.py` exports images and captions; `check_dataset.py` screens the samples; `train_lora.sh` writes the actual training directory as an absolute path to a temporary config and launches training; and `score_generations.py` generates and scores images. Check the individual licenses of the training toolkit, models and evaluation weights.

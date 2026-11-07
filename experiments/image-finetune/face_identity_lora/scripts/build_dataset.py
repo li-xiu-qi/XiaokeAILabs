@@ -9,12 +9,15 @@ for later checking. Row order does not ensure that lighting or pose are balanced
 
 Output layout (under $FACE_DATA_DIR, default ./data):
 
-    celeb_14/train/*.jpg + *.txt    20 images with captions
-    celeb_14/test/*.jpg             10 images, never seen during training
+    celeb_14/train/*.jpg + *.txt    training images with captions
+    celeb_14/test/*.jpg             held-out reference images
     celeb_14/manifest.json          file, split, source index, size
 
-The split is deterministic and depends only on the row order inside the
-parquet shard, so re-running on the same shard reproduces the same 20/10.
+The split is deterministic and depends on row order within the supplied shard.
+The historical 20/10 count is specific to that shard and identity; different
+shards, identities or missing image values can produce different counts. The
+held-out images are used for quality checks and checkpoint scoring and are not
+an independent final test after model selection.
 """
 
 from __future__ import annotations

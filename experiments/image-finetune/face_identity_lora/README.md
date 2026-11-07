@@ -59,6 +59,8 @@ python scripts/score_generations.py --size 512 scan --run-dir /path/to/checkpoin
 
 `build_dataset.py` 不覆盖已有身份目录；重跑请设置新的 `FACE_DATA_DIR`。`check_dataset.py` 遇到训练或测试图人脸未检出、缺少可检测的负对照时会中止；面部大小、旋转和清晰度是供人工检查的提示，不会自动判为失败。自动检查通过不保证数据质量。
 
+导出脚本只读取指定 parquet 分片中该身份的照片，按分片行顺序每三张取一张作为留出参考；历史的 20/10 不保证适用于其他分片或身份。若通过 `FACE_TRIGGER` 修改触发词，它会用于导出的 caption 和评估提示词，但两个 YAML 的训练预览提示词仍写死为 `vkqzm`；需要手动将所用 YAML 中的预览提示词同步修改，否则训练中预览不使用新触发词。
+
 基线与 LoRA 的提示词相差触发词，不能假定该词对基础模型没有影响；评估脚本核对记录的分辨率、步数、引导强度、采样器、样本数和身份编号，但不会验证参考图片或模型权重是否相同，比较前仍需自行固定这些输入。
 
 主要脚本：`build_dataset.py` 导出数据与 caption，`check_dataset.py` 检查样本，`train_lora.sh` 将实际训练数据的绝对路径写入临时配置后调用训练器，`score_generations.py` 生成并评估。训练器、模型和评估权重的使用条件应分别查看上游许可。
