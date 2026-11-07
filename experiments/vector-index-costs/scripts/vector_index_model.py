@@ -105,7 +105,14 @@ def compute_storage(spec: VectorIndexSpec) -> dict:
 
 
 def compute_latency(spec: VectorIndexSpec) -> dict:
-    """各索引的查询延迟（毫秒），距离次数先统一换算为 FLOP。"""
+    """仅估算距离计算耗时，非端到端延迟；IVF 假设平坦粗量化器和均匀簇。
+
+    HNSW 访问数仅为示意假设，不是复杂度保证。实际延迟与召回需实测。
+    """
+    if spec.n <= 0 or spec.d <= 0 or spec.ivf_nlist <= 0 or spec.ivf_nprobe <= 0 or spec.hnsw_ef <= 0:
+        raise ValueError("n, d, ivf_nlist, ivf_nprobe and hnsw_ef must be positive")
+    if spec.ivf_nprobe > spec.ivf_nlist:
+        raise ValueError("ivf_nprobe must not exceed ivf_nlist")
     if spec.compute_q <= 0 or spec.compute_q_dim <= 0:
         raise ValueError("compute_q and compute_q_dim must be positive")
     flops_per_s = spec.compute_q * 2 * spec.compute_q_dim
@@ -114,12 +121,12 @@ def compute_latency(spec: VectorIndexSpec) -> dict:
     flat_ops = spec.n * 2 * spec.d
     flat_ms = flat_ops / flops_per_s * 1000
 
-    # IVF：访问 nprobe × n/nlist 个向量，每次 2d 浮点运算
-    ivf_access = spec.ivf_nprobe * spec.n // spec.ivf_nlist
-    ivf_ops = ivf_access * 2 * spec.d
+    # 均匀簇假设下的平均候选数；平坦粗量化器还需比较全部聚类中心。
+    ivf_access = spec.ivf_nprobe * spec.n / spec.ivf_nlist
+    ivf_ops = (spec.ivf_nlist + ivf_access) * 2 * spec.d
     ivf_ms = ivf_ops / flops_per_s * 1000
 
-    # HNSW：访问 O(ef × log n) 个节点，每次 2d 浮点运算
+    # HNSW：ef × log2(n) 仅为教学用访问次数假设，并非复杂度保证
     log_n = max(1, int(math.log2(spec.n)))
     hnsw_access = spec.hnsw_ef * log_n
     hnsw_ops = hnsw_access * 2 * spec.d
@@ -195,6 +202,17 @@ def _selftest():
     else:
         raise AssertionError("invalid PQ dimensions must be rejected")
 
+    # 平坦粗量化器的中心比较成本不可省略；候选数为均匀分布下的平均值。
+    expected_ivf = (spec.ivf_nlist + spec.ivf_nprobe * spec.n / spec.ivf_nlist) * 2 * spec.d / flops_per_s * 1000
+    assert abs(m.ivf_latency_ms - expected_ivf) < 1e-12
+    for invalid in (VectorIndexSpec(ivf_nlist=0), VectorIndexSpec(ivf_nlist=2, ivf_nprobe=3)):
+        try:
+            compute_latency(invalid)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("invalid IVF parameters must be rejected")
+
     # IVF 延迟 < FLAT
     assert m.ivf_latency_ms < m.flat_latency_ms
 
@@ -208,7 +226,7 @@ def _selftest():
           f"SQ8={m.sq8_bytes/1024/1024:.1f} MiB  "
           f"PQ={m.pq_bytes/1024/1024:.1f} MiB  "
           f"HNSW={m.hnsw_bytes/1024/1024:.1f} MiB")
-    print(f"估算延迟（简化假设，非实测）: FLAT={m.flat_latency_ms:.1f} ms  "
+    print(f"距离计算耗时估算（不含其他开销，非实测）: FLAT={m.flat_latency_ms:.1f} ms  "
           f"IVF={m.ivf_latency_ms:.2f} ms  "
           f"HNSW={m.hnsw_latency_ms:.2f} ms")
     print("召回率：需要使用实际数据测量")
