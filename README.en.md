@@ -6,7 +6,7 @@ From model training and retrieval to multimodal systems and inference deployment
 
 ## Experiments
 
-- [Chinese embedding fine-tuning](experiments/embedding-research/model_finetuning/test_train_embedding/README.md): Learn in-batch contrastive training with query-document pairs; the four built-in examples do not establish a retrieval improvement.
+- [Chinese embedding fine-tuning](experiments/embedding-research/model_finetuning/test_train_embedding/README.en.md): Learn in-batch contrastive training with query-document pairs; the four built-in examples do not establish a retrieval improvement.
 - [Reranker fine-tuning](experiments/reranker-finetune-scifact/README.en.md): Train a cross-encoder with queries, documents, and relevance labels.
 - [Embedding distillation](experiments/embedding-distillation/README.en.md): Transfer teacher scores to a smaller embedding model; candidate preparation uses the shared SciFact tool.
 - [Reranker distillation](experiments/reranker-distillation/README.en.md): Compare supervised training and score distillation on a fixed candidate pool.
@@ -15,7 +15,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Multimodal embedding distillation](experiments/multimodal-embedding-distillation/README.en.md): Explore knowledge transfer from a vision-language retrieval teacher to a compact student.
 - [Multimodal reranking](experiments/multimodal-reranking/README.en.md): Explore reranking image-text candidates with anonymized evaluation results.
 - [GUI grounding fine-tuning](experiments/gui-grounding-finetuning/README.md): Train screenshot-and-instruction grounding; 30 held-out samples do not establish generalization gains.
-- [Video generation trained on teacher samples](experiments/video-generation-distillation/README.md): Four initial held-out videos and eight follow-up student pairs show changes, but do not establish quality gains. The six training samples were selected after generation; the follow-up used one AI reviewer of sampled frames.
+- [Video generation trained on teacher samples](experiments/video-generation-distillation/README.en.md): Four initial held-out videos and eight follow-up student pairs show changes, but do not establish quality gains. The six training samples were selected after generation; the follow-up used one AI reviewer of sampled frames.
 - [Image generation with synthetic training data](experiments/image-generation-distillation/README.en.md): Train a student LoRA on teacher-generated data and compare it with student-generated training data. One AI thumbnail reviewer found no teacher-data advantage in the small camera follow-up; generation pipelines differed. See the [paired analysis](experiments/image-generation-distillation/PAIRED-ANALYSIS.md#english) for an exploratory category breakdown and its limits.
 - [Identity image fine-tuning](experiments/image-finetune/README.en.md): Train an identity LoRA; the historical base and adapted outputs use different resolutions and are not directly comparable.
 - [Character video fine-tuning and diagnostics](experiments/wan22-video-diagnostics/README.md): Examine base generation, seeds, and LoRA outputs; a small held-out evaluation does not establish that the target character was learned.
