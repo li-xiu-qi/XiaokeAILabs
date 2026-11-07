@@ -6,7 +6,9 @@
 
 ## 目录结构
 
-评估脚本要求 `--out` 为不存在的新目录，`--lora` 为本地权重文件。`run.json` 记录提示词、随机种子、生成参数、LoRA 哈希和输出文件哈希；运行中断时状态为 `incomplete`。基座仅记录路径，未记录基座权重哈希或依赖版本，不能单靠该文件保证复现，也不能证明提示词与训练数据互不重叠。
+评估脚本要求 `--out` 为不存在的新目录，`--base` 为本地模型目录，`--lora` 为本地权重文件。新运行的 `run.json` 记录提示词、随机种子、生成参数、依赖版本、基座文件和 LoRA 的 SHA-256，以及输出文件哈希；基座与 LoRA 在运行前后校验，文件变化或运行中断时状态保持 `incomplete`。基座目录除 `.git`、`.cache` 外逐文件读取两次，可能耗时；文件夹符号链接不支持。历史运行没有这些新增的基座指纹，不能由新脚本补证。即使记录完整，也不能仅凭清单保证跨环境结果一致或证明提示词与训练数据互不重叠。
+
+For new evaluations, use a local `--base` directory, a local `--lora` file and a new `--out` directory. The manifest records dependency versions and SHA-256 hashes of base files, LoRA weights and outputs; changed base or LoRA files leave the run incomplete. Hashing the model twice takes time. Historical runs did not capture base fingerprints, and a manifest alone does not establish prompt independence or identical results across environments.
 
 ```
 config/     训练配置（smoke / 第一轮 / 第二轮修正轮）
