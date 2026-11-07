@@ -60,3 +60,5 @@ python scripts/verify.py
 ```
 
 Preparation selects and audits the images, writing private pairs to `WORK`. The teacher encodes the selected data; the student script trains and evaluates the three student conditions. Keep outputs private. `verify.py` recalculates student metrics and the paired interval from [recorded per-query ranks](evidence/student-test-ranks.json). It does not rerun inference or independently validate the teacher aggregate, for which per-query ranks were not retained.
+
+`WORK` must be a new, nonexistent directory. Teacher vectors are bound to the SHA-256 of the exact sample manifest, and student training checks that binding and vector counts so reordered samples cannot silently use old teacher targets. Use a fresh work directory for a rerun; vectors created by older scripts do not contain the binding and must be regenerated.

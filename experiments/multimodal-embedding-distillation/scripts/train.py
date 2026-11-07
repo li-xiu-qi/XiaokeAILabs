@@ -5,6 +5,7 @@ import torch
 import torch.nn.functional as F
 from PIL import Image
 from transformers import CLIPModel, AutoProcessor
+from validate_binding import validate_teacher_binding
 
 def check():
     for s in open('/proc/meminfo'):
@@ -20,6 +21,9 @@ root=args.workdir
 imgroot=args.images
 data=json.loads((root/'samples-private.json').read_text(encoding='utf8'))
 teacher=np.load(root/'teacher-private.npz')
+validate_teacher_binding(root/'samples-private.json', data, teacher)
+if any((root/name).exists() for name in ('model-supervised', 'model-distilled', 'student-results.json')):
+    raise FileExistsError('student outputs already exist; use a fresh workdir')
 torch.cuda.set_per_process_memory_fraction(.20)
 checkpoint=args.student
 processor=AutoProcessor.from_pretrained(checkpoint,local_files_only=True)

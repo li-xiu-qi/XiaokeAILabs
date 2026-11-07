@@ -7,7 +7,7 @@ parser.add_argument('--annotations', type=Path, required=True)
 parser.add_argument('--images', type=Path, required=True)
 parser.add_argument('--out', type=Path, required=True)
 args = parser.parse_args()
-out = args.out; out.mkdir(parents=True, exist_ok=True)
+out = args.out; out.mkdir(parents=True, exist_ok=False)
 imgroot = args.images
 with args.annotations.open(encoding='utf8', newline='') as f:
     rows = list(csv.DictReader(f))

@@ -1,5 +1,6 @@
 """Encode private image/text pairs with Jina v5; files remain local."""
 import argparse
+import hashlib
 import json
 import time
 from pathlib import Path
@@ -22,7 +23,10 @@ def main():
     parser.add_argument('--images', type=Path, required=True)
     parser.add_argument('--teacher', required=True)
     args = parser.parse_args()
-    data = json.loads((args.workdir / 'samples-private.json').read_text(encoding='utf8'))
+    sample_bytes = (args.workdir / 'samples-private.json').read_bytes()
+    data = json.loads(sample_bytes)
+    if (args.workdir / 'teacher-private.npz').exists() or (args.workdir / 'teacher-summary.json').exists():
+        raise FileExistsError('teacher outputs already exist; use a fresh workdir')
     start = time.perf_counter()
     check_memory()
     torch.cuda.set_per_process_memory_fraction(.20)
@@ -32,7 +36,7 @@ def main():
     modalities = list(getattr(first, 'modalities', ['text']))
     if 'image' not in modalities:
         first.modalities = modalities + ['image']
-    vectors = {}
+    vectors = {'samples_sha256': np.array(hashlib.sha256(sample_bytes).hexdigest())}
     for split, rows in data.items():
         all_text, all_image = [], []
         for offset in range(0, len(rows), 4):
