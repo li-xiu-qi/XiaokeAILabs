@@ -1,6 +1,6 @@
 # 虚构人物 LoRA 的留出场景检查
 
-一组 200 步 LoRA 能否让触发词产生训练角色的特征？训练素材是同一虚构二维角色的 16 段合成视频，角色有深色头发、红上衣和黄色围巾；训练描述包含红上衣和黄色围巾。本次两条留出提示只写触发词 `mivora`、人物、场景与动作，不提供这些外观词。每条提示使用预选种子 610、611，以同参数分别生成基模和 LoRA 视频，共 4 对、8 条。610 曾用于此前排障，因此不能视为全新随机种子。
+一组标为 200 步的 LoRA 能否让触发词产生训练角色的特征？训练素材是同一虚构二维角色的 16 段合成视频，角色有深色头发、红上衣和黄色围巾；训练描述包含红上衣和黄色围巾。本次两条留出提示只写触发词 `mivora`、人物、场景与动作，不提供这些外观词。每条提示使用预选种子 610、611，以同参数分别生成基模和 LoRA 视频，共 4 对、8 条。610 曾用于此前排障，因此不能视为全新随机种子。
 
 一位 AI 评审在不看模型组别映射的情况下，查看每条视频第 0、12、24、36、48 帧，逐帧标注人物是否可辨及三项外观为 present、absent 或 unknown。遮挡、分辨率不足与无人物均记 unknown，不当作特征缺失。评分封存后才揭盲；原始评分见 [scores.csv](scores.csv)，随机编号与视频 SHA-256 映射见 [blind-mapping.json](blind-mapping.json)，配置见 [eval-plan.json](eval-plan.json)。
 
@@ -15,9 +15,11 @@
 
 在这 4 对例子中，LoRA 没有获得红衣或黄围巾的 present 标注；基模分别在两条不同视频中获得这两项标注。画面遮挡和无法判断的条目较多，且同一视频内五帧并非独立样本，不能据此估计总体成功率或比较模型的统计显著性。此实验使用虚构人物及单次 AI 评分，不能证明真实人物身份保持，也不能概括其他训练设置。
 
+训练配置与权重文件名标为 200 步，但原始训练日志缺失，实际完成步数不能独立确认。
+
 ## English
 
-We compared a base model and its 200-step LoRA on two held-out scenes and two selected seeds. The prompts name the trigger but omit the reference character's dark hair, red shirt and yellow scarf. One AI reviewer rated five sampled frames per video before receiving the model mapping; obscured features were marked unknown.
+We compared a base model and its LoRA labeled 200 steps on two held-out scenes and two selected seeds. The prompts name the trigger but omit the reference character's dark hair, red shirt and yellow scarf. One AI reviewer rated five sampled frames per video before receiving the model mapping; obscured features were marked unknown. The configuration and weight filename indicate 200 steps, but the missing training log prevents independent confirmation.
 
 Neither model produced a discernible person for the library prompt at seed 610. Across the four LoRA videos, the reviewer marked no red shirt or yellow scarf as present; each of those traits was observed in a different base-model video. This is a four-pair, single-reviewer observation with correlated frames and substantial unknowns, not an estimate of general identity retention or evidence about real people. The score file, mapping and reduced contact sheets above allow a coarse review; the original videos are not included here.
 

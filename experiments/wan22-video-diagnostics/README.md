@@ -8,7 +8,7 @@
 
 ## 观察到了什么
 
-在 DGX Spark 上，我们使用自制二维虚构角色的 16 段视频完成了 200 步 LoRA 训练。随后用两条未出现在训练描述中的提示词做基模与 LoRA 对照，四个输出都出现严重彩色碎块；LoRA 被加载和激活，但这不能说明人物学习成功。
+在 DGX Spark 上，我们使用自制二维虚构角色的 16 段视频进行 LoRA 训练；配置和权重文件名标为 200 步，原始训练日志缺失，无法独立确认实际完成步数。随后用两条未出现在训练描述中的提示词做基模与 LoRA 对照，四个输出都出现严重彩色碎块；LoRA 被加载和激活，但这不能说明人物学习成功。
 
 将 VAE 改为 FP32、量化时排除敏感层，以及把 UniPC 替换成训练器采用的 Euler 调度器，基模仍输出碎块。进一步以未量化的 BF16 模型做 17 帧基模检查，编码前 PNG 能辨认部分场景轮廓，但有明显形变和色块。它与之前 49 帧量化测试的帧数不同，因此不能将差异单独归因于量化。**这次没有得到有效的人物效果对照，根因仍未确定。**
 
@@ -46,13 +46,13 @@ VAE 输入和输出均为有限数值，分别为 `(1, 48, 5, 32, 32)` 和 `(1, 
 
 ## 使用可辨基模检查 LoRA
 
-将上面的花园人物种子固定为 610，再以同一提示词、采样参数和设备加载 200 步 LoRA，得到[微调视频](evidence/seed-cross/person-lora-seed610_00001_.mp4)及[分镜](evidence/seed-cross/person-lora-seed610_00001_.jpg)。ComfyUI 运行日志记录 300 个权重补丁已挂载；加载前核对了 300 组 LoRA 矩阵与基模张量的名称和尺寸，首组矩阵乘积非零。
+将上面的花园人物种子固定为 610，再以同一提示词、采样参数和设备加载 标为 200 步的 LoRA，得到[微调视频](evidence/seed-cross/person-lora-seed610_00001_.mp4)及[分镜](evidence/seed-cross/person-lora-seed610_00001_.jpg)。ComfyUI 运行日志记录 300 个权重补丁已挂载；加载前核对了 300 组 LoRA 矩阵与基模张量的名称和尺寸，首组矩阵乘积非零。
 
 画面中的人物能够转身，但其黑黄衣着与[训练角色参考图](evidence/seed-cross/training-reference.png)中的红衣卡通人明显不同。基模本身也能生成一个人物：这一组结果只能说明加载 LoRA 后画面发生变化，不能证明学会了目标人物，更不能说明对真实人物有效。单个提示词和种子也不足以评价泛化。实际[生成工作流](evidence/seed-cross/person-lora-workflow.json)与基模工作流仅多一个 LoRA 加载节点及连接、输出前缀变化；视频 SHA-256 为 `5b0ecd1c7da7afc4c751eefeec2f59f4379ca890533be8c046adaf6025a7a3ea`，最低可用系统内存为 96,355,944 KiB。
 
 ## 复现基模检查
 
-**English:** In two fixed-prompt checks, exchanging seeds changed whether the generated character or water scene was recognizable. A matched character run with a 200-step LoRA loaded produced a different image, but the output did not match the synthetic red-clothed reference. Two prompts, two seeds, and one LoRA pair cannot establish the cause of corruption or successful identity learning. The linked workflows and videos above provide the observed evidence.
+**English:** In two fixed-prompt checks, exchanging seeds changed whether the generated character or water scene was recognizable. A matched character run with a LoRA labeled 200 steps loaded produced a different image, but the output did not match the synthetic red-clothed reference. Two prompts, two seeds, and one LoRA pair cannot establish the cause of corruption or successful identity learning. The linked workflows and videos above provide the observed evidence.
 
 准备 [Wan2.2 TI2V 5B Diffusers 权重](https://huggingface.co/Wan-AI/Wan2.2-TI2V-5B-Diffusers)，以及支持该模型的 PyTorch、Diffusers、Transformers、PyAV、Pillow 和 NumPy。该脚本需要 CUDA GPU，模型加载和视频解码会消耗大量内存；运行前应结合设备状态设置资源监控。输出目录必须是尚不存在的新目录，脚本不会覆盖已有目录。
 
@@ -66,6 +66,6 @@ python diagnose_base.py --model /path/to/Wan2.2-TI2V-5B-Diffusers --out /path/to
 
 ## 虚构人物留出场景
 
-对同一自绘角色的 200 步 LoRA，以两条新场景提示和两个选定种子生成四对视频。单名 AI 盲评每段抽取的五帧，四段 LoRA 视频均未将红衣或黄围巾标为可见；部分画面和特征无法判断，不能算作缺失。样本很小，不足以推断真实人物身份保持能力。[逐帧评分、匿名映射与缩放分镜](evidence/person-holdout/README.md)可供审阅，完整视频未公开。
+对同一自绘角色的 标为 200 步的 LoRA，以两条新场景提示和两个选定种子生成四对视频。单名 AI 盲评每段抽取的五帧，四段 LoRA 视频均未将红衣或黄围巾标为可见；部分画面和特征无法判断，不能算作缺失。样本很小，不足以推断真实人物身份保持能力。[逐帧评分、匿名映射与缩放分镜](evidence/person-holdout/README.md)可供审阅，完整视频未公开。
 
 **English:** A single blinded AI reviewer assessed five sampled frames from each of four paired videos on held-out fictional-character scenes. No red shirt or yellow scarf was marked present in the LoRA outputs; obscured features remained unknown. This small sample does not establish real-person identity retention. See the [frame scores and contact sheets](evidence/person-holdout/README.md); complete videos are not distributed.

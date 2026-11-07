@@ -8,7 +8,7 @@ The original training log, complete comparison videos, tensor outputs, and per-f
 
 ## Historical observation
 
-On DGX Spark, a 200-step LoRA run used 16 videos of a self-made fictional 2D character. Two prompts absent from the training descriptions were used to compare base and LoRA output. All four outputs showed severe colored fragments. LoRA was loaded and active, but that does not establish that the model learned the character.
+On DGX Spark, a LoRA run used 16 videos of a self-made fictional 2D character. The configuration and weight filename indicate 200 steps, but the original training log is missing, so completed steps cannot be independently confirmed. Two prompts absent from the training descriptions were used to compare base and LoRA output. All four outputs showed severe colored fragments. LoRA was loaded and active, but that does not establish that the model learned the character.
 
 Changing VAE precision to FP32, excluding sensitive layers from quantization, and replacing UniPC with the trainer's Euler scheduler did not stop the base model from producing fragments. A further 17-frame unquantized BF16 base check produced a pre-encoding PNG with partially recognizable scene outlines but substantial distortion and color blocks. It had a different frame count from the previous 49-frame quantized test, so the difference cannot be attributed to quantization alone. **There was no valid before-and-after character comparison, and the root cause remains unknown.**
 
@@ -46,7 +46,7 @@ Changing seeds accompanied a large visible change for these fixed prompts, but d
 
 ## Check LoRA against a recognizable base result
 
-Using the garden prompt and seed 610, the same settings and device with the 200-step LoRA loaded produced this [adapted video](evidence/seed-cross/person-lora-seed610_00001_.mp4) and [contact sheet](evidence/seed-cross/person-lora-seed610_00001_.jpg). ComfyUI logged 300 attached weight patches; before loading, 300 LoRA matrix pairs were checked against base tensor names and shapes, and the first matrix product was nonzero.
+Using the garden prompt and seed 610, the same settings and device with the LoRA labeled 200 steps loaded produced this [adapted video](evidence/seed-cross/person-lora-seed610_00001_.mp4) and [contact sheet](evidence/seed-cross/person-lora-seed610_00001_.jpg). ComfyUI logged 300 attached weight patches; before loading, 300 LoRA matrix pairs were checked against base tensor names and shapes, and the first matrix product was nonzero.
 
 The generated character can turn, but its black and yellow clothing differs clearly from the red-clothed cartoon [training reference](evidence/seed-cross/training-reference.png). The base model also generates a character. This pair shows that loading LoRA changed the picture, not that the target character was learned or that the method works for real people. One prompt and seed cannot evaluate generalization. The [adapted workflow](evidence/seed-cross/person-lora-workflow.json) differs from the base workflow by a LoRA loading node and connection and an output prefix; the video SHA-256 is `5b0ecd1c7da7afc4c751eefeec2f59f4379ca890533be8c046adaf6025a7a3ea`, and minimum available system memory was 96,355,944 KiB.
 
