@@ -8,7 +8,7 @@ The designated first reviewer found 32 valid pairs: 23 teacher and 7 baseline co
 
 Per-image agreement, excluding unknowns from either reviewer, was 61/62 for one mug, 63/64 for mug color, 61/64 for background, and 61/62 for severe artifacts. Composite success requires all three positive criteria and no severe artifact; an unknown excludes that pair.
 
-This supports proceeding to a training control in this scene; it does not establish distillation success or isolate model, resolution, and scheduler effects. Both reviewers are AI, the sample is small, and the local freeze lacks an independent trusted timestamp. This compact package omits original and review images, so it cannot verify image content or image hashes. SHA-256 values are retained in the keys for comparison with separately provided images. Reproduce the score mapping and gate with Python 3.10 or later:
+This supports proceeding to a training control in this scene; it does not establish distillation success or isolate model, resolution, and scheduler effects. Both reviewers are AI, the sample is small, and the local freeze lacks an independent trusted timestamp. The repository contains compact scoring records; the [development-set evidence asset](https://github.com/li-xiu-qi/XiaokeAILabs/releases/tag/evidence-mug-development-20261107) separately provides original images, review images, ratings and hashes, without model weights. This is a development check, not a final test. Reproduce the score mapping and gate with Python 3.10 or later:
 
 ```bash
 python reveal_compact.py --review review-1.csv --key mug-key-1.json --out replay-1.csv
