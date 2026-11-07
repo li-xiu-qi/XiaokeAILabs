@@ -46,7 +46,7 @@ filename,split,raw
 example.jpg,train,"['a caption', 'second caption', 'third caption', 'fourth caption', 'fifth caption']"
 ```
 
-The original device scripts produced the results above. The public scripts remove machine-specific paths and the private teacher wrapper; the entire revised pipeline has **not** been rerun on the real data. Preparation was checked with synthetic images. The experiment used Linux CUDA, about 50 GiB available system memory, Python 3.12, PyTorch 2.14.0+cu130, Transformers 5.16.1, Sentence Transformers 6.0.1, NumPy and Pillow. The teacher loads custom model code; review it before running.
+The original device scripts produced the results above. The public scripts remove machine-specific paths and the private teacher wrapper; the revised pipeline was rerun end to end on the original data and device on 2026-11-07. All three student test-rank arrays matched the published records item by item; see the [reproduction record](evidence/reproduction-20261107.en.md). The experiment used Linux CUDA, about 50 GiB available system memory, Python 3.12, PyTorch 2.14.0+cu130, Transformers 5.16.1, Sentence Transformers 6.0.1, NumPy and Pillow. The teacher loads custom model code; review it before running.
 
 Set `DATA` to the annotation CSV, `IMAGES` to the image directory and `WORK` to a directory outside this repository. Download the pinned models, then run:
 
