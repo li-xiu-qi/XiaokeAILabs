@@ -18,6 +18,8 @@ def recall_with_boundary_ties(distances, returned_ids, k=10):
         raise ValueError('k must be an integer between 1 and the number of distances')
     boundary = np.partition(distances, k - 1)[k - 1]
     values = list(returned_ids)
+    if len(values) > k:
+        raise ValueError('returned result count cannot exceed k')
     if any(isinstance(i, (bool, np.bool_)) or not isinstance(i, (int, np.integer)) or i < 1 or i > len(distances) for i in values):
         raise ValueError('returned rowids must be integers within the dataset')
     ids = set(values)

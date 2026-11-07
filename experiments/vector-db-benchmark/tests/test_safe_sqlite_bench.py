@@ -26,6 +26,9 @@ class SafetyTests(unittest.TestCase):
         self.assertEqual(bench.recall_with_boundary_ties(distances, list(range(2, 12))), 0.9)
         with self.assertRaises(ValueError):
             bench.recall_with_boundary_ties(distances, [0])
+        with self.assertRaisesRegex(ValueError, 'cannot exceed k'):
+            bench.recall_with_boundary_ties(distances, list(range(1, 13)))
+        self.assertEqual(bench.recall_with_boundary_ties(distances, list(range(1, 9))), 0.8)
 
     def test_recall_rejects_invalid_inputs(self):
         np = bench.np
