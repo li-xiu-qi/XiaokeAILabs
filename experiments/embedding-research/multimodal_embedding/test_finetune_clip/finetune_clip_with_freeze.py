@@ -186,6 +186,8 @@ def train() -> None:
 	cfg = CONFIG
 	if cfg["grad_accum_steps"] != 1:
 		raise ValueError("当前训练循环仅验证 grad_accum_steps=1，请勿启用梯度累积")
+	if os.path.exists(cfg["output_dir"]):
+		raise FileExistsError("输出目录已存在，请为本次训练选择新目录")
 	set_seed(cfg["seed"])
 	device = DEVICE
 	print(f"使用设备: {device}")
@@ -223,7 +225,7 @@ def train() -> None:
 
 	ce_loss = nn.CrossEntropyLoss()
 
-	ensure_dir(cfg["output_dir"])
+	os.makedirs(cfg["output_dir"], exist_ok=False)
 
 	global_step = 0
 	best_metric = -1.0

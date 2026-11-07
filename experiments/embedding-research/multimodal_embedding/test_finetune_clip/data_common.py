@@ -23,6 +23,7 @@ import torch
 from torch.utils.data import Dataset, Sampler
 from transformers import CLIPModel, CLIPProcessor
 from datasets import load_from_disk, load_dataset, Dataset as HFDataset, DatasetDict
+from split_contract import partition_indices
 
 
 class PairRecord(TypedDict):
@@ -345,23 +346,7 @@ class Flickr30kDataBuilder(BaseCaptionDataBuilder):
         dataset = raw["train"]
         if not {"split", "img_id"}.issubset(dataset.column_names):
             raise ValueError("数据集缺少 split 或 img_id 字段")
-        partitions: Dict[str, List[int]] = {"train": [], "val": [], "test": []}
-        owners: Dict[str, str] = {}
-        for index, (split, image_id) in enumerate(zip(dataset["split"], dataset["img_id"])):
-            if split not in partitions:
-                raise ValueError(f"未知数据划分: {split!r}")
-            if image_id is None or str(image_id).strip() == "":
-                raise ValueError(f"第 {index} 条记录缺少 img_id")
-            try:
-                key = str(int(image_id))
-            except (TypeError, ValueError) as exc:
-                raise ValueError(f"无效的 img_id: {image_id!r}") from exc
-            if key in owners and owners[key] != split:
-                raise ValueError(f"同一图片 ID 跨数据划分: {key}")
-            owners[key] = split
-            partitions[split].append(index)
-        if any(not indices for indices in partitions.values()):
-            raise ValueError("train、val、test 三个划分都必须非空")
+        partitions = partition_indices(dataset["split"], dataset["img_id"])
         return tuple(dataset.select(partitions[name]) for name in ("train", "val", "test"))
 
     def _expand(self, ds: HFDataset) -> List[PairRecord]:
