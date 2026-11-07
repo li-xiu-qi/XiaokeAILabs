@@ -32,7 +32,7 @@ def make_data():
 
 
 def ser_bytes(index):
-    """faiss 序列化字节数 = 索引完整状态大小。"""
+    """Faiss 序列化结果字节数，不包含所有运行时或临时开销。"""
     arr = faiss.serialize_index(index)
     return int(arr.nbytes)
 
@@ -117,7 +117,7 @@ def main():
     print(f"配置: n={N} d={D} seed={SEED} nlist={NLIST} PQ m={M_PQ}/{NBITS}bit HNSW M={M_HNSW}")
     print(f"原始向量 float32: {raw_bytes:>12,} B = {raw_bytes/1024**2:.2f} MiB")
     print("=" * 96)
-    print(f"{'索引':<10}{'理论(B)':>14}{'实测serialize(B)':>18}{'理论/实测':>10}{'vs原始':>9}{'RSS增量(MiB)':>14}")
+    print(f"{'索引':<10}{'理论(B)':>14}{'实测serialize(B)':>18}{'理论/序列化':>10}{'vs原始':>9}{'RSS增量(MiB)':>14}")
     print("-" * 96)
 
     expected_hnsw = N * D * 4 + N * (2 * M_HNSW) * 4 + N * 8
@@ -146,7 +146,7 @@ def main():
         gc.collect()
 
     print("=" * 96)
-    print("注：理论/实测≈1 表示公式准确；HNSW 图边为估计，偏差揭示 faiss 真实图结构。")
+    print("注：主体估算接近序列化大小，不证明运行内存公式准确；RSS 增量受测量顺序和分配器影响，不是峰值。")
     out = os.path.join(os.path.dirname(__file__), "..", "results",
                        f"index_storage_n{N}_d{D}.json")
     os.makedirs(os.path.dirname(out), exist_ok=True)
