@@ -7,6 +7,7 @@ import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, get_linear_schedule_with_warmup
 from run_directory import prepare_run_directory
 from validate_splits import validate_splits
+from metrics_validation import validate_metrics_inputs
 
 ROOT=Path('.')
 DATA=Path('.')
@@ -41,6 +42,7 @@ def score(model, tokenizer, entries):
     return output,time.perf_counter()-start
 
 def metrics(part,scores):
+    validate_metrics_inputs(part,scores)
     rows=[]
     for qid,row in part.items():
         ranking=sorted(((str(did),scores[f'{qid}:{did}']) for did,_ in row['pool']),key=lambda x:(-x[1],x[0]))

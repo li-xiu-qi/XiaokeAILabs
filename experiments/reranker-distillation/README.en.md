@@ -48,3 +48,5 @@ The data root must contain `scifact/` and `prepared/pools.json`. The script chec
 The `teacher` and `all` stages require a new or empty output directory. The `student` stage requires complete teacher outputs and no existing student outputs. After an interruption, start a fresh run directory to avoid overwriting or mixing results.
 
 [Historical evidence](docs/evidence/) includes per-query metrics and paired analysis. Historical student candidate scores were not saved, so their rankings cannot be independently reconstructed from these files; the current script saves them. Follow the original dataset and model licenses when reusing the materials.
+
+Ranking scores tied exactly are ordered lexicographically by document ID as a string. Evaluation rejects duplicate candidates, missing scores and non-finite scores; the historical per-query metrics cannot establish whether the original candidates and scores met these conditions.
