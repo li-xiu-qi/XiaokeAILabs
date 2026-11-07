@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XiaokeAILabs · AI Engineering Experiments</title>
+<link rel="icon" type="image/svg+xml" href="assets/lab-mark.svg">
+<meta name="description" content="Open AI engineering experiments on model training, inference, retrieval, document understanding, and multimodal systems.">
+<style>
+  :root{
+    --bg:#f7f8fa; --surface:#ffffff; --ink:#1a1f2b; --muted:#5b6472;
+    --line:#e6e9ef; --accent:#356552; --accent-2:#4f8069; --chip:#eaf2ed;
+    --shadow:0 1px 3px rgba(20,30,60,.06),0 8px 24px rgba(20,30,60,.06);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px}
+
+  header{position:sticky;top:0;z-index:10;background:rgba(247,248,250,.85);
+    backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{font-weight:700;letter-spacing:.2px;display:flex;align-items:center;gap:10px}
+  .logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px}
+  .nav-links{display:flex;gap:20px;font-size:14px;color:var(--muted)}
+  .nav-links a{color:var(--muted)}
+  .nav-links a:hover{color:var(--accent)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;
+    font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+  .btn:hover{text-decoration:none;border-color:var(--accent-2)}
+  .btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
+
+  .hero{padding:72px 0 48px;text-align:center}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:600;color:var(--accent);
+    background:var(--chip);padding:6px 12px;border-radius:999px;margin-bottom:20px}
+  .hero h1{font-size:40px;line-height:1.15;margin:0 0 16px;letter-spacing:-.5px}
+  .hero p{max-width:640px;margin:0 auto 28px;color:var(--muted);font-size:17px}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:8px 0 64px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center;box-shadow:var(--shadow)}
+  .stat b{display:block;font-size:24px;color:var(--accent)}
+  .stat span{font-size:13px;color:var(--muted)}
+
+  section{margin:0 0 56px}
+  h2{font-size:22px;margin:0 0 6px;letter-spacing:-.2px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 20px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 6px;font-size:16px}
+
+  .group{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:8px 20px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .group > h3{padding:14px 0 6px;margin:0;font-size:16px;border-bottom:1px solid var(--line)}
+  .exp{padding:11px 0;border-bottom:1px dashed var(--line)}
+  .exp:last-child{border-bottom:none}
+  .exp .name{font-weight:600}
+  .exp .desc{color:var(--muted);font-size:13.5px}
+  .exp a.name:hover{color:var(--accent)}
+
+  footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--muted);font-size:13.5px}
+  footer .cols{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+
+  @media (max-width:680px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .cards{grid-template-columns:1fr}
+    .hero h1{font-size:30px}
+    .nav-links{display:none}
+  }
+/* Editorial landing page: a clear entry into the experiments, with a diagram rather than decorative metrics. */
+:root{--bg:#fbfaf8;--surface:#fff;--ink:#171718;--muted:#666967;--line:#e6e5e1;--accent:#356552;--accent-2:#264c3d;--chip:#eaf2ed;--shadow:0 5px 24px rgba(23,23,24,.04)}
+.wrap{max-width:1320px;padding:0 32px}
+header{background:rgba(251,250,248,.94)}
+.nav{height:76px}.brand{font-size:19px;letter-spacing:-.5px}.logo{display:block;width:34px;height:34px;background:none;border-radius:0}
+.nav-links{gap:30px}.btn{border-radius:8px;padding:12px 19px}.btn-primary{background:#171718;border-color:#171718}.btn-primary:hover{background:#294638;border-color:#294638}
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:8%;align-items:center;min-height:650px;text-align:left;padding:88px 0 100px}
+.hero h1{font-size:clamp(46px,5.5vw,78px);line-height:1.12;letter-spacing:-.055em;max-width:650px;margin-bottom:26px}
+.hero p{margin:0 0 30px;font-size:18px;line-height:1.8;max-width:540px}.eyebrow{padding:0;background:none;letter-spacing:.12em;font-size:12px;margin-bottom:22px}.cta{justify-content:flex-start}
+.hero-art{width:100%;max-width:580px;justify-self:end;margin:0;min-width:0}.hero-art svg{display:block;width:100%;height:auto}.hero-art figcaption{color:var(--muted);font-size:12px;margin-top:12px;letter-spacing:.04em}
+section{padding-top:40px;margin-bottom:80px;border-top:1px solid var(--line)}
+h2{font-size:clamp(28px,3vw,40px);letter-spacing:-.04em}.sub{font-size:16px;margin:8px 0 30px}.cards{gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.card{box-shadow:none;border:0;border-radius:0;padding:28px;min-height:156px}.card h3{font-size:18px;margin-bottom:10px}.card p{color:var(--muted)}
+.group{box-shadow:none;border-radius:10px;padding:10px 24px}.group>h3{padding:18px 0 12px}.exp{padding:16px 0;display:grid;grid-template-columns:1fr 2fr;gap:20px}.exp .desc{font-size:14px}.exp .name:after{content:' ↗';font-weight:400}
+a:focus-visible{outline:3px solid #4f8069;outline-offset:4px}
+@media(max-width:760px){.wrap{padding:0 22px}.nav{height:66px}.hero{grid-template-columns:1fr;gap:28px;min-height:0;padding:66px 0}.hero h1{font-size:clamp(40px,10vw,60px)}.hero p{font-size:16px}.hero-art{justify-self:stretch}.exp{grid-template-columns:1fr;gap:3px}.cards{grid-template-columns:1fr}section{margin-bottom:56px}.nav-links{display:none}}
+.group{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:0;background:transparent;border:0;overflow:visible;margin-bottom:34px}
+.group>h3{grid-column:1/-1;border:0;font-size:14px;letter-spacing:.08em;color:var(--muted);padding:10px 0}
+.exp{display:flex;flex-direction:column;gap:0;padding:0;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.exp:last-child{border-bottom:1px solid var(--line)}.exp:hover,.exp:focus-within{transform:translateY(-4px);border-color:#bccfc2;box-shadow:0 14px 34px rgba(25,44,35,.09)}
+.exp img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;background:#edf3ef;border-bottom:1px solid var(--line)}
+.exp .name{display:block;color:var(--ink);font-size:17px;padding:21px 22px 0}.exp .desc{padding:10px 22px 24px;font-size:14px;line-height:1.7;color:#62635f}
+.exp .name:after{float:right;color:#688073}.exp .name:hover{text-decoration:none}
+.eyebrow{color:#356552}.nav-links a,.sub,.hero p{color:#5b5e5c}
+section{scroll-margin-top:90px}.js-motion .reveal{opacity:0;transform:translateY(18px)}.js-motion .reveal.visible{opacity:1;transform:none;transition:opacity .55s ease,transform .55s ease}
+@media(max-width:900px){.group{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.group{grid-template-columns:1fr}.exp .name{font-size:17px}.exp .desc{font-size:15px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.exp,.js-motion .reveal,.js-motion .reveal.visible{transition:none;transform:none;opacity:1}}
+.language{font-size:14px;white-space:nowrap;margin-left:auto;margin-right:20px}
+@media(max-width:450px){.nav .btn{padding:9px 10px;font-size:12px}.brand{font-size:16px}.language{margin-right:10px}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav"><div class="brand"><img class="logo" src="assets/lab-mark.svg" alt="" width="34" height="34"> XiaokeAILabs</div><nav class="nav-links" aria-label="Main navigation"><a href="#about">Topics</a><a href="#results">Results</a><a href="#index">Experiments</a></nav><a class="language" href="index.html" hreflang="zh-CN" lang="zh-CN">中文</a><a class="btn btn-primary" href="https://github.com/li-xiu-qi/XiaokeAILabs">GitHub</a></div></header>
+<main class="wrap">
+<div class="hero"><div><span class="eyebrow">OPEN EXPERIMENTS · UPDATED ONGOINGLY</span><h1>Understand AI engineering<br>through experiments.</h1><p>From model training and retrieval to inference deployment, we use code and measurements to ask what works, under which conditions, and how to test it on your own data and hardware.</p><div class="cta"><a class="btn btn-primary" href="#index">Explore experiments ↓</a><a class="btn" href="https://github.com/li-xiu-qi/XiaokeAILabs">View on GitHub ↗</a></div></div><figure class="hero-art"><svg viewBox="0 0 600 460" role="img" aria-labelledby="art-title art-desc" xmlns="http://www.w3.org/2000/svg"><title id="art-title">From questions to inspectable evidence</title><desc id="art-desc">An experiment moves from a question through controlled tests to an interpretation of results.</desc><rect x="1" y="1" width="598" height="458" rx="14" fill="#fff" stroke="#e5e3df"/><path d="M1 48H599" stroke="#e5e3df"/><circle cx="24" cy="24" r="4" fill="#d6d2cc"/><circle cx="39" cy="24" r="4" fill="#d6d2cc"/><circle cx="54" cy="24" r="4" fill="#d6d2cc"/><text x="88" y="29" font-family="sans-serif" font-size="12" fill="#777">XIAOKE AI LABS / EXPERIMENT NOTES</text><text x="38" y="98" font-family="sans-serif" font-size="13" fill="#356552">FROM QUESTION TO EVIDENCE</text><text x="38" y="137" font-family="sans-serif" font-size="28" font-weight="700" fill="#202024">Trace every conclusion to evidence</text><path d="M68 196H533 M68 272H533 M68 348H533" stroke="#ece9e5"/><circle cx="68" cy="196" r="17" fill="#e3efe7"/><circle cx="68" cy="272" r="17" fill="#e3efe7"/><circle cx="68" cy="348" r="17" fill="#e3efe7"/><text x="63" y="201" font-family="sans-serif" font-size="12" fill="#2f5e4a">1</text><text x="63" y="277" font-family="sans-serif" font-size="12" fill="#2f5e4a">2</text><text x="63" y="353" font-family="sans-serif" font-size="12" fill="#2f5e4a">3</text><text x="105" y="191" font-family="sans-serif" font-size="16" font-weight="700" fill="#202024">Ask a question</text><text x="105" y="213" font-family="sans-serif" font-size="12" fill="#777">Define the goal and use case</text><text x="105" y="267" font-family="sans-serif" font-size="16" font-weight="700" fill="#202024">Design and run comparisons</text><text x="105" y="289" font-family="sans-serif" font-size="12" fill="#777">Record data, settings, and measurements</text><text x="105" y="343" font-family="sans-serif" font-size="16" font-weight="700" fill="#202024">Interpret results and limits</text><text x="105" y="365" font-family="sans-serif" font-size="12" fill="#777">Share code and preserve evidence</text><path d="M470 171v26h10v-26zm15-17v43h10v-43zm15 11v32h10v-32zm15-31v63h10v-63z" fill="#81a996"/></svg><figcaption>Start with a question; make methods, data, and conclusions inspectable.</figcaption></figure></div>
+<section id="about"><h2>Start with a question</h2><p class="sub">Explore methods alongside their data, settings, and results.</p><div class="cards"><div class="card"><h3>Training and fine-tuning</h3>Prepare data, adapt embedding and reranking models, and assess them with retrieval metrics.</div><div class="card"><h3>Inference and performance</h3>Compare quantization, serving engines, and concurrency; estimate memory and bandwidth for deployment.</div><div class="card"><h3>Retrieval and storage</h3>Explore multi-stage retrieval and compare vector database recall, latency, and storage costs.</div><div class="card"><h3>Documents and multimodal AI</h3>Study OCR, image fine-tuning, and cross-modal deployment across devices and their limitations.</div></div></section>
+<section id="results"><h2>What measurements can tell us</h2><p class="sub">Every result depends on its data, hardware, and method.</p><div class="cards"><div class="card"><h3>Check outputs as well as speed</h3><p>On four OCR samples on GB10, total model generation time improved by 2.36× with identical greedy outputs. Timing excludes image loading and preprocessing; the result does not represent all documents.</p><a href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/minicpm-ocr">Explore OCR acceleration →</a></div><div class="card"><h3>Build your own comparison</h3><p>Models, data, and hardware affect results. Experiment records include configurations and methods to help you test your own workload.</p><a href="#index">Browse experiments →</a></div></div></section>
+<section id="index"><h2>Experiment index</h2><p class="sub">Choose a topic to inspect methods, code, results, and their limits. English guides are linked where available; other entries open in Chinese.</p>
+<div class="group"><h3>Training, fine-tuning, and retrieval</h3>
+<div class="exp"><img src="experiments/embedding-research/model_finetuning/test_train_embedding/assets/training-flow.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/embedding-research/model_finetuning/test_train_embedding/README.md">Chinese embedding fine-tuning</a><div class="desc">Learn in-batch contrastive training with query-document pairs; the four built-in examples do not establish a retrieval improvement. <span lang="en">(guide in Chinese)</span></div></div>
+<div class="exp"><img src="experiments/reranker-finetune-scifact/assets/training-flow.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/reranker-finetune-scifact/README.en.md">Reranker fine-tuning</a><div class="desc">Train a cross-encoder with queries, documents, and relevance labels.</div></div>
+<div class="exp"><img src="assets/experiment-covers/vector-db-benchmark.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/vector-db-benchmark/README.en.md">Vector database benchmark</a><div class="desc">Historical records lack raw results and do not support product rankings.</div></div>
+<div class="exp"><img src="experiments/vector-index-costs/assets/search-paths.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/vector-index-costs/README.en.md">Vector index costs</a><div class="desc">Compare recall, time and storage across Flat, IVF, HNSW and quantized indexes.</div></div>
+</div>
+<div class="group"><h3>Distillation, multimodal AI, and fine-tuning</h3>
+<div class="exp"><img src="experiments/embedding-distillation/assets/distillation-flow.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/embedding-distillation/README.en.md">Embedding distillation</a><div class="desc">Transfer teacher scores to a smaller embedding model; candidate preparation uses the shared SciFact tool.</div></div>
+<div class="exp"><img src="experiments/reranker-distillation/assets/distillation.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/reranker-distillation/README.en.md">Reranker distillation</a><div class="desc">Compare supervised training and score distillation on a fixed candidate pool.</div></div>
+<div class="exp"><img src="experiments/colbert-distillation/distillation-flow.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/colbert-distillation/README.en.md">ColBERT distillation</a><div class="desc">Compare score distillation with supervised learning; distillation did not beat the supervised baseline.</div></div>
+<div class="exp"><img src="experiments/visual-multivector-retrieval/retrieval-flow.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/visual-multivector-retrieval/README.en.md">Visual multi-vector document retrieval</a><div class="desc">A page-retrieval baseline plus supervised fine-tuning and distillation comparisons on synthetic pages.</div></div>
+<div class="exp"><img src="experiments/multimodal-embedding-distillation/assets/distillation.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/multimodal-embedding-distillation/README.en.md">Multimodal embedding distillation</a><div class="desc">Explore knowledge transfer from a vision-language retrieval teacher to a compact student.</div></div>
+<div class="exp"><img src="experiments/multimodal-reranking/figures/pipeline.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/multimodal-reranking/README.en.md">Multimodal reranking</a><div class="desc">Explore reranking image-text candidates with anonymized evaluation results.</div></div>
+<div class="exp"><img src="experiments/gui-grounding-finetuning/figures/gui-grounding.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/gui-grounding-finetuning/README.md">GUI grounding fine-tuning</a><div class="desc">Train screenshot-and-instruction grounding; 30 held-out samples do not establish generalization gains. <span lang="en">(guide in Chinese)</span></div></div>
+<div class="exp"><img src="experiments/video-generation-distillation/assets/eval-02-lora-frame.png" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/video-generation-distillation/README.md">Video generation trained on teacher samples</a><div class="desc">Four initial held-out videos and eight follow-up student pairs show changes, but do not establish quality gains. The six training samples were selected after generation; the follow-up used one AI reviewer of sampled frames. <span lang="en">(guide in Chinese)</span></div></div>
+<div class="exp"><img src="experiments/image-generation-distillation/figures/student-after-sneaker.png" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/image-generation-distillation/README.en.md">Image generation with synthetic training data</a><div class="desc">Train a student LoRA on teacher-generated data and compare it with student-generated training data. One AI thumbnail reviewer found no teacher-data advantage in the small camera follow-up; generation pipelines differed. See the paired analysis for an exploratory category breakdown and its limits.</div></div>
+<div class="exp"><img src="assets/experiment-covers/image-finetune.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/image-finetune/README.en.md">Identity image fine-tuning</a><div class="desc">Train an identity LoRA; the historical base and adapted outputs use different resolutions and are not directly comparable.</div></div>
+<div class="exp"><img src="experiments/wan22-video-diagnostics/evidence/seed-cross/training-reference.png" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/wan22-video-diagnostics/README.md">Character video fine-tuning and diagnostics</a><div class="desc">Examine base generation, seeds, and LoRA outputs; a small held-out evaluation does not establish that the target character was learned. <span lang="en">(guide in Chinese)</span></div></div>
+</div>
+<div class="group"><h3>Inference, deployment, and costs</h3>
+<div class="exp"><img src="experiments/language-jepa/figures/training.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/language-jepa/README.md">Language JEPA training</a><div class="desc">A toy arithmetic comparison of the original model, LoRA, and JEPA; not evidence of improvement. <span lang="en">(guide in Chinese)</span></div></div>
+<div class="exp"><img src="experiments/diffusion-language-models/docs/generation-paths.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/diffusion-language-models/README.md">Diffusion language model speed</a><div class="desc">Compare generation paths on three prompts with unequal output lengths and unmeasured quality. <span lang="en">(guide in Chinese)</span></div></div>
+<div class="exp"><img src="experiments/gb10-inference/qwen36-35b-ab/assets/slots-comparison.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/gb10-inference/qwen36-35b-ab/README.md">GB10 inference slots</a><div class="desc">Compare throughput and completion times for one versus eight slots on the same model and engine. <span lang="en">(guide in Chinese)</span></div></div>
+<div class="exp"><img src="assets/experiment-covers/llm-inference-perf.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/llm-inference-perf/README.en.md">LLM inference performance</a><div class="desc">Performance analysis across models and inference configurations.</div></div>
+<div class="exp"><img src="assets/experiment-covers/llm-mechanics.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/llm-mechanics/quantization/README.md">Language model quantization</a><div class="desc">Compare model size, perplexity, and CPU speed; the BF16 path performed unusually slowly. <span lang="en">(guide in Chinese)</span></div></div>
+<div class="exp"><img src="assets/experiment-covers/llm-mechanics.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/llm-mechanics/README.md">LLM mechanics</a><div class="desc">Understand text generation through examples. <span lang="en">(guide in Chinese)</span></div></div>
+<div class="exp"><img src="experiments/tokenizer-mechanics/token-flow.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/tokenizer-mechanics/README.en.md">Tokenizer mechanics</a><div class="desc">Explore byte-level BPE, real encodings, and token costs.</div></div>
+<div class="exp"><img src="experiments/llm-mechanics/kv_cache/figures/kv-cache-flow.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/llm-mechanics/kv_cache/README.en.md">KV cache mechanics</a><div class="desc">Compare cached and full-prefix numerical results.</div></div>
+<div class="exp"><img src="assets/experiment-covers/inference-cost-models.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/inference-cost-models/README.md">Inference cost models</a><div class="desc">Memory examples and theoretical models; performance estimates have not been independently validated. <span lang="en">(guide in Chinese)</span></div></div>
+<div class="exp"><img src="assets/experiment-covers/data-structure-costs.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/data-structure-costs/README.md">Data structure costs</a><div class="desc">Analyze the costs of data structures and formats. <span lang="en">(guide in Chinese)</span></div></div>
+</div>
+<div class="group"><h3>Document understanding and multimodal AI</h3>
+<div class="exp"><img src="experiments/portrait-matting/docs/pipeline.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/portrait-matting/README.en.md">Portrait matting</a><div class="desc">Evaluate subject regions, boundaries, and forward time on 30 still images; results do not establish video performance.</div></div>
+<div class="exp"><img src="experiments/table-structure-recognition/figures/synthetic-table.png" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/table-structure-recognition/README.en.md">Table structure recognition</a><div class="desc">Examine cropping and structure predictions on one synthetic table; text recognition is out of scope.</div></div>
+<div class="exp"><img src="experiments/paddle-ocr-detection-recognition/figures/detected.png" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/paddle-ocr-detection-recognition/README.en.md">Text detection and recognition</a><div class="desc">Pass detected text regions to a recognizer; the two-stage result covers one synthetic table.</div></div>
+<div class="exp"><img src="assets/experiment-covers/minicpm-ocr.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/minicpm-ocr/README.md">MiniCPM-OCR</a><div class="desc">Document recognition deployment and generation acceleration. <span lang="en">(guide in Chinese)</span></div></div>
+<div class="exp"><img src="assets/experiment-covers/jina-clip-openvino.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/jina-clip-openvino/README.md">Jina CLIP OpenVINO</a><div class="desc">Compare CPU and NPU correctness and workload-specific performance. <span lang="en">(guide in Chinese)</span></div></div>
+<div class="exp"><img src="assets/experiment-covers/jev-open-source.svg" alt="" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/experiments/jev-open-source/README.md">Jev open-source evaluation</a><div class="desc">Compare community implementations on a small decision-making sample. <span lang="en">(guide in Chinese)</span></div></div>
+</div>
+</section></main><footer><div class="wrap cols"><div><b style="color:var(--ink)">XiaokeAILabs</b><br>WeChat: 筱可AI · lixiuqixiaoke@qq.com</div><div><a href="https://github.com/li-xiu-qi/XiaokeAILabs">GitHub</a> · Apache 2.0</div></div></footer><script>
+if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const items = document.querySelectorAll('section, .exp');
+  const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+  }), { threshold: 0.06 });
+  document.documentElement.classList.add('js-motion');
+  items.forEach(item => { item.classList.add('reveal'); observer.observe(item); });
+}
+</script></body></html>

@@ -42,7 +42,7 @@ python -m pip install torch transformers==5.19.0
 python kv_cache_check.py
 ```
 
-The script creates a two-layer model, prefills three IDs, then incrementally grows the sequence to seven. At each position it compares cached logits with full-prefix recomputation and checks cache length. A CPU float32 run with Python 3.12.3, PyTorch 2.14.0+cu130 and Transformers 5.19.0 recorded a maximum absolute error of **4.47 × 10⁻⁸** across five positions; cache lengths were 3, 4, 5, 6 and 7. Floating-point differences vary by hardware, precision and operators.
+The script creates a two-layer model, prefills three IDs, then incrementally grows the sequence to seven. At each position it compares cached logits with full-prefix recomputation and checks cache length. A CPU float32 run with Python 3.12.3, PyTorch 2.14.0+cu130 and Transformers 5.19.0 recorded a maximum absolute error of **4.47 × 10⁻⁸** across five positions; cache lengths were 3, 4, 5, 6 and 7. Floating-point differences vary by hardware, precision and operators. The script reports greedy-token matches separately: a near tie can change the selected token even when logits satisfy the numerical tolerance.
 
 The script explicitly manages forward calls and cache passing while using the framework’s attention implementation; it does not implement an attention kernel from scratch. A performance study would need controlled model, input/output lengths, precision, batch and implementation, plus warmup and repeated timings. Report first-token latency, subsequent-token latency, throughput and peak memory separately; synchronize GPU timings.
 
