@@ -8,7 +8,7 @@ Product imagery often needs consistent backgrounds, lighting and composition. Ca
 
 ## Ceramic mugs: teacher data versus self-generated data
 
-[Explore the tutorial and two rounds of AI blind review](mug-distill-final/README.en.md). The held-out set contains 32 scenes with two seeds each. Ratings, mappings and a recomputation script are included; images and model weights are not. Findings are limited to this setting and review protocol.
+[Explore the tutorial and two rounds of AI blind review](mug-distill-final/README.en.md). The held-out set contains 32 scenes with two seeds each. Ratings, mappings and a recomputation script are included; held-out originals are available in the Release; training images and model weights are not. Findings are limited to this setting and review protocol.
 
 ## What was run
 

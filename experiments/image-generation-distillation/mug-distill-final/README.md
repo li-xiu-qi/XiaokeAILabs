@@ -30,10 +30,10 @@ bash run_experiment.sh
 
 ## 复算公开评分
 
-本包包含评分、完成评审后公开的匿名映射及图像 SHA-256，但不含图像，所以读者不能只凭本包核验图像内容及哈希。以下用 Python 3.10 以上重算分数与 32 场景结果：
+本目录包含评分、完成评审后公开的匿名映射及图像 SHA-256。[下载 256 张留出测试原图、清单和哈希](https://github.com/li-xiu-qi/XiaokeAILabs/releases/tag/evidence-mug-final-20261107)，可核对原图；教师原图为 1024 像素，盲评使用其 LANCZOS 缩至 512 像素的图。两轮均为 AI 评审，黑图保留；缩略图审查不能排除细小文字。以下用 Python 3.10 以上重算分数与 32 场景结果：
 
 ```bash
 python recompute.py --manifest test.jsonl --manifest-sha256 2e45677b4f920765f128e2a85d94f92bfdb7aa580946ca4e56d846b430753e87 --review1 review-1.csv --key1 key-1.json --review2 review-2.csv --key2 key-2.json --out replay.json
 ```
 
-`mug-final-summary.json` 是该命令生成的结果。评审代理记录使用匿名编号；原始图像、训练数据和 LoRA 权重未随本包发布。
+`mug-final-summary.json` 是该命令生成的结果。评审代理记录使用匿名编号；训练图像和 LoRA 权重未公开，留出测试原图另见上述 Release。
