@@ -12,11 +12,11 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Reranker distillation](experiments/reranker-distillation/README.md): Compare supervised training and score distillation on a fixed candidate pool.
 - [ColBERT distillation](experiments/colbert-distillation/README.md): Compare score distillation with supervised learning; distillation did not beat the supervised baseline.
 - [Visual multi-vector document retrieval](experiments/visual-multivector-retrieval/README.en.md): A page-retrieval baseline plus supervised fine-tuning and distillation comparisons on synthetic pages.
-- [Multimodal embedding distillation](experiments/multimodal-embedding-distillation/README.md): Explore knowledge transfer from a vision-language retrieval teacher to a compact student.
+- [Multimodal embedding distillation](experiments/multimodal-embedding-distillation/README.en.md): Explore knowledge transfer from a vision-language retrieval teacher to a compact student.
 - [Multimodal reranking](experiments/multimodal-reranking/README.md): Explore reranking image-text candidates with anonymized evaluation results.
 - [GUI grounding fine-tuning](experiments/gui-grounding-finetuning/README.md): Train screenshot-and-instruction grounding; 30 held-out samples do not establish generalization gains.
-- [Video generation trained on teacher samples](experiments/video-generation-distillation/README.md): Four held-out teacher, before, and after videos; six post-selected training examples do not establish quality gains. Teacher and student use different resolutions and inference engines.
-- [Image generation with synthetic training data](experiments/image-generation-distillation/README.md): Train a student LoRA on teacher-generated data; results rely on one AI reviewer. See the [paired analysis](experiments/image-generation-distillation/PAIRED-ANALYSIS.md#english) for an exploratory category breakdown and its limits.
+- [Video generation trained on teacher samples](experiments/video-generation-distillation/README.md): Four initial held-out videos and eight follow-up student pairs show changes, but do not establish quality gains. The six training samples were selected after generation; the follow-up used one AI reviewer of sampled frames.
+- [Image generation with synthetic training data](experiments/image-generation-distillation/README.md): Train a student LoRA on teacher-generated data and compare it with student-generated training data. One AI thumbnail reviewer found no teacher-data advantage in the small camera follow-up; generation pipelines differed. See the [paired analysis](experiments/image-generation-distillation/PAIRED-ANALYSIS.md#english) for an exploratory category breakdown and its limits.
 - [Identity image fine-tuning](experiments/image-finetune/README.en.md): Train an identity LoRA; the historical base and adapted outputs use different resolutions and are not directly comparable.
 - [Character video fine-tuning and diagnostics](experiments/wan22-video-diagnostics/README.md): Examine base generation, seeds, and LoRA outputs; a small held-out evaluation does not establish that the target character was learned.
 - [Vector database benchmark](experiments/vector-db-benchmark/README.en.md): Historical records lack raw results and do not support product rankings.
@@ -24,7 +24,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Language JEPA training](experiments/language-jepa/README.md): A toy arithmetic comparison of the original model, LoRA, and JEPA; not evidence of improvement.
 - [Diffusion language model speed](experiments/diffusion-language-models/README.md): Compare generation paths on three prompts with unequal output lengths and unmeasured quality.
 - [GB10 inference slots](experiments/gb10-inference/qwen36-35b-ab/README.md): Compare throughput and completion times for one versus eight slots on the same model and engine.
-- [LLM inference performance](experiments/llm-inference-perf/README.md): Performance analysis across models and inference configurations.
+- [LLM inference performance](experiments/llm-inference-perf/README.en.md): Performance analysis across models and inference configurations.
 - [Language model quantization](experiments/llm-mechanics/quantization/README.md): Compare model size, perplexity, and CPU speed; the BF16 path performed unusually slowly.
 - [LLM mechanics](experiments/llm-mechanics/README.md): Understand text generation through examples.
 - [Tokenizer mechanics](experiments/tokenizer-mechanics/README.en.md): Explore byte-level BPE, real encodings, and token costs.
