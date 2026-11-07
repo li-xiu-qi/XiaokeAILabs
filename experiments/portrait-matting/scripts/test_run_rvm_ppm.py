@@ -30,6 +30,17 @@ with tempfile.TemporaryDirectory() as tmp:
     assert records[0]['raw_forward_seconds'] == [0.01, 0.02]
     assert summary['iou'] == 1 and summary['mae'] == 0
     assert Image.open(root / 'run/alpha/synthetic.png').size == (32, 16)
+    replicated = np.full((32, 64, 3), 127, dtype=np.uint8)
+    Image.fromarray(replicated).save(root / 'replicated.png')
+    _, target, _ = runner.prepare_pair(root / 'image.png', root / 'replicated.png', 64)
+    assert np.all(target == 127)
+    replicated[..., 1] = 0
+    Image.fromarray(replicated).save(root / 'color.png')
+    try:
+        runner.prepare_pair(root / 'image.png', root / 'color.png', 64)
+        raise AssertionError('colored label was silently converted to grayscale')
+    except ValueError:
+        pass
     try:
         runner.run_dataset(manifest, root / 'run', Fake(), 1, 2, 32)
         raise AssertionError('overwriting output succeeded')

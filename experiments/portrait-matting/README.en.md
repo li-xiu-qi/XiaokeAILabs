@@ -60,7 +60,7 @@ python scripts/run_rvm_ppm.py \
 
 Use `--device cpu` without CUDA. The output directory must not exist. Check the pinned RVM revision's dependencies before running.
 
-Each RGB input is resized proportionally to at most 1024 pixels on its longest side and converted to FP32 in the 0–1 range with shape `1×3×H×W`. The label is resized to match using bilinear interpolation. The model's internal downsample ratio is `min(1,512/max(H,W))`; each forward receives four empty recurrent states. Image and label are not independently EXIF-rotated, preserving their raster alignment. The output alpha is rounded to 8-bit PNG before scoring.
+Each RGB input is resized proportionally to at most 1024 pixels on its longest side and converted to FP32 in the 0–1 range with shape `1×3×H×W`. Labels must be 8-bit grayscale or RGB with identical channels; an RGBA label must also have an opaque alpha channel. Other labels are rejected rather than silently converted. The label is resized to match using bilinear interpolation. The model's internal downsample ratio is `min(1,512/max(H,W))`; each forward receives four empty recurrent states. Image and label are not independently EXIF-rotated, preserving their raster alignment. The output alpha is rounded to 8-bit PNG before scoring.
 
 CUDA is synchronized immediately before and after each timed forward. `results.json` records hashes, dimensions, parameters, timings, per-image metrics, and macro averages. The `alpha/` and `target/` outputs contain restricted material and must remain local.
 

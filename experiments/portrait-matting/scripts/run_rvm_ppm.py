@@ -43,11 +43,12 @@ def read_dataset(manifest):
 
 
 def prepare_pair(image_path, alpha_path, max_side):
+    from score_mattes import alpha
     with Image.open(image_path) as im:
         # Do not auto-rotate independently: original annotations use source raster coordinates.
         image = im.convert('RGB')
-    with Image.open(alpha_path) as im:
-        matte = im.convert('L')
+    # Enforce the same 8-bit, grayscale-only input contract as the scorer.
+    matte = Image.fromarray(np.rint(alpha(alpha_path) * 255).astype(np.uint8), 'L')
     if image.size != matte.size:
         raise ValueError(f'input/label dimensions differ: {image_path}, {alpha_path}')
     original = image.size
@@ -162,7 +163,7 @@ def main():
         'warmups_per_sample': args.warmup, 'repetitions_per_sample': args.repeats,
         'timing': 'synchronous model forward only; excludes image decode, host-to-device, alpha copy and save',
         'metric': 'alpha rounded to 8-bit PNG; threshold 0.5; boundary Chebyshev tolerance 3 resized pixels',
-        'scope': '30-pair PPM Paddle JPEG labels; exploratory only; CC BY-NC-SA annotations, portrait rights not verified',
+        'scope': 'single-frame exploratory RVM run; data provenance and license depend on the supplied manifest',
         'n': len(records), 'macro_mean': summary, 'samples': records}
     (args.output / 'results.json').write_text(json.dumps(metadata, ensure_ascii=False, indent=2), encoding='utf-8')
 
