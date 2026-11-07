@@ -23,7 +23,7 @@ import torch
 from torch.utils.data import Dataset, Sampler
 from transformers import CLIPModel, CLIPProcessor
 from datasets import load_from_disk, load_dataset, Dataset as HFDataset, DatasetDict
-from split_contract import partition_indices
+from split_contract import clean_captions, partition_indices
 
 
 class PairRecord(TypedDict):
@@ -352,17 +352,15 @@ class Flickr30kDataBuilder(BaseCaptionDataBuilder):
     def _expand(self, ds: HFDataset) -> List[PairRecord]:
         out: List[PairRecord] = []
         for rec in ds:
-            caps = rec.get("caption")
-            if not caps:
-                continue
+            caps = clean_captions(rec.get("caption"))
             image = rec.get("image")
+            if image is None:
+                raise ValueError("Flickr30k 记录缺少图片")
             if rec.get("img_id") is None:
                 raise ValueError("Flickr30k 记录缺少 img_id")
             img_id = int(rec["img_id"])
             for c in caps:
-                if not c:
-                    continue
-                out.append(PairRecord(image=image, text=c.strip(), image_id=img_id))
+                out.append(PairRecord(image=image, text=c, image_id=img_id))
         return out
 
 

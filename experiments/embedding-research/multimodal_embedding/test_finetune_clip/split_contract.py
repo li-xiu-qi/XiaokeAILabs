@@ -2,6 +2,18 @@
 import re
 
 
+def clean_captions(captions):
+    """Require a caption list and discard blank strings before pairing."""
+    if not isinstance(captions, (list, tuple)):
+        raise ValueError('caption 必须是字符串列表')
+    if any(not isinstance(caption, str) for caption in captions):
+        raise ValueError('caption 列表只能包含字符串')
+    cleaned = [caption.strip() for caption in captions if caption.strip()]
+    if not cleaned:
+        raise ValueError('图片至少需要一条非空描述')
+    return cleaned
+
+
 def partition_indices(splits, image_ids):
     if len(splits) != len(image_ids):
         raise ValueError('split 与 img_id 数量不一致')
