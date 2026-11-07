@@ -26,7 +26,7 @@ python ngrams.py
 
 With this fixed corpus and code, `low lower` occupies 9 UTF-8 bytes and 2 tokens; the unseen `你好🙂` uses 10 tokens, one per byte. Both round-trip. This does not imply that Chinese characters or emoji use one token per byte in other tokenizers.
 
-`ngrams.py` demonstrates sliding windows of characters or space-separated words. It is not a trained BPE tokenizer; splitting on spaces is not Chinese word segmentation. A unigram in this script means a length-one n-gram, not the Unigram tokenization model.
+`ngrams.py` demonstrates sliding windows of characters or space-separated words. It is not a trained BPE tokenizer; word mode lowercases and removes punctuation before splitting on whitespace: `red,blue` becomes one word, `redblue`. It is not a general-purpose or Chinese word segmenter. A unigram in this script means a length-one n-gram, not the Unigram tokenization model.
 
 ## Three common approaches
 

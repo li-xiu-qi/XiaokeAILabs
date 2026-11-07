@@ -26,7 +26,7 @@ python ngrams.py
 
 在这份固定代码与语料上，`low lower` 的 9 个 UTF-8 字节变为 2 个 token，而未进入训练语料的 `你好🙂` 仍需 10 个 token。后者编码时每个字节各占一个 token，并不意味着中文或 emoji 在其他 tokenizer 中一定如此。两个样例都可还原原文；脚本也检查空格与换行。
 
-`ngrams.py` 把既有 notebook 的核心函数整理为命令行程序：演示连续字符或按空格切出的词的 n-gram。它是统计窗口，不是训练好的 BPE；其中空格切词也不是中文分词器。这里的 unigram 是长度为 1 的 n-gram，和下文的 Unigram 分词模型并非同一概念。
+`ngrams.py` 把既有 notebook 的核心函数整理为命令行程序：演示连续字符或按空格切出的词的 n-gram。它是统计窗口，不是训练好的 BPE；词模式会先转小写并删除标点，再按空白切分；因此 `red,blue` 会变成一个词 `redblue`，它不是通用或中文分词器。这里的 unigram 是长度为 1 的 n-gram，和下文的 Unigram 分词模型并非同一概念。
 
 ## 三种常见方法
 
