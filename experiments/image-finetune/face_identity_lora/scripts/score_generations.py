@@ -137,7 +137,7 @@ def score(records: list[dict], refs: dict) -> dict:
 def report_reference(refs: dict) -> None:
     print(f"target {TARGET_ID}: {refs['n_train']} train / {refs['n_test']} test images")
     print(f"negative control {NEGATIVE_ID}: {refs['n_negative']} test images")
-    print(f"same-person ceiling (train vs test): {refs['cross_split']['mean']:.4f}")
+    print(f"same-person reference similarity (train vs held-out photos): {refs['cross_split']['mean']:.4f}")
 
 
 def baseline_mismatches(baseline: dict, size: int, n: int) -> list[str]:

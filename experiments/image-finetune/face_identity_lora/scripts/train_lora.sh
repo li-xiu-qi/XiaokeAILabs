@@ -36,10 +36,16 @@ fi
 n_images=$(find "$TRAIN_DIR" -name '*.jpg' | wc -l | tr -d ' ')
 n_captions=$(find "$TRAIN_DIR" -name '*.txt' | wc -l | tr -d ' ')
 echo "=== training set: $n_images images, $n_captions captions in $TRAIN_DIR ==="
-if [ "$n_images" -ne "$n_captions" ]; then
-    echo "[error] image/caption count mismatch — ai-toolkit silently skips uncaptioned images" >&2
+if [ "$n_images" -eq 0 ] || [ "$n_images" -ne "$n_captions" ]; then
+    echo "[error] expected a non-empty image set with one caption per image" >&2
     exit 1
 fi
+while IFS= read -r -d '' image; do
+    if [ ! -f "${image%.jpg}.txt" ]; then
+        echo "[error] missing matching caption: ${image%.jpg}.txt" >&2
+        exit 1
+    fi
+done < <(find "$TRAIN_DIR" -name '*.jpg' -print0)
 
 # The dataset has to clear the four gates in check_dataset.py before any GPU
 # time is spent. Set SKIP_CHECK=1 only when you know the data was audited and

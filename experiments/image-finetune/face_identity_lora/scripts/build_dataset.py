@@ -2,8 +2,8 @@
 """Export one CelebA identity into train/test splits and write training captions.
 
 Reads a CelebA parquet shard, keeps every image belonging to `--celeb-id`,
-splits them alternately (2 of every 3 go to train) so that lighting and pose
-are represented on both sides, and writes a manifest for later checking.
+splits them deterministically (2 of every 3 go to train), and writes a manifest
+for later checking. Row order does not ensure that lighting or pose are balanced.
 
     python scripts/build_dataset.py --parquet /path/to/celeba_shard0.parquet
 
