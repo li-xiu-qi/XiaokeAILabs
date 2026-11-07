@@ -206,7 +206,7 @@ if __name__ == "__main__":
     print("\n=== KV cache (bf16, 每 token 每 batch) ===")
     for m in (Qwen3_8_27B, GLM5_3_Flash):
         kb = kv_bytes_per_token(m)
-        print(f"{m.name}: {kb:.0f} B/token = {kb/1024:.2f} KB/token")
+        print(f"{m.name}: {kb:.0f} B/token = {kb/1024:.2f} KiB/token")
     print("\n=== 历史记录（计时口径未核实，不用于验证） ===")
     for b in BENCHMARKS:
         print(f"{b.model.name} {b.dtype}: decode {b.decode_tps} t/s, "
