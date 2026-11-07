@@ -51,6 +51,18 @@ def resolve_positive(value, metadata, key):
     return resolved
 
 
+def validate_vectors(vectors, name, normalized=False, chunk_size=8192):
+    """Reject undefined similarities; check a normalization claim with tolerance."""
+    for start in range(0, len(vectors), chunk_size):
+        chunk = vectors[start:start + chunk_size]
+        if not np.isfinite(chunk).all():
+            raise ValueError(f"{name} contains NaN or infinity")
+        if normalized:
+            norms = np.linalg.norm(chunk, axis=1)
+            if not np.allclose(norms, 1.0, rtol=1e-3, atol=1e-3):
+                raise ValueError(f"{name} metadata says normalized but vector norms are not close to 1")
+
+
 def load_vectors(path, n, dim):
     if not os.path.exists(path):
         raise FileNotFoundError(
@@ -126,6 +138,8 @@ def main():
         n_query = args.query_limit
     base_array = np.ascontiguousarray(base)
     query_array = np.ascontiguousarray(queries)
+    validate_vectors(base_array, "base", normalized=metadata.get("normalized") is True)
+    validate_vectors(query_array, "query", normalized=metadata.get("normalized") is True)
     print(f"loaded in {time.time() - started:.1f}s", flush=True)
 
     print("building ground truth (FLAT) ...", flush=True)

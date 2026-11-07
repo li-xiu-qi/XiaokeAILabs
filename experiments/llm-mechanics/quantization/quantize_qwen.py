@@ -73,14 +73,6 @@ def generate(text: str, model, tokenizer, max_new_tokens=100):
         output = model.generate(**inputs, max_new_tokens=max_new_tokens)
     return tokenizer.decode(output[0], skip_special_tokens=True)
 
-def release_model(model):
-    """释放模型显存"""
-    del model
-    gc.collect()
-    torch.cuda.empty_cache()
-    time.sleep(3)
-
-
 def demo_compare_quant(model_path=MODEL_PATH, prompt="你好，请简单介绍一下你自己。"):
     """对比未量化、8bit、4bit、bf16、fp16模型的显存与推理输出，显存统计为加载前后差值，最后输出表格对比并以FP16为基准"""
     tokenizer = get_tokenizer(model_path)
@@ -103,7 +95,13 @@ def demo_compare_quant(model_path=MODEL_PATH, prompt="你好，请简单介绍�
             'mem_diff': mem_diff,
             'output': result
         })
-        release_model(model)
+        # Clear the caller's reference before collecting and releasing unused cache.
+        # Deleting a function argument in a helper leaves this local reference alive.
+        del model
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        time.sleep(3)
 
     # FP32
     print("\n[FP32] 开始加载模型...")

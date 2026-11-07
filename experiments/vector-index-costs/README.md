@@ -63,4 +63,4 @@ python scripts/verify_recall_real_corpus.py --base /tmp/vector-corpus/base_vecto
 进一步阅读：[Faiss 索引说明](https://github.com/facebookresearch/faiss/wiki/Faiss-indexes) · [Faiss 常见问题](https://github.com/facebookresearch/faiss/wiki/FAQ) · [向量数据库基准](../vector-db-benchmark/)。
 
 
-底库和查询文件位于不同目录时，脚本会拒绝双方元数据中已知字段的冲突；一方缺少元数据或字段时，无法验证来源一致。脚本使用找到的第一份元数据而不合并两份，必要时显式提供维度和条数，并自行核对模型及语料。
+底库和查询文件位于不同目录时，脚本会拒绝双方元数据中已知字段的冲突；一方缺少元数据或字段时，无法验证来源一致。脚本使用找到的第一份元数据而不合并两份，必要时显式提供维度和条数，并自行核对模型及语料。脚本还会拒绝非有限值，若元数据声明向量已归一化则检查范数；这些检查不能证明向量的来源。
