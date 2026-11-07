@@ -20,6 +20,14 @@ Prediction output: (x, y)        # a point, not an action or bounding box
 Evaluation: point inside the annotated box is a hit; invalid or out-of-range coordinates are misses
 ```
 
+A training manifest record has the following simplified structure. This is synthetic data; `file` points to an image beside the manifest, `sha256` checks its bytes, and the full record also includes source and element details:
+
+```json
+{"file":"example.png","sha256":"<image SHA-256>","width":1000,"height":800,"instruction":"Find the settings button","bbox_pixels":[200,160,400,240]}
+```
+
+The training script divides the box center by image width and height, multiplies by 1000 and rounds, producing the target string `(300, 250)`. The processor builds model input from the image and instruction; the target string and end token follow the prompt. Prompt positions in the loss labels are set to `-100`, so cross-entropy is computed only for the target and end token. The model outputs token probability distributions, decoded at inference into coordinate text rather than pixel coordinates directly. The holdout field `bbox_xyxy_normalized` represents a box on a 0–1 scale; evaluation divides the generated 0–1000 coordinates by 1000 before the point-in-box test.
+
 The multimodal model encodes the screenshot and instruction, then autoregressively generates coordinate text. LoRA learns low-rank updates while the base weights remain frozen. Here only `q_proj` and `v_proj` in the language model's attention layers are adapted; the vision encoder is not trained. The published training script computes cross-entropy on coordinate tokens and the trailing EOS token, masking the prompt and image tokens. Historical metadata describes only coordinate tokens, so the surviving record cannot establish whether the historical run also included EOS:
 
 $$
