@@ -52,3 +52,5 @@ Further investigation showed that forward loss for the same samples varied subst
 The authors' original answer-label logic can match the first occurrence of an answer token in the question. The patch instead checks that the full conversation begins with the generation-prompt token prefix and rejects truncated answers. The current Transformers chat template may return a dictionary by default, so the patch explicitly requests a token list. Reaudit labels and the last-token position when using another tokenizer or version.
 
 To investigate effectiveness rather than the plumbing, use more discriminating data, an unfine-tuned baseline, multiple seeds, and matched compute budgets, and record generation quality and resource use. This single training-path experiment does not answer that question.
+
+[Grouped addition base evaluation](docs/grouped-addition.en.md): the base answered 73 of 80 questions; LoRA and JEPA training on this data have not been completed.
