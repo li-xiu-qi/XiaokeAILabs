@@ -12,6 +12,7 @@
 
 import argparse
 import json
+import math
 import urllib.request
 
 
@@ -51,21 +52,35 @@ def build_payload(mode, prompt, n_predict, temperature, ignore_eos=False):
 
 
 def extract(result, mode):
-    timings = result.get("timings", {})
-    usage = result.get("usage", {})
+    """Reject absent or invalid measurements instead of reporting fake zeros."""
+    if not isinstance(result, dict) or not isinstance(result.get("timings"), dict):
+        raise ValueError("response has no timings object")
+    timings = result["timings"]
+
+    def number(name, *, integer=False):
+        value = timings.get(name)
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+            raise ValueError(f"invalid or missing timings.{name}")
+        if value < 0 or (integer and (not isinstance(value, int))):
+            raise ValueError(f"invalid timings.{name}")
+        return value
+
     out = {
-        "prefill_tps": round(timings.get("prompt_per_second", 0.0), 2),
-        "gen_tps": round(timings.get("predicted_per_second", 0.0), 2),
-        "prefill_tokens": timings.get("prompt_n", 0),
-        "gen_tokens": timings.get("predicted_n", 0) or usage.get("completion_tokens", 0),
+        "prefill_tps": round(number("prompt_per_second"), 2),
+        "gen_tps": round(number("predicted_per_second"), 2),
+        "prefill_tokens": number("prompt_n", integer=True),
+        "gen_tokens": number("predicted_n", integer=True),
     }
-    # 投机解码专有：草稿生成数与接受数，接受率 = 接受 / 生成
-    if "draft_n" in timings:
-        draft_n = timings.get("draft_n", 0)
-        accepted = timings.get("draft_n_accepted", 0)
+    if out["gen_tokens"] == 0 or out["gen_tps"] <= 0:
+        raise ValueError("no measurable generated tokens")
+    if "draft_n" in timings or "draft_n_accepted" in timings:
+        draft_n = number("draft_n", integer=True)
+        accepted = number("draft_n_accepted", integer=True)
+        if accepted > draft_n:
+            raise ValueError("accepted drafts exceed proposed drafts")
         out["draft_n"] = draft_n
         out["draft_accepted"] = accepted
-        out["accept_rate"] = round(accepted / draft_n, 4) if draft_n else 0.0
+        out["accept_rate"] = round(accepted / draft_n, 4) if draft_n else None
     return out
 
 
@@ -82,6 +97,8 @@ def main():
     ap.add_argument("--timeout", type=int, default=300)
     args = ap.parse_args()
 
+    if args.mode == "chat" and args.ignore_eos:
+        ap.error("--ignore-eos is only supported in completion mode")
     base_url = f"http://{args.host}:{args.port}"
     prompt = args.prompt
     if args.prompt_file:
@@ -91,7 +108,10 @@ def main():
         args.mode, prompt, args.n_predict, args.temperature, args.ignore_eos
     )
     result = call(base_url, ENDPOINTS[args.mode], payload, args.timeout)
-    metrics = extract(result, args.mode)
+    try:
+        metrics = extract(result, args.mode)
+    except ValueError as exc:
+        ap.error(str(exc))
 
     print(json.dumps(metrics, ensure_ascii=False, indent=2))
 
