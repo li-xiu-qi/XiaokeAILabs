@@ -1,0 +1,42 @@
+[
+  {
+    "id": "add",
+    "prompt": "What is 17 + 25? Reply with only the integer.",
+    "answer": "42"
+  },
+  {
+    "id": "subtract",
+    "prompt": "What is 91 - 38? Reply with only the integer.",
+    "answer": "53"
+  },
+  {
+    "id": "multiply",
+    "prompt": "What is 7 * 8? Reply with only the integer.",
+    "answer": "56"
+  },
+  {
+    "id": "divide",
+    "prompt": "What is 144 / 12? Reply with only the integer.",
+    "answer": "12"
+  },
+  {
+    "id": "sort",
+    "prompt": "Sort the integers 9, 2, 5 in ascending order. Reply only as comma-separated integers with no spaces.",
+    "answer": "2,5,9"
+  },
+  {
+    "id": "reverse",
+    "prompt": "Reverse the letters in cat. Reply with only the lowercase letters.",
+    "answer": "tac"
+  },
+  {
+    "id": "compare",
+    "prompt": "Which is larger, 3.8 or 3.12? Reply only with the larger number.",
+    "answer": "3.8"
+  },
+  {
+    "id": "length",
+    "prompt": "How many letters are in the word model? Reply with only the integer.",
+    "answer": "5"
+  }
+]

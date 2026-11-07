@@ -71,4 +71,4 @@ python scripts/benchmark.py --model /path/to/OLMoE-1B-7B-0924-Instruct \
 
 [LLaDA-MoE 原始记录](docs/llada-moe-smoke.json) · [OLMoE 原始记录](docs/olmoe-smoke.json) · [固定步数基准脚本](scripts/benchmark-llada-moe.py)
 
-质量与延迟的固定任务、自动评分及运行方案见 [质量与延迟对照方案](docs/质量与延迟对照方案.md)；方案尚未运行。
+质量与延迟的固定任务、自动评分及运行方案见 [对照方案](docs/质量与延迟对照方案.md)；[四模型短答案实测](results/quality-latency-20261107/README.md)展示逐次回答与时间，样本仅八题。

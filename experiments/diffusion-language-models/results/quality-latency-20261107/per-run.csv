@@ -1,0 +1,103 @@
+model,task_id,repetition,answer,expected,strict_match,whitespace_insensitive_match
+Fast_dLLM_v2_1.5B,add,0,42,42,True,True
+Fast_dLLM_v2_1.5B,add,1,42,42,True,True
+Fast_dLLM_v2_1.5B,add,2,42,42,True,True
+Fast_dLLM_v2_1.5B,subtract,0,53,53,True,True
+Fast_dLLM_v2_1.5B,subtract,1,53,53,True,True
+Fast_dLLM_v2_1.5B,subtract,2,53,53,True,True
+Fast_dLLM_v2_1.5B,multiply,0,56,56,True,True
+Fast_dLLM_v2_1.5B,multiply,1,56,56,True,True
+Fast_dLLM_v2_1.5B,multiply,2,56,56,True,True
+Fast_dLLM_v2_1.5B,divide,0,12,12,True,True
+Fast_dLLM_v2_1.5B,divide,1,12,12,True,True
+Fast_dLLM_v2_1.5B,divide,2,12,12,True,True
+Fast_dLLM_v2_1.5B,sort,0,"2, 5, 9","2,5,9",False,True
+Fast_dLLM_v2_1.5B,sort,1,"2, 5, 9","2,5,9",False,True
+Fast_dLLM_v2_1.5B,sort,2,"2, 5, 9","2,5,9",False,True
+Fast_dLLM_v2_1.5B,reverse,0, 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,tac,False,False
+Fast_dLLM_v2_1.5B,reverse,1, 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,tac,False,False
+Fast_dLLM_v2_1.5B,reverse,2, 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,tac,False,False
+Fast_dLLM_v2_1.5B,compare,0,3.8,3.8,True,True
+Fast_dLLM_v2_1.5B,compare,1,3.8,3.8,True,True
+Fast_dLLM_v2_1.5B,compare,2,3.8,3.8,True,True
+Fast_dLLM_v2_1.5B,length,0,3,5,False,False
+Fast_dLLM_v2_1.5B,length,1,3,5,False,False
+Fast_dLLM_v2_1.5B,length,2,3,5,False,False
+Qwen2.5-1.5B-Instruct,add,0,42,42,True,True
+Qwen2.5-1.5B-Instruct,add,1,42,42,True,True
+Qwen2.5-1.5B-Instruct,add,2,42,42,True,True
+Qwen2.5-1.5B-Instruct,subtract,0,53,53,True,True
+Qwen2.5-1.5B-Instruct,subtract,1,53,53,True,True
+Qwen2.5-1.5B-Instruct,subtract,2,53,53,True,True
+Qwen2.5-1.5B-Instruct,multiply,0,56,56,True,True
+Qwen2.5-1.5B-Instruct,multiply,1,56,56,True,True
+Qwen2.5-1.5B-Instruct,multiply,2,56,56,True,True
+Qwen2.5-1.5B-Instruct,divide,0,12,12,True,True
+Qwen2.5-1.5B-Instruct,divide,1,12,12,True,True
+Qwen2.5-1.5B-Instruct,divide,2,12,12,True,True
+Qwen2.5-1.5B-Instruct,sort,0,"2, 5, 9","2,5,9",False,True
+Qwen2.5-1.5B-Instruct,sort,1,"2, 5, 9","2,5,9",False,True
+Qwen2.5-1.5B-Instruct,sort,2,"2, 5, 9","2,5,9",False,True
+Qwen2.5-1.5B-Instruct,reverse,0,atc,tac,False,False
+Qwen2.5-1.5B-Instruct,reverse,1,atc,tac,False,False
+Qwen2.5-1.5B-Instruct,reverse,2,atc,tac,False,False
+Qwen2.5-1.5B-Instruct,compare,0,3.8,3.8,True,True
+Qwen2.5-1.5B-Instruct,compare,1,3.8,3.8,True,True
+Qwen2.5-1.5B-Instruct,compare,2,3.8,3.8,True,True
+Qwen2.5-1.5B-Instruct,length,0,6,5,False,False
+Qwen2.5-1.5B-Instruct,length,1,6,5,False,False
+Qwen2.5-1.5B-Instruct,length,2,6,5,False,False
+LLaDA-MoE-7B-A1B-Instruct,add,0,42,42,True,True
+LLaDA-MoE-7B-A1B-Instruct,add,1,42,42,True,True
+LLaDA-MoE-7B-A1B-Instruct,add,2,42,42,True,True
+LLaDA-MoE-7B-A1B-Instruct,subtract,0,53,53,True,True
+LLaDA-MoE-7B-A1B-Instruct,subtract,1,53,53,True,True
+LLaDA-MoE-7B-A1B-Instruct,subtract,2,53,53,True,True
+LLaDA-MoE-7B-A1B-Instruct,multiply,0,56,56,True,True
+LLaDA-MoE-7B-A1B-Instruct,multiply,1,56,56,True,True
+LLaDA-MoE-7B-A1B-Instruct,multiply,2,56,56,True,True
+LLaDA-MoE-7B-A1B-Instruct,divide,0,12,12,True,True
+LLaDA-MoE-7B-A1B-Instruct,divide,1,12,12,True,True
+LLaDA-MoE-7B-A1B-Instruct,divide,2,12,12,True,True
+LLaDA-MoE-7B-A1B-Instruct,sort,0,"2,5,9","2,5,9",True,True
+LLaDA-MoE-7B-A1B-Instruct,sort,1,"2,5,9","2,5,9",True,True
+LLaDA-MoE-7B-A1B-Instruct,sort,2,"2,5,9","2,5,9",True,True
+LLaDA-MoE-7B-A1B-Instruct,reverse,0,tac,tac,True,True
+LLaDA-MoE-7B-A1B-Instruct,reverse,1,tac,tac,True,True
+LLaDA-MoE-7B-A1B-Instruct,reverse,2,tac,tac,True,True
+LLaDA-MoE-7B-A1B-Instruct,compare,0,3.12,3.8,False,False
+LLaDA-MoE-7B-A1B-Instruct,compare,1,3.12,3.8,False,False
+LLaDA-MoE-7B-A1B-Instruct,compare,2,3.12,3.8,False,False
+LLaDA-MoE-7B-A1B-Instruct,length,0,4,5,False,False
+LLaDA-MoE-7B-A1B-Instruct,length,1,4,5,False,False
+LLaDA-MoE-7B-A1B-Instruct,length,2,4,5,False,False
+OLMoE-1B-7B-0924-Instruct,add,0,The integer result of 17 + 25 is 42.,42,False,False
+OLMoE-1B-7B-0924-Instruct,add,1,The integer result of 17 + 25 is 42.,42,False,False
+OLMoE-1B-7B-0924-Instruct,add,2,The integer result of 17 + 25 is 42.,42,False,False
+OLMoE-1B-7B-0924-Instruct,subtract,0,The integer result of 91 - 38 is 53.,53,False,False
+OLMoE-1B-7B-0924-Instruct,subtract,1,The integer result of 91 - 38 is 53.,53,False,False
+OLMoE-1B-7B-0924-Instruct,subtract,2,The integer result of 91 - 38 is 53.,53,False,False
+OLMoE-1B-7B-0924-Instruct,multiply,0,7 * 8 = 56,56,False,False
+OLMoE-1B-7B-0924-Instruct,multiply,1,7 * 8 = 56,56,False,False
+OLMoE-1B-7B-0924-Instruct,multiply,2,7 * 8 = 56,56,False,False
+OLMoE-1B-7B-0924-Instruct,divide,0,12,12,True,True
+OLMoE-1B-7B-0924-Instruct,divide,1,12,12,True,True
+OLMoE-1B-7B-0924-Instruct,divide,2,12,12,True,True
+OLMoE-1B-7B-0924-Instruct,sort,0,"9,5,2","2,5,9",False,False
+OLMoE-1B-7B-0924-Instruct,sort,1,"9,5,2","2,5,9",False,False
+OLMoE-1B-7B-0924-Instruct,sort,2,"9,5,2","2,5,9",False,False
+OLMoE-1B-7B-0924-Instruct,reverse,0,"tac
+
+Here are the lowercase letters of ""cat"" reversed: tac",tac,False,False
+OLMoE-1B-7B-0924-Instruct,reverse,1,"tac
+
+Here are the lowercase letters of ""cat"" reversed: tac",tac,False,False
+OLMoE-1B-7B-0924-Instruct,reverse,2,"tac
+
+Here are the lowercase letters of ""cat"" reversed: tac",tac,False,False
+OLMoE-1B-7B-0924-Instruct,compare,0,3.12 is larger than 3.8.,3.8,False,False
+OLMoE-1B-7B-0924-Instruct,compare,1,3.12 is larger than 3.8.,3.8,False,False
+OLMoE-1B-7B-0924-Instruct,compare,2,3.12 is larger than 3.8.,3.8,False,False
+OLMoE-1B-7B-0924-Instruct,length,0,"The word ""model"" has 5 letters.",5,False,False
+OLMoE-1B-7B-0924-Instruct,length,1,"The word ""model"" has 5 letters.",5,False,False
+OLMoE-1B-7B-0924-Instruct,length,2,"The word ""model"" has 5 letters.",5,False,False
