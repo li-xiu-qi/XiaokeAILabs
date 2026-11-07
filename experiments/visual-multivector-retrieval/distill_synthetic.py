@@ -1,6 +1,7 @@
 """Synthetic-only ColSmol baseline/LoRA training, with guarded memory."""
 import argparse,json,os,random,threading,time,math
 from pathlib import Path
+from teacher_binding import verify_teacher
 
 def check():
  for line in open('/proc/meminfo'):
@@ -12,6 +13,8 @@ def watch():
   time.sleep(1)
 def main():
  p=argparse.ArgumentParser();p.add_argument('--root',required=True,type=Path);p.add_argument('--base',required=True);p.add_argument('--adapter',required=True);p.add_argument('--out',required=True,type=Path);p.add_argument('--steps',type=int,default=8);p.add_argument('--smoke',action='store_true');p.add_argument('--teacher',required=True,type=Path);args=p.parse_args()
+ teacher=json.loads(args.teacher.read_text());verify_teacher(args.root,teacher)
+ if len(teacher['batches']) < (2 if args.smoke else args.steps):raise ValueError('Not enough teacher batches for requested steps')
  args.out.mkdir(parents=True,exist_ok=False)
  check();threading.Thread(target=watch,daemon=True).start()
  import torch
@@ -20,7 +23,7 @@ def main():
  from colpali_engine.models import ColIdefics3,ColIdefics3Processor
  from colpali_engine.loss.late_interaction_losses import ColbertLoss
  torch.manual_seed(20261107);torch.cuda.set_per_process_memory_fraction(.15);rng=random.Random(20261107)
- teacher=json.loads(args.teacher.read_text());records=json.loads((args.root/'records.json').read_text());train=[x for x in records if x['split']=='train'];test=[x for x in records if x['split']==('validation' if args.smoke else 'test')]
+ records=json.loads((args.root/'records.json').read_text());train=[x for x in records if x['split']=='train'];test=[x for x in records if x['split']==('validation' if args.smoke else 'test')]
  assert not {x['entity'] for x in train}&{x['entity'] for x in test}
  model=ColIdefics3.from_pretrained(args.base,torch_dtype=torch.bfloat16,device_map='cuda:0',attn_implementation='eager',local_files_only=True)
  model=PeftModel.from_pretrained(model,args.adapter,is_trainable=True,local_files_only=True)
@@ -53,7 +56,7 @@ def main():
    with Image.open(args.root/r['image']) as im:ims.append(im.convert('RGB').copy())
   iq=proc.process_queries([r['query'] for r in batch]).to(model.device);idoc=proc.process_images(ims).to(model.device)
   opt.zero_grad(set_to_none=True);q=model(**iq);doc=model(**idoc); supervised_loss=loss_fn(q,doc)
-  assert batch==teacher['batches'][step]['batch']
+  if batch!=teacher['batches'][step]['batch']:raise ValueError(f'Teacher batch mismatch at step {step}')
   target=torch.tensor(teacher['batches'][step]['scores'],device=q.device,dtype=torch.float32)
   raw=torch.einsum('bnd,csd->bcns',q.float(),doc.float()); lengths=(q[:,:,0]!=0).sum(dim=1).clamp_min(1)
   student=raw.amax(dim=3).sum(dim=2)/lengths.unsqueeze(1)

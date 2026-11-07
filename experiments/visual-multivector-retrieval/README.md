@@ -112,3 +112,5 @@ python recompute_distillation.py
 ```
 
 教师打分依赖仓库内 `multimodal-reranking/scripts/qwen3_vl_reranker.py` 及其 Qwen 图像处理依赖，教师与学生所需 Transformers 版本不同，实际运行使用独立环境。教师使用 BF16、最大图片像素 65536；学生蒸馏峰值 PyTorch 分配约 7.68 GiB。教师权重和蒸馏后权重不随仓库分发。Jina 教师为 CC BY-NC 4.0，本次只保留非商业研究结果，未用其分数训练上述蒸馏组。
+
+历史教师分数文件未记录图片哈希，只能作为结果证据查看，无法证明其与当前图片字节一致。重新蒸馏时须按上面的命令重新生成教师分数；新脚本记录图片 SHA-256，并在训练前校验图片和批次。

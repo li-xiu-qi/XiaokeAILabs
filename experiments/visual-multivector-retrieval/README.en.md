@@ -110,3 +110,5 @@ python recompute_distillation.py
 ```
 
 Teacher scoring uses `multimodal-reranking/scripts/qwen3_vl_reranker.py` and its Qwen image-processing dependencies. Teacher and student require different Transformers versions and were run in separate environments. The teacher used BF16 with maximum image pixels 65536; student distillation peaked at about 7.68 GiB of PyTorch allocation. No teacher or distilled weights are redistributed. The Jina teacher is CC BY-NC 4.0; its noncommercial research result did not supply scores for this distillation run.
+
+The historical teacher score file contains no image hashes, so it cannot establish that the current image bytes match those scored. Regenerate teacher scores using the commands above before training: new scores include image SHA-256 hashes, which the training script checks along with batch alignment.
