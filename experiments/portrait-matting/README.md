@@ -1,5 +1,7 @@
 # 用 RVM 评估人物抠像：区域、发丝边界与推理时间
 
+[English](README.en.md) | 简体中文
+
 > 在 DGX Spark 上，RVM MobileNetV3 对 30 张人物单帧照片的区域 IoU 宏平均为 **0.9730**，边界 F1 为 **0.8916**。这是一组 JPEG 标注的小样本探索，不能外推为完整 PPM-100 或视频抠像性能。
 
 ![从照片到 alpha，再到区域和边界评估的流程](docs/pipeline.svg)
@@ -43,7 +45,7 @@ curl -fL https://paddleseg.bj.bcebos.com/matting/datasets/PPM-100.zip -o PPM-100
 python scripts/prepare_ppm.py --archive PPM-100.zip --output local-ppm-30
 ```
 
-采样脚本先检查压缩包 SHA-256 `5a3d9029437954594c26ea773e927c4b7c4caaee7e94f6bbd8e96196c868254a`，输出图像、标注和包含逐文件散列的 manifest。`local-ppm-30` 是本地数据目录，不应提交到公开仓库。文件名或哈希变更会导致检查失败，应重新核对来源，而不是禁用检查。
+采样脚本先检查压缩包 SHA-256 `5a3d9029437954594c26ea773e927c4b7c4caaee7e94f6bbd8e96196c868254a`，输出图像、标注和包含逐文件散列的 manifest。`local-ppm-30` 是本地数据目录，不应提交到公开仓库；示例所用的数据、下载文件和输出目录已配置 Git 忽略。文件名或哈希变更会导致检查失败，应重新核对来源，而不是禁用检查。
 
 ## 运行单帧评测
 
