@@ -41,7 +41,7 @@ t=time.perf_counter()
 with torch.inference_mode(): outputs = model(**inputs)
 elapsed=time.perf_counter()-t
 result=serializable(processor.post_process_table_recognition(outputs))
-data={'model':'PaddlePaddle/SLANet_plus_safetensors',
+data={'model_directory':str(Path(args.model).resolve()),
       'model_sha256':hashlib.sha256((Path(args.model)/'model.safetensors').read_bytes()).hexdigest(),
       'input':'self-generated English table: 4 rows x 3 columns, 12 cells, no merges',
       'image_wh':list(image.size),'crop_table':args.crop_table,

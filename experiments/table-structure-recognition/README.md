@@ -34,4 +34,4 @@ python scripts/slanet_table_smoke.py --model /path/to/SLANet_plus_safetensors --
 python scripts/slanet_table_smoke.py --model /path/to/SLANet_plus_safetensors --out /tmp/slanet-cropped --crop-table
 ```
 
-查看 `result.json` 的 `result.structure`，并与上面的已知行列结构比较。`input_sha256` 和 `model_sha256` 可检查输入和权重是否与记录相同。单张合成图只适合检查流程：要评估实际效果，还需要多样文档、合并单元格、真实标注和统一的结构指标，并分别衡量检测、OCR 与匹配误差。
+查看 `result.json` 的 `result.structure`，并与上面的已知行列结构比较。新运行记录所用的 `model_directory`，而非自动判断模型来源；`input_sha256` 和 `model_sha256` 可检查输入和权重是否与记录相同。路径只能标识本地位置，不能证明模型来源；历史结果里的 `model` 是该次实验记录的模型名。单张合成图只适合检查流程：要评估实际效果，还需要多样文档、合并单元格、真实标注和统一的结构指标，并分别衡量检测、OCR 与匹配误差。
