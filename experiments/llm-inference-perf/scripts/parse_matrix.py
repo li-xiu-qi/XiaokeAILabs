@@ -83,6 +83,13 @@ def summarize(records):
     for (label, task), ms in sorted(groups.items()):
         gens = [m["gen_tps"] for m in ms if m.get("gen_tps")]
         pre = [m["prefill_tps"] for m in ms if m.get("prefill_tps")]
+        # Different prefill token counts can reflect prefix reuse. Do not
+        # collapse such rounds into a single, misleading throughput figure.
+        pre_tokens = [m.get("prefill_tokens") for m in ms]
+        comparable_pre = (len(pre) == len(ms) and all(
+            isinstance(n, int) and not isinstance(n, bool) and n > 0
+            for n in pre_tokens
+        ) and len(set(pre_tokens)) == 1)
         acc = [m["accept_rate"] for m in ms if m.get("accept_rate") is not None]
         drafts = [m.get("draft_n", 0) for m in ms]
         rows.append(
@@ -93,7 +100,7 @@ def summarize(records):
                 "gen_list": [round(g, 2) for g in gens],
                 "gen_mean": round(statistics.mean(gens), 2) if gens else 0,
                 "gen_sd": round(statistics.stdev(gens), 2) if len(gens) > 1 else 0,
-                "prefill_mean": round(statistics.mean(pre), 2) if pre else 0,
+                "prefill_mean": round(statistics.mean(pre), 2) if comparable_pre else None,
                 "acc_mean": round(statistics.mean(acc) * 100, 1) if acc else None,
                 "draft_total": sum(drafts),
             }
@@ -118,7 +125,7 @@ def main():
         for r in rows:
             print(
                 f"{r['label']},{r['task']},{r['n']},{r['gen_mean']},{r['gen_sd']},"
-                f"{r['prefill_mean']},{r['acc_mean']},{r['draft_total']}"
+                f"{r['prefill_mean'] if r['prefill_mean'] is not None else ''},{r['acc_mean']},{r['draft_total']}"
             )
         return 0
 
@@ -127,9 +134,10 @@ def main():
     print(f"{'配置':<16}{'任务':<18}{'n':>3}{'gen均值':>10}{'标准差':>9}{'prefill':>10}{'接受率%':>10}{'草稿数':>8}")
     for r in rows:
         acc = f"{r['acc_mean']:.1f}" if r["acc_mean"] is not None else "-"
+        prefill = str(r["prefill_mean"]) if r["prefill_mean"] is not None else "-"
         print(
             f"{r['label']:<16}{r['task']:<18}{r['n']:>3}{r['gen_mean']:>10}"
-            f"{r['gen_sd']:>9}{r['prefill_mean']:>10}{acc:>10}{r['draft_total']:>8}"
+            f"{r['gen_sd']:>9}{prefill:>10}{acc:>10}{r['draft_total']:>8}"
         )
     return 0
 

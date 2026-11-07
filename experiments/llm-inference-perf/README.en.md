@@ -55,3 +55,5 @@ The example uses one service slot to match this single-request experiment; it do
 - [Earlier synthesis](reports/最终报告-投机解码收益的机制条件.md): retained for provenance; some conclusions are superseded by the matrix report.
 - [Mechanisms guide](docs/推理机制与性能解读.md) and [debugging notes](docs/调试与排错记录.md).
 - [Scripts](scripts/) and [recorded results](results/).
+
+**Prefill interpretation:** `scripts/parse_matrix.py` displays an average prefill rate only when every round has a rate and the same positive `prefill_tokens` count; otherwise it shows `-` (an empty CSV field). For example, the 35B baseline T1 rounds process 28, 4 and 4 tokens, so averaging their rates does not measure full-prompt cold-start throughput. Individual measurements remain in the raw records. Equal token counts alone do not establish equal cache state or a cold start. Generation-rate aggregation is unchanged.
