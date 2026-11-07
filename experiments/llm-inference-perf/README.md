@@ -1,5 +1,7 @@
 # llm-inference-perf：本地大模型推理性能实验
 
+[English](README.en.md)
+
 ![实验方法示意](../../assets/experiment-covers/llm-inference-perf.svg)
 
 ## 一台设备上，投机解码能让大模型快多少？
@@ -36,23 +38,23 @@
 
 报告记录的是模型与硬件的实测。矩阵配置和每轮读数保存在 `results/`；表中均值、标准差和适用范围见对应报告。
 
-## 复现命令
+## 运行示例与复现边界
 
-依赖：仅需 `python`（标准库，无第三方包）与一个已编译 CUDA 支持的 llama.cpp。
+下面的命令是单次连通性与吞吐测试，不会自动重建报告的三模型、三任务、三轮矩阵。脚本默认的主模型和草稿模型针对 Flash-Next 的 MTP；DFlash2 使用不同的主模型与草稿文件，运行前必须分别设置 `MAIN_MODEL`、`MODEL_DIR` 和 `DRAFT_MODEL`，并核对当前 llama.cpp 是否支持对应参数和模型组合。模型文件、精确版本、编译选项及服务运行环境不随脚本提供。
+
+依赖 Python 标准库，以及具备 CUDA 支持且兼容所选模型的 llama.cpp。服务器默认使用 8835 端口，分别运行基线与投机配置，**不要同时在同一端口启动多个服务**：
 
 ```bash
-# 1. 起基线服务（无投机解码）
+# 终端 1：先启动基线，等待服务就绪
 bash scripts/start-server.sh base
 
-# 2. 起投机服务（MTP 或 DFlash2）
-bash scripts/start-server.sh mtp        # MTP 版
-bash scripts/start-server.sh dflash     # DFlash2 版
-
-# 3. 发统一测试请求并提取指标
-python scripts/bench.py --host 127.0.0.1 --port 8835 --n-predict 400
+# 终端 2：请求固定上限 400 个 token；忽略 EOS 以尝试固定生成长度
+python scripts/bench.py --host 127.0.0.1 --port 8835 --n-predict 400 --ignore-eos
 ```
 
-脚本内路径用环境变量覆盖（`LLAMA_BIN`、`MODEL_DIR`、`DRAFT_MODEL`），默认值面向 GB10 设备的常见布局，换机器时改环境变量即可。
+记录响应中的 `gen_tokens`、生成速度和实际停止原因；若请求失败、达到上下文限制或服务不支持参数，不能假定已生成 400 个 token。此脚本只输出解析后的计时与 token 数，不保存完整响应和停止原因；需要在服务器日志或原始响应中另行核验。完成基线后停止终端 1 的服务，再启动 `bash scripts/start-server.sh mtp`，对同一提示与请求参数重复测试。`dflash` 模式还需指定相匹配的主模型和 DFlash2 草稿模型，默认草稿不能用于该模式。
+
+通过环境变量覆盖路径：`LLAMA_BIN`、`MODEL_DIR`、`MAIN_MODEL`、`DRAFT_MODEL`。示例脚本设置单槽以匹配本项单请求测试，不代表所有引擎版本均禁止投机解码并发。历史测量中的重复请求可能复用前缀，因此不要用其 prefill 吞吐代表冷启动性能。矩阵的历史读数及配置见 `results/` 和报告；这些命令尚未在本次文档修订中重跑全部矩阵。
 
 ## 实验清单
 

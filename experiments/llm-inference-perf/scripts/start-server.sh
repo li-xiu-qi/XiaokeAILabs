@@ -7,12 +7,15 @@
 #   bash scripts/start-server.sh dflash  # + DFlash2 草稿模型
 #
 # 所有路径可用环境变量覆盖，默认值面向 GB10 统一内存设备的常见布局。
-# 关键约束：--parallel 必须为 1（-np 1）。投机解码要求 single-batch 模式，
-# 并发数大于 1 时引擎会强制 kv_unified 并分裂 KV，草稿接受率显著劣化。
+# 本脚本固定 -np 1 以匹配单请求实验；并发支持和效果取决于引擎版本与配置。
 
 set -euo pipefail
 
 MODE="${1:-base}"
+if [[ "$MODE" == dflash ]] && [[ -z "${MAIN_MODEL:-}" || -z "${MODEL_DIR:-}" || -z "${DRAFT_MODEL:-}" ]]; then
+  echo "dflash requires explicit MODEL_DIR, MAIN_MODEL, and DRAFT_MODEL" >&2
+  exit 2
+fi
 LLAMA_BIN="${LLAMA_BIN:-$HOME/llama.cpp/build/bin/llama-server}"
 MODEL_DIR="${MODEL_DIR:-$HOME/models/flashnext}"
 MAIN_MODEL="${MAIN_MODEL:-Qwen3.8-Flash-Next-IQ4_XS-00001-of-00003.gguf}"
