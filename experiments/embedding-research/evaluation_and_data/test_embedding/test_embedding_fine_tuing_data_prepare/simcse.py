@@ -24,12 +24,12 @@ sentences = [
     "每股收益是公司净利润除以流通股数。"         # 与第一句相关，都涉及每股收益
 ]
 
-def get_sentence_embeddings(model, tokenizer, sentences, use_simcse=False):
-    """获取句子嵌入，可选是否使用SimCSE方法"""
+def get_sentence_embeddings(model, tokenizer, sentences, dropout_average=False):
+    """获取句子表示，可选对两次 dropout 前向输出取平均。"""
     inputs = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
     
-    if use_simcse:
-        # SimCSE方法：对每个句子使用不同dropout生成两个表示，然后取平均
+    if dropout_average:
+        # 对每个句子使用不同 dropout 生成两个表示，然后取平均
         model.train()  # 激活dropout
         # 运行两次获取不同的表示
         outputs1 = model(**inputs, output_hidden_states=True)
@@ -48,9 +48,9 @@ def get_sentence_embeddings(model, tokenizer, sentences, use_simcse=False):
     
     return embeddings
 
-# 演示SimCSE训练过程
+# 演示 SimCSE 训练中的单次损失计算，不执行优化器更新。
 def demonstrate_simcse_training():
-    print("=== SimCSE训练过程演示 ===")
+    print("=== SimCSE 风格对比损失演示（不训练、不更新参数） ===")
     # 将句子转换为模型输入，同一批次输入两次（以使用不同的dropout mask）
     inputs = tokenizer(sentences, padding=True, truncation=True, return_tensors="pt")
     inputs_repeated = {k: torch.cat([v, v]) for k, v in inputs.items()}
@@ -83,16 +83,16 @@ def demonstrate_simcse_training():
     print("非对角线元素（负样本对）平均相似度：", 
           (torch.sum(cosine_sim) - torch.sum(torch.diag(cosine_sim))) / (batch_size * batch_size - batch_size))
 
-# 比较使用SimCSE和不使用SimCSE的句子嵌入效果
+# 比较同一个未微调 BERT 的 eval 与 dropout 输出；不是模型效果评估。
 def compare_embeddings():
-    print("\n=== 比较传统嵌入与SimCSE嵌入效果 ===")
+    print("\n=== 对比同一未微调 BERT 的 eval 和 dropout 输出 ===")
     
-    # 获取传统句子嵌入
-    traditional_embeddings = get_sentence_embeddings(model, tokenizer, sentences, use_simcse=False)
+    # 不启用 dropout 的句子表示
+    traditional_embeddings = get_sentence_embeddings(model, tokenizer, sentences, dropout_average=False)
     traditional_embeddings = traditional_embeddings.detach().numpy()
     
-    # 获取SimCSE增强的句子嵌入
-    simcse_embeddings = get_sentence_embeddings(model, tokenizer, sentences, use_simcse=True)
+    # 相同模型在 dropout 下两次输出的均值，不构成 SimCSE 训练
+    simcse_embeddings = get_sentence_embeddings(model, tokenizer, sentences, dropout_average=True)
     simcse_embeddings = simcse_embeddings.detach().numpy()
     
     # 计算相似度矩阵
@@ -100,18 +100,18 @@ def compare_embeddings():
     simcse_sim = cosine_similarity(simcse_embeddings)
     
     # 显示结果
-    print("传统方法的相似度矩阵：")
+    print("eval 模式相似度矩阵：")
     print(np.round(traditional_sim, 3))
     
-    print("\nSimCSE方法的相似度矩阵：")
+    print("\ndropout 双次输出平均的相似度矩阵（不是已训练的 SimCSE 模型）：")
     print(np.round(simcse_sim, 3))
     
     print("\n句子对的语义关系:")
     for i in range(len(sentences)):
         for j in range(i+1, len(sentences)):
             print(f"句子{i+1}与句子{j+1}:")
-            print(f"  - 传统相似度: {traditional_sim[i,j]:.3f}")
-            print(f"  - SimCSE相似度: {simcse_sim[i,j]:.3f}")
+            print(f"  - eval 相似度: {traditional_sim[i,j]:.3f}")
+            print(f"  - dropout 平均相似度: {simcse_sim[i,j]:.3f}")
             print(f"  - 句子{i+1}: {sentences[i]}")
             print(f"  - 句子{j+1}: {sentences[j]}")
             print()
