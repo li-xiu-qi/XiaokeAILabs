@@ -63,6 +63,10 @@ class VectorIndexMetrics:
 
 def compute_storage(spec: VectorIndexSpec) -> dict:
     """各索引的存储字节（闭式解）"""
+    if spec.n <= 0 or spec.d <= 0 or spec.pq_m <= 0 or spec.pq_nbits <= 0:
+        raise ValueError("n, d, pq_m and pq_nbits must be positive")
+    if spec.d % spec.pq_m:
+        raise ValueError("d must be divisible by pq_m")
     raw = spec.n * spec.d * 4  # float32 基线
 
     # FLAT：原始向量
@@ -72,7 +76,7 @@ def compute_storage(spec: VectorIndexSpec) -> dict:
     sq8 = spec.n * spec.d
 
     # PQ：压缩码 + 码本
-    pq_codes = spec.n * spec.pq_m  # 每向量 m 字节码
+    pq_codes = spec.n * ((spec.pq_m * spec.pq_nbits + 7) // 8)  # 向上取整到字节
     pq_codebook = spec.pq_m * (2 ** spec.pq_nbits) * (spec.d // spec.pq_m) * 4
     pq = pq_codes + pq_codebook
 
@@ -178,6 +182,18 @@ def _selftest():
     expected_flat_ms = spec.n * 2 * spec.d / flops_per_s * 1000
     assert abs(m.flat_latency_ms - expected_flat_ms) < 1e-12
     assert abs(expected_flat_ms - 83.3333333333) < 1e-6
+
+    # 低比特编码每条向量也需按字节向上取整
+    packed = VectorIndexSpec(n=10, d=12, pq_m=3, pq_nbits=4)
+    expected_codes = 10 * 2  # ceil(3 * 4 / 8)
+    expected_codebook = 4 * 12 * (2 ** 4)
+    assert compute_storage(packed)["pq"] == expected_codes + expected_codebook
+    try:
+        compute_storage(VectorIndexSpec(d=10, pq_m=3))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("invalid PQ dimensions must be rejected")
 
     # IVF 延迟 < FLAT
     assert m.ivf_latency_ms < m.flat_latency_ms
