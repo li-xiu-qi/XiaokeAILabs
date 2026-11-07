@@ -56,9 +56,10 @@ def arithmetic_intensity(model, dtype: str) -> float:
 
 
 def roofline_time(hw, model, dtype: str, num_tokens: int) -> float:
-    """简化 roofline 的理想下界（秒），取计算时间和搬运时间的较大者。
+    """假定每 token 读取全部权重并执行 2P 操作时的玩具算式。
 
-    用于判断：给定任务量，算力界和带宽界哪个更紧。
+    它不是实际任务延迟下界：缓存、批量权重复用及 MoE 路由会改变
+    读取和计算量；其他开销也不在这个算式内。不得用于瓶颈归因。
     """
     flops = 2 * model.total_params_b * 1e9 * num_tokens
     wbytes = weight_bytes(model, dtype) * num_tokens  # decode 每 token 重读
