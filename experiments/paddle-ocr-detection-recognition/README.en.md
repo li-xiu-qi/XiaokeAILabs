@@ -41,7 +41,10 @@ python scripts/run.py \
   --rec-model /path/to/PP-OCRv5_server_rec_safetensors \
   --det-device cpu --rec-device cpu --threads 2 \
   --output /tmp/paddle-ocr-result.json
+python scripts/check_sample.py /tmp/paddle-ocr-result.json
 ```
+
+The check assigns each detection to a known cell by its box center and checks its transcription. It applies only to this fixed-size synthetic image; missing, duplicate and incorrect text are caught, but this is not an evaluation of box localization or real documents.
 
 Either device argument can be `cuda` with a compatible PyTorch and GPU setup. Original `model.safetensors` SHA-256 values: detector `06e7a44aa5c4146531e88703140e0f7329910b92f84f8bf2756bfd37cec5cb0a`; recognizer `da94c5dd42c88b00c44081942b157bee8eda9ccd0481dbd0af3824f6c241aa91`. The original model repository revisions were not recorded; changes in other configuration files can also affect reproduction.
 

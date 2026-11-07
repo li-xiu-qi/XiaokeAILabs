@@ -41,7 +41,10 @@ python scripts/run.py \
   --rec-model /path/to/PP-OCRv5_server_rec_safetensors \
   --det-device cpu --rec-device cpu --threads 2 \
   --output /tmp/paddle-ocr-result.json
+python scripts/check_sample.py /tmp/paddle-ocr-result.json
 ```
+
+检查脚本按检测框中心所在的已知单元格核对 12 个文字，只适用于这张固定尺寸的合成图。它能发现缺失、重复和错字，但不是检测框定位精度或真实文档的评测。
 
 也可将 `--det-device` 或 `--rec-device` 设为 `cuda`；需事先配置兼容的 PyTorch 与 GPU 环境。原始模型文件 `model.safetensors` 的 SHA-256：检测 `06e7a44aa5c4146531e88703140e0f7329910b92f84f8bf2756bfd37cec5cb0a`，识别 `da94c5dd42c88b00c44081942b157bee8eda9ccd0481dbd0af3824f6c241aa91`。原始记录未保存模型仓库 revision，其他配置文件的变化也可能影响复现。
 

@@ -11,7 +11,8 @@ p.add_argument('--output', type=Path, required=True)
 a = p.parse_args()
 before = json.loads(a.candidates.read_text(encoding='utf-8'))
 after = [json.loads(x) for x in a.reranked.read_text(encoding='utf-8').splitlines()]
-assert len(before) == len(after) == 100
+if len(before) != 100 or len(after) != 100:
+    raise ValueError('Expected 100 paired queries in both input files')
 out = []
 for x, y in zip(before, after):
     if x['target_filename'] != y.get('target_filename') or x['query'] != y.get('query'):
