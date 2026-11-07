@@ -2,7 +2,6 @@
 
 本次检测结果校验修订仅做 CPU 测试，未重跑 OCR 模型。
 
-
 [English](README.en.md) | 简体中文
 
 把一张表格图片变成可搜索的文字，首先要解决两个不同的问题：**文字在哪儿，以及每个区域写了什么**。这里将 PP-OCRv5 检测模型的多边形框传给识别模型，在自行绘制的表格上验证这条路径，并提供可运行的两阶段代码。
@@ -22,17 +21,17 @@
 | 检测 | 完整表格图片 | 文字区域多边形及分数 | 原记录 GPU；CPU 复跑得到相同框集合 |
 | 识别 | 每个检测框的外接矩形裁剪 | 文字及分数 | CPU 逐框识别，12 项与图中文字一致 |
 
-[检测结果](results/detection.json)、[原识别结果](results/recognition.json)与 [CPU 复跑结果](results/cpu-reproduction.json)保留了具体坐标及文本。原记录中检测模型首次前向耗时 0.368 秒，仅为单次且不含加载、预处理、后处理；不用于性能比较。分数不是校准后的正确概率，12/12 只是这张简单合成图的结果，不是通用准确率。
+[检测结果](results/detection.json)保留检测框及分数，不包含识别文本；[原识别结果](results/recognition.json)保留检测框和识别文本及分数；[CPU 复跑结果](results/cpu-reproduction.json)则同时包含检测分数与识别分数。原记录中检测模型首次前向耗时 0.368 秒，仅为单次且不含加载、预处理、后处理；不用于性能比较。分数不是校准后的正确概率，12/12 只是这张简单合成图的结果，不是通用准确率。
 
 ## 模型与职责
 
 [PP-OCRv5_server_det](https://huggingface.co/PaddlePaddle/PP-OCRv5_server_det_safetensors)负责文字区域检测，[PP-OCRv5_server_rec](https://huggingface.co/PaddlePaddle/PP-OCRv5_server_rec_safetensors)负责识别文字行；模型卡均标注 Apache-2.0。这里使用它们的 Transformers / PyTorch safetensors 版本，不是 PaddlePaddle 运行时性能测试。
 
-本实验把文字框排序仅用于展示，排序规则依赖此图固定的 75 像素行距。它不识别表格行列或合并关系，也没有把文字匹配到单元格。表格结构识别的独立实验见 [SLANet+](../table-structure-recognition/README.md)；将文字与单元格自动匹配仍需额外实现。
+本实验把文字框排序仅用于展示：按框的平均纵坐标除以 75 后取整分组，再按框的横坐标之和排序；规则依赖此图固定的 75 像素行距。它不识别表格行列或合并关系，也没有把文字匹配到单元格，不能保证其他版面的阅读顺序。表格结构识别的独立实验见 [SLANet+](../table-structure-recognition/README.md)；将文字与单元格自动匹配仍需额外实现。
 
 ## 复现
 
-实测环境：DGX Spark aarch64，PyTorch `2.14.0+cu130`、Transformers `5.17.0`、OpenCV `5.0.0`、Pillow；CPU 复跑不需要 GPU。安装依赖后，按模型卡获取两个模型并设置对应目录。输出文件必须不存在，避免覆盖原有结果。
+实测环境：DGX Spark aarch64，PyTorch `2.14.0+cu130`、Transformers `5.17.0`、OpenCV `5.0.0`、Pillow；CPU 复跑不需要 GPU。安装依赖后，按模型卡获取两个模型并设置对应目录。从本实验目录运行以下命令；输出文件必须不存在，避免覆盖原有结果。
 
 ```bash
 python scripts/run.py \

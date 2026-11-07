@@ -2,7 +2,6 @@
 
 The detection-output validation change was checked on CPU; the OCR models were not rerun.
 
-
 English | [简体中文](README.md)
 
 To make a table image searchable, a system must locate text and then transcribe each region. This example passes polygonal text detections from PP-OCRv5 to its recognition model on one self-drawn table, with a runnable two-stage script.
@@ -22,17 +21,17 @@ In the original run, detection on the DGX Spark GPU produced 12 boxes. Recogniti
 | Detection | Full table image | Text polygons and scores | Original run on GPU; CPU reproduction produced the same box set |
 | Recognition | Axis-aligned crop for each box | Text and score | CPU, one box at a time; all 12 strings match this image |
 
-The [detection](results/detection.json), [original recognition](results/recognition.json) and [CPU reproduction](results/cpu-reproduction.json) records contain the coordinates and text. The original detector's first forward pass took 0.368 seconds, excluding loading and pre/postprocessing; a single measurement is not a performance comparison. Scores are not calibrated probabilities of correctness. The 12/12 observation is for this one simple synthetic image, not a general accuracy rate.
+The [detection record](results/detection.json) contains boxes and detection scores, but no text. The [original recognition record](results/recognition.json) contains boxes, recognized text and recognition scores; the [CPU reproduction](results/cpu-reproduction.json) contains both detection and recognition scores. The original detector's first forward pass took 0.368 seconds, excluding loading and pre/postprocessing; a single measurement is not a performance comparison. Scores are not calibrated probabilities of correctness. The 12/12 observation is for this one simple synthetic image, not a general accuracy rate.
 
 ## Model responsibilities
 
 [PP-OCRv5_server_det](https://huggingface.co/PaddlePaddle/PP-OCRv5_server_det_safetensors) locates text regions; [PP-OCRv5_server_rec](https://huggingface.co/PaddlePaddle/PP-OCRv5_server_rec_safetensors) recognizes each crop. Both model cards list Apache-2.0. This example uses the Transformers/PyTorch safetensors variants; it is not a PaddlePaddle runtime benchmark.
 
-The script sorts boxes only for display using the sample's fixed 75-pixel row spacing. It does not infer rows, columns or merged cells, or assign text to cells. See the separate [SLANet+ structure experiment](../table-structure-recognition/README.en.md); combining text with cells still requires an additional matching stage.
+The script sorts boxes only for display: it groups by the average box y-coordinate divided by 75 and rounded, then orders by the sum of box x-coordinates. The heuristic relies on this sample's fixed 75-pixel row spacing and does not guarantee reading order for other layouts. It does not infer rows, columns or merged cells, or assign text to cells. See the separate [SLANet+ structure experiment](../table-structure-recognition/README.en.md); combining text with cells still requires an additional matching stage.
 
 ## Reproduce
 
-The recorded environment was aarch64 DGX Spark, PyTorch `2.14.0+cu130`, Transformers `5.17.0`, OpenCV `5.0.0` and Pillow. CPU reproduction does not require a GPU. Install the dependencies, obtain both models from their cards and point the command at their local directories. The output must not already exist.
+The recorded environment was aarch64 DGX Spark, PyTorch `2.14.0+cu130`, Transformers `5.17.0`, OpenCV `5.0.0` and Pillow. CPU reproduction does not require a GPU. Install the dependencies, obtain both models from their cards and point the command at their local directories. Run the commands from this experiment's directory. The output must not already exist.
 
 ```bash
 python scripts/run.py \
