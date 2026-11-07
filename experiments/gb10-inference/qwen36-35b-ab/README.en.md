@@ -2,7 +2,7 @@
 
 [中文](README.md)
 
-When eight short requests arrive on one DGX Spark, llama.cpp with eight slots completes the batch in about nine seconds, compared with about 13.7 seconds with one slot. The median completion time for an individual request, however, increases from about 7.8 to about 8.8 seconds. Choosing a slot count therefore depends on whether the goal is to finish the whole batch sooner or reduce how long individual users wait.
+When a client submits eight short requests with concurrency 8, llama.cpp with eight slots completes the batch in about nine seconds, compared with about 13.7 seconds with one slot. The median completion time for an individual request, however, increases from about 7.8 to about 8.8 seconds. Choosing a slot count therefore depends on whether the goal is to finish the whole batch sooner or reduce how long individual users wait.
 
 ## How one model handles several requests
 
@@ -19,7 +19,7 @@ With eight short requests submitted with client concurrency 8 and each generatin
 | 1 | 8 | 74.91 / 74.78 | 7.774 / 7.808 s | 8 |
 | 8 | 8 | 113.78 / 114.14 | 8.848 / 8.702 s | 8 |
 
-Aggregate throughput is the number of tokens actually generated in a run divided by elapsed client time from thread-pool creation and submission until all responses complete. It includes prefill, queueing, and network calls. Per-request completion time is measured from the HTTP request until its full response, including queueing; time to first token was not measured. The configurations ran sequentially rather than in randomized order, and total context capacity also changed. Differences at either concurrency level may therefore reflect run order, system state, or configuration changes; these two configurations cannot isolate the causal effect of slot count.
+Aggregate throughput is the number of tokens actually generated in a run divided by elapsed client time from thread-pool creation and submission until all responses complete. It includes prefill, queueing, and network calls. Per-request completion time starts when a client worker begins the HTTP request and ends when the full response arrives. It includes server queueing and network time, but excludes time the task spends waiting for a client thread-pool worker. In particular, at client concurrency 1 it is not the user wait measured from the batch submission. Time to first token was not measured. The configurations ran sequentially rather than in randomized order, and total context capacity also changed. Differences at either concurrency level may therefore reflect run order, system state, or configuration changes; these two configurations cannot isolate the causal effect of slot count.
 
 ![Batch throughput and completion time for one and eight slots](assets/slots-comparison.svg)
 
