@@ -17,7 +17,7 @@
 
 ## 各子目录要点
 
-[`tokenizer-mechanics/`](../tokenizer-mechanics/README.md)：从字节级 BPE 玩具实现出发，解释分词、token 计数与计费，并比较真实编码器。原 `tokenizer/` 含历史示例，依赖与范围各异。
+[`tokenizer-mechanics/`](../tokenizer-mechanics/README.md)：从字节级 BPE 玩具实现出发，解释分词、token 计数与计费，并比较真实编码器。原 `tokenizer/` 含历史示例，依赖与范围各异；其中 `bbpe.py` 用十进制字符串拼接表示字节，合并后存在歧义、无法可靠解码，仅供查看，不应作为分词器使用。
 
 `logit_and_sampling/`：`test_llm_logit.ipynb` 是最小演示（logits 转 softmax、取 top-k 看分布）；`Qwen2.5模型预测机制分析.ipynb` 是完整链路（argmax、temperature、top_k、多步生成）。
 

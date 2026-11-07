@@ -1,3 +1,8 @@
+"""Historical illustration only; use ../../tokenizer-mechanics/toy_bpe.py instead.
+
+Decimal byte labels are concatenated ambiguously and merged labels cannot be
+reliably decoded by bytes_to_text. Do not use this example as a tokenizer.
+"""
 import re
 from collections import defaultdict, Counter
 import time
@@ -41,11 +46,11 @@ def merge_vocab(merge_pair, vocab):
     pattern = re.compile(re_pattern_str)
     merged_token = ''.join(merge_pair)  # 合并后的新子词
 
-    updated_tokens = {}
+    updated_tokens = Counter()
     for token_string, freq in vocab.items():
         # 使用 re.sub 替换所有匹配的 pair
         new_token_string = pattern.sub(merged_token, token_string)
-        updated_tokens[new_token_string] = freq  # 更新字典
+        updated_tokens[new_token_string] += freq  # 更新字典
     return updated_tokens
 
 def encode_with_bbpe(texts, iterations):
