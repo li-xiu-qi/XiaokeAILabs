@@ -26,6 +26,18 @@ def check(actual, expected, label):
 
 def verify(evidence):
     summary = json.loads((evidence / "summary.json").read_text(encoding="utf-8"))
+    splits = json.loads((evidence / "split-query-ids.json").read_text(encoding="utf-8"))
+    with (evidence / "training-pairs.jsonl").open(encoding="utf-8") as source:
+        training_pairs = [json.loads(line) for line in source]
+    training_queries = {row["query_id"] for row in training_pairs}
+    positive_docs = {row["positive_doc_id"] for row in training_pairs}
+    training_docs = positive_docs | {row["unjudged_doc_id"] for row in training_pairs}
+    training = summary["training"]
+    if (len(training_pairs) != training["triplets"]
+            or len(training_queries) != training["distinct_queries_used"]
+            or len(positive_docs) != training["distinct_positive_doc_ids"]
+            or not training_queries <= set(splits["train"])):
+        raise ValueError("Training pairs do not match the summary or training split")
     overall = summary["evaluation"]["all"]
     methods = {"bm25": None, "initial": "before", "finetuned": "after"}
     totals = {method: [] for method in methods}
@@ -38,6 +50,9 @@ def verify(evidence):
             candidates = row["candidates_in_bm25_order"]
             candidate_ids = {doc["doc_id"] for doc in candidates}
             relevant = set(row["relevant_doc_ids"])
+            if (set(row["relevant_doc_ids_seen_as_training_positive"]) != relevant & positive_docs
+                    or set(row["relevant_doc_ids_seen_in_training_pairs"]) != relevant & training_docs):
+                raise ValueError(f"Training overlap differs for query {qid}")
             if qid in query_ids or not relevant:
                 raise ValueError(f"Invalid query {qid}: duplicate ID or missing relevance labels")
             if len(candidate_ids) != len(candidates) or len(candidates) != summary["config"]["pool_size"]:
@@ -52,6 +67,10 @@ def verify(evidence):
                     check(value, row["metrics"][method][name], f"{qid}/{method}/{name}")
                 totals[method].append(metrics)
 
+    if summary["evaluation_split"] == "beir_scifact_test" and query_ids != set(splits["test"]):
+        raise ValueError("Evaluation queries do not match the recorded test split")
+    if summary["evaluation_split"] == "dev_subset" and not query_ids <= set(splits["dev"]):
+        raise ValueError("Evaluation queries are not in the recorded development split")
     if len(query_ids) != overall["queries"]:
         raise ValueError(f"Expected {overall['queries']} queries, found {len(query_ids)}")
     check(mean(recalls), overall["candidate_recall"], "Recall at candidate cutoff")
