@@ -63,3 +63,5 @@ See the [inference cost guide](docs/推理成本估算指南.md) (Chinese) for a
 - [Iteration log](迭代日志.md) and [earlier iteration log](docs/迭代日志.md): historical assumptions and revisions, not current conclusions.
 
 These supporting documents are currently in Chinese.
+
+A concrete extrapolation check: in the [recorded slot experiment](../gb10-inference/qwen36-35b-ab/README.en.md), the two one-slot batch throughput measurements average 74.84 tokens/s at client concurrency 8. Multiplying by eight predicts 598.76 tokens/s, whereas the two eight-slot measurements average 113.96 tokens/s, a prediction error of about +425% relative to the measured value. These are batch-level HTTP measurements, not pure decode rates. Run order and total configured context also changed, so the gap does not identify a bottleneck or establish a general scaling curve. The [calculation and raw evidence](docs/推理成本估算指南.md#用已有数据检验一个外推假设) are provided in Chinese.
