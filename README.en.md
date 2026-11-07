@@ -26,11 +26,11 @@ From model training and retrieval to multimodal systems and inference deployment
 - [GB10 inference slots](experiments/gb10-inference/qwen36-35b-ab/README.en.md): Compare throughput and completion times for one versus eight slots on the same model and engine.
 - [LLM inference performance](experiments/llm-inference-perf/README.en.md): Performance analysis across models and inference configurations.
 - [Language model quantization](experiments/llm-mechanics/quantization/README.en.md): Compare model size, perplexity, and CPU speed; the BF16 path performed unusually slowly.
-- [LLM mechanics](experiments/llm-mechanics/README.md): Understand text generation through examples.
+- [LLM mechanics](experiments/llm-mechanics/README.en.md): Understand text generation through examples.
 - [Tokenizer mechanics](experiments/tokenizer-mechanics/README.en.md): Explore byte-level BPE, real encodings, and token costs.
 - [KV cache mechanics](experiments/llm-mechanics/kv_cache/README.en.md): Compare cached and full-prefix numerical results.
 - [Inference cost models](experiments/inference-cost-models/README.en.md): Memory examples and theoretical models; performance estimates have not been independently validated.
-- [Data structure costs](experiments/data-structure-costs/README.md): Analyze the costs of data structures and formats.
+- [Data structure costs](experiments/data-structure-costs/README.en.md): Analyze the costs of data structures and formats.
 - [Portrait matting](experiments/portrait-matting/README.en.md): Evaluate subject regions, boundaries, and forward time on 30 still images; results do not establish video performance.
 - [Table structure recognition](experiments/table-structure-recognition/README.en.md): Examine cropping and structure predictions on one synthetic table; text recognition is out of scope.
 - [Text detection and recognition](experiments/paddle-ocr-detection-recognition/README.en.md): Pass detected text regions to a recognizer; the two-stage result covers one synthetic table.
