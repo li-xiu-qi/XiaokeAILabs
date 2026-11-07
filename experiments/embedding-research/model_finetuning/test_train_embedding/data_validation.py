@@ -4,7 +4,7 @@ import math
 from pathlib import Path
 
 
-def load_pairs(path):
+def load_pairs(path, min_samples=2):
     samples = []
     with open(path, encoding="utf-8") as source:
         for line_number, line in enumerate(source, 1):
@@ -20,8 +20,10 @@ def load_pairs(path):
             ):
                 raise ValueError(f"第 {line_number} 行的 query 和 pos_doc 必须是非空字符串")
             samples.append(sample)
-    if len(samples) < 2:
+    if min_samples == 2 and len(samples) < 2:
         raise ValueError("批内对比学习至少需要两条训练数据")
+    if len(samples) < min_samples:
+        raise ValueError(f"至少需要 {min_samples} 条记录")
     return samples
 
 
