@@ -14,6 +14,21 @@ spec.loader.exec_module(module)
 
 
 class InputChecks(unittest.TestCase):
+    def test_recall_checks_shape_duplicates_and_missing_neighbors(self):
+        truth = np.array([list(range(10)), list(range(10, 20))])
+        pred = truth.copy()
+        pred[0, -2:] = -1
+        self.assertEqual(module.recall_at_k(pred, truth), 0.9)
+        for bad_pred, bad_truth in ((pred.astype(float), truth),
+                                    (pred.astype(bool), truth),
+                                    (pred, truth.astype(float)),
+                                    (pred[:1], truth),
+                                    (np.array([[0] * 10]), truth[:1]),
+                                    (truth, np.full((2, 10), -1)),
+                                    (np.full((2, 10), -2), truth)):
+            with self.subTest(pred=bad_pred), self.assertRaises(ValueError):
+                module.recall_at_k(bad_pred, bad_truth)
+
     def test_metadata_conflicts_and_missing_fields(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

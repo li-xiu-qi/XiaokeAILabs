@@ -90,7 +90,20 @@ def search_batch(index, queries, k, repeats):
 
 
 def recall_at_k(pred, truth):
-    hits = sum(len(set(pred_row) & set(truth_row)) for pred_row, truth_row in zip(pred, truth))
+    pred = np.asarray(pred)
+    truth = np.asarray(truth)
+    if pred.ndim != 2 or pred.shape != truth.shape or not len(pred) or pred.shape[1] != TOPK:
+        raise ValueError('prediction and ground truth must have the same nonempty (queries, TOPK) shape')
+    if not np.issubdtype(pred.dtype, np.integer) or not np.issubdtype(truth.dtype, np.integer):
+        raise ValueError('neighbor IDs must be integers')
+    hits = 0
+    for pred_row, truth_row in zip(pred, truth):
+        actual = [int(i) for i in pred_row if i != -1]
+        expected = [int(i) for i in truth_row]
+        if (any(i < 0 for i in expected) or len(set(expected)) != TOPK
+                or any(i < 0 for i in actual) or len(set(actual)) != len(actual)):
+            raise ValueError('invalid or duplicate neighbor IDs')
+        hits += len(set(actual) & set(expected))
     return hits / (len(pred) * TOPK)
 
 

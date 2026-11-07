@@ -33,6 +33,8 @@ Configurations with larger search settings had higher recall in this run; each s
 
 For each query, if the exact top-k IDs are $G_k$ and the approximate IDs are $A_k$, recall is $|A_k \cap G_k|/k$. Its average measures agreement with exact vector neighbors, not whether results answer a user's question.
 
+The text-vector script checks that prediction and ground-truth arrays have matching query counts and top-k widths, and validates neighbor IDs. Faiss `-1` entries represent missing results and count as misses in the denominator; duplicate IDs and incomplete query arrays are rejected.
+
 For float32 vectors, Flat stores approximately $4Nd$ bytes. A PQ index with $m$ subspaces and $b$ bits per subspace uses approximately $N\lceil mb/8\rceil$ bytes for codes and $4d2^b$ bytes for its float32 codebook, assuming $d$ is divisible by $m$. IVF adds list IDs and centroids; HNSW adds graph storage. These estimates exclude process overhead, allocator fragmentation, query workspace and replicas. The guide shows the derivations and the limits of each estimate.
 
 ## Reproduce the synthetic benchmark
