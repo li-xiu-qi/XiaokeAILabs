@@ -35,3 +35,5 @@ python scripts/slanet_table_smoke.py --model /path/to/SLANet_plus_safetensors --
 ```
 
 查看 `result.json` 的 `result.structure`，并与上面的已知行列结构比较。新运行记录所用的 `model_directory`，而非自动判断模型来源；`input_sha256` 和 `model_sha256` 可检查输入和权重是否与记录相同。路径只能标识本地位置，不能证明模型来源；历史结果里的 `model` 是该次实验记录的模型名。单张合成图只适合检查流程：要评估实际效果，还需要多样文档、合并单元格、真实标注和统一的结构指标，并分别衡量检测、OCR 与匹配误差。
+
+新运行还记录 Pillow 版本和 `input_rgb_pixels_sha256`，后者针对按行排列的 RGB 原始像素；需与 `image_wh` 一起比较。PNG 文件字节哈希可能因编码方式而变化，即使像素相同也不一定相同。历史裁剪结果没有保存输入图片、像素哈希或 Pillow 版本，因此仅凭旧 `input_sha256` 不能确认现在重建的裁剪图与当时像素完全一致。

@@ -5,12 +5,13 @@
 用纯 Python 自制迷你布隆过滤器，实测假阳性率：
 1. 插入 n 个元素后，查询不存在的元素，统计假阳性率
 2. 对比不同 bits_per_key 的假阳性率
-3. 验证最优 k 确实最小化假阳性率
+3. 对照近似理论最优 k 与有限样本中的实测结果
 
 方法：用位数组（bytearray）+ k 个哈希函数，插入元素，查询不存在的元素。
 结果写入 results/bloom_filter_<timestamp>.json
 """
 import os
+import argparse
 import sys
 import json
 import math
@@ -29,7 +30,7 @@ class BloomFilter:
         self.bits = bytearray((m + 7) // 8)  # 位数组
 
     def _hashes(self, item: str) -> list:
-        """计算 k 个哈希值。用双重哈希模拟 k 个独立哈希函数。"""
+        """使用双重哈希生成位置；各位置并不相互独立。"""
         h1 = int(hashlib.md5(item.encode()).hexdigest(), 16)
         h2 = int(hashlib.sha1(item.encode()).hexdigest(), 16)
         return [(h1 + i * h2) % self.m for i in range(self.k)]
@@ -87,7 +88,7 @@ def measure_fpr_vs_bits(n: int, bits_per_key_list: list) -> list:
 
 
 def measure_fpr_vs_k(n: int, bits_per_key: int, k_list: list) -> list:
-    """实测不同 k 的假阳性率，验证最优 k。"""
+    """实测不同 k 的假阳性率；理论最优不一定等于样本最优。"""
     m = n * bits_per_key
     results = []
     for k in k_list:
@@ -104,6 +105,8 @@ def measure_fpr_vs_k(n: int, bits_per_key: int, k_list: list) -> list:
         theo_fpr = compute_fpr(m, n, k)
         results.append({
             "k": k,
+            "num_queries": 5000,
+            "false_positives": false_positives,
             "actual_fpr": actual_fpr,
             "theoretical_fpr": theo_fpr,
         })
@@ -111,6 +114,9 @@ def measure_fpr_vs_k(n: int, bits_per_key: int, k_list: list) -> list:
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--out', help='output JSON path; existing files are not overwritten')
+    args = parser.parse_args()
     print("=== 布隆过滤器实测验证 ===\n")
 
     n = 10_000
@@ -120,17 +126,17 @@ def main():
     bpk_results = measure_fpr_vs_bits(n, [4, 8, 10, 16, 24])
     print(f"{'bits/key':>10}  {'k':>3}  {'实测 FPR':>10}  {'理论 FPR':>10}")
     for r in bpk_results:
-        print(f"{r['m']//n:>10}  {r['k']:>3}  {r['actual_fpr']:>10.4f}  {r['theoretical_fpr']:>10.4f}")
+        print(f"{r['m']//n:>10}  {r['k']:>3}  {r['actual_fpr']:>10.4f}  {r['theoretical_fpr']:>10.4g}")
 
     # 2. 不同 k 的假阳性率（验证最优 k）
-    print("\n--- 不同 k 的假阳性率（验证最优 k）---")
+    print("\n--- 不同 k 的假阳性率（理论与实测对照）---")
     optimal_k = compute_optimal_k(n * 10, n)
     k_list = sorted(set([1, 3, 5, 7, 9, optimal_k, 15, 20]))
     k_results = measure_fpr_vs_k(n, 10, k_list)
     print(f"{'k':>3}  {'实测 FPR':>10}  {'理论 FPR':>10}  {'标记'}")
     for r in k_results:
-        marker = " <-- 最优" if r['k'] == optimal_k else ""
-        print(f"{r['k']:>3}  {r['actual_fpr']:>10.4f}  {r['theoretical_fpr']:>10.4f}{marker}")
+        marker = " <-- 近似理论最优" if r['k'] == optimal_k else ""
+        print(f"{r['k']:>3}  {r['actual_fpr']:>10.4f}  {r['theoretical_fpr']:>10.4g}{marker}")
 
     # 汇总写入 JSON
     result = {
@@ -145,9 +151,10 @@ def main():
         "optimal_k": optimal_k,
     }
 
-    out = os.path.join(os.path.dirname(__file__), "..", "results",
-                       f"bloom_filter_{datetime.now().strftime('%Y%m%d-%H%M%S')}.json")
-    with open(out, "w", encoding="utf-8") as f:
+    out = args.out or os.path.join(os.path.dirname(__file__), "..", "results",
+                                    f"bloom_filter_{datetime.now().strftime('%Y%m%d-%H%M%S-%f')}.json")
+    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
+    with open(out, "x", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
     print(f"\n结果写入 {out}")
 

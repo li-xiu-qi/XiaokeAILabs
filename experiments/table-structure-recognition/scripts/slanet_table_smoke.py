@@ -7,6 +7,7 @@ from pathlib import Path
 
 import torch
 import transformers
+import PIL
 from PIL import Image, ImageDraw, ImageFont
 from transformers import AutoImageProcessor, AutoModelForTableRecognition
 
@@ -46,8 +47,10 @@ data={'model_directory':str(Path(args.model).resolve()),
       'input':'self-generated English table: 4 rows x 3 columns, 12 cells, no merges',
       'image_wh':list(image.size),'crop_table':args.crop_table,
       'input_sha256':hashlib.sha256((root/'synthetic-table.png').read_bytes()).hexdigest(),
+      'input_rgb_pixels_sha256':hashlib.sha256(image.tobytes()).hexdigest(),
       'purpose':'table structure only, no text recognition; single synthetic image; no benchmark',
       'device':args.device,'cpu':platform.processor(),'cpu_threads':2,'torch':torch.__version__,
-      'transformers':transformers.__version__,'first_forward_s':elapsed,'result':result}
+      'transformers':transformers.__version__,'pillow':PIL.__version__,
+      'first_forward_s':elapsed,'result':result}
 (root/'result.json').write_text(json.dumps(data, ensure_ascii=False, indent=2),encoding='utf8')
 print(json.dumps(data, ensure_ascii=False, indent=2))

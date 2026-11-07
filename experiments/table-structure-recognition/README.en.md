@@ -35,3 +35,5 @@ python scripts/slanet_table_smoke.py --model /path/to/SLANet_plus_safetensors --
 ```
 
 Compare `result.structure` in `result.json` with the known rows and columns. New runs record `model_directory`, the local path supplied by the user; this path does not establish the model's provenance. Historical results use `model` for the name recorded for that run. `input_sha256` and `model_sha256` help identify whether the input and weights match the recorded run. A single synthetic image is a pipeline check; evaluating real performance requires diverse annotated documents, merged cells and a consistent structure metric, with detection, OCR and cell-assignment errors measured separately.
+
+New runs also record the Pillow version and `input_rgb_pixels_sha256`, the hash of row-major RGB pixel bytes; compare it together with `image_wh`. PNG file hashes can differ due to encoding even when pixels match. The historical cropped input image, pixel hash and Pillow version were not saved, so its old `input_sha256` alone cannot establish that a newly reconstructed crop has exactly the same pixels.

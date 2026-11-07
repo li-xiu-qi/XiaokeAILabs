@@ -8,7 +8,7 @@ Most scripts are teaching models or self-made implementations, not database prod
 
 ## Start with a Bloom filter
 
-A Bloom filter maps elements to a bit array. A negative lookup means an element was not inserted; a positive may be a false positive. A larger bit array can usually reduce the false-positive rate at the cost of space. These examples compare an approximate theoretical rate with a measurement using a self-made Python implementation and specified hashing and data. They do not measure database query latency.
+A Bloom filter maps elements to a bit array. A negative lookup means an element was not inserted; a positive may be a false positive. A larger bit array can usually reduce the false-positive rate at the cost of space. These examples compare an approximate rate under independent uniform hashing with a measurement using a self-made Python implementation and specified data. The implementation uses double hashing, whose positions are not independent, so the two rates need not match. Each configuration uses one deterministic set of 5,000 absent queries, so sampling variation prevents proving a universal optimum. These measurements do not measure database query latency.
 
 ```bash
 cd experiments/data-structure-costs
