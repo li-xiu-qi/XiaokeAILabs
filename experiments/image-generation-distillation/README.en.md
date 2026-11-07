@@ -122,3 +122,5 @@ For each image, mark object correctness, background correctness, completeness an
 [Teacher-data development gate](teacher-advantage-check/README.en.md): 24 of 32 pairs were valid and the stated gate was not met, so this training run was stopped.
 
 [1024px teacher screening](native-teacher-check/README.en.md): 25 of 32 pairs were valid, with 5 teacher and 0 baseline successes; the gate failed and this round did not proceed to training.
+
+Ceramic-mug teacher development check: [results and recomputation](mug-teacher-advantage/README.en.md). Images are not published, so visual ratings cannot be checked from this package.

@@ -138,3 +138,5 @@ python scripts/generate.py --model stable-diffusion-v1-5/stable-diffusion-v1-5 \
 [教师数据筛选开发集](teacher-advantage-check/README.md)：32 对中 24 对有效，预设门槛未通过，停止本轮训练。
 
 [1024px 教师复筛](native-teacher-check/README.md)：32 对中 25 对有效，教师成功 5 对、基线 0 对，未达到门槛，未启动本轮训练。
+
+陶瓷杯场景教师方案开发集检查：[结果与复算](mug-teacher-advantage/README.md)。图片未随仓库发布，不能据此验证视觉评分。
