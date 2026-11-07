@@ -8,12 +8,12 @@ From model training and retrieval to multimodal systems and inference deployment
 
 - [Chinese embedding fine-tuning](experiments/embedding-research/model_finetuning/test_train_embedding/README.md): Learn in-batch contrastive training with query-document pairs; the four built-in examples do not establish a retrieval improvement.
 - [Reranker fine-tuning](experiments/reranker-finetune-scifact/README.en.md): Train a cross-encoder with queries, documents, and relevance labels.
-- [Embedding distillation](experiments/embedding-distillation/README.md): Transfer teacher scores to a smaller embedding model; candidate preparation scripts are included.
-- [Reranker distillation](experiments/reranker-distillation/README.md): Compare supervised training and score distillation on a fixed candidate pool.
-- [ColBERT distillation](experiments/colbert-distillation/README.md): Compare score distillation with supervised learning; distillation did not beat the supervised baseline.
+- [Embedding distillation](experiments/embedding-distillation/README.en.md): Transfer teacher scores to a smaller embedding model; candidate preparation uses scripts in the ColBERT distillation experiment.
+- [Reranker distillation](experiments/reranker-distillation/README.en.md): Compare supervised training and score distillation on a fixed candidate pool.
+- [ColBERT distillation](experiments/colbert-distillation/README.en.md): Compare score distillation with supervised learning; distillation did not beat the supervised baseline.
 - [Visual multi-vector document retrieval](experiments/visual-multivector-retrieval/README.en.md): A page-retrieval baseline plus supervised fine-tuning and distillation comparisons on synthetic pages.
 - [Multimodal embedding distillation](experiments/multimodal-embedding-distillation/README.en.md): Explore knowledge transfer from a vision-language retrieval teacher to a compact student.
-- [Multimodal reranking](experiments/multimodal-reranking/README.md): Explore reranking image-text candidates with anonymized evaluation results.
+- [Multimodal reranking](experiments/multimodal-reranking/README.en.md): Explore reranking image-text candidates with anonymized evaluation results.
 - [GUI grounding fine-tuning](experiments/gui-grounding-finetuning/README.md): Train screenshot-and-instruction grounding; 30 held-out samples do not establish generalization gains.
 - [Video generation trained on teacher samples](experiments/video-generation-distillation/README.md): Four initial held-out videos and eight follow-up student pairs show changes, but do not establish quality gains. The six training samples were selected after generation; the follow-up used one AI reviewer of sampled frames.
 - [Image generation with synthetic training data](experiments/image-generation-distillation/README.md): Train a student LoRA on teacher-generated data and compare it with student-generated training data. One AI thumbnail reviewer found no teacher-data advantage in the small camera follow-up; generation pipelines differed. See the [paired analysis](experiments/image-generation-distillation/PAIRED-ANALYSIS.md#english) for an exploratory category breakdown and its limits.
@@ -31,9 +31,9 @@ From model training and retrieval to multimodal systems and inference deployment
 - [KV cache mechanics](experiments/llm-mechanics/kv_cache/README.en.md): Compare cached and full-prefix numerical results.
 - [Inference cost models](experiments/inference-cost-models/README.md): Memory examples and theoretical models; performance estimates have not been independently validated.
 - [Data structure costs](experiments/data-structure-costs/README.md): Analyze the costs of data structures and formats.
-- [Portrait matting](experiments/portrait-matting/README.md): Evaluate subject regions, boundaries, and forward time on 30 still images; results do not establish video performance.
-- [Table structure recognition](experiments/table-structure-recognition/README.md): Examine cropping and structure predictions on one synthetic table; text recognition is out of scope.
-- [Text detection and recognition](experiments/paddle-ocr-detection-recognition/README.md): Pass detected text regions to a recognizer; the two-stage result covers one synthetic table.
+- [Portrait matting](experiments/portrait-matting/README.en.md): Evaluate subject regions, boundaries, and forward time on 30 still images; results do not establish video performance.
+- [Table structure recognition](experiments/table-structure-recognition/README.en.md): Examine cropping and structure predictions on one synthetic table; text recognition is out of scope.
+- [Text detection and recognition](experiments/paddle-ocr-detection-recognition/README.en.md): Pass detected text regions to a recognizer; the two-stage result covers one synthetic table.
 - [MiniCPM-OCR](experiments/minicpm-ocr/README.md): Document recognition deployment and generation acceleration.
 - [Jina CLIP OpenVINO](experiments/jina-clip-openvino/README.md): Compare CPU and NPU correctness and workload-specific performance.
 - [Jev open-source evaluation](experiments/jev-open-source/README.md): Compare community implementations on a small decision-making sample.
