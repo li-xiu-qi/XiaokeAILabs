@@ -6,6 +6,7 @@ import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, get_linear_schedule_with_warmup
 from run_directory import prepare_run_directory
+from validate_splits import validate_splits
 
 ROOT=Path('.')
 DATA=Path('.')
@@ -99,7 +100,7 @@ def main():
     queries={x['_id']:x['text'] for x in read_jsonl(DATA/'scifact/queries.jsonl')}
     docs={x['_id']:(x.get('title','')+' '+x['text']).strip() for x in read_jsonl(DATA/'scifact/corpus.jsonl')}
     pools=json.loads((DATA/'prepared/pools.json').read_text())
-    assert not (set(pools['train']) & (set(pools['dev'])|set(pools['test'])))
+    validate_splits(pools)
     if args.smoke: pools={s:dict(list(rows.items())[:2]) for s,rows in pools.items()}
     trainpairs=list(dict.fromkeys((q,str(d)) for q,row in pools['train'].items() for d in row['relevant']+row['unjudged']))
     evalpairs=list(dict.fromkeys((q,str(d)) for split in ('dev','test') for q,row in pools[split].items() for d,_ in row['pool']))
