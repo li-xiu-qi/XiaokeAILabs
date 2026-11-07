@@ -61,4 +61,6 @@ python run.py --data /path/to/scifact --source /path/to/source --model /path/to/
 
 [prepare_teacher.py](prepare_teacher.py) 以种子 20261107 选训练查询，编码带任务指令的查询与标题加摘要，输出按候选顺序排列的余弦分数。它的 `--synthetic-encoder` 使用确定性伪向量，仅用于 CPU 数据接口冒烟，不能用于模型评估；本次 CPU 冒烟生成的训练及测试候选清单与原实验逐项一致。真实模型打分路径尚未重跑，且计算实现与原始向量点积不同，结果可能存在浮点误差。
 
+教师输出绑定候选清单、语料和查询文件的 SHA-256；训练前会核对绑定、候选顺序对应的分数数量及有限性。旧格式没有这些绑定，必须重新生成教师分数。伪向量只允许配合 `--smoke` 使用；教师输出目录与每个训练输出子目录必须是新路径，避免覆盖或混入旧结果。本次校验修订尚未重跑真实教师打分与训练。
+
 本机教师的四片 safetensors SHA-256 与 [Hugging Face revision 1d8ad4ca](https://huggingface.co/Qwen/Qwen3-Embedding-8B/tree/1d8ad4ca9b3dd8059ad90a75d4983776a23d44af) 的 LFS 元数据一致；配置、分词器及池化配置也完成内容哈希对照。匹配这些文件支持模型权重与关键配置的来源判断，但并非对运行环境和仓库中全部文件的完整复现证明。

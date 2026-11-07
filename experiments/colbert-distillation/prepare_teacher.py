@@ -46,9 +46,13 @@ def main():
     dv=encode([(docs[d].get('title','')+' '+docs[d]['text']).strip() for d in dids]); idx={d:i for i,d in enumerate(dids)}
     scores={r['id']:[float(sum(float(a)*float(b) for a,b in zip(qv[i],dv[idx[d]]))) for d in r['candidates']] for i,r in enumerate(rows)}
     assert all(math.isfinite(s) for vals in scores.values() for s in vals)
-    args.out.mkdir(parents=True,exist_ok=True)
+    args.out.mkdir(parents=True,exist_ok=False)
     manifest={'seed':20261107,'train':train,'test':test,'teacher':str(args.model) if args.model else 'SYNTHETIC_ONLY','max_length':192,'temperature':0.05}
-    (args.out/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf8')
-    (args.out/'teacher.json').write_text(json.dumps({'scores':scores,'synthetic_only':args.synthetic_encoder},indent=2),encoding='utf8')
+    manifest_path=args.out/'manifest.json'
+    manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf8')
+    sha=lambda path:hashlib.sha256(path.read_bytes()).hexdigest()
+    (args.out/'teacher.json').write_text(json.dumps({'scores':scores,'synthetic_only':args.synthetic_encoder,
+        'manifest_sha256':sha(manifest_path),'corpus_sha256':sha(args.data/'corpus.jsonl'),
+        'queries_sha256':sha(args.data/'queries.jsonl')},indent=2),encoding='utf8')
     print(f"wrote {len(train)} train and {len(test)} test queries; synthetic_only={args.synthetic_encoder}")
 if __name__=='__main__':main()

@@ -3,6 +3,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from pylate import models, losses, rank
+from verify_binding import verify_binding
 
 os.environ['HF_HUB_OFFLINE']='1'
 ROOT=SOURCE=DATA=MODEL=None
@@ -30,6 +31,7 @@ def setup(smoke):
     docs={x['_id']:(x.get('title','')+' '+x['text']).strip() for x in read_jsonl(DATA/'corpus.jsonl')}
     queries={x['_id']:x['text'] for x in read_jsonl(DATA/'queries.jsonl')}
     manifest=json.loads((SOURCE/'manifest.json').read_text());teacher=json.loads((SOURCE/'teacher.json').read_text())
+    verify_binding(SOURCE,DATA,manifest,teacher,smoke)
     train=manifest['train'];test=manifest['test'];scores=teacher['scores']
     assert len(train)==128 and len(test)==300
     assert all(len(row['candidates'])==4 and len(scores[row['id']])==4 for row in train)
@@ -78,7 +80,7 @@ def main():
     global ROOT,SOURCE,DATA,MODEL
     p=argparse.ArgumentParser();p.add_argument('--smoke',action='store_true');p.add_argument('--output',required=True,type=Path);p.add_argument('--source',required=True,type=Path);p.add_argument('--data',required=True,type=Path);p.add_argument('--model',required=True,type=Path);args=p.parse_args()
     ROOT,SOURCE,DATA,MODEL=args.output,args.source,args.data,args.model
-    root=ROOT/('smoke' if args.smoke else 'formal');root.mkdir(parents=True,exist_ok=True)
+    root=ROOT/('smoke' if args.smoke else 'formal');root.mkdir(parents=True,exist_ok=False)
     check();threading.Thread(target=watchdog,daemon=True).start();torch.cuda.set_per_process_memory_fraction(.15)
     docs,queries,train_rows,test,teacher=setup(args.smoke)
     for mode in ('baseline','supervised','distilled'):

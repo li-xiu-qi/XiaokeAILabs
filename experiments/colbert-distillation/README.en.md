@@ -48,3 +48,5 @@ python run.py --data /path/to/scifact --source /path/to/source --model /path/to/
 ```
 
 Remove `--smoke` for the full run. The candidate preparation entry point delegates to the [shared SciFact tool](../../utils/scifact-pools/README.en.md), which documents inputs, hashes and its Python 3.11 requirement. The candidate pool reconstructed on CPU matched the original SHA-256 `e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8`. The rewritten real-teacher scoring path has **not** been rerun, so exact end-to-end reproduction of the original teacher scores is not established. Its synthetic encoder is for interface smoke tests only. The training script enforces a 50 GiB available-memory guard specific to this setup, not a general requirement.
+
+Teacher outputs bind the candidate manifest, corpus and query files by SHA-256. Training checks those bindings, score counts and finite values; regenerate older teacher files without these hashes. Synthetic teacher scores are accepted only with `--smoke`. Teacher output and each training output subdirectory must be new. The real-teacher path and training have not been rerun since this validation change.
