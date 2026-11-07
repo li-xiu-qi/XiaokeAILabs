@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450" role="img" aria-labelledby="title desc">
+<title id="title">Synthetic image data and student training</title>
+<desc id="desc">Teacher-generated and student-generated image datasets train two student adapters, which are compared on held-out prompts. This diagram illustrates the design, not a claim of improved quality.</desc>
+<rect width="800" height="450" fill="#edf3ef"/>
+<circle cx="755" cy="28" r="128" fill="#dce9df"/><circle cx="48" cy="432" r="122" fill="#e0e9e0"/>
+<text x="42" y="55" fill="#375c4b" font-family="Arial,sans-serif" font-size="21" font-weight="700" letter-spacing="2">SYNTHETIC IMAGE DATA</text>
+<text x="42" y="92" fill="#18382d" font-family="Arial,sans-serif" font-size="27" font-weight="700">Two data sources · one student</text>
+<g fill="none" stroke="#83a494" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M220 179H260m-10-9 10 9-10 9"/><path d="M220 322H260m-10-9 10 9-10 9"/><path d="M463 179h43v70h38m-10-9 10 9-10 9"/><path d="M463 322h43v-73"/></g>
+<g><rect x="40" y="126" width="180" height="106" rx="14" fill="#fff" stroke="#b3c9b9" stroke-width="2"/><rect x="40" y="269" width="180" height="106" rx="14" fill="#fff" stroke="#b3c9b9" stroke-width="2"/>
+<rect x="56" y="145" width="55" height="66" rx="7" fill="#dceadf"/><circle cx="96" cy="158" r="5" fill="#90b7a0"/><path d="M61 199l13-20 11 11 8-9 13 18z" fill="#72a484"/>
+<rect x="56" y="288" width="55" height="66" rx="7" fill="#f4e7d5"/><circle cx="96" cy="301" r="5" fill="#d4a976"/><path d="M61 342l13-20 11 11 8-9 13 18z" fill="#c79a65"/>
+<g font-family="Arial,sans-serif" fill="#25493a"><text x="123" y="172" font-size="19" font-weight="700">Teacher</text><text x="123" y="195" font-size="16">images</text><text x="123" y="315" font-size="19" font-weight="700">Student</text><text x="123" y="338" font-size="16">images</text></g></g>
+<g><rect x="262" y="126" width="200" height="106" rx="14" fill="#d8ebe0" stroke="#9ac0a6" stroke-width="2"/><rect x="262" y="269" width="200" height="106" rx="14" fill="#f5ebdc" stroke="#d9c1a4" stroke-width="2"/><g font-family="Arial,sans-serif" fill="#25493a" text-anchor="middle"><text x="362" y="169" font-size="20" font-weight="700">Student + LoRA</text><text x="362" y="197" font-size="16">teacher-data run</text><text x="362" y="312" font-size="20" font-weight="700">Student + LoRA</text><text x="362" y="340" font-size="16">self-data run</text></g></g>
+<rect x="546" y="190" width="213" height="118" rx="14" fill="#234d3d"/><g font-family="Arial,sans-serif" fill="#fff" text-anchor="middle"><text x="652" y="230" font-size="19" font-weight="700">HELD-OUT</text><text x="652" y="255" font-size="19" font-weight="700">COMPARISON</text><text x="652" y="282" font-size="15" fill="#c6dfce">same prompts + seeds</text></g>
+<text x="42" y="420" fill="#426858" font-family="Arial,sans-serif" font-size="17">Experiment design · visual scores are evaluated separately</text>
+</svg>
