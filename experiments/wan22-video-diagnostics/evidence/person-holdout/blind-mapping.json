@@ -1,0 +1,42 @@
+[
+  {
+    "blind_id": "V01",
+    "job": "p02-s611-lora",
+    "sha256": "3dea0456e53c8c80d90909bfe93d5bde66cd60c399ac8a852509ce7b6521de11"
+  },
+  {
+    "blind_id": "V02",
+    "job": "p01-s611-base",
+    "sha256": "e25e0193462c5f673b7bcc620468a687cd5814e180de19f41fc96d6afa9ee069"
+  },
+  {
+    "blind_id": "V03",
+    "job": "p02-s610-lora",
+    "sha256": "0adf68c554ca40b97a908fff768a7d003afab5d2d09e2293016a91bc220204e9"
+  },
+  {
+    "blind_id": "V04",
+    "job": "p01-s610-base",
+    "sha256": "25940d2c70e1e69f999adaf916838f4d0e8aedfe94b69797aaace0a216ff4bb5"
+  },
+  {
+    "blind_id": "V05",
+    "job": "p02-s610-base",
+    "sha256": "7d7b625e1e210ecf6492d46e2e26e6053921d165b5d587ccf422cfb74cb39b26"
+  },
+  {
+    "blind_id": "V06",
+    "job": "p01-s611-lora",
+    "sha256": "109066f9a10e51b6a9b7aca7448d43cb3abf3ff5f0cacd4ac5f627e994c8f316"
+  },
+  {
+    "blind_id": "V07",
+    "job": "p02-s611-base",
+    "sha256": "9fe7ee333c9947b8a3c3c783acc10fc664824066b24c5196671ecf4c6b2ca00c"
+  },
+  {
+    "blind_id": "V08",
+    "job": "p01-s610-lora",
+    "sha256": "ea9061a62672badef87d983b8080fe3702f62b53b5f5233efebb352c40d5b3d6"
+  }
+]

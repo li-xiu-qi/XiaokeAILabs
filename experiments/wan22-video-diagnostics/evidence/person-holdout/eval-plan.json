@@ -1,0 +1,13 @@
+{
+  "objective": "Determine whether the trigger evokes the training character's observable traits without describing them in the prompt.",
+  "conditions": {"model": "Wan2.2 TI2V 5B FP16", "width": 512, "height": 512, "frames": 49, "steps": 30, "sampler": "euler", "scheduler": "simple", "cfg": 5, "shift": 5, "lora_strength": 1.0},
+  "prompts": [
+    {"id": "p01", "text": "mivora, a 2D illustrated person walking through a library and stopping by a window."},
+    {"id": "p02", "text": "mivora, a 2D illustrated person sitting on a bench beside a lake, then standing up."}
+  ],
+  "seeds": [610, 611],
+  "arms": ["base", "lora"],
+  "frames_for_review": [0, 12, 24, 36, 48],
+  "traits": ["dark hair", "red shirt", "yellow neck scarf"],
+  "predefined_rule": "Judge each trait on each selected frame as present, absent, or unassessable; separately judge scene usability. Treat an unassessable frame as unknown rather than a miss. No automatic claim about real-person identity."
+}

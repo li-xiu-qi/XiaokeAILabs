@@ -61,3 +61,9 @@ python diagnose_base.py --model /path/to/Wan2.2-TI2V-5B-Diffusers --out /path/to
 脚本输出 VAE 解码前后张量的形状、数值范围及是否存在非有限值，保存未经视频编码的首帧 PNG、六帧分镜和 MP4。先检查 PNG；如果 PNG 正常而 MP4 损坏，才有理由进一步检查视频编码。如果 PNG 已损坏，应继续检查去噪、权重、精度、模型版本和解码，不能先把问题归因于 LoRA。
 
 `make_data.py` 可生成这个实验所用风格的虚构二维角色数据。它不是现实人物数据，也不构成真实人物一致性评估。输出目录必须不存在，脚本会新建目录，避免覆盖已有数据。目前仅有单提示、单种子的 LoRA 对照，不能验证完整训练效果。
+
+## 虚构人物留出场景
+
+对同一自绘角色的 200 步 LoRA，以两条新场景提示和两个选定种子生成四对视频。单名 AI 盲评每段抽取的五帧，四段 LoRA 视频均未将红衣或黄围巾标为可见；部分画面和特征无法判断，不能算作缺失。样本很小，不足以推断真实人物身份保持能力。[逐帧评分、匿名映射与缩放分镜](evidence/person-holdout/README.md)可供审阅，完整视频未公开。
+
+**English:** A single blinded AI reviewer assessed five sampled frames from each of four paired videos on held-out fictional-character scenes. No red shirt or yellow scarf was marked present in the LoRA outputs; obscured features remained unknown. This small sample does not establish real-person identity retention. See the [frame scores and contact sheets](evidence/person-holdout/README.md); complete videos are not distributed.
