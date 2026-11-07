@@ -25,7 +25,7 @@
 
 ## 方法和可复现配置
 
-2026-11-06，DGX Spark GB10，单 GPU 统一内存，llama.cpp `0.4.0-dev` build 1 commit `ccc3646`，使用相同 `Qwen3.6-35B-A3B-UD-Q4_K_M.gguf` 权重、CUDA、q8_0 K/V、MTP draft 2 和相同服务参数。单槽为 `-np 1 -c 4096`，八槽为 `-np 8 -c 32768`，因此目标每槽上下文容量相同；总 KV 资源随槽位增加。两次服务分别启动，没有同时加载两个副本；测试期间设备还有其他服务。
+2026-11-06，DGX Spark GB10，单 GPU 统一内存，llama.cpp `0.4.0-dev` build 1 commit `ccc3646`，使用相同 `Qwen3.6-35B-A3B-UD-Q4_K_M.gguf` 权重、CUDA、q8_0 K/V、MTP draft 2 和相同服务参数。单槽为 `-np 1 -c 4096`，八槽为 `-np 8 -c 32768`，因此目标每槽上下文容量相同，配置的总上下文容量随槽位增加；本次没有单独测量 KV 缓存的实际内存占用。两次服务分别启动，没有同时加载两个副本；测试期间设备还有其他服务。
 
 先各运行一个冒烟请求，每组先后测试并发 1 和 8，每档两轮；每轮 8 个不同英文短提示，客户端线程池控制并发。每请求 `n_predict=128`、`temperature=0`、固定 seed、`ignore_eos=true`、`cache_prompt=false`。这让每个请求的生成长度一致，但不评估答案质量。启动参数、提示和请求代码在 [脚本](scripts/bench_llamacpp_slots.py) 中，完整逐请求结果和计时在 [原始数据](docs/evidence/bench-llamacpp-slots-20261106.json) 中。设置环境变量 `LLAMA_SERVER` 和 `MODEL_GGUF` 后运行脚本；它将依次启动两个本地服务实例并要求输出目录尚不存在。原记录未保存该 GGUF 文件哈希或仓库 revision，无法确认权重文件的精确版本。
 
