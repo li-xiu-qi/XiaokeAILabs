@@ -6,6 +6,8 @@ From model training and retrieval to multimodal systems and inference deployment
 
 ## Experiments
 
+- [Chinese embedding fine-tuning](experiments/embedding-research/model_finetuning/test_train_embedding/README.md): Learn in-batch contrastive training with query-document pairs; the four built-in examples do not establish a retrieval improvement.
+- [Reranker fine-tuning](experiments/reranker-finetune-scifact/README.en.md): Train a cross-encoder with queries, documents, and relevance labels.
 - [Embedding distillation](experiments/embedding-distillation/README.md): Transfer teacher scores to a smaller embedding model; candidate preparation scripts are included.
 - [Reranker distillation](experiments/reranker-distillation/README.md): Compare supervised training and score distillation on a fixed candidate pool.
 - [ColBERT distillation](experiments/colbert-distillation/README.md): Compare score distillation with supervised learning; distillation did not beat the supervised baseline.
@@ -16,6 +18,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Video generation trained on teacher samples](experiments/video-generation-distillation/README.md): Four held-out teacher, before, and after videos; six post-selected training examples do not establish quality gains. Teacher and student use different resolutions and inference engines.
 - [Image generation with synthetic training data](experiments/image-generation-distillation/README.md): Train a student LoRA on teacher-generated data; results rely on one AI reviewer. See the [paired analysis](experiments/image-generation-distillation/PAIRED-ANALYSIS.md#english) for an exploratory category breakdown and its limits.
 - [Identity image fine-tuning](experiments/image-finetune/README.en.md): Train an identity LoRA; the historical base and adapted outputs use different resolutions and are not directly comparable.
+- [Character video fine-tuning and diagnostics](experiments/wan22-video-diagnostics/README.md): Examine base generation, seeds, and LoRA outputs; a small held-out evaluation does not establish that the target character was learned.
 - [Vector database benchmark](experiments/vector-db-benchmark/README.en.md): Historical records lack raw results and do not support product rankings.
 - [Vector index costs](experiments/vector-index-costs/README.en.md): Compare recall, time and storage across Flat, IVF, HNSW and quantized indexes.
 - [Language JEPA training](experiments/language-jepa/README.md): A toy arithmetic comparison of the original model, LoRA, and JEPA; not evidence of improvement.
@@ -30,6 +33,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Data structure costs](experiments/data-structure-costs/README.md): Analyze the costs of data structures and formats.
 - [Portrait matting](experiments/portrait-matting/README.md): Evaluate subject regions, boundaries, and forward time on 30 still images; results do not establish video performance.
 - [Table structure recognition](experiments/table-structure-recognition/README.md): Examine cropping and structure predictions on one synthetic table; text recognition is out of scope.
+- [Text detection and recognition](experiments/paddle-ocr-detection-recognition/README.md): Pass detected text regions to a recognizer; the two-stage result covers one synthetic table.
 - [MiniCPM-OCR](experiments/minicpm-ocr/README.md): Document recognition deployment and generation acceleration.
 - [Jina CLIP OpenVINO](experiments/jina-clip-openvino/README.md): Compare CPU and NPU correctness and workload-specific performance.
 - [Jev open-source evaluation](experiments/jev-open-source/README.md): Compare community implementations on a small decision-making sample.

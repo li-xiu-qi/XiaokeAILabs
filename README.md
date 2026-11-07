@@ -6,6 +6,8 @@
 
 ## 实验索引
 
+- [中文 Embedding 微调](experiments/embedding-research/model_finetuning/test_train_embedding/README.md)：用查询与相关文档学习批内对比训练；内置数据仅四组，不证明检索效果提升。
+- [重排序模型微调](experiments/reranker-finetune-scifact/README.md)：使用查询、文档和相关性标签训练交叉编码器。
 - [Embedding 蒸馏](experiments/embedding-distillation/README.md)：用大模型分数训练小型向量模型；提供候选池准备脚本。
 - [重排序蒸馏](experiments/reranker-distillation/README.md)：对照监督训练与教师分数蒸馏，了解固定候选上的排序变化。
 - [ColBERT 蒸馏](experiments/colbert-distillation/README.md)：比较教师分数蒸馏与标签监督；本次蒸馏未超过监督基线。
@@ -16,6 +18,7 @@
 - [教师视频训练水波纹生成模型](experiments/video-generation-distillation/README.md)：对照四组留出视频；事后筛选的六条训练样本不足以证明质量提升。
 - [合成数据训练文生图模型](experiments/image-generation-distillation/README.md)：用教师合成数据训练学生 LoRA；结果基于单名 AI 评审。
 - [人物图像生成微调](experiments/image-finetune/README.md)：用人物照片训练 LoRA；现有基线与微调结果分辨率不同，不能直接比较。
+- [人物视频微调与排障](experiments/wan22-video-diagnostics/README.md)：检查视频基模、种子和 LoRA 生成结果；小规模留出评估未证明学会目标角色。
 - [向量数据库基准](experiments/vector-db-benchmark/README.md)：历史数据缺少原始结果，不用于产品排名。
 - [向量索引成本](experiments/vector-index-costs/README.md)：比较 Flat、IVF、HNSW 与量化索引的召回、耗时和空间。
 - [语言模型 JEPA 训练通路](experiments/language-jepa/README.md)：在小规模加法题上对照原模型、LoRA 和 JEPA，结果不证明能力提升。
@@ -30,6 +33,7 @@
 - [数据结构成本](experiments/data-structure-costs/README.md)：分析数据结构和数据格式的成本。
 - [人像抠像](experiments/portrait-matting/README.md)：评估 30 张单帧照片的主体、边界与推理时间；不能代表视频性能。
 - [表格结构识别](experiments/table-structure-recognition/README.md)：用一张合成表格观察裁剪与结构预测，不涵盖文字识别。
+- [文字检测与识别](experiments/paddle-ocr-detection-recognition/README.md)：将文字检测框交给识别模型；两阶段结果只覆盖一张合成表格。
 - [MiniCPM-OCR](experiments/minicpm-ocr/README.md)：文档识别部署与生成加速。
 - [Jina CLIP OpenVINO](experiments/jina-clip-openvino/README.md)：比较 CPU 和 NPU 的正确性与特定负载性能。
 - [Jev 开源方案评测](experiments/jev-open-source/README.md)：比较社区方案的小样本决策表现。
