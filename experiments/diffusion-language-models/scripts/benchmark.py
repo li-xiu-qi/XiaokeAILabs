@@ -26,6 +26,7 @@ def guard():
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', required=True)
+parser.add_argument('--tasks', help='JSON list of {id, prompt, answer} tasks')
 parser.add_argument('--kind', choices=['diffusion', 'autoregressive'], required=True)
 parser.add_argument('--output', required=True)
 parser.add_argument('--revision', required=True)
@@ -33,6 +34,11 @@ parser.add_argument('--repeats', type=int, default=3)
 parser.add_argument('--max-new-tokens', type=int, default=64)
 parser.add_argument('--warmups', type=int, default=1)
 args = parser.parse_args()
+if args.tasks:
+    task_data = json.loads(Path(args.tasks).read_text(encoding='utf8'))
+    if not isinstance(task_data, list) or not task_data or any(not isinstance(t.get('prompt'), str) or not t['prompt'] for t in task_data):
+        raise ValueError('tasks must be a nonempty list with nonempty prompt fields')
+    PROMPTS = [t['prompt'] for t in task_data]
 assert args.repeats >= 1 and args.warmups >= 1 and args.max_new_tokens > 0
 if args.kind == 'diffusion':
     assert args.max_new_tokens % 32 == 0

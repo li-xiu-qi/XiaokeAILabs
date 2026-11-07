@@ -12,6 +12,7 @@ PROMPTS = [
 ]
 p = argparse.ArgumentParser()
 p.add_argument('--model', required=True)
+p.add_argument('--tasks', help='JSON list of {id, prompt, answer} tasks')
 p.add_argument('--output', required=True)
 p.add_argument('--revision', required=True)
 p.add_argument('--repeats', type=int, default=3)
@@ -20,6 +21,11 @@ p.add_argument('--steps', type=int, default=128)
 p.add_argument('--gen-length', type=int, default=128)
 p.add_argument('--block-length', type=int, default=32)
 args = p.parse_args()
+if args.tasks:
+    task_data = json.loads(Path(args.tasks).read_text(encoding='utf8'))
+    if not isinstance(task_data, list) or not task_data or any(not isinstance(t.get('prompt'), str) or not t['prompt'] for t in task_data):
+        raise ValueError('tasks must be a nonempty list with nonempty prompt fields')
+    PROMPTS = [t['prompt'] for t in task_data]
 assert args.repeats > 0 and args.warmups > 0
 assert args.gen_length % args.block_length == 0
 assert args.steps % (args.gen_length // args.block_length) == 0

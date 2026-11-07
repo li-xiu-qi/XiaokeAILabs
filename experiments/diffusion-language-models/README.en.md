@@ -70,3 +70,5 @@ python scripts/benchmark.py --model /path/to/OLMoE-1B-7B-0924-Instruct \
 ```
 
 [LLaDA-MoE run records](docs/llada-moe-smoke.json) · [OLMoE run records](docs/olmoe-smoke.json) · [Fixed-step benchmark script](scripts/benchmark-llada-moe.py)
+
+For a fixed-task quality and latency evaluation protocol, see [the evaluation plan](docs/质量与延迟对照方案.md) (Chinese). The proposed comparison has not been run.
