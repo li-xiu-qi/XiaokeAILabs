@@ -24,6 +24,8 @@ A script generates addition problems with the first operand in 0–9 and the sec
 
 The questions have one template, answer ranges overlap heavily, and the base model already solves them. The result therefore checks that the path retains basic generation ability; it does not measure complex reasoning or training-induced improvement. Per-question outputs and a training summary are available in [results](results/).
 
+Although ordered pairs differ across the split, addition is commutative: 21 of 40 test problems have an equivalent reversed pair in training. This is not an independent split by mathematical problem. Run `python scripts/audit_results.py` to reconstruct the split and check recorded outputs. To study generalization, split by unordered pair and retrain and evaluate.
+
 ## Measured result
 
 | Model | Strict exact match | Training steps | Training time |
