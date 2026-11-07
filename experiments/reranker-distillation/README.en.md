@@ -27,7 +27,7 @@ The teacher and student each produce a logit for a query-document pair. For the 
 
 $$\mathcal L_{KD}=T^2D_{KL}(\operatorname{softmax}(z_T/T)\Vert\operatorname{softmax}(z_S/T)),\quad \mathcal L=0.5\mathcal L_{supervised}+0.5\mathcal L_{KD}.$$
 
-Here $T=2$. The supervised control uses only the supervised loss. Both start from the same student checkpoint with the same seed, sampling, 180 steps, eight queries per step and learning rate 2e-5. Teacher scores are not calibrated relevance probabilities.
+Here $T=2$. The supervised control uses only the supervised loss. Both start from the same student checkpoint with the same seed, sampling, 180 steps, up to eight queries per step and learning rate 2e-5. With 390 training queries, the public script retains a six-query final batch in each complete epoch; three of the 180 batches contain six queries. Historical logs do not record batch sizes, so their actual composition cannot be independently verified. Teacher scores are not calibrated relevance probabilities.
 
 The teacher is [MS MARCO MiniLM-L12](https://huggingface.co/cross-encoder/ms-marco-MiniLM-L12-v2), and the student is [MS MARCO TinyBERT-L2](https://huggingface.co/cross-encoder/ms-marco-TinyBERT-L2-v2). On DGX Spark, one sequential batched pass (up to 32 pairs per batch) over all development and test candidates including tokenization took 14.88 seconds for the teacher and 2.84 seconds for the distilled student. This is neither a service latency nor concurrency benchmark, and excludes teacher scoring and training costs.
 
@@ -43,7 +43,7 @@ hf download cross-encoder/ms-marco-TinyBERT-L2-v2 --revision 81d1926f67cb8eee2c2
 python scripts/run.py --data-root "$DATA_ROOT" --teacher output/teacher --student output/student --out output/run
 ```
 
-The data root must contain `scifact/` and `prepared/pools.json`. The script checks data hashes and teacher output integrity, but a model path alone cannot verify its weights. Training stops if the teacher does not beat the student on development nDCG@10. Append `--device cpu --smoke` and use a separate output directory for a two-query, two-step interface check; this is not an effectiveness evaluation.
+The data root must contain `scifact/` and `prepared/pools.json`. The script records the candidate pool, corpus and query hashes and, when stages run separately, checks them along with model paths and teacher output integrity. It does not automatically compare input hashes against the historical manifest; check them manually using the shared-pool instructions. A model path alone cannot verify its weights. Training stops if the teacher does not beat the student on development nDCG@10. Append `--device cpu --smoke` and use a separate output directory for a two-query, two-step interface check; this is not an effectiveness evaluation.
 
 The `teacher` and `all` stages require a new or empty output directory. The `student` stage requires complete teacher outputs and no existing student outputs. After an interruption, start a fresh run directory to avoid overwriting or mixing results.
 
