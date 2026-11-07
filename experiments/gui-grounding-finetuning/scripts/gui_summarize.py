@@ -6,8 +6,26 @@ def read(name):
     rows=[json.loads(line) for line in (root/name).read_text(encoding='utf8').splitlines()]
     assert len(rows)==30 and len({r['row_idx'] for r in rows})==30
     return rows
-before=read('qwen3vl-2b-screenspot-30.jsonl'); after=read('qwen3vl-2b-lora-screenspot-30.jsonl')
-assert [x['row_idx'] for x in before]==[x['row_idx'] for x in after]
+baseline_name='qwen3vl-2b-screenspot-30.jsonl'
+finetuned_name='qwen3vl-2b-lora-screenspot-30.jsonl'
+before=read(baseline_name); after=read(finetuned_name)
+
+def context(name):
+    path=(root/name).with_suffix('.context.json')
+    if not path.is_file():
+        raise ValueError(f'Missing evaluation context: {path}')
+    return json.loads(path.read_text(encoding='utf8'))
+
+base_context=context(baseline_name); tuned_context=context(finetuned_name)
+for key in ('manifest_sha256', 'model_path', 'prompt_sha256'):
+    if not base_context.get(key) or base_context.get(key)!=tuned_context.get(key):
+        raise ValueError(f'Evaluation contexts differ or lack {key}; do not compare these runs')
+if base_context.get('adapter_path') is not None or not tuned_context.get('adapter_path'):
+    raise ValueError('Expected a base run and a run with an adapter')
+if [x['row_idx'] for x in before]!=[x['row_idx'] for x in after]:
+    raise ValueError('Evaluation rows differ or are not in the same order')
+if any((a['source'],a['type'],a['bbox']) != (b['source'],b['type'],b['bbox']) for a,b in zip(before,after)):
+    raise ValueError('Evaluation labels differ; do not compare these runs')
 delta=[int(y['hit'])-int(x['hit']) for x,y in zip(before,after)]; rng=random.Random(20261107)
 boot=sorted(sum(delta[rng.randrange(30)] for _ in range(30))/30 for _ in range(10000))
 def summary(rows):
