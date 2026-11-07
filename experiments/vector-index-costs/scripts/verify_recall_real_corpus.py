@@ -30,7 +30,9 @@ def load_metadata(base_path, query_path):
         if any(path == candidate for _, path in found) or not os.path.exists(candidate):
             continue
         with open(candidate, encoding="utf-8") as handle:
-            found.append((json.load(handle), candidate))
+            metadata = json.load(handle)
+        validate_metadata(metadata)
+        found.append((metadata, candidate))
     if len(found) == 2:
         base_meta, query_meta = found[0][0], found[1][0]
         keys = ("source", "corpus", "model", "dim", "n_base", "n_query", "replicate", "normalized", "dtype")
@@ -45,10 +47,32 @@ def resolve_positive(value, metadata, key):
     resolved = value if value is not None else metadata.get(key)
     if resolved is None:
         raise ValueError(f"缺少 {key}：请从 meta.json 提供，或显式传 --{key.replace('_', '-')}")
-    resolved = int(resolved)
+    if isinstance(resolved, bool) or not isinstance(resolved, int):
+        raise ValueError(f"{key} must be a positive integer")
+    if value is not None and key in metadata and metadata[key] != value:
+        raise ValueError(f"--{key.replace('_', '-')} conflicts with metadata {key}")
     if resolved <= 0:
         raise ValueError(f"{key} must be positive")
     return resolved
+
+
+def validate_metadata(metadata):
+    """Reject formats and duplicated data that invalidate this recall scan."""
+    if "dtype" in metadata and metadata["dtype"] != "float32":
+        raise ValueError("this scan reads raw float32 vectors; metadata dtype must be float32")
+    if "replicate" in metadata and (type(metadata["replicate"]) is not int or metadata["replicate"] != 1):
+        raise ValueError("replicated base vectors make top-k ID recall ambiguous; use replicate=1")
+
+
+def provenance_config(metadata):
+    """Preserve unknown provenance rather than asserting a default replication count."""
+    return {
+        "corpus": metadata.get("corpus", metadata.get("source", "unknown")),
+        "source": metadata.get("source", "unknown"),
+        "model": metadata.get("model", "unknown"),
+        "replicate": metadata.get("replicate"),
+        "normalized": metadata.get("normalized"),
+    }
 
 
 def validate_vectors(vectors, name, normalized=False, chunk_size=8192):
@@ -123,6 +147,7 @@ def main():
         raise ValueError("threads and repeats must be >= 1")
 
     metadata, metadata_path = load_metadata(args.base, args.query)
+    validate_metadata(metadata)
     n_base = resolve_positive(args.n_base, metadata, "n_base")
     n_query = resolve_positive(args.n_query, metadata, "n_query")
     dim = resolve_positive(args.dim, metadata, "dim")
@@ -179,11 +204,7 @@ def main():
             "numpy": np.__version__,
             "platform": platform.platform(),
             "processor": platform.processor(),
-            "corpus": metadata.get("corpus", metadata.get("source", "unknown")),
-            "source": metadata.get("source", "unknown"),
-            "model": metadata.get("model", "unknown"),
-            "replicate": metadata.get("replicate", 1),
-            "normalized": metadata.get("normalized"),
+            **provenance_config(metadata),
         },
         "ground_truth": {
             "total_ms": round(gt_ms, 2),

@@ -14,6 +14,38 @@ spec.loader.exec_module(module)
 
 
 class InputChecks(unittest.TestCase):
+    def test_unknown_replication_is_not_reported_as_one(self):
+        unknown = json.loads(json.dumps(module.provenance_config({})))
+        self.assertIsNone(unknown["replicate"])
+        known = json.loads(json.dumps(module.provenance_config({"replicate": 1})))
+        self.assertEqual(known["replicate"], 1)
+
+    def test_dimensions_and_metadata_must_agree(self):
+        self.assertEqual(module.resolve_positive(384, {"dim": 384}, "dim"), 384)
+        self.assertEqual(module.resolve_positive(384, {}, "dim"), 384)
+        for invalid in (0, -1, True, 3.5, "384"):
+            with self.subTest(value=invalid), self.assertRaises(ValueError):
+                module.resolve_positive(invalid, {}, "dim")
+        # 2000x384 and 4000x192 have the same byte count but different geometry.
+        with self.assertRaisesRegex(ValueError, "conflicts"):
+            module.resolve_positive(192, {"dim": 384}, "dim")
+        with self.assertRaisesRegex(ValueError, "conflicts"):
+            module.resolve_positive(4000, {"n_base": 2000}, "n_base")
+
+    def test_recall_scan_rejects_known_bad_metadata_in_either_directory(self):
+        module.validate_metadata({"dtype": "float32", "replicate": 1})
+        module.validate_metadata({})  # missing provenance remains unknown
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            base, query = root / "base", root / "query"
+            base.mkdir()
+            query.mkdir()
+            (base / "meta.json").write_text('{}', encoding="utf8")
+            for metadata in ({"dtype": "float64"}, {"replicate": 2}, {"replicate": True}):
+                (query / "meta.json").write_text(json.dumps(metadata), encoding="utf8")
+                with self.subTest(metadata=metadata), self.assertRaises(ValueError):
+                    module.load_metadata(str(base / "base.bin"), str(query / "query.bin"))
+
     def test_recall_checks_shape_duplicates_and_missing_neighbors(self):
         truth = np.array([list(range(10)), list(range(10, 20))])
         pred = truth.copy()
