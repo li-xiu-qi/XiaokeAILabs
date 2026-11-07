@@ -34,6 +34,6 @@ All held-out images were generated using the student base, PNDM, 512 × 512, 30 
 python recompute.py
 ```
 
-The script checks 48 unique ratings, 16 complete matched triples, and matching prompts and seeds, then prints group counts and paired changes. `1` indicates presence or correctness; `0` indicates absence or incorrectness. Fewer artifacts are better. Recomputing the recorded ratings is not a substitute for reviewing the original images. Device outputs, training logs and originals are backed up separately; this directory includes one example contact sheet, not all 48 original images.
+The script checks 48 unique ratings, 16 matched triples, eight prompts with two seeds each, image hash format, and agreement with the recorded summary. `1` indicates presence or correctness; `0` indicates absence or incorrectness. Fewer artifacts are better. Recomputing recorded ratings is not a substitute for reviewing the original images. Device outputs, training logs and originals are backed up separately; this directory includes one example contact sheet, not all 48 original images. The script therefore cannot check the hashes against the original images or verify separation between training and held-out prompts.
 
 Model cards: [Stable Diffusion 1.5](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5) lists CreativeML Open RAIL-M, and [SDXL base 1.0](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0) lists OpenRAIL++. No model weights or complete original images are distributed here.
