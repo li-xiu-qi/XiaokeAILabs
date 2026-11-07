@@ -71,3 +71,7 @@ The download scripts read current rows from the dataset service and compute imag
 The base and adapted evaluations use the same prompt, image resize range, and greedy decoding. The evaluation script can resume an interrupted run and checks the data manifest, prompt, and model path against its initial context. Older outputs lack this context and cannot be resumed automatically; use a different `GUI_ROOT`. The summary script checks both evaluations' manifests, prompts, base-model paths, per-case labels, and recorded point-in-box hits. The historical per-case 24/30 → 25/30 records are not public, so the published aggregate cannot be independently recomputed from them. Historical outputs without context cannot pass the newer summary checks, though the [historical aggregate](evidence/qwen3vl-2b-screenspot-comparison.json) remains available.
 
 Path checks do not verify the model weight contents. Do not replace base or adapter weights during a resumed run or between the two evaluations. The training script refuses to overwrite an existing loss file; choose a new `GUI_ROOT` for a fresh experiment. Adapters and private data stay in `GUI_ROOT` and are not automatically copied into the repository.
+
+## Additional 48-example holdout
+
+[See the paired stratified evaluation](docs/holdout-48.en.md): 34/48 baseline hits and 42/48 after fine-tuning; this small sample does not establish population-wide generalization.

@@ -1,0 +1,341 @@
+{
+  "description": "Anonymous per-example hits; no images, prompts, predictions, boxes, or dataset row IDs.",
+  "samples": [
+    {
+      "sample": 1,
+      "source": "android",
+      "type": "icon",
+      "baseline_hit": false,
+      "lora_hit": true
+    },
+    {
+      "sample": 2,
+      "source": "android",
+      "type": "icon",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 3,
+      "source": "android",
+      "type": "icon",
+      "baseline_hit": false,
+      "lora_hit": true
+    },
+    {
+      "sample": 4,
+      "source": "android",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 5,
+      "source": "android",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 6,
+      "source": "android",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 7,
+      "source": "forum",
+      "type": "icon",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 8,
+      "source": "forum",
+      "type": "icon",
+      "baseline_hit": false,
+      "lora_hit": true
+    },
+    {
+      "sample": 9,
+      "source": "forum",
+      "type": "icon",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 10,
+      "source": "forum",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 11,
+      "source": "forum",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 12,
+      "source": "forum",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 13,
+      "source": "gitlab",
+      "type": "icon",
+      "baseline_hit": false,
+      "lora_hit": false
+    },
+    {
+      "sample": 14,
+      "source": "gitlab",
+      "type": "icon",
+      "baseline_hit": false,
+      "lora_hit": false
+    },
+    {
+      "sample": 15,
+      "source": "gitlab",
+      "type": "icon",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 16,
+      "source": "gitlab",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 17,
+      "source": "gitlab",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 18,
+      "source": "gitlab",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 19,
+      "source": "ios",
+      "type": "icon",
+      "baseline_hit": false,
+      "lora_hit": true
+    },
+    {
+      "sample": 20,
+      "source": "ios",
+      "type": "icon",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 21,
+      "source": "ios",
+      "type": "icon",
+      "baseline_hit": false,
+      "lora_hit": false
+    },
+    {
+      "sample": 22,
+      "source": "ios",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 23,
+      "source": "ios",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 24,
+      "source": "ios",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 25,
+      "source": "macos",
+      "type": "icon",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 26,
+      "source": "macos",
+      "type": "icon",
+      "baseline_hit": false,
+      "lora_hit": true
+    },
+    {
+      "sample": 27,
+      "source": "macos",
+      "type": "icon",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 28,
+      "source": "macos",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 29,
+      "source": "macos",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 30,
+      "source": "macos",
+      "type": "text",
+      "baseline_hit": false,
+      "lora_hit": false
+    },
+    {
+      "sample": 31,
+      "source": "shop",
+      "type": "icon",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 32,
+      "source": "shop",
+      "type": "icon",
+      "baseline_hit": false,
+      "lora_hit": true
+    },
+    {
+      "sample": 33,
+      "source": "shop",
+      "type": "icon",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 34,
+      "source": "shop",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 35,
+      "source": "shop",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 36,
+      "source": "shop",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 37,
+      "source": "tool",
+      "type": "icon",
+      "baseline_hit": false,
+      "lora_hit": false
+    },
+    {
+      "sample": 38,
+      "source": "tool",
+      "type": "icon",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 39,
+      "source": "tool",
+      "type": "icon",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 40,
+      "source": "tool",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 41,
+      "source": "tool",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 42,
+      "source": "tool",
+      "type": "text",
+      "baseline_hit": false,
+      "lora_hit": false
+    },
+    {
+      "sample": 43,
+      "source": "windows",
+      "type": "icon",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 44,
+      "source": "windows",
+      "type": "icon",
+      "baseline_hit": false,
+      "lora_hit": true
+    },
+    {
+      "sample": 45,
+      "source": "windows",
+      "type": "icon",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 46,
+      "source": "windows",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    },
+    {
+      "sample": 47,
+      "source": "windows",
+      "type": "text",
+      "baseline_hit": false,
+      "lora_hit": true
+    },
+    {
+      "sample": 48,
+      "source": "windows",
+      "type": "text",
+      "baseline_hit": true,
+      "lora_hit": true
+    }
+  ]
+}
