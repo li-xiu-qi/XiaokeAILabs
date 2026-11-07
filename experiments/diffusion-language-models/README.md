@@ -1,5 +1,7 @@
 # 扩散语言模型生成有多快？在 DGX Spark 上对照 1.5B 模型
 
+[English](README.en.md)
+
 如果语言模型能够一次更新多个位置，生成回答会更快吗？我们在 DGX Spark 上实测 [Fast-dLLM v2 1.5B](https://huggingface.co/Efficient-Large-Model/Fast_dLLM_v2_1.5B)，并与它的自回归基座 [Qwen2.5-1.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct) 对照。这组数字有助于理解两种实际推理路径的开销，也展示了比较生成速度时不能忽略的输出长度与内容差异。
 
 ## 实测结果
