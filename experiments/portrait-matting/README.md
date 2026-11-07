@@ -47,6 +47,8 @@ python scripts/prepare_ppm.py --archive PPM-100.zip --output local-ppm-30
 
 采样脚本先检查压缩包 SHA-256 `5a3d9029437954594c26ea773e927c4b7c4caaee7e94f6bbd8e96196c868254a`，输出图像、标注和包含逐文件散列的 manifest。`local-ppm-30` 是本地数据目录，不应提交到公开仓库；示例所用的数据、下载文件和输出目录已配置 Git 忽略。文件名或哈希变更会导致检查失败，应重新核对来源，而不是禁用检查。
 
+旧版不含哈希字段的清单需补充哈希后才能使用。单独使用 `score_mattes.py` 时，每条 JSONL 需包含 `sample_id`、`ground_truth_alpha`、`prediction_alpha`，以及两个路径分别对应的 `ground_truth_alpha_sha256` 和 `prediction_alpha_sha256`。脚本校验图片字节、记录清单哈希并拒绝覆盖结果，避免把改变后的图片当作原评估输入；这不能证明清单本身正确配对或排除数据泄漏。
+
 ## 运行单帧评测
 
 ```bash

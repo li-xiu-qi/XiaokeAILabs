@@ -47,6 +47,8 @@ python scripts/prepare_ppm.py --archive PPM-100.zip --output local-ppm-30
 
 The preparation script checks archive SHA-256 `5a3d9029437954594c26ea773e927c4b7c4caaee7e94f6bbd8e96196c868254a` and writes a manifest with per-file hashes. Keep the resulting dataset private and do not commit it. Git ignores the example data, downloads and output paths. If a checksum changes, investigate the source instead of bypassing the check.
 
+Older manifests without these hashes must be updated before use. When using `score_mattes.py` independently, each JSONL record must include `sample_id`, `ground_truth_alpha`, `prediction_alpha`, and their respective `ground_truth_alpha_sha256` and `prediction_alpha_sha256` hashes. The script checks image bytes, records the manifest hash and refuses to overwrite results. This cannot establish that the manifest pairs images correctly or rule out dataset leakage.
+
 ## Run the evaluation
 
 ```bash

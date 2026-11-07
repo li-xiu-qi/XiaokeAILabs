@@ -1,4 +1,5 @@
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -66,15 +67,18 @@ def metrics(gt, pred, threshold=0.5, tolerance=3):
 
 def main():
     ap = argparse.ArgumentParser(description='Score paired 8-bit alpha mattes; paths relative to manifest.')
-    ap.add_argument('manifest', type=Path, help='JSONL: sample_id, ground_truth_alpha, prediction_alpha')
+    ap.add_argument('manifest', type=Path, help='JSONL: sample_id, alpha paths and corresponding *_sha256 fields')
     ap.add_argument('output', type=Path)
     ap.add_argument('--threshold', type=float, default=0.5)
     ap.add_argument('--tolerance', type=int, default=3, help='boundary distance in pixels, Chebyshev metric')
     args = ap.parse_args()
     if not 0 <= args.threshold <= 1 or args.tolerance < 0:
         ap.error('threshold must be in [0, 1] and tolerance must be non-negative')
+    if args.output.exists():
+        ap.error('output already exists; choose a new path')
     records, ids = [], set()
-    for line in args.manifest.read_text(encoding='utf-8').splitlines():
+    manifest_bytes = args.manifest.read_bytes()
+    for line in manifest_bytes.decode('utf-8-sig').splitlines():
         if not line.strip():
             continue
         row = json.loads(line)
@@ -83,6 +87,11 @@ def main():
             raise ValueError(f'duplicate sample ID: {key}')
         ids.add(key)
         base = args.manifest.parent
+        for name in ('ground_truth_alpha', 'prediction_alpha'):
+            path = base / row[name]
+            digest = hashlib.sha256(path.read_bytes()).hexdigest()
+            if digest != row.get(name + '_sha256'):
+                raise ValueError(f'{key}: missing or mismatched {name} hash: {path}')
         result = metrics(alpha(base / row['ground_truth_alpha']), alpha(base / row['prediction_alpha']), args.threshold, args.tolerance)
         records.append({'sample_id': key, **result})
     if not records:
@@ -90,8 +99,10 @@ def main():
     keys = ['iou', 'dice', 'boundary_f1', 'mae', 'mse', 'sad_1000', 'unknown_mae']
     summary = {k: (float(np.mean(vals)) if vals else None) for k in keys
                for vals in [[r[k] for r in records if r[k] is not None]]}
-    args.output.write_text(json.dumps({'parameters': {'threshold': args.threshold, 'boundary_tolerance_pixels_chebyshev': args.tolerance},
-                                      'n': len(records), 'macro_mean': summary, 'samples': records}, ensure_ascii=False, indent=2), encoding='utf-8')
+    with args.output.open('x', encoding='utf-8') as output:
+        json.dump({'manifest_sha256': hashlib.sha256(manifest_bytes).hexdigest(),
+                   'parameters': {'threshold': args.threshold, 'boundary_tolerance_pixels_chebyshev': args.tolerance},
+                   'n': len(records), 'macro_mean': summary, 'samples': records}, output, ensure_ascii=False, indent=2)
 
 
 if __name__ == '__main__':
