@@ -10,7 +10,7 @@ A slot is a place where the inference server holds the generation state of a req
 
 ## Results
 
-With eight short requests arriving concurrently and each generating 128 tokens, aggregate throughput over two runs was 74.91 / 74.78 tokens/s with one slot and 113.78 / 114.14 tokens/s with eight slots, an increase of about 52%. The full batch took 13.67 / 13.69 seconds with one slot and 9.00 / 8.97 seconds with eight. Early requests completed sooner with one slot; with eight slots, requests completed close to one another. Higher aggregate throughput did not mean every request completed sooner.
+With eight short requests submitted with client concurrency 8 and each generating 128 tokens, aggregate throughput over two runs was 74.91 / 74.78 tokens/s with one slot and 113.78 / 114.14 tokens/s with eight slots, an increase of about 52%. The client has no synchronized start barrier, and the record lacks absolute request start or arrival timestamps, so simultaneous arrival and arrival skew cannot be established. The full batch took 13.67 / 13.69 seconds with one slot and 9.00 / 8.97 seconds with eight. Early requests completed sooner with one slot; with eight slots, requests completed close to one another. Higher aggregate throughput did not mean every request completed sooner.
 
 | Server slots | Client concurrency | Aggregate throughput, two runs (tokens/s) | Median per-request completion, two runs | Requests per run |
 |---|---:|---|---|---:|
