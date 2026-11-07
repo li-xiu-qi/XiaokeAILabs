@@ -1,0 +1,75 @@
+{
+  "by_arm": {
+    "teacher": {
+      "single_camera": {
+        "1": 12,
+        "0": 4
+      },
+      "color_correct": {
+        "1": 11,
+        "0": 5
+      },
+      "background_correct": {
+        "0": 5,
+        "1": 11
+      },
+      "severe_artifact": {
+        "1": 8,
+        "0": 8
+      }
+    },
+    "before": {
+      "single_camera": {
+        "1": 16
+      },
+      "color_correct": {
+        "0": 6,
+        "1": 10
+      },
+      "background_correct": {
+        "0": 8,
+        "1": 8
+      },
+      "severe_artifact": {
+        "0": 10,
+        "1": 6
+      }
+    },
+    "after": {
+      "single_camera": {
+        "1": 16
+      },
+      "color_correct": {
+        "1": 9,
+        "0": 7
+      },
+      "background_correct": {
+        "1": 9,
+        "0": 7
+      },
+      "severe_artifact": {
+        "0": 14,
+        "1": 2
+      }
+    }
+  },
+  "paired": {
+    "single_camera": {
+      "unchanged": 16
+    },
+    "color_correct": {
+      "improved": 2,
+      "unchanged": 11,
+      "worsened": 3
+    },
+    "background_correct": {
+      "unchanged": 15,
+      "improved": 1
+    },
+    "severe_artifact": {
+      "unchanged": 12,
+      "improved": 4
+    }
+  },
+  "notes": "8 prompts x 2 fixed seeds; paired rows share prompts; exploratory follow-up to a post-hoc camera result; one reviewer."
+}

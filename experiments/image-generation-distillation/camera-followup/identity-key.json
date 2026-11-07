@@ -1,0 +1,338 @@
+[
+  {
+    "blind_id": "item-001",
+    "arm": "before",
+    "id": "camera-07-s0",
+    "seed": 57291,
+    "sha256": "5c08d13b7dce821a510274c30c163ae5695b6630aa0e433581e590c50f16df1c"
+  },
+  {
+    "blind_id": "item-002",
+    "arm": "teacher",
+    "id": "camera-07-s1",
+    "seed": 83447,
+    "sha256": "475e31d611ee4a6a2ce0482848658dfab07c606af17eabb1107e3dd4a6f4d7ee"
+  },
+  {
+    "blind_id": "item-003",
+    "arm": "after",
+    "id": "camera-06-s0",
+    "seed": 57291,
+    "sha256": "cf3ceb4e6c61a6ce8d70bc5296e11a740583e89755da7c0faead348b54c07e71"
+  },
+  {
+    "blind_id": "item-004",
+    "arm": "after",
+    "id": "camera-04-s0",
+    "seed": 57291,
+    "sha256": "e22119999172ce7fb2533e9a7b59449cca68e5a7ace9f57825ff2aef11e5ff50"
+  },
+  {
+    "blind_id": "item-005",
+    "arm": "after",
+    "id": "camera-03-s1",
+    "seed": 83447,
+    "sha256": "24f67124cd3ff87e04fa7e1ec805f79dd36eaa7395ecf56dbc3a0d4c60cc8bb3"
+  },
+  {
+    "blind_id": "item-006",
+    "arm": "before",
+    "id": "camera-06-s0",
+    "seed": 57291,
+    "sha256": "e6cef5431ce0375ceaffd6944e77aa7e46582b26bc17b1094ccb94bf65854e9d"
+  },
+  {
+    "blind_id": "item-007",
+    "arm": "teacher",
+    "id": "camera-01-s1",
+    "seed": 83447,
+    "sha256": "6d5a182075db531b1edd09c828ab1999ed9f04dc652e1d0373a77d3929378df4"
+  },
+  {
+    "blind_id": "item-008",
+    "arm": "teacher",
+    "id": "camera-01-s0",
+    "seed": 57291,
+    "sha256": "c04780cbf8a280c94e2f615daf62afa4e5f645af80f0a3aca5c9778c78d5c014"
+  },
+  {
+    "blind_id": "item-009",
+    "arm": "before",
+    "id": "camera-00-s1",
+    "seed": 83447,
+    "sha256": "3942df5c6706ec6a79e5b2cf783d0671cadb37875274daab8034b4988ad25dbf"
+  },
+  {
+    "blind_id": "item-010",
+    "arm": "teacher",
+    "id": "camera-05-s0",
+    "seed": 57291,
+    "sha256": "7cfc24401f78537d8177436e318d0de3922f71bf4a19d0a94aa792dff0cc67a5"
+  },
+  {
+    "blind_id": "item-011",
+    "arm": "teacher",
+    "id": "camera-06-s0",
+    "seed": 57291,
+    "sha256": "97845be54f44b79b23a500707dc9a80819cdfee6372ae6c353676388c6df309e"
+  },
+  {
+    "blind_id": "item-012",
+    "arm": "after",
+    "id": "camera-03-s0",
+    "seed": 57291,
+    "sha256": "6927bf3d5bd3bd139f436c35042cd7cd44931f31b00ff5989b8bfce62cfdc958"
+  },
+  {
+    "blind_id": "item-013",
+    "arm": "after",
+    "id": "camera-05-s0",
+    "seed": 57291,
+    "sha256": "29f38abc13c2958eca3f64f95b4d97d3799bc95afece4c31dae8c2dff4ae93f9"
+  },
+  {
+    "blind_id": "item-014",
+    "arm": "before",
+    "id": "camera-05-s0",
+    "seed": 57291,
+    "sha256": "4578011c671dbb73c61ec45e6a2832c8ad14f9ecde0827d8c69c9a92c1272be0"
+  },
+  {
+    "blind_id": "item-015",
+    "arm": "before",
+    "id": "camera-02-s1",
+    "seed": 83447,
+    "sha256": "c638fdbb03b97deb43c4b2415318642961333020f0bc3546b2184491e6ebc24f"
+  },
+  {
+    "blind_id": "item-016",
+    "arm": "teacher",
+    "id": "camera-00-s1",
+    "seed": 83447,
+    "sha256": "9bb2cf1c178d3601c1c36675953c52260865031937c565ab2102750c8cd71854"
+  },
+  {
+    "blind_id": "item-017",
+    "arm": "before",
+    "id": "camera-02-s0",
+    "seed": 57291,
+    "sha256": "60575abfc364f1522f62fd375eefb82412eb6ddf98ec9ef4894895f4518b1f58"
+  },
+  {
+    "blind_id": "item-018",
+    "arm": "before",
+    "id": "camera-01-s1",
+    "seed": 83447,
+    "sha256": "ebc8e5bb400cb16841ffbd1caacdd0e9b95564f4510fcd8898d5548e5f48202a"
+  },
+  {
+    "blind_id": "item-019",
+    "arm": "after",
+    "id": "camera-02-s1",
+    "seed": 83447,
+    "sha256": "52aa9412932b3df49280fdccb9b695f110ce83580429349c5e0a931c2491da9b"
+  },
+  {
+    "blind_id": "item-020",
+    "arm": "after",
+    "id": "camera-05-s1",
+    "seed": 83447,
+    "sha256": "aabee2f9d4afea5ea33701ac562d1acfbcca380b50843e0ae9b792f9f93055d0"
+  },
+  {
+    "blind_id": "item-021",
+    "arm": "after",
+    "id": "camera-07-s0",
+    "seed": 57291,
+    "sha256": "5bc9541283282bee57962a6a1da5056488c3c6fa351fa0d63b56441ac425e84d"
+  },
+  {
+    "blind_id": "item-022",
+    "arm": "teacher",
+    "id": "camera-07-s0",
+    "seed": 57291,
+    "sha256": "6c1ad0e89a9c8c63154b07581b7ee7119464efb89605c9aacf5a99e151eb3e08"
+  },
+  {
+    "blind_id": "item-023",
+    "arm": "after",
+    "id": "camera-00-s1",
+    "seed": 83447,
+    "sha256": "8efc34cc0617ff41ae66976d47c4c6aac5239a78a5ce0ad42e57b1fc7793a70a"
+  },
+  {
+    "blind_id": "item-024",
+    "arm": "teacher",
+    "id": "camera-03-s0",
+    "seed": 57291,
+    "sha256": "da86662f9a52a470343687263520fa2407886269f7aa9365d997798123679d07"
+  },
+  {
+    "blind_id": "item-025",
+    "arm": "before",
+    "id": "camera-04-s1",
+    "seed": 83447,
+    "sha256": "6bb7461864cc56b9841a6487369a739e3fbb0a18c50e86926ce2784eac588273"
+  },
+  {
+    "blind_id": "item-026",
+    "arm": "after",
+    "id": "camera-04-s1",
+    "seed": 83447,
+    "sha256": "c60cec1499e35f6fcc116fb3dafc45dd382270f48fde94e6f00b9fceed7a26f0"
+  },
+  {
+    "blind_id": "item-027",
+    "arm": "after",
+    "id": "camera-07-s1",
+    "seed": 83447,
+    "sha256": "47865c670a46421be260ef8bb1a8217e3345a3f6ac6a7d0d0c1c7bdad97de535"
+  },
+  {
+    "blind_id": "item-028",
+    "arm": "after",
+    "id": "camera-01-s1",
+    "seed": 83447,
+    "sha256": "3a162c5cbf4d02999de5b986f47dd8c7434b27294be72afcbd4cd1fb0aad2370"
+  },
+  {
+    "blind_id": "item-029",
+    "arm": "after",
+    "id": "camera-02-s0",
+    "seed": 57291,
+    "sha256": "ccdd3fba7d76eb2c6b05c77efb60a232d3ba60b6e84a9121fca34b335aa91c04"
+  },
+  {
+    "blind_id": "item-030",
+    "arm": "before",
+    "id": "camera-04-s0",
+    "seed": 57291,
+    "sha256": "abe9475d274a1edfe490d9c6dd06ffd2c138f3d5032fee005eaf6d2e9abdd9ce"
+  },
+  {
+    "blind_id": "item-031",
+    "arm": "before",
+    "id": "camera-03-s0",
+    "seed": 57291,
+    "sha256": "f0bebf0599965530719ba2a030aee98ca74779530c072299d4fc0b52bfe309b9"
+  },
+  {
+    "blind_id": "item-032",
+    "arm": "before",
+    "id": "camera-00-s0",
+    "seed": 57291,
+    "sha256": "2c6c60b5fd7fefb98c7c11ac5ff3f93bb53ca4a5562cbbdda47be707e5d81c33"
+  },
+  {
+    "blind_id": "item-033",
+    "arm": "teacher",
+    "id": "camera-04-s1",
+    "seed": 83447,
+    "sha256": "390f8ac5879e5f096af6a27e3de0859475803f372df1fe912c2d19aa4e7d619a"
+  },
+  {
+    "blind_id": "item-034",
+    "arm": "after",
+    "id": "camera-01-s0",
+    "seed": 57291,
+    "sha256": "e39e86ed842bb3530c4f11bc13ebbf034843d995145c27cb13f3fbe2118f3dba"
+  },
+  {
+    "blind_id": "item-035",
+    "arm": "teacher",
+    "id": "camera-00-s0",
+    "seed": 57291,
+    "sha256": "3628f44a2907a7ccfd2a6e3df634a0f9fb0f4e168ce9deb9223efbd1870b6bc8"
+  },
+  {
+    "blind_id": "item-036",
+    "arm": "before",
+    "id": "camera-01-s0",
+    "seed": 57291,
+    "sha256": "2afdb7e71b2fbfa6f5db2e4889ca60de2d58e6db207a500bdc3d7859f7b5f6f9"
+  },
+  {
+    "blind_id": "item-037",
+    "arm": "teacher",
+    "id": "camera-02-s1",
+    "seed": 83447,
+    "sha256": "de6535a4e8eaa3d47a0ebdab18ad91a95e156132921a23fc49b522c0593ea85c"
+  },
+  {
+    "blind_id": "item-038",
+    "arm": "before",
+    "id": "camera-06-s1",
+    "seed": 83447,
+    "sha256": "e0b7ee8c2d74a41003d3a62e55dd97aff03c8b0aafa7a29c4ce702dffcf4a84d"
+  },
+  {
+    "blind_id": "item-039",
+    "arm": "before",
+    "id": "camera-05-s1",
+    "seed": 83447,
+    "sha256": "999ed8ac36624ac7b2ea4c753275d8d992af2af75df3946beb68a41463279ff2"
+  },
+  {
+    "blind_id": "item-040",
+    "arm": "after",
+    "id": "camera-00-s0",
+    "seed": 57291,
+    "sha256": "4b8e888fc8bc9bc66952ea3d3ce08d85085e57a2941d25dc9ab5ba2c919a0aad"
+  },
+  {
+    "blind_id": "item-041",
+    "arm": "teacher",
+    "id": "camera-05-s1",
+    "seed": 83447,
+    "sha256": "460c6b282611a61051a89a9efbb1869ed710b6be3206db30b97ffa53cee51eb7"
+  },
+  {
+    "blind_id": "item-042",
+    "arm": "before",
+    "id": "camera-03-s1",
+    "seed": 83447,
+    "sha256": "36b318a663298be352fa85920b6be70d94562f5a51df4b734ca13b335cda35ba"
+  },
+  {
+    "blind_id": "item-043",
+    "arm": "teacher",
+    "id": "camera-02-s0",
+    "seed": 57291,
+    "sha256": "4617f574f0f14620585539e5e5ce0600e42cac6207b90477ea53941a983c60d0"
+  },
+  {
+    "blind_id": "item-044",
+    "arm": "teacher",
+    "id": "camera-03-s1",
+    "seed": 83447,
+    "sha256": "9d5d035aa7825e48324f48e8c7267eca2a3d7d07927e7bf799f860cff1483895"
+  },
+  {
+    "blind_id": "item-045",
+    "arm": "teacher",
+    "id": "camera-06-s1",
+    "seed": 83447,
+    "sha256": "3474ad1dce73f0240179e9b6ba510389812a44f63ec13daf1f1a68e2fe531d57"
+  },
+  {
+    "blind_id": "item-046",
+    "arm": "before",
+    "id": "camera-07-s1",
+    "seed": 83447,
+    "sha256": "fdde47325b3f0839c9e8fd88ec9fb9ebc7c5b63dfe81d66a3e77a3dfa3869b54"
+  },
+  {
+    "blind_id": "item-047",
+    "arm": "after",
+    "id": "camera-06-s1",
+    "seed": 83447,
+    "sha256": "20eed092b15115d440164add1f44aafab6ceeaa1b2d83f051263231a2b1ddb23"
+  },
+  {
+    "blind_id": "item-048",
+    "arm": "teacher",
+    "id": "camera-04-s0",
+    "seed": 57291,
+    "sha256": "f8022c9b7331414b8eca4549c361aea0a422f1625a991a5f56fb79e12c69b08f"
+  }
+]
