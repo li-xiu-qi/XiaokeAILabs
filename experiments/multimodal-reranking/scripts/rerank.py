@@ -33,6 +33,7 @@ def validate_resume(source, done, image_dir, model_identifier, image_hashes):
             and math.isfinite(candidate['reranker_score'])
             for candidate, original in zip(candidates, originals)))
         if (result.get('input_sha256') != expected
+                or result.get('query') != source[i]['query']
                 or result.get('target_filename') != source[i]['target_filename']
                 or not scores_valid):
             raise ValueError(f'Output row {i + 1} does not match current inputs or lacks a valid fingerprint; use a new output file.')
@@ -67,7 +68,7 @@ def main():
                 raise ValueError('Reranker returned invalid scores')
             scores.extend({**c, 'reranker_score': float(s)} for c, s in zip(batch, values))
         with a.output.open('a', encoding='utf-8') as f:
-            f.write(json.dumps({'target_filename': row['target_filename'], 'input_sha256': fingerprint, 'candidates': scores}, ensure_ascii=False) + '\n')
+            f.write(json.dumps({'query': row['query'], 'target_filename': row['target_filename'], 'input_sha256': fingerprint, 'candidates': scores}, ensure_ascii=False) + '\n')
         print('completed query', flush=True)
 
 

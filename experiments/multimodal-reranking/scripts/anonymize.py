@@ -1,6 +1,7 @@
 """Reduce local candidate files to anonymous paired ranks and shuffle their order."""
 import argparse
 import json
+import math
 import random
 from pathlib import Path
 p = argparse.ArgumentParser()
@@ -13,8 +14,16 @@ after = [json.loads(x) for x in a.reranked.read_text(encoding='utf-8').splitline
 assert len(before) == len(after) == 100
 out = []
 for x, y in zip(before, after):
-    assert x['target_filename'] == y['target_filename']
-    assert [z['filename'] for z in x['candidates']] == [z['filename'] for z in y['candidates']]
+    if x['target_filename'] != y.get('target_filename') or x['query'] != y.get('query'):
+        raise ValueError('candidate and reranked query/target differ; regenerate incompatible older rerank output')
+    candidates, ranked = x['candidates'], y.get('candidates', [])
+    if len(candidates) != 5 or len(ranked) != len(candidates) or len({z['filename'] for z in candidates}) != len(candidates):
+        raise ValueError('expected five unique matching candidates per query')
+    for original, scored in zip(candidates, ranked):
+        score = scored.get('reranker_score')
+        if ({k: v for k, v in scored.items() if k != 'reranker_score'} != original
+                or isinstance(score, bool) or not isinstance(score, (int, float)) or not math.isfinite(score)):
+            raise ValueError('candidate fields or reranker scores are invalid')
     target = x['target_filename']
     def rank(items):
         return next((i + 1 for i, item in enumerate(items) if item['filename'] == target), None)
