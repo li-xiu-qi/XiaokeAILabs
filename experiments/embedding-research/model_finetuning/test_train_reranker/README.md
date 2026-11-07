@@ -44,7 +44,7 @@ python train_bert_rerank.py
 
 3) 输出：
 
-- 模型保存于 `args["output_dir"]/final_model/`
+- 模型保存于 `args["output_dir"]/final_model/`，本次训练曲线保存于 `args["output_dir"]/loss_curve.png`。两者在重复使用同一输出目录时可能被覆盖，请为每次运行设置新目录。
 
 脚本只训练，未包含独立验证集或检索排序评估；训练损失和示例输出不能证明微调提升了排序效果。训练前按实际目标准备留出查询与候选文档，并在固定候选上比较微调前后的排名。
 
@@ -153,9 +153,11 @@ Model saved successfully!
   0%|                                                       | 0/15 [00:42<?, ?it/s]
 ```
 
-## 训练损失曲线
+## 历史训练损失曲线
 
-![训练损失曲线](loss_curve.png)
+下图来自旧运行，不对应当前脚本的 30 次优化器更新；新运行的曲线写入输出目录。
+
+![历史训练损失曲线](loss_curve.png)
 
 ## 文件结构
 

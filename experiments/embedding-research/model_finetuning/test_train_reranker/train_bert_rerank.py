@@ -273,14 +273,15 @@ def main():
         unwrapped_model.save_pretrained(os.path.join(args["output_dir"], "final_model"))
         accelerator.print("Model saved successfully!")
 
-    # 绘制损失曲线并保存图片
-    plt.figure()
-    plt.plot(loss_list)
-    plt.xlabel('Step')
-    plt.ylabel('Loss')
-    plt.title('Training Loss Curve')
-    plt.savefig('loss_curve.png')
-    plt.close()
+    # Save the run's curve with its checkpoint; preserve the historical tracked figure.
+    if accelerator.is_main_process:
+        plt.figure()
+        plt.plot(loss_list)
+        plt.xlabel('Step')
+        plt.ylabel('Loss')
+        plt.title('Training Loss Curve')
+        plt.savefig(os.path.join(args["output_dir"], "loss_curve.png"))
+        plt.close()
     accelerator.end_training()
 
 
