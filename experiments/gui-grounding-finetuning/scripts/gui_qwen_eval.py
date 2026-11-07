@@ -61,6 +61,8 @@ for item in samples[len(done):]:
     answer=processor.decode(ids[0][inputs['input_ids'].shape[-1]:],skip_special_tokens=True).strip()
     match=re.fullmatch(r'\s*\(?\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\s*\)?\s*',answer)
     point=[float(match.group(i))/1000 for i in (1,2)] if match else None
+    if point is not None and not all(0 <= value <= 1 for value in point):
+        point = None
     box=item['bbox_xyxy_normalized']
     hit=bool(point and 0 <= point[0] <= 1 and 0 <= point[1] <= 1 and box[0] <= point[0] <= box[2] and box[1] <= point[1] <= box[3])
     result={'row_idx':item['row_idx'],'source':item['data_source'],'type':item['data_type'],'bbox':box,'prediction':answer,'point_normalized':point,'hit':hit,'generation_s':sec}

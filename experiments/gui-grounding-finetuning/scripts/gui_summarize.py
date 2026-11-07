@@ -1,10 +1,13 @@
 import os
 import json, random, statistics
+from gui_validate import validate_result
 from pathlib import Path
 root=Path(os.environ['GUI_ROOT']).expanduser()
 def read(name):
     rows=[json.loads(line) for line in (root/name).read_text(encoding='utf8').splitlines()]
     assert len(rows)==30 and len({r['row_idx'] for r in rows})==30
+    for row in rows:
+        validate_result(row)
     return rows
 baseline_name='qwen3vl-2b-screenspot-30.jsonl'
 finetuned_name='qwen3vl-2b-lora-screenspot-30.jsonl'
