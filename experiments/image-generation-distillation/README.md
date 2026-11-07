@@ -136,3 +136,5 @@ python scripts/generate.py --model stable-diffusion-v1-5/stable-diffusion-v1-5 \
 **English:** A matched camera-image follow-up compares teacher-generated with student-generated training data. One blinded AI thumbnail reviewer found 3 improvements, 5 regressions and 8 unchanged cases for teacher data on the primary single-camera measure. The complete generation pipelines differ; see the [design and ratings](teacher-data-control/README.en.md).
 
 [教师数据筛选开发集](teacher-advantage-check/README.md)：32 对中 24 对有效，预设门槛未通过，停止本轮训练。
+
+[1024px 教师复筛](native-teacher-check/README.md)：32 对中 25 对有效，教师成功 5 对、基线 0 对，未达到门槛，未启动本轮训练。
