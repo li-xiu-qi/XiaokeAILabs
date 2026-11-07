@@ -33,7 +33,7 @@ One historical record reports Milvus HNSW with `ef=64` at 4.1 ms median latency 
 
 ## Run a safe synthetic exact-search check
 
-The legacy multi-system scripts can delete fixed-name collections or files, so their entry points are disabled. The following example uses an in-memory SQLite database and synthetic vectors only; it does not connect to an existing database or read or write user files. It is an exact-search measurement example, not a cross-product benchmark.
+Legacy multi-system scripts can delete fixed-name collections or files; some entry points are disabled. Other historical scripts are not all guarded: for example, `gen_emb.py` writes to a fixed path and can overwrite a file. Do not run those scripts directly. The following example uses an in-memory SQLite database and synthetic vectors only; it does not connect to an existing database or read or write user files. It is an exact-search measurement example, not a cross-product benchmark.
 
 ```bash
 python -m pip install numpy sqlite-vec
