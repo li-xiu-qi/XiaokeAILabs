@@ -1,0 +1,12 @@
+{
+  "eval": [
+    {"id":"fresh-00","seed":901,"prompt":"A small ring of ripples expands across a calm blue pond viewed from above, static camera."},
+    {"id":"fresh-01","seed":902,"prompt":"A small ring of ripples expands across a calm blue pond viewed from above, static camera."},
+    {"id":"fresh-02","seed":903,"prompt":"Concentric water rings spread outward over a quiet reflective pool in soft daylight, fixed view."},
+    {"id":"fresh-03","seed":904,"prompt":"Concentric water rings spread outward over a quiet reflective pool in soft daylight, fixed view."},
+    {"id":"fresh-04","seed":905,"prompt":"A gentle circular wave widens on a still pond surface, stationary camera, natural light."},
+    {"id":"fresh-05","seed":906,"prompt":"A gentle circular wave widens on a still pond surface, stationary camera, natural light."},
+    {"id":"fresh-06","seed":907,"prompt":"Soft outward moving rings on smooth blue water, quiet pond, locked-off camera."},
+    {"id":"fresh-07","seed":908,"prompt":"Soft outward moving rings on smooth blue water, quiet pond, locked-off camera."}
+  ]
+}

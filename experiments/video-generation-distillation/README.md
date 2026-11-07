@@ -97,3 +97,9 @@ python scripts/compare.py --baseline results/baseline --lora results/lora
 | 03 | 两者都有池面纹理；运动方向和物理可信度难以判断。 |
 
 四对视频逐帧像素有差异，但像素差不能证明运动更自然。49 帧在 24 fps 下约为两秒，也不能评价长时间一致性。更可靠的后续评估需要更多独立场景、盲评、重复种子和明确的运动质量指标。
+
+## 新增留出对照
+
+新增四条未用于训练的水波纹描述，每条各用两个新种子，共八对学生基模和 LoRA 视频。单名 AI 在不知模型身份时比较抽帧，揭盲后偏好 LoRA 3 对、基模 2 对、相当 1 对、无法判断 2 对。四条提示措辞相近、两个种子来自同一描述，不能视作八个独立场景；评审没有观看完整视频，不能据此评价运动连续性或证明质量提升。[视频、提示词与逐条评审记录](results/heldout-followup/README.md)均可查看。
+
+**English:** Four additional held-out prompt phrasings and two new seeds each produce eight base-versus-LoRA pairs. One blinded AI reviewer preferred LoRA in three pairs, the base in two, with one tie and two inconclusive. Review used sampled frames, not full playback; related prompts and the small sample do not establish motion continuity or improved quality. See the [videos and review records](results/heldout-followup/README.md).
