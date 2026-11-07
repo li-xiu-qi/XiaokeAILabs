@@ -1,5 +1,7 @@
 # Jina CLIP 在 Intel CPU 与 NPU 上的部署验证
 
+[English](README.en.md)
+
 ![多模态向量模型转换与设备验证流程](docs/pipeline.svg)
 
 本实验验证 `jinaai/jina-clip-v2` 在 Intel CPU 与 NPU 上能否产生**正确且可重复加速**的 OpenVINO 推理结果。这里不把“模型能转换”“设备能编译”当作部署成功，验收必须同时通过向量正确性、双分支冒烟和重复性能测试。

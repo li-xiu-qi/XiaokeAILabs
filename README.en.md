@@ -35,7 +35,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Table structure recognition](experiments/table-structure-recognition/README.en.md): Examine cropping and structure predictions on one synthetic table; text recognition is out of scope.
 - [Text detection and recognition](experiments/paddle-ocr-detection-recognition/README.en.md): Pass detected text regions to a recognizer; the two-stage result covers one synthetic table.
 - [MiniCPM-OCR](experiments/minicpm-ocr/README.en.md): Document recognition deployment and generation acceleration.
-- [Jina CLIP OpenVINO](experiments/jina-clip-openvino/README.md): Compare CPU and NPU correctness and workload-specific performance.
+- [Jina CLIP OpenVINO](experiments/jina-clip-openvino/README.en.md): Compare CPU and NPU correctness and workload-specific performance.
 - [Jev open-source evaluation](experiments/jev-open-source/README.md): Compare community implementations on a small decision-making sample.
 
 See each experiment for its environment, datasets, model licenses, and reproduction limits. Some experiments require external data, models, or preparation files that are not yet published; reported measurements apply only under their stated conditions.
