@@ -1,5 +1,6 @@
 import argparse, json, math, os, threading, time
 from pathlib import Path
+from benchmark_contract import select_rows, selection_sha256
 
 def check():
     for line in open('/proc/meminfo'):
@@ -13,20 +14,14 @@ def watch():
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--data',required=True);p.add_argument('--model',required=True);p.add_argument('--base',required=True);p.add_argument('--out',required=True);p.add_argument('--count',type=int,default=100);args=p.parse_args()
-    if Path(args.out).exists(): p.error('output already exists; choose a new path')
+    if Path(args.out).exists() or args.count < 1: p.error('output must be new and count must be positive')
     check();threading.Thread(target=watch,daemon=True).start()
     import torch
     from datasets import load_from_disk
     from colpali_engine.models import ColIdefics3,ColIdefics3Processor
     from peft import PeftModel
     torch.cuda.set_per_process_memory_fraction(.15)
-    data=load_from_disk(args.data); rows=[];seen=set()
-    for r in data:
-        key=r['image_filename']
-        if key not in seen:
-            seen.add(key); rows.append(r)
-            if len(rows)==args.count:break
-    assert len(rows)==args.count
+    data=load_from_disk(args.data); rows=select_rows(data,args.count)
     model=ColIdefics3.from_pretrained(args.base,torch_dtype=torch.bfloat16,device_map='cuda:0',attn_implementation='eager',local_files_only=True)
     model=PeftModel.from_pretrained(model,args.model,local_files_only=True).eval()
     proc=ColIdefics3Processor.from_pretrained(args.model,local_files_only=True)
@@ -38,11 +33,13 @@ def main():
         for i,r in enumerate(rows):
             check();x=proc.process_queries([r['query']]).to(model.device);qs.append(model(**x)[0].cpu())
         scores=proc.score_multi_vector(qs,ims,batch_size=1).cpu()
+    if tuple(scores.shape) != (len(rows),len(rows)) or not torch.isfinite(scores).all():
+        raise ValueError('non-finite scores or score matrix does not match query/page count')
     rankings=torch.argsort(scores,dim=1,descending=True); records=[]
     for i,row in enumerate(rankings):
         pos=(row==i).nonzero(as_tuple=True)[0].item()+1
         records.append({'row':i,'rank':pos,'r1':int(pos<=1),'r5':int(pos<=5),'ndcg5':1/math.log2(pos+1) if pos<=5 else 0.})
-    result={'n':len(rows),'r1':sum(x['r1'] for x in records)/len(rows),'r5':sum(x['r5'] for x in records)/len(rows),'ndcg5':sum(x['ndcg5'] for x in records)/len(rows),'seconds':time.perf_counter()-start,'peak_bytes':torch.cuda.max_memory_allocated(),'library':'colpali-engine 0.3.13','precision':'bfloat16','records':records}
+    result={'n':len(rows),'selection_sha256':selection_sha256(rows),'r1':sum(x['r1'] for x in records)/len(rows),'r5':sum(x['r5'] for x in records)/len(rows),'ndcg5':sum(x['ndcg5'] for x in records)/len(rows),'seconds':time.perf_counter()-start,'peak_bytes':torch.cuda.max_memory_allocated(),'library':'colpali-engine 0.3.13','precision':'bfloat16','records':records}
     with Path(args.out).open('x', encoding='utf8') as f: json.dump(result, f, indent=2)
     print(json.dumps({k:v for k,v in result.items() if k!='records'}),flush=True)
 if __name__=='__main__':main()

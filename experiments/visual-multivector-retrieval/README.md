@@ -30,6 +30,8 @@ $$s(q,d)=\sum_i\max_j \widehat{q_i}^{\mathsf T}\widehat{d_j}.$$
 
 [匿名逐查询排名](baseline100.json)记录 100 条查询的配对页名次，不包含原始图片、问题或数据集 ID。运行 `python recompute.py` 可以从名次重新计算三个汇总指标，但不能据此验证模型打分或页面标签。
 
+新运行会记录按顺序选出的页面文件名和查询的联合 SHA-256，以便识别选样是否变化；它不包含图片字节哈希，不能证明图片内容一致。脚本也会拒绝不足的候选数和非有限分数。历史结果文件没有这个选样哈希。
+
 ## 运行基线
 
 本次使用 Linux、NVIDIA GB10、BF16、PyTorch 2.14.0+cu130、Transformers 4.56.2、ColPali Engine 0.3.13、PEFT 0.17.1 和 Datasets 4.1.1。下面的模型下载需要 `huggingface_hub`，数据和权重自行从上游获取，不放在本仓库。

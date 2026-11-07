@@ -28,6 +28,8 @@ Other pages may also be relevant but unlabeled. The 100-page candidate pool cann
 
 [baseline100.json](baseline100.json) contains anonymous per-query positive ranks, with no images, question text, or original dataset IDs. `python recompute.py` checks the aggregate metrics from those ranks; it cannot independently establish the underlying model scores or relevance labels.
 
+New runs record a SHA-256 of the ordered page filenames and queries to detect changes in selection. This does not hash image bytes and cannot establish that image contents match; the historical result has no selection hash. The script also rejects insufficient distinct candidates and non-finite scores.
+
 ## Run the baseline
 
 The run used Linux on NVIDIA GB10, BF16, PyTorch 2.14.0+cu130, Transformers 4.56.2, ColPali Engine 0.3.13, PEFT 0.17.1 and Datasets 4.1.1. Fetch the data and model weights from their original sources:
