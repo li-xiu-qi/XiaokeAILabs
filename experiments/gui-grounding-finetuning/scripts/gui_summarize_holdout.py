@@ -1,6 +1,7 @@
 import os
 import hashlib, json, math, random, statistics
 from pathlib import Path
+from gui_validate import validate_result
 root=Path(os.environ['GUI_ROOT']).expanduser()
 def read(name):
     rows=[json.loads(line) for line in (root/name).read_text(encoding='utf8').splitlines()]
@@ -38,20 +39,12 @@ for sample, a, b in zip(manifest, before, after):
     if (a['source'],a['type'],a['bbox']) != (sample['data_source'],sample['data_type'],sample['bbox_xyxy_normalized']):
         raise ValueError('Evaluation labels do not match the manifest')
     for row in (a,b):
-        point=row['point_normalized']; box=row['bbox']
-        if type(row['hit']) is not bool:
-            raise ValueError('hit must be a boolean')
-        if point is not None and (not isinstance(point,list) or len(point)!=2 or
-                                  any(type(x) not in (int,float) or not math.isfinite(x) for x in point)):
-            raise ValueError('Invalid point representation')
-        computed=bool(point and 0<=point[0]<=1 and 0<=point[1]<=1 and box[0]<=point[0]<=box[2] and box[1]<=point[1]<=box[3])
-        if row['hit'] != computed:
-            raise ValueError('Recorded hit disagrees with point and bounding box')
+        validate_result(row)
 n=len(before)
 delta=[int(y['hit'])-int(x['hit']) for x,y in zip(before,after)]; rng=random.Random(20261107)
 boot=sorted(sum(delta[rng.randrange(n)] for _ in range(n))/n for _ in range(10000))
 def summary(rows):
-    return {'hit':sum(x['hit'] for x in rows),'total':len(rows),'invalid_coordinates':sum(x['point_normalized'] is None for x in rows),
+    return {'hit':sum(x['hit'] for x in rows),'total':len(rows),'invalid_coordinates':sum(x['point_normalized'] is None or any(not 0 <= v <= 1 for v in x['point_normalized']) for x in rows),
             'per_source':{s:{'hits':sum(x['hit'] for x in rows if x['source']==s),'total':sum(x['source']==s for x in rows)} for s in sorted({x['source'] for x in rows})},
             'median_generation_seconds':statistics.median(x['generation_s'] for x in rows)}
 out={'baseline':summary(before),'finetuned':summary(after),'paired_improvements':sum(d==1 for d in delta),

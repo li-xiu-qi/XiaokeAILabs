@@ -1,6 +1,7 @@
 import os
 import json, re, time, sys, hashlib, os
 from pathlib import Path
+from gui_validate import parse_point
 import torch
 from PIL import Image
 from transformers import AutoProcessor, Qwen3VLForConditionalGeneration
@@ -63,8 +64,7 @@ for item in samples[len(done):]:
         ids=model.generate(**inputs, max_new_tokens=24, do_sample=False)
     torch.cuda.synchronize(); sec=time.perf_counter()-start
     answer=processor.decode(ids[0][inputs['input_ids'].shape[-1]:],skip_special_tokens=True).strip()
-    match=re.fullmatch(r'\s*\(?\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\s*\)?\s*',answer)
-    point=[float(match.group(i))/1000 for i in (1,2)] if match else None
+    point=parse_point(answer)
     box=item['bbox_xyxy_normalized']
     hit=bool(point and 0 <= point[0] <= 1 and 0 <= point[1] <= 1 and box[0] <= point[0] <= box[2] and box[1] <= point[1] <= box[3])
     result={'row_idx':item['row_idx'],'source':item['data_source'],'type':item['data_type'],'bbox':box,'prediction':answer,'point_normalized':point,'hit':hit,'generation_s':sec}

@@ -20,6 +20,8 @@ Prediction output: (x, y)        # a point, not an action or bounding box
 Evaluation: point inside the annotated box is a hit; invalid or out-of-range coordinates are misses
 ```
 
+Evaluation accepts `(x, y)` or `x, y`, including decimals. Unmatched parentheses, other formats and out-of-range coordinates are misses. Summaries reparse the original prediction and check its point and hit flag.
+
 A training manifest record has the following simplified structure. This is synthetic data; `file` points to an image beside the manifest, `sha256` checks its bytes, and the full record also includes source and element details:
 
 ```json

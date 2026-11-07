@@ -32,7 +32,7 @@ if any((a['source'],a['type'],a['bbox']) != (b['source'],b['type'],b['bbox']) fo
 delta=[int(y['hit'])-int(x['hit']) for x,y in zip(before,after)]; rng=random.Random(20261107)
 boot=sorted(sum(delta[rng.randrange(30)] for _ in range(30))/30 for _ in range(10000))
 def summary(rows):
-    return {'hit':sum(x['hit'] for x in rows),'total':len(rows),'invalid_coordinates':sum(x['point_normalized'] is None for x in rows),
+    return {'hit':sum(x['hit'] for x in rows),'total':len(rows),'invalid_coordinates':sum(x['point_normalized'] is None or any(not 0 <= v <= 1 for v in x['point_normalized']) for x in rows),
             'per_source':{s:{'hits':sum(x['hit'] for x in rows if x['source']==s),'total':sum(x['source']==s for x in rows)} for s in sorted({x['source'] for x in rows})},
             'median_generation_seconds':statistics.median(x['generation_s'] for x in rows)}
 out={'baseline':summary(before),'finetuned':summary(after),'paired_improvements':sum(d==1 for d in delta),
