@@ -1,4 +1,4 @@
-"""Inspect exact case and state overlap between decision JSONL splits."""
+"""Inspect exact input case and state overlap between decision JSONL splits."""
 import hashlib
 import json
 from pathlib import Path
@@ -17,7 +17,8 @@ def fingerprints(path):
             def fingerprint(value):
                 canonical = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'))
                 return hashlib.sha256(canonical.encode('utf-8')).hexdigest()
-            cases.add(fingerprint({key: row[key] for key in ('state', 'questions', 'gold')}))
+            # Labels can differ for the same input; do not let that hide leakage.
+            cases.add(fingerprint({key: row[key] for key in ('state', 'questions')}))
             states.add(fingerprint(row['state']))
             count += 1
     if not count:
@@ -42,4 +43,4 @@ if __name__ == '__main__':
     result = audit(args.train, args.test)
     print(json.dumps(result, indent=2))
     if result['shared_exact_cases']:
-        raise SystemExit('Identical cases found in training and evaluation')
+        raise SystemExit('Identical input cases found in training and evaluation')

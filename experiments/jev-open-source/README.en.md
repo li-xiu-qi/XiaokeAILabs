@@ -45,7 +45,7 @@ On 20 classification examples, the report records 95% English and Chinese for La
 
 ## Training comparison: RLCD and soft cross-entropy
 
-The [Laya RLCD experiment](laya_rlcd_train/README.md) tests whether adding a scoring-rule policy-gradient term to distillation improves agreement with teacher-generated decision distributions compared with soft cross-entropy alone. The data is synthetic; its soft labels are not real-world event outcomes. Therefore ECE and Brier metrics against these labels cannot establish calibration to reality.
+The [Laya RLCD experiment](laya_rlcd_train/README.md) tests whether adding a scoring-rule policy-gradient term to distillation improves agreement with teacher-generated decision distributions compared with soft cross-entropy alone. The data is synthetic; its soft labels are not real-world event outcomes. Therefore ECE and Brier metrics against these labels cannot establish calibration to reality. Before a new run, the split audit rejects cases with identical state and questions even when their labels differ; it cannot identify paraphrased or near-duplicate inputs and was not applied retrospectively to the historical run.
 
 On 2,000 held-out questions, two RLCD runs reported reference-label top-1 agreement of 0.7510 and 0.7700, while one soft-CE run reported 0.7855. The RLCD repeats used the same recorded configuration and seed but their difference is unexplained. The runs are too few to establish a general ranking or equivalence. The implementation splits training and calibration after expanding questions, so questions from the same case can cross that boundary. See the [training report](laya_rlcd_train/docs/RLCD微调报告.md) for conditions and evidence.
 
