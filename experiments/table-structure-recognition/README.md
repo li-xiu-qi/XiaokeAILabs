@@ -25,6 +25,8 @@ SLANet+ 输入表格图像，输出 HTML 风格的结构标记，以及结构分
 
 运行环境为 DGX Spark 的 aarch64 CPU、2 个 PyTorch 线程，PyTorch 2.14.0+cu130、Transformers 5.17.0。计时仅覆盖模型首次前向，不包括加载、预处理和后处理。完整结构与原始数值见 [原图结果](results/uncropped.json)和[裁剪结果](results/cropped.json)。权重 `model.safetensors` 的 SHA-256 为 `4455fa2a535b80738e0e0af2ca899f719efb8d6e1c7e7209cc5126f81607bf06`；记录未保存模型仓库修订号，其他模型文件与软件版本变化可能影响复现。
 
+在本实验目录运行 `python scripts/audit_results.py`，可以把两份历史结果的 HTML 标记解析为逐行单元格及合并跨度，并校验公开原图与原图记录的文件哈希。它只复核已保存的结构和数值，不重新运行模型，也不提供真实文档准确率。
+
 ## 复现
 
 准备 Python 环境与 `torch`、`transformers`、`Pillow`，下载 [SLANet+ 权重](https://huggingface.co/PaddlePaddle/SLANet_plus_safetensors)到本地。脚本使用 Linux 的 `/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf` 绘制输入；字体或 Pillow 版本不同可能产生不同图像。结果写到仓库外的新目录，已存在时脚本拒绝覆盖。

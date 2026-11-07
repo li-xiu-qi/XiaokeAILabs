@@ -25,6 +25,8 @@ The selected region changed the output for **this one sample**; it does not esta
 
 The recorded run used an aarch64 CPU on DGX Spark, two PyTorch threads, PyTorch 2.14.0+cu130 and Transformers 5.17.0. Timing excludes model loading, preprocessing and postprocessing. See the [full-image result](results/uncropped.json) and [crop result](results/cropped.json). The `model.safetensors` SHA-256 is `4455fa2a535b80738e0e0af2ca899f719efb8d6e1c7e7209cc5126f81607bf06`; the model repository revision was not recorded, and changes to other model files or software can affect reproduction.
 
+From this experiment directory, run `python scripts/audit_results.py` to parse the saved HTML tokens into rows, cells and spans and check the published full-image file hash. It inspects saved structures and numbers; it does not rerun the model or measure accuracy on real documents.
+
 ## Reproduce
 
 Install Python, `torch`, `transformers` and `Pillow`, then download [SLANet+](https://huggingface.co/PaddlePaddle/SLANet_plus_safetensors) to a local directory. The script draws the image using Linux font `/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf`; a different font or Pillow version may change the input. Each output must be a new directory; the script refuses to overwrite an existing one.
