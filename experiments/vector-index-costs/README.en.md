@@ -22,7 +22,7 @@ An existing record identifies its inputs as normalized 384-dimensional vectors f
 | SQ8 | 0.9948 | 0.8191 |
 | PQ, m=32, 8 bits | 0.6200 | 0.1334 |
 
-Larger search ranges improved recall in this run; HNSW at efSearch=64 was slower than Flat. Timings vary with load, and latency at different recall levels is not a quality-matched ranking. The source vector file, encoder script and model revision are unavailable, so this historical measurement cannot be independently reconstructed from scratch. IVF training also used fewer vectors than Faiss recommends. See the [record and detailed limits](docs/文本向量索引对照.md).
+Configurations with larger search settings had higher recall in this run; each setting used a separately built index, so the differences cannot be attributed solely to the search parameter. HNSW at efSearch=64 was slower than Flat. Timings vary with load, and latency at different recall levels is not a quality-matched ranking. The source vector file, encoder script and model revision are unavailable, so this historical measurement cannot be independently reconstructed from scratch. IVF training also used fewer vectors than Faiss recommends. See the [record and detailed limits](docs/文本向量索引对照.md).
 
 ## Search paths and cost
 

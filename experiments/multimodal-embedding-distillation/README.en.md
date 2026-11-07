@@ -63,7 +63,7 @@ Preparation selects and audits the images, writing private pairs to `WORK`. The 
 
 The student rank lists represent pairs by array position. Because the public records contain no query IDs or verifiable matching fingerprints, the interval relies on the original ordering and the cross-condition alignment cannot be independently established from this file.
 
-`WORK` must be a new, nonexistent directory. Teacher vectors are bound to the SHA-256 of the exact sample manifest, and student training checks that binding and vector counts so reordered samples cannot silently use old teacher targets. Use a fresh work directory for a rerun; vectors created by older scripts do not contain the binding and must be regenerated.
+`WORK` must be a new, nonexistent directory. Teacher vectors are bound to the SHA-256 of the exact sample manifest, and student training checks that binding and vector counts so reordered samples cannot silently use old teacher targets. At the start of both teacher and student stages, image files are checked against the SHA-256 recorded at preparation; modified or replaced images cause an error. Keep the files unchanged during execution. These checks do not verify model weights, image provenance or near duplicates. Use a fresh work directory for a rerun; vectors created by older scripts do not contain the binding and must be regenerated.
 
 ## Public script reproduction
 

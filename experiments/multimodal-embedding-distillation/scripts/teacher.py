@@ -9,6 +9,7 @@ import numpy as np
 import torch
 from PIL import Image
 from sentence_transformers import SentenceTransformer
+from validate_binding import validate_images
 
 
 def check_memory():
@@ -25,6 +26,7 @@ def main():
     args = parser.parse_args()
     sample_bytes = (args.workdir / 'samples-private.json').read_bytes()
     data = json.loads(sample_bytes)
+    validate_images(args.images, data)
     if (args.workdir / 'teacher-private.npz').exists() or (args.workdir / 'teacher-summary.json').exists():
         raise FileExistsError('teacher outputs already exist; use a fresh workdir')
     start = time.perf_counter()

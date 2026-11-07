@@ -5,7 +5,7 @@ import torch
 import torch.nn.functional as F
 from PIL import Image
 from transformers import CLIPModel, AutoProcessor
-from validate_binding import validate_teacher_binding
+from validate_binding import validate_images, validate_teacher_binding
 
 def check():
     for s in open('/proc/meminfo'):
@@ -20,6 +20,7 @@ args=parser.parse_args()
 root=args.workdir
 imgroot=args.images
 data=json.loads((root/'samples-private.json').read_text(encoding='utf8'))
+validate_images(imgroot, data)
 teacher=np.load(root/'teacher-private.npz')
 validate_teacher_binding(root/'samples-private.json', data, teacher)
 if any((root/name).exists() for name in ('model-supervised', 'model-distilled', 'student-results.json')):
