@@ -4,6 +4,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from sentence_transformers import SentenceTransformer
+from validate_candidates import validate_candidate_rows
 
 ROOT = DATA = POOLS = TEACHER = STUDENT = None
 DEVICE = 'cuda'
@@ -36,14 +37,12 @@ def data(smoke):
     docs = {x['_id']: (x.get('title','') + ' ' + x['text']).strip() for x in lines(DATA / 'corpus.jsonl')}
     queries = {x['_id']: x['text'] for x in lines(DATA / 'queries.jsonl')}
     pools = json.loads(POOLS.read_text(encoding='utf8'))
-    assert set(pools['train']).isdisjoint(pools['test'])
+    if set(pools['train']) & set(pools['test']):
+        raise ValueError('training and test pools contain overlapping query IDs')
     ids = random.Random(SEED).sample(sorted(pools['train']), 128)
     train = [{'id': q, 'candidates': [pools['train'][q]['relevant'][0]] + pools['train'][q]['unjudged'][:3]} for q in ids]
     test = [{'id': q, 'candidates': [p[0] for p in row['pool']], 'relevant': row['relevant']} for q, row in pools['test'].items()]
-    assert all(len(x['candidates']) == 4 and len(set(x['candidates'])) == 4 for x in train)
-    assert all(len(x['candidates']) == 30 for x in test)
-    for row in train + test:
-        assert row['id'] in queries and all(d in docs for d in row['candidates'])
+    validate_candidate_rows(train, test, queries, docs)
     return docs, queries, train[:2] if smoke else train, test[:2] if smoke else test
 
 def embed(model, texts, batch, prompt=''):

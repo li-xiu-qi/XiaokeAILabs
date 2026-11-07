@@ -66,4 +66,6 @@ python scripts/train.py --stage student --data "$DATA" --pools "$POOLS" --out ou
 
 Add `--smoke` to both commands for two queries and two training steps; add `--device cpu` for a CPU pipeline check. Both modes still require Linux `/proc/meminfo` and the memory guard. The teacher stage saves scores; the student stage evaluates the baseline, supervised and distilled models. The stages check data and pool hashes, model paths and completion of teacher outputs. A model changed in place is not detected by a path check: independently verify model revisions and weights. Hardware, dependencies and randomness can affect results.
 
+The training script also checks that training and test query IDs do not overlap, each query's candidate documents are unique and present, and test relevance documents exist. These checks do not validate the relevance annotations themselves.
+
 The change to reset CUDA peak-memory statistics for each branch has not been rerun on a GPU; it does not retrospectively validate historical peak measurements.
