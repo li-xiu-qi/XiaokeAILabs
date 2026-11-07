@@ -11,7 +11,7 @@
 - [Embedding 蒸馏](experiments/embedding-distillation/README.md)：用大模型分数训练小型向量模型；提供候选池准备脚本。
 - [重排序蒸馏](experiments/reranker-distillation/README.md)：对照监督训练与教师分数蒸馏，了解固定候选上的排序变化。
 - [ColBERT 蒸馏](experiments/colbert-distillation/README.md)：比较教师分数蒸馏与标签监督；本次蒸馏未超过监督基线。
-- [视觉文档多向量检索](experiments/visual-multivector-retrieval/README.md)：文档页检索基线，以及合成页面上的监督微调和蒸馏对照。
+- [视觉文档多向量检索](experiments/visual-multivector-retrieval/README.md)：文档页检索基线及合成页面上的微调对照；本次未观察到蒸馏收益。
 - [多模态 Embedding 蒸馏](experiments/multimodal-embedding-distillation/README.md)：探索图文检索教师与轻量学生之间的知识迁移。
 - [多模态重排序](experiments/multimodal-reranking/README.md)：探索图文候选的重排序，并查看匿名化评测结果。
 - [GUI 定位微调](experiments/gui-grounding-finetuning/README.md)：训练截图与指令到坐标的映射；30 个留出样本不足以证明泛化提升。
@@ -21,16 +21,16 @@
 - [人物视频微调与排障](experiments/wan22-video-diagnostics/README.md)：检查视频基模、种子和 LoRA 生成结果；小规模留出评估未证明学会目标角色。
 - [向量数据库基准](experiments/vector-db-benchmark/README.md)：历史数据缺少原始结果，不用于产品排名。
 - [向量索引成本](experiments/vector-index-costs/README.md)：比较 Flat、IVF、HNSW 与量化索引的召回、耗时和空间。
-- [语言模型 JEPA 训练通路](experiments/language-jepa/README.md)：在小规模加法题上对照原模型、LoRA 和 JEPA，结果不证明能力提升。
-- [扩散语言模型速度对照](experiments/diffusion-language-models/README.md)：在三道问题上比较两种生成路径；输出长度与质量不同。
-- [GB10 单槽与八槽推理](experiments/gb10-inference/qwen36-35b-ab/README.md)：同一模型和引擎下比较短请求的吞吐与完成时间。
+- [语言模型 JEPA 训练通路](experiments/language-jepa/README.md)：小规模加法对照中，40 道测试题有 21 道与训练题交换顺序后等价；未证明能力提升。
+- [扩散语言模型速度对照](experiments/diffusion-language-models/README.md)：在三道问题上比较生成路径；输出长度和内容不同，未评估输出质量。
+- [GB10 单槽与八槽推理](experiments/gb10-inference/qwen36-35b-ab/README.md)：同一模型和引擎下比较短请求的吞吐与完成时间；每档仅两轮。
 - [LLM 推理性能](experiments/llm-inference-perf/README.md)：模型与推理配置的性能分析。
 - [语言模型量化](experiments/llm-mechanics/quantization/README.md)：对照权重体积、困惑度与 CPU 速度；BF16 路径性能异常。
 - [LLM 机制](experiments/llm-mechanics/README.md)：通过示例理解生成机制。
 - [Tokenizer 原理](experiments/tokenizer-mechanics/README.md)：从字节级 BPE 到真实编码与 token 计费。
 - [KV Cache 原理](experiments/llm-mechanics/kv_cache/README.md)：对照缓存与全前缀计算的数值结果。
 - [推理成本模型](experiments/inference-cost-models/README.md)：内存算例与理论模型，性能估算尚未经独立验证。
-- [数据结构成本](experiments/data-structure-costs/README.md)：分析数据结构和数据格式的成本。
+- [数据结构成本](experiments/data-structure-costs/README.md)：用教学模型探索索引与存储；历史格式记录不能作为选型依据。
 - [人像抠像](experiments/portrait-matting/README.md)：评估 30 张单帧照片的主体、边界与推理时间；不能代表视频性能。
 - [表格结构识别](experiments/table-structure-recognition/README.md)：用一张合成表格观察裁剪与结构预测，不涵盖文字识别。
 - [文字检测与识别](experiments/paddle-ocr-detection-recognition/README.md)：将文字检测框交给识别模型；两阶段结果只覆盖一张合成表格。

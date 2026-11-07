@@ -1,6 +1,6 @@
 # XiaokeAILabs: AI Engineering Experiments
 
-[中文](README.md) · [Experiment website](https://li-xiu-qi.github.io/XiaokeAILabs/)
+[中文](README.md) · [Experiment website](https://li-xiu-qi.github.io/XiaokeAILabs/index.en.html)
 
 From model training and retrieval to multimodal systems and inference deployment, we use inspectable methods, code, and results to explain engineering trade-offs. Tutorials, underlying principles, measurements, and their limits help readers decide what applies and test it on their own tasks. This open-source project continues to evolve.
 
@@ -11,26 +11,26 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Embedding distillation](experiments/embedding-distillation/README.en.md): Transfer teacher scores to a smaller embedding model; candidate preparation uses the shared SciFact tool.
 - [Reranker distillation](experiments/reranker-distillation/README.en.md): Compare supervised training and score distillation on a fixed candidate pool.
 - [ColBERT distillation](experiments/colbert-distillation/README.en.md): Compare score distillation with supervised learning; distillation did not beat the supervised baseline.
-- [Visual multi-vector document retrieval](experiments/visual-multivector-retrieval/README.en.md): A page-retrieval baseline plus supervised fine-tuning and distillation comparisons on synthetic pages.
+- [Visual multi-vector document retrieval](experiments/visual-multivector-retrieval/README.en.md): A page-retrieval baseline and synthetic-page training comparisons; this run showed no distillation gain.
 - [Multimodal embedding distillation](experiments/multimodal-embedding-distillation/README.en.md): Explore knowledge transfer from a vision-language retrieval teacher to a compact student.
 - [Multimodal reranking](experiments/multimodal-reranking/README.en.md): Explore reranking image-text candidates with anonymized evaluation results.
 - [GUI grounding fine-tuning](experiments/gui-grounding-finetuning/README.en.md): Train screenshot-and-instruction grounding; 30 held-out samples do not establish generalization gains.
-- [Video generation trained on teacher samples](experiments/video-generation-distillation/README.en.md): Four initial held-out videos and eight follow-up student pairs show changes, but do not establish quality gains. The six training samples were selected after generation; the follow-up used one AI reviewer of sampled frames.
+- [Video generation trained on teacher samples](experiments/video-generation-distillation/README.en.md): Four initial held-out student pairs and eight follow-up pairs show changes, but do not establish quality gains. The six training samples were selected after generation; the follow-up used one AI reviewer of sampled frames.
 - [Image generation with synthetic training data](experiments/image-generation-distillation/README.en.md): Train a student LoRA on teacher-generated data and compare it with student-generated training data. One AI thumbnail reviewer found no teacher-data advantage in the small camera follow-up; generation pipelines differed. See the [paired analysis](experiments/image-generation-distillation/PAIRED-ANALYSIS.md#english) for an exploratory category breakdown and its limits.
 - [Identity image fine-tuning](experiments/image-finetune/README.en.md): Train an identity LoRA; the historical base and adapted outputs use different resolutions and are not directly comparable.
 - [Character video fine-tuning and diagnostics](experiments/wan22-video-diagnostics/README.en.md): Examine base generation, seeds, and LoRA outputs; a small held-out evaluation does not establish that the target character was learned.
 - [Vector database benchmark](experiments/vector-db-benchmark/README.en.md): Historical records lack raw results and do not support product rankings.
 - [Vector index costs](experiments/vector-index-costs/README.en.md): Compare recall, time and storage across Flat, IVF, HNSW and quantized indexes.
-- [Language JEPA training](experiments/language-jepa/README.en.md): A toy arithmetic comparison of the original model, LoRA, and JEPA; not evidence of improvement.
+- [Language JEPA training](experiments/language-jepa/README.en.md): In the toy arithmetic test, 21 of 40 problems match training problems with reversed operands; no improvement established.
 - [Diffusion language model speed](experiments/diffusion-language-models/README.en.md): Compare generation paths on three prompts with unequal output lengths and unmeasured quality.
-- [GB10 inference slots](experiments/gb10-inference/qwen36-35b-ab/README.en.md): Compare throughput and completion times for one versus eight slots on the same model and engine.
+- [GB10 inference slots](experiments/gb10-inference/qwen36-35b-ab/README.en.md): Compare throughput and completion times for one versus eight slots on the same model and engine; two runs per setting.
 - [LLM inference performance](experiments/llm-inference-perf/README.en.md): Performance analysis across models and inference configurations.
 - [Language model quantization](experiments/llm-mechanics/quantization/README.en.md): Compare model size, perplexity, and CPU speed; the BF16 path performed unusually slowly.
 - [LLM mechanics](experiments/llm-mechanics/README.en.md): Understand text generation through examples.
 - [Tokenizer mechanics](experiments/tokenizer-mechanics/README.en.md): Explore byte-level BPE, real encodings, and token costs.
 - [KV cache mechanics](experiments/llm-mechanics/kv_cache/README.en.md): Compare cached and full-prefix numerical results.
 - [Inference cost models](experiments/inference-cost-models/README.en.md): Memory examples and theoretical models; performance estimates have not been independently validated.
-- [Data structure costs](experiments/data-structure-costs/README.en.md): Analyze the costs of data structures and formats.
+- [Data structure costs](experiments/data-structure-costs/README.en.md): Explore teaching models of indexes and storage; historical format records cannot support selection.
 - [Portrait matting](experiments/portrait-matting/README.en.md): Evaluate subject regions, boundaries, and forward time on 30 still images; results do not establish video performance.
 - [Table structure recognition](experiments/table-structure-recognition/README.en.md): Examine cropping and structure predictions on one synthetic table; text recognition is out of scope.
 - [Text detection and recognition](experiments/paddle-ocr-detection-recognition/README.en.md): Pass detected text regions to a recognizer; the two-stage result covers one synthetic table.
