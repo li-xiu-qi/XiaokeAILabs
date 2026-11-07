@@ -48,6 +48,8 @@ bash scripts/run_ab_compare.sh
 ```
 
 数据下载和默认模型下载均未锁定 revision；重跑前应记录上游版本与文件哈希。脚本默认使用 `$HOME/laya-rlcd-env/bin/python`，可设置 `PYTHON` 指向已有环境；在 Linux 上按 `/proc/meminfo` 检查可用内存，默认至少 50 GiB，可通过 `MIN_AVAILABLE_GIB` 调整。该检查只在启动前执行，不是训练期间的持续内存监控。为避免覆盖，已有 `runs/rlcd`、`runs/soft-ce` 或对应日志时脚本会退出。上游当前源码和历史运行的精确提交未核实，上述命令是复现路径，不保证数值完全一致。
+
+重跑前可用 `python scripts/audit_splits.py TRAIN.jsonl TEST.jsonl` 统计训练和测试中完全相同的案例及状态；训练入口也会执行该检查并拒绝完整案例重复。相同状态数量需结合数据含义检查；此方法不能识别改写或近重复案例，也不能核实历史运行的数据。
 ## 文件
 
 ```

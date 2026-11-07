@@ -16,6 +16,7 @@
 """
 import argparse
 import os
+from audit_splits import audit
 
 from huggingface_hub import snapshot_download
 
@@ -39,6 +40,12 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--device", default="auto", choices=["auto", "cpu", "cuda", "mps"])
     args = ap.parse_args()
+
+    if args.eval_data:
+        split_audit = audit(args.data, args.eval_data)
+        print(f"Exact split overlap audit: {split_audit}", flush=True)
+        if split_audit['shared_exact_cases']:
+            ap.error('identical cases found in training and evaluation data')
 
     model_dir = args.model_dir
     if model_dir is None:
