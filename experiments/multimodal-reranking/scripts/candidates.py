@@ -1,6 +1,5 @@
 """Build BGE top-5 candidates from a 100-image pool; data remains local."""
 import argparse
-import ast
 import csv
 import json
 import random
@@ -8,7 +7,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 from sentence_transformers import SentenceTransformer
-from validate_inputs import validate_sample, validate_norms
+from validate_inputs import validate_sample, validate_norms, first_caption
 
 p = argparse.ArgumentParser()
 p.add_argument('--annotations', type=Path, required=True)
@@ -19,7 +18,7 @@ a = p.parse_args()
 with a.annotations.open(encoding='utf-8', newline='') as f:
     rows = random.Random(20261107).sample([r for r in csv.DictReader(f) if r['split'] == 'test'], 100)
 validate_sample(rows)
-queries = [ast.literal_eval(row['raw'])[0] for row in rows]
+queries = [first_caption(row['raw']) for row in rows]
 model = SentenceTransformer(a.model, trust_remote_code=True)
 first = model[0]
 mods = list(getattr(first, 'modalities', ['text']))
