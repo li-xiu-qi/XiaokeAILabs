@@ -55,4 +55,8 @@ python scripts/score_generations.py --size 512 scan --run-dir /path/to/checkpoin
 
 The evaluation script now explicitly configures DPM-Solver++; historical results predate the refactor and were not regenerated with this correction. To measure the effect of fine-tuning, regenerate baseline and LoRA outputs with matched resolution, scheduler, seeds and prompt template, and report all outputs including detection failures.
 
-`build_dataset.py` exports images and captions; `check_dataset.py` checks the samples; `train_lora.sh` launches training; and `score_generations.py` generates and scores images. Check the individual licenses of the training toolkit, models and evaluation weights.
+`build_dataset.py` refuses to overwrite an existing identity directory; choose a new `FACE_DATA_DIR` for another export. `check_dataset.py` stops if a training or test face is not detected or no negative-control face can be detected. Face size, roll and sharpness are flags for manual review, not automatic failures; passing the checks does not guarantee dataset quality.
+
+`build_dataset.py` exports images and captions; `check_dataset.py` screens the samples; `train_lora.sh` writes the actual training directory as an absolute path to a temporary config and launches training; and `score_generations.py` generates and scores images. Check the individual licenses of the training toolkit, models and evaluation weights.
+
+The configuration rendering and training launcher changes have not been rerun end to end with ai-toolkit.

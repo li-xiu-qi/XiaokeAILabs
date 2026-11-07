@@ -13,9 +13,8 @@ config:
       # training; it exists only to measure face similarity.
       #
       # Why these settings:
-      #   - 512 px: the source images are 178x218, so 1024 would teach upsampling blur
-      #   - 2000 steps at 20 images = 100 epochs; a single identity needs more steps
-      #     than a style does
+      #   - 512 px: the original 178x218 images require upsampling
+      #   - 2000 steps at 20 images is approximately 100 passes with batch size 1
       #   - lr 1e-4 with no caption dropout; see face_identity_lora_regularized.yaml
       #     for the lower-lr variant that was tried to fight overfitting
       network:
@@ -29,8 +28,7 @@ config:
         max_step_saves_to_keep: 4
         push_to_hub: false
       datasets:
-        # Relative to this file's parent directory; override with a symlink or by
-        # pointing folder_path at $FACE_DATA_DIR/celeb_14/train directly.
+        # The launcher replaces this placeholder with an absolute dataset path.
         - folder_path: "../data/celeb_14/train"
           caption_ext: "txt"
           caption_dropout_rate: 0.0

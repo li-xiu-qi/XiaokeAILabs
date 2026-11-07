@@ -99,6 +99,11 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    destinations = [DATA_DIR / f"celeb_{args.celeb_id}"]
+    if args.also_negative:
+        destinations.append(DATA_DIR / f"celeb_{NEGATIVE_ID}")
+    if len(set(destinations)) != len(destinations) or any(p.exists() for p in destinations):
+        raise SystemExit("output identity directory already exists or target equals negative; choose a new FACE_DATA_DIR")
     export(args.parquet, args.celeb_id, DATA_DIR)
     if args.also_negative:
         export(args.parquet, NEGATIVE_ID, DATA_DIR)

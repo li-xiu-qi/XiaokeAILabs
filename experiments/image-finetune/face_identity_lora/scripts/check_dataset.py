@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Check an exported identity before training: four independent gates.
+"""Check an exported identity before training with automated screening.
 
-Upstream labels are not trusted. Each gate can fail the dataset on its own, and
-all of them run before any GPU time is spent.
+Upstream labels are not trusted. Detection failures block the check; face-quality
+flags require manual review and are not automatically rejected.
 
     1. Identity consistency  per-image similarity to the test-set prototype;
                              flag images below mean - 2 sd (possible mislabel)
@@ -13,8 +13,7 @@ all of them run before any GPU time is spent.
     4. Face quality          detection confidence, face-to-frame ratio,
                              eye-line roll, Laplacian sharpness
 
-Writes qc.json under the output directory and exits non-zero if any gate fails,
-so it can gate a training run from a shell chain.
+Writes qc.json under the output directory and exits non-zero on blocking checks.
 
     python scripts/check_dataset.py
 """
@@ -108,6 +107,8 @@ def load_split(encoder: FaceEncoder, split: str) -> list[dict]:
         else:
             rows.append(row)
     print(f"{split}: {len(rows)}/{len(files)} images with a detectable face")
+    if len(rows) != len(files):
+        raise SystemExit(f'{split}: face detection failed for {len(files) - len(rows)} image(s); review them before training')
     return rows
 
 
@@ -133,8 +134,7 @@ def main() -> None:
         if row is not None
     ]
     if not negative_rows:
-        print(f"[warn] no negative-control images in {negative_dir}; check 2 is skipped")
-        negative_proto = None
+        raise SystemExit(f"no detectable negative-control faces in {negative_dir}; export and review negative samples")
     else:
         negative_proto = np.mean([r["emb"] for r in negative_rows], axis=0)
         negative_proto /= np.linalg.norm(negative_proto)
@@ -203,7 +203,7 @@ def main() -> None:
             flags.append("small face")
             flagged["small"].append(row["file"])
         if row["roll"] > MAX_ROLL_DEGREES:
-            flags.append("profile")
+            flags.append("roll")
             flagged["profile"].append(row["file"])
         if row["sharpness"] < MIN_SHARPNESS:
             flags.append("blurry")
@@ -249,7 +249,7 @@ def main() -> None:
     if blockers:
         print("VERDICT: FAIL — " + "; ".join(blockers))
         raise SystemExit(1)
-    print("VERDICT: PASS — safe to train")
+    print("VERDICT: automated checks passed; review face-quality flags before training")
 
 
 if __name__ == "__main__":

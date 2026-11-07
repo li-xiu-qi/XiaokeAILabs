@@ -7,10 +7,9 @@
 # Expects:
 #   - ai-toolkit checked out somewhere; set AI_TOOLKIT to its run.py
 #   - training images at $FACE_DATA_DIR/celeb_14/train/*.jpg with matching .txt captions
-#   - a base model at $SDXL_BASE (local path or HF repo id)
+#   - a base model configured in the YAML (local path or HF repo id)
 #
-# Nothing here is machine-specific: every path comes from an environment
-# variable, and the config reads the same variables.
+# The launcher renders the dataset path into a temporary config.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -51,4 +50,7 @@ if [ "${SKIP_CHECK:-0}" != "1" ]; then
 fi
 
 echo "=== launching $CONFIG ==="
-"$PYTHON" "$AI_TOOLKIT" "$CONFIG"
+RENDERED_CONFIG="$(mktemp "${TMPDIR:-/tmp}/face-lora-config.XXXXXXXX.yaml")"
+trap 'rm -f "$RENDERED_CONFIG"' EXIT
+"$PYTHON" scripts/render_config.py "$CONFIG" "$RENDERED_CONFIG" "$TRAIN_DIR"
+"$PYTHON" "$AI_TOOLKIT" "$RENDERED_CONFIG"

@@ -55,4 +55,9 @@ python scripts/score_generations.py --size 512 scan --run-dir /path/to/checkpoin
 
 评估脚本现在显式配置 DPM-Solver++；历史结果在脚本重构前生成，本次未用修正后的脚本重新生成旧数据。要评估微调效果，应重新运行同尺寸、采样器、随机种子和提示词模板匹配的底模与 LoRA 对照，并报告所有生成图片及检测失败数。
 
-主要脚本：`build_dataset.py` 导出数据与 caption，`check_dataset.py` 检查样本，`train_lora.sh` 调用训练器，`score_generations.py` 生成并评估。训练器、模型和评估权重的使用条件应分别查看上游许可。
+`build_dataset.py` 不覆盖已有身份目录；重跑请设置新的 `FACE_DATA_DIR`。`check_dataset.py` 遇到训练或测试图人脸未检出、缺少可检测的负对照时会中止；面部大小、旋转和清晰度是供人工检查的提示，不会自动判为失败。自动检查通过不保证数据质量。
+
+主要脚本：`build_dataset.py` 导出数据与 caption，`check_dataset.py` 检查样本，`train_lora.sh` 将实际训练数据的绝对路径写入临时配置后调用训练器，`score_generations.py` 生成并评估。训练器、模型和评估权重的使用条件应分别查看上游许可。
+
+
+上述配置渲染和训练入口的修改尚未用 ai-toolkit 端到端重跑。

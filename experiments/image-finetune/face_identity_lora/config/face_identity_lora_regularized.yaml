@@ -6,17 +6,16 @@ config:
     - type: 'sd_trainer'
       training_folder: "output/face_identity_lora_regularized"
       device: cuda:0
-      # Second run: same data, three changes aimed at the overfitting seen after
-      # step 1000 in the first run. All three reduce how hard the LoRA memorises.
+      # Second run: same data, three changes intended to test regularization.
+      # The small checkpoint scan cannot establish that overfitting occurred.
       #
       #   steps 2000 -> 800          stop before the decline, rather than after it
       #   lr 1e-4 -> 5e-5            smaller steps, less memorisation per image
       #   caption dropout 0 -> 0.15  force the model to rely on the trigger token
       #                              less, which trades identity for prompt control
       #
-      # Result: 0.2623 vs 0.3232, both scanned at 512px. Lower, not higher — the
-      # ceiling is the source resolution, not the training schedule. Kept as a
-      # documented negative result.
+      # Recorded means were 0.2623 vs 0.3232 at 512px; the evidence does not
+      # establish which change caused the difference or what limits quality.
       network:
         type: "lora"
         linear: 32
