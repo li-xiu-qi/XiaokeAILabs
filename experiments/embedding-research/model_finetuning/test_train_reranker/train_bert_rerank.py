@@ -11,6 +11,7 @@ from accelerate import Accelerator
 from accelerate.utils import set_seed
 import matplotlib.pyplot as plt
 from collections import defaultdict
+from training_schedule import normalized_label, optimizer_steps_per_run
 
 # 为了避免 Tokenizer 的并行处理可能引发的问题，这里设置为 false
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -137,7 +138,7 @@ class PointwiseRankerDataset(Dataset):
                 query = item["query"].strip()
                 text = item["content"].strip()
                 # 将离散的 label 映射到 0-1 之间
-                label = self._map_label(item.get("label", 0))
+                label = normalized_label(item, self.min_label, self.max_label)
                 label_distribution[f"{label:.2f}"] += 1
                 data.append([query, text, label])
         
@@ -149,12 +150,6 @@ class PointwiseRankerDataset(Dataset):
             
         return data
     
-    def _map_label(self, label):
-        # 如果 label 范围不是 0-1，则进行归一化
-        if self.max_label == self.min_label:
-            return float(label)
-        return (label - self.min_label) / (self.max_label - self.min_label)
-
     def __len__(self):
         return len(self.data)
 
@@ -228,7 +223,10 @@ def main():
 
     # --- 设置优化器和学习率调度器 ---
     optimizer = torch.optim.AdamW(model.parameters(), lr=float(args["lr"]), weight_decay=0.01)
-    total_steps = (len(train_dataloader) * args["epochs"]) // accelerator.gradient_accumulation_steps
+    # Accelerate 同步每个 epoch 的最后一个不完整累积组。
+    total_steps = optimizer_steps_per_run(
+        len(train_dataloader), accelerator.gradient_accumulation_steps, args["epochs"]
+    )
     num_warmup_steps = int(args["warmup_proportion"] * total_steps)
     
     lr_scheduler = get_cosine_schedule_with_warmup(
@@ -263,7 +261,7 @@ def main():
             avg_loss = accelerator.gather(loss).mean().item()
             loss_list.append(avg_loss)
 
-            if (step + 1) % accelerator.gradient_accumulation_steps == 0:
+            if accelerator.sync_gradients:
                 progress_bar.set_description(f"Epoch {epoch+1}, Loss: {avg_loss:.4f}, LR: {lr_scheduler.get_last_lr()[0]:.6f}")
                 progress_bar.update(1)
     

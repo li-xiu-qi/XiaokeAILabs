@@ -27,7 +27,7 @@ pip install wandb
 {"query": "问题文本", "content": "文档文本", "label": 1}
 ```
 
-`label` 建议在 [0,1] 区间；脚本内部支持线性归一化。
+`label` 必须显式提供且为有限数。默认范围是 [0,1]；使用其他标签范围时，可在构造数据集时设置递增的 `min_label` 和 `max_label`，脚本线性归一化后再计算损失。缺失或越界标签会报错，不会默认为负例。
 
 ## 快速开始
 
@@ -45,6 +45,10 @@ python train_bert_rerank.py
 3) 输出：
 
 - 模型保存于 `args["output_dir"]/final_model/`
+
+脚本只训练，未包含独立验证集或检索排序评估；训练损失和示例输出不能证明微调提升了排序效果。训练前按实际目标准备留出查询与候选文档，并在固定候选上比较微调前后的排名。
+
+默认配置为 198 条示例、每批 50 条、梯度累积 8、训练 30 轮。每轮 4 个批次，Accelerate 在每轮末尾同步不完整累积组，因此单进程共有 30 次优化器更新，而不是将跨轮的批次数相加后得到 15 次。学习率调度与进度条按实际更新次数计算。Accelerate 1.14.0 的单进程 CPU 简化循环验证了这一同步行为；依赖未锁定版本，真实模型训练和多进程尚未验证。
 
 ## 可复现性与确定性运行
 
@@ -86,9 +90,9 @@ python train_bert_rerank.py
 - `train_dataset`: 数据路径（JSONL）
 - `output_dir`: 输出目录
 - `max_len`: 最大序列长度（默认 512；显存紧张可设 384/256）
-- `epochs`: 训练轮数（默认 3）
+- `epochs`: 训练轮数（默认 30）
 - `lr`: 学习率（默认 1e-5，适合在已精调模型上做二次微调）
-- `batch_size`: 批大小（默认 2，大模型需小 batch,如果你的显存够大可以设置更大的batch size）
+- `batch_size`: 批大小（默认 50；显存紧张时应降低）
 - `gradient_accumulation_steps`: 梯度累积步数（默认 8）
 - `warmup_proportion`: 预热比例（默认 0.1）
 - `mixed_precision`: `fp16` 或 `bf16`（硬件支持优先 `bf16`）
@@ -119,7 +123,7 @@ tokens = {k: v.to(device) for k, v in tokens.items()}
 with torch.no_grad():
     out = model(tokens)               # out['logits'] shape: [1, 1]
     score = out["logits"].squeeze(-1) # 未过 sigmoid 的相关性分数
-    probs = torch.sigmoid(score)       # 转为概率（0-1）
+    probs = torch.sigmoid(score)       # 映射到 0–1，不代表已校准的相关概率
 
 print(score.tolist())
 print(probs.tolist())
@@ -133,6 +137,8 @@ print(probs.tolist())
 ```
 
 ## 训练模型的运行示例输出
+
+以下为旧运行记录；其中 15 步使用了旧调度步数计算，不能作为当前脚本的更新次数或效果证据。
 
 ```bash
 (finetune_rerank) xiaoke@DESKTOP-112CDUC:~/projects/rerank_finetuing$ CUBLAS_WORKSPACE_CONFIG=:16:8 PYTHONHASHSEED=42 python train_bert_rerank.py
