@@ -21,6 +21,7 @@
 """
 from dataclasses import dataclass
 import math
+import numbers
 
 
 @dataclass
@@ -63,8 +64,10 @@ class VectorIndexMetrics:
 
 def compute_storage(spec: VectorIndexSpec) -> dict:
     """各索引的存储字节（闭式解）"""
-    if spec.n <= 0 or spec.d <= 0 or spec.pq_m <= 0 or spec.pq_nbits <= 0:
-        raise ValueError("n, d, pq_m and pq_nbits must be positive")
+    integer_fields = ("n", "d", "pq_m", "pq_nbits", "ivf_nlist", "hnsw_m")
+    if any(isinstance(getattr(spec, name), bool) or not isinstance(getattr(spec, name), numbers.Integral)
+           or getattr(spec, name) <= 0 for name in integer_fields):
+        raise ValueError("n, d, pq_m, pq_nbits, ivf_nlist and hnsw_m must be positive integers")
     if spec.d % spec.pq_m:
         raise ValueError("d must be divisible by pq_m")
     raw = spec.n * spec.d * 4  # float32 基线
@@ -109,12 +112,14 @@ def compute_latency(spec: VectorIndexSpec) -> dict:
 
     HNSW 访问数仅为示意假设，不是复杂度保证。实际延迟与召回需实测。
     """
-    if spec.n <= 0 or spec.d <= 0 or spec.ivf_nlist <= 0 or spec.ivf_nprobe <= 0 or spec.hnsw_ef <= 0:
-        raise ValueError("n, d, ivf_nlist, ivf_nprobe and hnsw_ef must be positive")
+    integer_fields = ("n", "d", "ivf_nlist", "ivf_nprobe", "hnsw_ef", "compute_q_dim")
+    if any(isinstance(getattr(spec, name), bool) or not isinstance(getattr(spec, name), numbers.Integral)
+           or getattr(spec, name) <= 0 for name in integer_fields):
+        raise ValueError("n, d, ivf_nlist, ivf_nprobe, hnsw_ef and compute_q_dim must be positive integers")
     if spec.ivf_nprobe > spec.ivf_nlist:
         raise ValueError("ivf_nprobe must not exceed ivf_nlist")
-    if spec.compute_q <= 0 or spec.compute_q_dim <= 0:
-        raise ValueError("compute_q and compute_q_dim must be positive")
+    if isinstance(spec.compute_q, bool) or not isinstance(spec.compute_q, numbers.Real) or not math.isfinite(spec.compute_q) or spec.compute_q <= 0:
+        raise ValueError("compute_q must be finite and positive")
     flops_per_s = spec.compute_q * 2 * spec.compute_q_dim
 
     # FLAT：访问 n 个向量，每次 2d 浮点运算
