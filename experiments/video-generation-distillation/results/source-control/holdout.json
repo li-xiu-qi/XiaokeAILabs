@@ -1,0 +1,24 @@
+{
+  "eval": [
+    {
+      "id": "held-00",
+      "seed": 1201,
+      "prompt": "A single small droplet lands on a smooth blue pond and circular rings gently spread, fixed camera."
+    },
+    {
+      "id": "held-01",
+      "seed": 1202,
+      "prompt": "A single small droplet lands on a smooth blue pond and circular rings gently spread, fixed camera."
+    },
+    {
+      "id": "held-02",
+      "seed": 1203,
+      "prompt": "Faint expanding circles on still turquoise water in diffuse morning light, static overhead view."
+    },
+    {
+      "id": "held-03",
+      "seed": 1204,
+      "prompt": "Faint expanding circles on still turquoise water in diffuse morning light, static overhead view."
+    }
+  ]
+}

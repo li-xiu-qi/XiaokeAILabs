@@ -2,9 +2,11 @@
 import argparse
 import hashlib
 import json
+import sys
 from pathlib import Path
 import av
 import numpy as np
+from pair_contract import validate_pair
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--baseline', required=True)
@@ -17,6 +19,18 @@ lora_files = {p.name: p for p in Path(args.lora).glob('*.mp4')}
 if not baseline_files or baseline_files.keys() != lora_files.keys():
     raise SystemExit(f'Unequal or empty video sets: baseline-only={sorted(baseline_files.keys() - lora_files.keys())}; '
                      f'lora-only={sorted(lora_files.keys() - baseline_files.keys())}')
+metadata_paths = [baseline / 'generation-manifest.json', Path(args.lora) / 'generation-manifest.json']
+if all(path.is_file() for path in metadata_paths):
+    metadata = [json.loads(path.read_text(encoding='utf-8')) for path in metadata_paths]
+    validate_pair(*metadata, baseline_files.keys())
+    for manifest, files in zip(metadata, (baseline_files, lora_files)):
+        for name, path in files.items():
+            if hashlib.sha256(path.read_bytes()).hexdigest() != manifest['video_sha256'].get(path.stem):
+                raise ValueError(f'video differs from generation manifest: {path}')
+elif any(path.exists() for path in metadata_paths):
+    raise ValueError('generation metadata must be present for both conditions or neither')
+else:
+    print('Warning: no generation metadata; filenames alone do not verify matching prompt and seed.', file=sys.stderr)
 for name, a in sorted(baseline_files.items()):
     b = lora_files[name]
     sequences, item = [], {'id': a.stem}

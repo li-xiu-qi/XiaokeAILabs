@@ -1,0 +1,62 @@
+[
+  {
+    "id": "held-00",
+    "label": "A",
+    "group": "baseline"
+  },
+  {
+    "id": "held-00",
+    "label": "B",
+    "group": "student"
+  },
+  {
+    "id": "held-00",
+    "label": "C",
+    "group": "teacher"
+  },
+  {
+    "id": "held-01",
+    "label": "A",
+    "group": "baseline"
+  },
+  {
+    "id": "held-01",
+    "label": "B",
+    "group": "teacher"
+  },
+  {
+    "id": "held-01",
+    "label": "C",
+    "group": "student"
+  },
+  {
+    "id": "held-02",
+    "label": "A",
+    "group": "baseline"
+  },
+  {
+    "id": "held-02",
+    "label": "B",
+    "group": "teacher"
+  },
+  {
+    "id": "held-02",
+    "label": "C",
+    "group": "student"
+  },
+  {
+    "id": "held-03",
+    "label": "A",
+    "group": "student"
+  },
+  {
+    "id": "held-03",
+    "label": "B",
+    "group": "baseline"
+  },
+  {
+    "id": "held-03",
+    "label": "C",
+    "group": "teacher"
+  }
+]

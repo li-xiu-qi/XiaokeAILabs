@@ -1,0 +1,38 @@
+[
+  {
+    "id": "train-00",
+    "seed": 610,
+    "prompt": "Small circular ripples spread slowly on calm blue water, fixed camera.",
+    "sha256": "4b75e0852d23383e3b08f1b2ffd38419155d5af6c779527d5e20b4bb6d0268dd"
+  },
+  {
+    "id": "train-02",
+    "seed": 612,
+    "prompt": "Gentle concentric ripples expand on a quiet blue pond, fixed camera.",
+    "sha256": "7ae214dead8e33ed7c21fda1b9aaeb5e0373cf7ef2aaee824bb1e6eace5960f7"
+  },
+  {
+    "id": "train-03",
+    "seed": 613,
+    "prompt": "A small water ripple slowly expands on a calm pond, fixed camera.",
+    "sha256": "603b42ce5cb565f763ec8c5edddfd7d9bcddae55dafa1a57ff0fd8714f6fb0d4"
+  },
+  {
+    "id": "train-04",
+    "seed": 614,
+    "prompt": "Circular ripples drift outward on smooth water under soft light, fixed camera.",
+    "sha256": "15fb79f659cac9382e17415e158dbb47fa7afb42cbba2eb63aeda4df1a71381a"
+  },
+  {
+    "id": "train-06",
+    "seed": 616,
+    "prompt": "Ripples spread over a calm blue water surface, fixed camera.",
+    "sha256": "590e6b2c180bc62812fa932206b8819ced7cdf5f9fa1447e0cfaf75aa8720cb4"
+  },
+  {
+    "id": "train-07",
+    "seed": 617,
+    "prompt": "Slow concentric waves move outward on a quiet pond, fixed camera.",
+    "sha256": "a5f623fc9a13887608a8e8d9f9340b7e7b27bf79ca998d6b42f7ff5903bb3051"
+  }
+]

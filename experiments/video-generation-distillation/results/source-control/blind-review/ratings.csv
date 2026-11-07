@@ -1,0 +1,13 @@
+id,label,prompt_match_0_to_2,motion_0_to_2,visual_quality_0_to_2,notes
+held-00,A,2,cannot judge,2,"Visible droplet and spreading rings; smooth rendered appearance. Only 5 sampled frames viewed, not full playback; motion cannot be judged."
+held-00,B,2,cannot judge,1,"Rings and a droplet-like shape visible; flat synthetic surface. Only 5 sampled frames viewed, not full playback; motion cannot be judged."
+held-00,C,2,cannot judge,2,"Droplet-like shape and multiple concentric rings visible. Only 5 sampled frames viewed, not full playback; motion cannot be judged."
+held-01,A,1,cannot judge,1,"Very small central droplet/rings within mostly uniform field. Only 5 sampled frames viewed, not full playback; motion cannot be judged."
+held-01,B,1,cannot judge,1,"Very small central droplet/rings within mostly uniform field. Only 5 sampled frames viewed, not full playback; motion cannot be judged."
+held-01,C,1,cannot judge,1,"Very small central droplet/rings within mostly uniform field. Only 5 sampled frames viewed, not full playback; motion cannot be judged."
+held-02,A,2,cannot judge,2,"Visible circular ripples on turquoise water. Only 5 sampled frames viewed, not full playback; motion cannot be judged."
+held-02,B,1,cannot judge,2,"Water surface visible; rings are faint. Only 5 sampled frames viewed, not full playback; motion cannot be judged."
+held-02,C,1,cannot judge,1,"Water surface visible; rings are faint and blurry. Only 5 sampled frames viewed, not full playback; motion cannot be judged."
+held-03,A,0,cannot judge,0,"Blurry amorphous patch; circular ripples not discernible. Only 5 sampled frames viewed, not full playback; motion cannot be judged."
+held-03,B,0,cannot judge,1,"Textured water-like image, but expanding circles are not discernible. Only 5 sampled frames viewed, not full playback; motion cannot be judged."
+held-03,C,0,cannot judge,0,"Blurry field; circular ripples are not discernible. Only 5 sampled frames viewed, not full playback; motion cannot be judged."

@@ -1,0 +1,34 @@
+{
+  "train": [
+    {
+      "id": "train-00",
+      "seed": 610,
+      "prompt": "Small circular ripples spread slowly on calm blue water, fixed camera."
+    },
+    {
+      "id": "train-02",
+      "seed": 612,
+      "prompt": "Gentle concentric ripples expand on a quiet blue pond, fixed camera."
+    },
+    {
+      "id": "train-03",
+      "seed": 613,
+      "prompt": "A small water ripple slowly expands on a calm pond, fixed camera."
+    },
+    {
+      "id": "train-04",
+      "seed": 614,
+      "prompt": "Circular ripples drift outward on smooth water under soft light, fixed camera."
+    },
+    {
+      "id": "train-06",
+      "seed": 616,
+      "prompt": "Ripples spread over a calm blue water surface, fixed camera."
+    },
+    {
+      "id": "train-07",
+      "seed": 617,
+      "prompt": "Slow concentric waves move outward on a quiet pond, fixed camera."
+    }
+  ]
+}

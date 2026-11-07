@@ -9,6 +9,7 @@ import av
 import numpy as np
 import torch
 from diffusers import WanPipeline
+from pair_contract import validate_entries
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', required=True, help='Diffusers model directory or Hub ID')
@@ -23,12 +24,14 @@ parser.add_argument('--fps', type=int, default=24)
 parser.add_argument('--guidance', type=float, default=5.0)
 args = parser.parse_args()
 entries = json.loads(Path(args.manifest).read_text(encoding='utf-8'))[args.split]
+validate_entries(entries)
 out = Path(args.output)
 out.mkdir(parents=True, exist_ok=False)
 pipe = WanPipeline.from_pretrained(args.model, torch_dtype=torch.bfloat16).to('cuda')
 if args.lora:
     pipe.load_lora_weights(args.lora)
     print('active adapters:', pipe.get_active_adapters(), flush=True)
+hashes = {}
 for entry in entries:
     start = time.monotonic()
     with torch.inference_mode():
@@ -48,6 +51,12 @@ for entry in entries:
                 container.mux(packet)
         for packet in stream.encode():
             container.mux(packet)
+    hashes[entry['id']] = hashlib.sha256(path.read_bytes()).hexdigest()
     print(json.dumps({**entry, 'frames': len(frames), 'seconds': time.monotonic() - start,
-                      'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+                      'sha256': hashes[entry['id']],
                       'adapter': bool(args.lora)}), flush=True)
+(out / 'generation-manifest.json').write_text(json.dumps({
+    'model': args.model, 'split': args.split, 'adapter': bool(args.lora), 'entries': entries,
+    'size': args.size, 'frames': args.frames, 'steps': args.steps, 'fps': args.fps,
+    'guidance': args.guidance, 'video_sha256': hashes,
+}, ensure_ascii=False, indent=2), encoding='utf-8')

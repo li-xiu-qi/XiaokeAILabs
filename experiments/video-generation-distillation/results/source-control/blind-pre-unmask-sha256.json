@@ -1,0 +1,18 @@
+{
+  "blind-key.json": "9ee61737f5674fc8840d78f95d213405b50fccd86340517d837b18b862e7e3e7",
+  "ratings.csv": "2fb5a44de0779fe7db23049c1e2d1639974f3357ff602d15b1e4a3eaf81d9f3f",
+  "videos": {
+    "held-00/A.mp4": "0c7ca87de8867d61736f3e203bc93ce4fe2bb81aabbedba8fa4506bcd111f9a6",
+    "held-00/B.mp4": "84bd9f548b06156e2faec5b4fd39e8af2a5100dec8db830bcc5ea261fcb41a8f",
+    "held-00/C.mp4": "e708a8ff20c73b6773ca3dcc942b078f425e33eb6d8f1cac95a9a3a72ba5e82a",
+    "held-01/A.mp4": "e84eb639539e2768c4ee2d7ca93dd0b1d0c3e2af1908192d6b96efea52b84d3a",
+    "held-01/B.mp4": "edaacc71ef5ad6631bbd775ae664a7b6e20e02210902c92516a9351860537a81",
+    "held-01/C.mp4": "4308f3266784482faab175b6f7fbebf5b03799ff384040fe3e15d9e5cbdfb9ad",
+    "held-02/A.mp4": "0b1987103ba330029e5fd30117a1acfc4aea60fbf7f1b82baa9ffb5b08fa86e4",
+    "held-02/B.mp4": "d7aa155b6c7dceaf68c8c5480c96063da6d66bf701fc0c5ed109e0ce08b4ebde",
+    "held-02/C.mp4": "6c325f5d1e85d909c79b14bf3743de3b957df844cd5ab78543dcd7ede07f9cc8",
+    "held-03/A.mp4": "c2f58faf56b3705dfb26602785dafb3640f517432b0b09e58ed7e6058be49c11",
+    "held-03/B.mp4": "b607b60e10abe7488c9149bf997c19ac41a8c3e7976b70242ac7ba3266aa4c9a",
+    "held-03/C.mp4": "88af3ea19ceb6c712ee6d8abc55a6f2d46252c9229446d28b39c696654c93ce9"
+  }
+}

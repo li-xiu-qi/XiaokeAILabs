@@ -1,1 +1,2 @@
 * text=auto eol=lf
+experiments/video-generation-distillation/results/source-control/blind-review/ratings.csv -text whitespace=cr-at-eol

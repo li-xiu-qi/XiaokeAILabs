@@ -100,3 +100,7 @@ Pixel differences do not establish more natural motion. At 24 fps, 49 frames las
 ## Additional held-out comparison
 
 Four new water-ripple descriptions, each with two new seeds, produced eight base-versus-LoRA pairs. One AI reviewer compared anonymized sampled frames and, after unblinding, preferred LoRA in 3 pairs, the base model in 2, marked 1 tie and 2 inconclusive. The prompts are related and the reviewer did not watch complete videos, so these observations do not establish motion continuity or improved quality. See the [videos, prompts and individual review records](results/heldout-followup/README.md).
+
+## Teacher-generated versus student-generated training data
+
+We trained the same student for 200 steps on teacher-generated and self-generated videos, then compared both adapters with the base on two held-out prompts and two seeds per prompt. A sampled-frame blind review did not show the teacher-data group outperforming the base; it cannot assess motion continuity. [Read the design, videos, blinded ratings and recomputation method](results/source-control/source-control.en.md).

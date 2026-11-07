@@ -1,0 +1,80 @@
+{
+  "baseline": [
+    {
+      "id": "held-00",
+      "label": "A",
+      "prompt": 2,
+      "quality": 2
+    },
+    {
+      "id": "held-01",
+      "label": "A",
+      "prompt": 1,
+      "quality": 1
+    },
+    {
+      "id": "held-02",
+      "label": "A",
+      "prompt": 2,
+      "quality": 2
+    },
+    {
+      "id": "held-03",
+      "label": "B",
+      "prompt": 0,
+      "quality": 1
+    }
+  ],
+  "student": [
+    {
+      "id": "held-00",
+      "label": "B",
+      "prompt": 2,
+      "quality": 1
+    },
+    {
+      "id": "held-01",
+      "label": "C",
+      "prompt": 1,
+      "quality": 1
+    },
+    {
+      "id": "held-02",
+      "label": "C",
+      "prompt": 1,
+      "quality": 1
+    },
+    {
+      "id": "held-03",
+      "label": "A",
+      "prompt": 0,
+      "quality": 0
+    }
+  ],
+  "teacher": [
+    {
+      "id": "held-00",
+      "label": "C",
+      "prompt": 2,
+      "quality": 2
+    },
+    {
+      "id": "held-01",
+      "label": "B",
+      "prompt": 1,
+      "quality": 1
+    },
+    {
+      "id": "held-02",
+      "label": "B",
+      "prompt": 1,
+      "quality": 2
+    },
+    {
+      "id": "held-03",
+      "label": "C",
+      "prompt": 0,
+      "quality": 0
+    }
+  ]
+}
