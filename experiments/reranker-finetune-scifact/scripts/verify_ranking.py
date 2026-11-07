@@ -27,6 +27,17 @@ def check(actual, expected, label):
 def verify(evidence):
     summary = json.loads((evidence / "summary.json").read_text(encoding="utf-8"))
     splits = json.loads((evidence / "split-query-ids.json").read_text(encoding="utf-8"))
+    split_sets = {}
+    for name in ("train", "dev", "test"):
+        ids = splits[name]
+        if not isinstance(ids, list) or any(not isinstance(qid, str) or not qid for qid in ids):
+            raise ValueError(f"Invalid {name} split query ids")
+        split_sets[name] = set(ids)
+        if len(ids) != len(split_sets[name]):
+            raise ValueError(f"Duplicate query id in {name} split")
+    for left, right in (("train", "dev"), ("train", "test"), ("dev", "test")):
+        if split_sets[left] & split_sets[right]:
+            raise ValueError(f"Query ids overlap between {left} and {right} splits")
     with (evidence / "training-pairs.jsonl").open(encoding="utf-8") as source:
         training_pairs = [json.loads(line) for line in source]
     training_queries = {row["query_id"] for row in training_pairs}

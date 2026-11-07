@@ -30,7 +30,7 @@ Training used 1,434 sampled triplets, full parameter updates, AdamW at 2e-5, a 1
 
 ## Recalculate the reported metrics
 
-From this directory, the verification uses only Python's standard library and the saved candidate IDs, relevance judgments and scores:
+From this directory, the verification uses only Python's standard library and the saved candidate IDs, relevance judgments and scores. It also checks that query IDs are unique within each recorded split and disjoint across train, development and test. This ID check cannot detect similar text with different IDs; near-duplicate filtering requires the source text and preparation audit:
 
 ```bash
 python scripts/verify_ranking.py
