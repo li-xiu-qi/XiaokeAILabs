@@ -29,7 +29,7 @@ $$\mathcal L_{KD}=T^2D_{KL}(\operatorname{softmax}(z_T/T)\Vert\operatorname{soft
 
 Here $T=2$. The supervised control uses only the supervised loss. Both start from the same student checkpoint with the same seed, sampling, 180 steps, eight queries per step and learning rate 2e-5. Teacher scores are not calibrated relevance probabilities.
 
-The teacher is [MS MARCO MiniLM-L12](https://huggingface.co/cross-encoder/ms-marco-MiniLM-L12-v2), and the student is [MS MARCO TinyBERT-L2](https://huggingface.co/cross-encoder/ms-marco-TinyBERT-L2-v2). On DGX Spark, one sequential pass over all development and test candidates including tokenization took 14.88 seconds for the teacher and 2.84 seconds for the distilled student. This is neither a service latency nor concurrency benchmark, and excludes teacher scoring and training costs.
+The teacher is [MS MARCO MiniLM-L12](https://huggingface.co/cross-encoder/ms-marco-MiniLM-L12-v2), and the student is [MS MARCO TinyBERT-L2](https://huggingface.co/cross-encoder/ms-marco-TinyBERT-L2-v2). On DGX Spark, one sequential batched pass (up to 32 pairs per batch) over all development and test candidates including tokenization took 14.88 seconds for the teacher and 2.84 seconds for the distilled student. This is neither a service latency nor concurrency benchmark, and excludes teacher scoring and training costs.
 
 ## Reproduce
 
@@ -44,5 +44,7 @@ python scripts/run.py --data-root "$DATA_ROOT" --teacher output/teacher --studen
 ```
 
 The data root must contain `scifact/` and `prepared/pools.json`. The script checks data hashes and teacher output integrity, but a model path alone cannot verify its weights. Training stops if the teacher does not beat the student on development nDCG@10. Append `--device cpu --smoke` and use a separate output directory for a two-query, two-step interface check; this is not an effectiveness evaluation.
+
+The `teacher` and `all` stages require a new or empty output directory. The `student` stage requires complete teacher outputs and no existing student outputs. After an interruption, start a fresh run directory to avoid overwriting or mixing results.
 
 [Historical evidence](docs/evidence/) includes per-query metrics and paired analysis. Historical student candidate scores were not saved, so their rankings cannot be independently reconstructed from these files; the current script saves them. Follow the original dataset and model licenses when reusing the materials.

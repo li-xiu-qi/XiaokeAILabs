@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, get_linear_schedule_with_warmup
+from run_directory import prepare_run_directory
 
 ROOT=Path('.')
 DATA=Path('.')
@@ -89,7 +90,7 @@ def main():
     ap.add_argument('--device', choices=['cuda','cpu'], default='cuda')
     ap.add_argument('--smoke', action='store_true', help='Two queries per split and two training steps; no performance conclusions')
     args=ap.parse_args()
-    ROOT=Path(args.out); ROOT.mkdir(parents=True,exist_ok=True)
+    ROOT=Path(args.out); prepare_run_directory(ROOT,args.stage)
     DATA=Path(args.data_root); TEACHER=Path(args.teacher); STUDENT=Path(args.student)
     DEVICE=args.device
     if DEVICE=='cuda' and not torch.cuda.is_available(): raise SystemExit('CUDA unavailable')
