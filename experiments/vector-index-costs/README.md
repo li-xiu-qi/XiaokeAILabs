@@ -61,3 +61,6 @@ python scripts/verify_recall_real_corpus.py --base /tmp/vector-corpus/base_vecto
 [成本模型](scripts/vector_index_model.py) 可用于理解不同索引的空间与搜索工作量估算；它是简化模型，参数和实现细节会改变实际成本，不输出召回率预测。本次表格的原始记录为 [文本向量](evidence/real_corpus_ip_20261107.json) 与[合成向量](evidence/synthetic_n20000_d128_20261107.json)；`evidence/` 中其他 JSON 是历史数据，不能视为上述两次测量的原始结果。
 
 进一步阅读：[Faiss 索引说明](https://github.com/facebookresearch/faiss/wiki/Faiss-indexes) · [Faiss 常见问题](https://github.com/facebookresearch/faiss/wiki/FAQ) · [向量数据库基准](../vector-db-benchmark/)。
+
+
+底库和查询文件位于不同目录时，脚本会拒绝双方元数据中已知字段的冲突；一方缺少元数据或字段时，无法验证来源一致。脚本使用找到的第一份元数据而不合并两份，必要时显式提供维度和条数，并自行核对模型及语料。

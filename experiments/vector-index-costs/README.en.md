@@ -51,3 +51,5 @@ The [text-vector script](scripts/verify_recall_real_corpus.py) needs prepared fl
 The [cost calculator](scripts/vector_index_model.py) estimates storage and computational work under simplified assumptions. It does not predict recall or production latency. Compare alternatives using representative data, similar recall targets, and measured build, query, update and memory costs.
 
 References: [Faiss index types](https://github.com/facebookresearch/faiss/wiki/Faiss-indexes) · [Faiss distance metrics](https://github.com/facebookresearch/faiss/wiki/MetricType-and-distances) · [Vector database benchmark](../vector-db-benchmark/README.en.md).
+
+When base and query files are in different directories, the script rejects conflicting known fields present in both metadata files. Missing metadata or fields cannot establish matching provenance. It uses the first metadata file rather than merging them; supply counts and dimensions explicitly when necessary and verify the model and corpus yourself.

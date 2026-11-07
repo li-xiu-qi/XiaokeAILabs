@@ -2,7 +2,7 @@
 
 FLAT 精确搜索提供 top-k ground truth，随后对 HNSW、IVF、SQ8、PQ 和 IVF-PQ
 做参数扫描。输入文件与维度、条数、模型和语料信息由准备脚本写出的 meta.json
-共同确定，避免把不同语料和不同维度混在一起。
+共同确定；不同目录都有元数据时会拒绝已知字段冲突，但缺少字段无法证明来源一致。
 
 默认用法（corpus/ 下有 base_vectors.bin、query_vectors.bin、meta.json）：
     python scripts/verify_recall_real_corpus.py
@@ -23,12 +23,22 @@ TOPK = 10
 
 
 def load_metadata(base_path, query_path):
+    """Reject conflicting provenance instead of silently taking the first metadata file."""
+    found = []
     for parent in (os.path.dirname(base_path), os.path.dirname(query_path)):
-        candidate = os.path.join(parent or ".", "meta.json")
-        if os.path.exists(candidate):
-            with open(candidate, encoding="utf-8") as handle:
-                return json.load(handle), candidate
-    return {}, None
+        candidate = os.path.abspath(os.path.join(parent or ".", "meta.json"))
+        if any(path == candidate for _, path in found) or not os.path.exists(candidate):
+            continue
+        with open(candidate, encoding="utf-8") as handle:
+            found.append((json.load(handle), candidate))
+    if len(found) == 2:
+        base_meta, query_meta = found[0][0], found[1][0]
+        keys = ("source", "corpus", "model", "dim", "n_base", "n_query", "replicate", "normalized", "dtype")
+        conflicts = [key for key in keys if key in base_meta and key in query_meta
+                     and base_meta[key] != query_meta[key]]
+        if conflicts:
+            raise ValueError(f"Conflicting base/query metadata fields: {', '.join(conflicts)}")
+    return found[0] if found else ({}, None)
 
 
 def resolve_positive(value, metadata, key):
