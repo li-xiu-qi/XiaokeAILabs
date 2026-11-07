@@ -42,6 +42,8 @@ python scripts/safe_sqlite_bench.py --vectors 1000 --queries 20 --dimensions 32
 
 The output reports mean Recall@10 and median query time. Timing includes Python query-vector serialization, SQLite execution and result fetching; there is no separate warmup and the first query is included. NumPy float32 squared L2 distances provide the reference. When the tenth distance is tied, closer neighbors take priority and tied IDs count only up to the remaining places; this differs from the historical fixed-ID intersection metric. Ties use exact equality of NumPy float32 results; rounding can differ across implementations, so this is not exact real-number distance. The output records the seed and dependency versions. Timing depends on platform, scale and thread settings. The historical multi-database tests require a fresh isolated design before running; see the [environment and method notes](环境搭建.md).
 
+The evaluator rejects more than k returned IDs; fewer than k retain k as the denominator, and duplicate IDs count once.
+
 ## Further material
 
 The following detailed documents are currently in Chinese:
