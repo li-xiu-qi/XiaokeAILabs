@@ -12,14 +12,14 @@ Count-Min Sketch 是 Cormode & Muthukrishnan (2005) 提出的概率型频次统�
 - 查询(i)：取 d 行对应位置的最小值 min_r C[r][h_r(i)] 作为估计值
 
 核心指标：
-1. 误差界：估计值 <= 真实值 + εN，成立概率 >= 1-δ（N 为总更新次数）
+1. 误差界：估计值 <= 真实值 + εN，成立概率 >= 1-δ（N 为所有非负更新量之和；每次更新为 1 时等于更新次数）
 2. 误差只朝一个方向：sketch 只会高估，不会低估真实频次（point query 永不出错下限）
 3. 参数：w = ceil(e/ε)，d = ceil(ln(1/δ))
 4. 空间 = d × w × counter_bits 比特
 
 关键性质：
 - 取最小值而非平均值：哈希冲突只会把计数器推高，取 min 能滤掉被污染最严重的行
-- 支持加性合并（可分布式聚合）：两个 sketch 逐格相加即得合并流上的 sketch
+- 支持加性合并（可分布式聚合）：宽度、深度与各行哈希函数完全一致，且不溢出时，两个 sketch 逐格相加可得到合并流上的 sketch
 - 单调性：更新只增不减，适合"只增"的频次统计
 
 本模块实现这些公式，参数可配。
@@ -31,7 +31,7 @@ import math
 @dataclass
 class CountMinSketchSpec:
     """Count-Min Sketch 参数"""
-    n: int = 1_000_000           # 预期总更新次数（流长度 N）
+    n: int = 1_000_000           # 预期更新量之和 N（单位更新时等于流长度）
     epsilon: float = 0.01        # 相对误差 ε（估计偏差不超过 εN）
     delta: float = 0.001         # 失败概率 δ（误差界以 >= 1-δ 概率成立）
     counter_bits: int = 32       # 每个计数器比特数
@@ -41,7 +41,7 @@ class CountMinSketchSpec:
 
 @dataclass
 class CountMinSketchMetrics:
-    n: int                       # 总更新次数 N
+    n: int                       # 更新量之和 N
     width: int                   # 每行计数器数 w
     depth: int                   # 行数 d
     epsilon: float               # 相对误差
@@ -81,7 +81,7 @@ def compute_memory_bits(width: int, depth: int, counter_bits: int) -> int:
 
 def compute_memory_bytes(width: int, depth: int, counter_bits: int) -> int:
     """总字节数。向上取整到整字节。"""
-    return math.ceil(width * depth * counter_bits / 8)
+    return (width * depth * counter_bits + 7) // 8
 
 
 def compute_relative_error_bound(width: int, n: int) -> float:
@@ -148,6 +148,10 @@ def _selftest():
     d_loose = compute_depth(0.1)
     d_tight = compute_depth(1e-6)
     assert d_tight > d_loose, "δ 越小，深度应越大"
+
+    # 字节换算使用整数运算，避免超过 float 精度后低估。
+    assert compute_memory_bytes(2 ** 53 + 1, 1, 8) == 2 ** 53 + 1
+    assert compute_memory_bytes(3, 1, 3) == 2
 
     # 内存应随计数器位数线性增长
     m16 = compute(CountMinSketchSpec(epsilon=0.01, delta=0.001, counter_bits=16))
