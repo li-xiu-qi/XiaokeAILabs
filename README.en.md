@@ -16,7 +16,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Video generation trained on teacher samples](experiments/video-generation-distillation/README.md): Four held-out teacher, before, and after videos; six post-selected training examples do not establish quality gains. Teacher and student use different resolutions and inference engines.
 - [Image generation with synthetic training data](experiments/image-generation-distillation/README.md): Train a student LoRA on teacher-generated data; results rely on one AI reviewer. See the [paired analysis](experiments/image-generation-distillation/PAIRED-ANALYSIS.md#english) for an exploratory category breakdown and its limits.
 - [Identity image fine-tuning](experiments/image-finetune/README.en.md): Train an identity LoRA; the historical base and adapted outputs use different resolutions and are not directly comparable.
-- [Vector database benchmark](experiments/vector-db-benchmark/README.md): Historical records lack raw results and do not support product rankings.
+- [Vector database benchmark](experiments/vector-db-benchmark/README.en.md): Historical records lack raw results and do not support product rankings.
 - [Vector index costs](experiments/vector-index-costs/README.md): Compare recall, time and storage across Flat, IVF, HNSW and quantized indexes.
 - [Language JEPA training](experiments/language-jepa/README.md): A toy arithmetic comparison of the original model, LoRA, and JEPA; not evidence of improvement.
 - [Diffusion language model speed](experiments/diffusion-language-models/README.md): Compare generation paths on three prompts with unequal output lengths and unmeasured quality.
