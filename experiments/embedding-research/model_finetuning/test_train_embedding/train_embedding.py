@@ -17,6 +17,7 @@ import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 from transformers import AutoTokenizer, get_cosine_schedule_with_warmup
 from sentence_transformers import SentenceTransformer
+from data_validation import load_pairs, prepare_output_dir, validate_training_settings
 
 # 设置环境变量，避免多进程分词器可能引发的问题
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -77,10 +78,7 @@ class TextDataset(Dataset):
     """
     def __init__(self, data_path):
         super().__init__()
-        self.samples = []
-        with open(data_path, 'r', encoding='utf-8') as f:
-            for line in f:
-                self.samples.append(json.loads(line.strip()))
+        self.samples = load_pairs(data_path)
 
     def __len__(self):
         return len(self.samples)
@@ -198,9 +196,12 @@ def main():
             create_demo_data(args.train_dataset)
         else:
             parser.error(f'训练数据文件不存在: {args.train_dataset}')
-    if args.batch_size < 2:
-        parser.error('批内对比学习的 batch_size 必须至少为 2')
-    os.makedirs(args.output_dir, exist_ok=True)
+    try:
+        validate_training_settings(args.batch_size, args.epochs, args.lr, args.query_max_len, args.passage_max_len)
+        train_dataset = TextDataset(args.train_dataset)
+        prepare_output_dir(args.output_dir)
+    except (ValueError, OSError) as exc:
+        parser.error(str(exc))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
@@ -209,9 +210,6 @@ def main():
     model = EmbeddingModel(args.model_name_or_path, temperature=0.02).to(device)
 
     # 3. 创建数据集与数据加载器
-    train_dataset = TextDataset(args.train_dataset)
-    if len(train_dataset) < 2:
-        parser.error('批内对比学习至少需要两条训练数据')
     collate_with_tokenizer = partial(collate_fn, tokenizer=tokenizer, query_max_len=args.query_max_len, passage_max_len=args.passage_max_len)
     # 仅丢弃单条末批，避免它产生没有负例的零损失；其余不完整批次保留。
     drop_singleton = len(train_dataset) % args.batch_size == 1
