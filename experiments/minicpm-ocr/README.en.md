@@ -86,6 +86,14 @@ The default paths are derived from `$HOME/minicpm-ocr`; `MINICPM_OCR_HOME`, `OCR
 
 The scoring UI uses `/ui/score` and `/ui/ocr`; the latter calls the recognizer with the relevant text, formula, or table prompt. Scoring can still run if the recognizer service is down, with manually supplied text. If all candidate renders fail, the scoring endpoint returns 422 rather than selecting a winner.
 
+## Using the scoring response
+
+For one source block, the endpoint accepts one or more candidate texts and corresponding rendered images; it renders a candidate when its image is omitted. The `scores` and `verdicts` arrays follow candidate order. Only `scored` denotes a valid model score: `render_error` and `score_error` use `0.0` as a placeholder and must not be confused with a valid low score. The service selects the highest valid score as `best_index`, even if that score is low or there is only one valid candidate. If none can be scored, it returns 422. Callers therefore need to inspect `verdicts`; a `best_index` alone is not an automatic quality approval.
+
+For example, given two OCR transcriptions of one block, this stage could help order candidates for human review. There is no labeled evaluation establishing a reliable acceptance threshold or showing that the highest score detects failure when all candidates are wrong. The historical three-candidate run lacks its complete per-item inputs and outputs and is not a measurement of ranking performance.
+
+This task differs from [PP-OCR text detection and recognition](../paddle-ocr-detection-recognition/README.en.md), which locates and transcribes text, and from [SLANet+ table structure recognition](../table-structure-recognition/README.en.md), which predicts rows and cells. These experiments have separate inputs and results; this repository does not yet provide a complete table-parsing pipeline joining them.
+
 ## Limits of the score
 
 Jev was checked against three official cropped blocks here; scans, photographs, mixed Chinese and English documents, and cross-machine reproduction were not tested. It expects layout blocks, not whole pages. A whole-page workflow needs layout detection and per-block scoring.
