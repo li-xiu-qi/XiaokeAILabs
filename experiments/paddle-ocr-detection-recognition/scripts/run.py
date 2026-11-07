@@ -6,6 +6,7 @@ from pathlib import Path
 import torch
 from PIL import Image
 from transformers import AutoImageProcessor, AutoModelForObjectDetection, AutoModelForTextRecognition
+from validate_detection import validate_detections
 
 
 def main():
@@ -30,6 +31,7 @@ def main():
     detected = det_processor.post_process_object_detection(outputs, target_sizes=inputs['target_sizes'])[0]
     boxes = detected['boxes'].cpu().tolist()
     scores = detected['scores'].cpu().tolist()
+    validate_detections(boxes, scores)
     del det, inputs, outputs, detected
     # Match the recorded run's sorting; this heuristic is specific to the sample layout.
     ranked = sorted(zip(boxes, scores), key=lambda pair: (

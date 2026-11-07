@@ -1,5 +1,8 @@
 # Detecting and recognizing table text with PP-OCRv5
 
+The detection-output validation change was checked on CPU; the OCR models were not rerun.
+
+
 English | [简体中文](README.md)
 
 To make a table image searchable, a system must locate text and then transcribe each region. This example passes polygonal text detections from PP-OCRv5 to its recognition model on one self-drawn table, with a runnable two-stage script.
