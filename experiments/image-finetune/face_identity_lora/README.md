@@ -35,7 +35,7 @@ $$W_{\mathrm{adapted}} = W_0 + \frac{\alpha}{r}BA$$
 
 ## 数据与配置
 
-- 数据：CelebA 单个身份，20 张训练、10 张测试参考；数据按照片而非身份划分。[数据集协议](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html)限定非商业研究并禁止进一步发布或分发数据集，使用时也应核对人物授权。
+- 数据：CelebA 单个身份，20 张训练、10 张测试参考；数据按照片而非身份划分。[数据集协议](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html)限定非商业研究，禁止进一步公开或分发数据集，以及将图像和衍生数据用于商业目的。现存记录无法证明照片中人物同意训练或公开生成其肖像；发布生成肖像或权重前还需单独核实适用授权。
 - 底模：SDXL base；本次未保留模型 revision。LoRA rank 32、alpha 32、dropout 0.05。
 - 训练：512×512、batch 1、学习率 1e-4、2000 步，每 500 步保存一次；详细配置见 [YAML](config/face_identity_lora.yaml)。
 - 评估：RetinaFace 检测后用 ArcFace 编码；目标、负对照与同人参考的原始聚合数据见上面的 JSON。InsightFace 权重及底模均有各自许可。

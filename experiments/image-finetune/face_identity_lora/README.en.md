@@ -35,7 +35,7 @@ Inference consumes a prompt, seed and LoRA weights and produces an image. The tr
 
 ## Data and configuration
 
-- Data: one CelebA identity, 20 training photos and 10 test references, split by photo. The [dataset agreement](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) limits use to non-commercial research and prohibits further publication or distribution; check consent as well.
+- Data: one CelebA identity, 20 training photos and 10 test references, split by photo. The [dataset agreement](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html) limits use to non-commercial research, prohibits further publication or distribution of the dataset, and prohibits commercial use of images and derived data. The surviving records do not establish consent for training or public release of generated likenesses; check applicable permissions separately before publishing generated likenesses or weights.
 - Base: SDXL base; the original model revision was not recorded. LoRA rank 32, alpha 32, dropout 0.05.
 - Training: 512×512, batch size 1, learning rate 1e-4, 2,000 steps, saved every 500 steps. See the [configuration](config/face_identity_lora.yaml).
 - Evaluation: RetinaFace detection and ArcFace embeddings. Model and evaluation weights carry their own terms.
