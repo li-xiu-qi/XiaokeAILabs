@@ -30,9 +30,9 @@ Ideally, storing $P$ parameters at $b$ bits each takes $Pb/8$ bytes. Real format
 
 Perplexity is the exponential of mean negative log probability over scored tokens:
 
-$$\operatorname{PPL}=\exp\!\left[-\frac{1}{N}\sum_{i=1}^{N}\log p(x_i\mid x_{<i})\right].$$
+$$\operatorname{PPL}=\exp\!\left[-\frac{1}{N}\sum_{i\in S}\log p(x_i\mid c_i)\right].$$
 
-With the same tokenizer, data, and context settings, increased perplexity means the model assigns less probability overall to that text. It is not task accuracy. Evaluate quality and end-to-end latency on the target domain and application, such as retrieval or question answering, before choosing a format.
+Here $S$ is the set of scored positions, $N=|S|$, and $c_i$ is the context actually visible at position $i$. Windowing limits context and may score only part of each window; this binary is not tied to a verified source version, so the exact historical scoring rule is unconfirmed. With the same tokenizer, data, scored positions and context settings, increased perplexity means lower geometric-mean probability for the scored tokens. It is not task accuracy. Evaluate quality and end-to-end latency on the target domain and application, such as retrieval or question answering, before choosing a format.
 
 ## Methods and formats
 
