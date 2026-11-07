@@ -133,7 +133,9 @@ def main():
     else:
         teacher=json.loads((root/'teacher.json').read_text(encoding='utf8'))['scores']
         for mode in ['baseline','supervised','distilled']:
-            torch.manual_seed(SEED);torch.cuda.empty_cache();model=load_student();check()
+            torch.manual_seed(SEED);torch.cuda.empty_cache()
+            if DEVICE == 'cuda': torch.cuda.reset_peak_memory_stats()
+            model=load_student();check()
             info={} if mode=='baseline' else train_student(model,mode,train,docs,queries,teacher,args.smoke)
             model.eval();scores,timing=calc(model,docs,queries,[],test,16)
             atomic(root/(mode+'.json'),{'scores':scores,'timing':timing,'test_metrics':metrics(test,scores),'training':info,'peak_allocated':torch.cuda.max_memory_allocated(),'parameter_count':sum(x.numel() for x in model.parameters())})

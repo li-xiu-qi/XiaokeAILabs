@@ -1,5 +1,7 @@
 # 科学文献检索中的向量模型蒸馏
 
+[English](README.en.md) | 中文
+
 ## 问题和计划
 
 检验一个约 2200 万参数的 MiniLM 双编码器能否从 Qwen3-Embedding-8B 的文档相对分数中学习，提高科学论断到论文摘要的排序质量。两个模型向量维度不同，使用同一查询下候选文档的相似度分布传递信息，不直接回归向量。
@@ -52,6 +54,8 @@ $$
 
 在 Linux CUDA 环境中准备 PyTorch、NumPy 和 Sentence Transformers。按照 [ColBERT 实验的数据准备步骤](../colbert-distillation/README.md#从数据准备候选与教师分数)下载并校验输入，再运行候选池准备脚本；生成的 `pools.json` 决定训练正例和 BM25 候选。数据集及模型按各自许可从原始来源获取，不包含在本仓库内。BEIR 数据卡标注 CC BY-SA 4.0；原始 SciFact 的标注与语料许可不同，使用前请参照[原始许可](https://github.com/allenai/scifact/blob/master/LICENSE.md)。
 
+只需运行该步骤中的 `prepare_pools.py`，不需要运行 ColBERT 教师或学生训练命令。候选准备脚本使用 `hashlib.file_digest`，要求 Python 3.11 或更高版本；该脚本和配置目前由相邻实验维护，单独复制本目录时也需复制它们。
+
 下载两个模型到本机并固定版本，例如：
 
 ```bash
@@ -69,3 +73,6 @@ python scripts/train.py --stage student --data "$DATA" --pools "$POOLS" --out ou
 两条命令加 `--smoke` 可做两条查询、两步训练的管线检查；再加 `--device cpu` 可在 CPU 上验证。小模型替代教师和学生的 CPU 冒烟已跑通打分、基线和两种训练，仅验证管线，不能用于比较效果。正式实验使用 CUDA；两种模式都要求 Linux `/proc/meminfo` 和至少约 50 GiB 系统可用内存。
 
 教师阶段生成分数，学生阶段依次评价原模型、监督组和蒸馏组。两阶段会核对语料、查询和候选池的 SHA-256、模型路径与教师输出完整性；同一路径下模型内容发生变化不会被路径检查发现，仍需自行核验模型 revision 和权重。不同硬件、依赖版本与随机性会影响结果。
+
+
+训练脚本按各分支重置 CUDA 峰值统计的修正尚未在 GPU 上重跑验证；历史峰值不能由此重新解释。
