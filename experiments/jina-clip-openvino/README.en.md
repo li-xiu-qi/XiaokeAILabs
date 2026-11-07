@@ -161,3 +161,5 @@ Compare LoRA modes and inspect dynamic nodes:
 The sample illustration is original and differs from the historical beach photo; it does not reproduce the original visual result and no longer checks a specific label. Add `--force-convert` when rebuilding IR. Use a new `--work-dir` when changing the image or text to avoid reusing stale native references.
 
 Evidence under `docs/evidence/` contains current-driver results with hostnames removed and paths made repository-relative; old-driver raw output is absent. The historical photo is not distributed because its redistribution license has not been confirmed. This experiment does not establish support for all models, batches, images, or INT8 deployment; validate correctness and repeated performance for the intended production stack.
+
+Before scoring, the retrieval script rejects non-finite and zero-norm embeddings: cosine similarity is undefined for zero vectors, and sorting tied scores could otherwise produce plausible-looking recall. The published historical evaluation JSON does not retain individual vector norms, so it cannot establish retrospectively that this check passed during that run.

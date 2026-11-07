@@ -15,8 +15,9 @@ from benchmark_native_baseline import (
     CODE_REVISION,
     MODEL_ID,
     MODEL_REVISION,
-    normalize,
 )
+
+from retrieval_validation import checked_normalize
 
 
 def load_pairs(path: Path, limit: int | None) -> list[dict]:
@@ -217,11 +218,9 @@ def main() -> None:
     images = encode_images(image_paths)
     image_seconds = time.perf_counter() - started
 
-    if not all(np.isfinite(value).all() for value in [query_text, document_text, images]):
-        raise RuntimeError("Non-finite embeddings produced")
-    query_text = normalize(query_text)
-    document_text = normalize(document_text)
-    images = normalize(images)
+    query_text = checked_normalize(query_text, "query text")
+    document_text = checked_normalize(document_text, "document text")
+    images = checked_normalize(images, "images")
     text_to_image_ranks = ranks_for(query_text @ images.T)
     image_to_text_ranks = ranks_for(images @ document_text.T)
     result = {
