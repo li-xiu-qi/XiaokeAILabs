@@ -1,5 +1,6 @@
 """Recompute exact and whitespace-insensitive rates from the recorded outputs."""
 import json
+import math
 import pathlib
 import re
 import statistics
@@ -13,6 +14,9 @@ for model in s['results']:
     assert len(runs) == 24 and len(tasks) == 8
     assert {(r['task_id'], r['repetition']) for r in runs} == {(t, i) for t in tasks for i in range(3)}
     for r in runs:
+        seconds = r['seconds']
+        if type(seconds) not in (int, float) or not math.isfinite(seconds) or seconds <= 0:
+            raise ValueError(f"invalid generation time for {model['model']}: {seconds!r}")
         assert r['expected'] == tasks[r['task_id']]
         assert r['correct'] == (r['answer'].strip().casefold() == r['expected'].strip().casefold())
     strict = sum(r['correct'] for r in runs)
