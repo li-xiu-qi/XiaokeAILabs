@@ -10,13 +10,13 @@
 - [重排序模型微调](experiments/reranker-finetune-scifact/README.md)：使用查询、文档和相关性标签训练交叉编码器。
 - [Embedding 蒸馏](experiments/embedding-distillation/README.md)：用大模型分数训练小型向量模型；提供候选池准备脚本。
 - [重排序蒸馏](experiments/reranker-distillation/README.md)：对照监督训练与教师分数蒸馏，了解固定候选上的排序变化。
-- [ColBERT 蒸馏](experiments/colbert-distillation/README.md)：比较教师分数蒸馏与标签监督；本次蒸馏未超过监督基线。
+- [ColBERT 蒸馏](experiments/colbert-distillation/README.md)：真实教师复验中蒸馏与监督组差距很小，单种子结果不足以确认优势。
 - [视觉文档多向量检索](experiments/visual-multivector-retrieval/README.md)：文档页检索基线及合成页面上的微调对照；本次未观察到蒸馏收益。
 - [多模态 Embedding 蒸馏](experiments/multimodal-embedding-distillation/README.md)：比较图文配对监督与教师蒸馏；100 条测试查询中，蒸馏组 R@1 为 0.91，监督组为 0.93。
 - [多模态重排序](experiments/multimodal-reranking/README.md)：探索图文候选的重排序，并查看匿名化评测结果。
-- [GUI 定位微调](experiments/gui-grounding-finetuning/README.md)：训练截图与指令到坐标的映射；30 个留出样本不足以证明泛化提升。
+- [GUI 定位微调](experiments/gui-grounding-finetuning/README.md)：48 条分层留出样本中，基座命中 34、LoRA 命中 42；小样本不能保证跨应用泛化。
 - [教师视频训练水波纹生成模型](experiments/video-generation-distillation/README.md)：对照学生训练前后，以及教师和学生自产训练素材；[小样本来源对照](experiments/video-generation-distillation/results/source-control/README.md)的抽帧评审未显示教师数据组优于基模。
-- [合成数据训练文生图模型](experiments/image-generation-distillation/README.md)：用教师合成数据训练学生 LoRA，并与学生自生成数据对照；小样本相机复测中单名 AI 缩略图评审未观察到教师数据优势，两条生成流程不同。
+- [合成数据训练文生图模型](experiments/image-generation-distillation/README.md)：比较教师与学生自产数据；相机开发集教师优势门槛未通过，本轮停止微调与最终测试。
 - [人物图像生成微调](experiments/image-finetune/README.md)：用人物照片训练 LoRA；现有基线与微调结果分辨率不同，不能直接比较。
 - [人物视频微调与排障](experiments/wan22-video-diagnostics/README.md)：检查视频基模、种子和 LoRA 生成结果；小规模留出评估未证明学会目标角色。
 - [向量数据库基准](experiments/vector-db-benchmark/README.md)：历史数据缺少原始结果，不用于产品排名。
