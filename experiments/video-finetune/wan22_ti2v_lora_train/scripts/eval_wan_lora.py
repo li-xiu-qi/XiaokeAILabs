@@ -19,6 +19,7 @@ import numpy as np
 import torch
 from diffusers import WanPipeline
 from PIL import Image
+from eval_manifest import start_run, finish_run
 
 MODEL = "/home/ke/models/Wan2.2-TI2V-5B-Diffusers"
 PROMPTS = [
@@ -79,7 +80,9 @@ def main():
     ap.add_argument("--base", default=MODEL)
     ap.add_argument("--out", default="output/eval")
     args = ap.parse_args()
-    os.makedirs(args.out, exist_ok=True)
+    manifest = start_run(args.out, args.base, args.lora, PROMPTS, NEG,
+                         {'seed': SEED, 'steps': STEPS, 'guidance': GUIDANCE,
+                          'frames': FRAMES, 'size': SIZE, 'fps': FPS})
 
     pipe = WanPipeline.from_pretrained(args.base, torch_dtype=torch.bfloat16).to("cuda")
 
@@ -108,6 +111,7 @@ def main():
 
         print(f"[{i}] {prompt}\n  before: {p1}\n  after:  {p2}", flush=True)
 
+    finish_run(args.out, manifest)
     print("done ->", args.out)
 
 
