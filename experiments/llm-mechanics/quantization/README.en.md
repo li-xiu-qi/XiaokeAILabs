@@ -8,13 +8,15 @@ Model quantization reduces the numeric precision of some weights, lowering stora
 
 The test used a DGX Spark CPU, four threads, and llama.cpp, with no GPU layers. Perplexity was calculated on only the first four 512-token windows of the WikiText-2 raw test set; the number of scored positions has not been independently confirmed. Speed is the mean of three llama-bench runs, with separate 128-token prefill and 64-token generation tests.
 
-| Weight format | GGUF file size | Perplexity (estimate ± standard error) | Prefill tokens/s | Generation tokens/s |
+| Weight format | GGUF file size | Perplexity (estimate ± reported value) | Prefill tokens/s | Generation tokens/s |
 |---|---:|---:|---:|---:|
 | BF16 | 1,509,347,712 B | 19.3301 ± 2.10644 | 17.85 | 12.52 |
 | Q4_K_M | 484,220,288 B | 20.8566 ± 2.33258 | 246.57 | 121.69 |
 | Q8_0 | 804,753,792 B | 19.2841 ± 2.09997 | 255.64 | 112.44 |
 
-The Q4 and Q8 files are approximately 32.1% and 53.3% of the BF16 file size. These are historically recorded file sizes, not total runtime memory; the benchmark JSON `model_size` fields differ and should not be substituted for file sizes. Q4 perplexity was higher on this sample, but the sample contains only four windows; the slightly lower Q8 value does not show that Q8 is better than BF16. The measurements do not assess Chinese capability, instruction following, or accuracy on a particular task.
+The ± values are taken from each `llama-perplexity` final output. The available record cannot verify how this binary computed them, and they are not a measure of variation across repeated runs or datasets. The formats share the same windows; assessing the stability of their quality differences requires more data and a paired evaluation.
+
+The Q4 and Q8 files are approximately 32.1% and 53.3% of the BF16 file size. These are historically recorded file sizes, not total runtime memory; the original GGUF files and an independent file-size listing are not included, so these byte counts cannot be independently checked from the repository; the benchmark JSON `model_size` fields differ and should not be substituted for file sizes. Q4 perplexity was higher on this sample, but the sample contains only four windows; the slightly lower Q8 value does not show that Q8 is better than BF16. The measurements do not assess Chinese capability, instruction following, or accuracy on a particular task.
 
 BF16 CPU throughput was unusually low here. The measurements do **not** show that quantization generally yields a 9–10× speedup. The hardware reports BF16 support, but the program's CPU-feature output did not list BF16; whether it used an inefficient kernel remains unverified. CPU cores were not pinned, and the device has different core types, so scheduling may also affect speed. These results cannot establish GPU performance or behavior in other engines.
 
