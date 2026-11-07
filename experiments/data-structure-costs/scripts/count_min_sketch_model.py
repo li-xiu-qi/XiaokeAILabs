@@ -3,7 +3,7 @@
 Count-Min Sketch（计数最小草图）理论性能模型
 
 Count-Min Sketch 是 Cormode & Muthukrishnan (2005) 提出的概率型频次统计结构。
-它用远小于真实数据量的空间，给出每个元素的出现频率的上界估计，保证永不高估真实值。
+它用远小于真实数据量的空间，在非负更新且计数器不溢出的条件下，给出频次的上界估计，可能高估但不会低估。
 
 核心结构：
 - d 行 w 列的二维计数数组（共 d×w 个计数器）
@@ -95,22 +95,8 @@ def compute_counter_max(counter_bits: int) -> int:
 
 
 def compute_overflow_probability(n: int, width: int, depth: int) -> float:
-    """计数器溢出概率的上界估计。
-
-    某行某个计数器溢出要求该格收到的更新数超过 2^bits。
-    上界：d × w × (eN/w)^bits / bits! 量级，这里给出简化上界
-    d * (eN/w)^bits / bits!。
-    """
-    mean = n / width
-    if mean < 1:
-        return 0.0
-    # 泊松近似下，单格收到 >= K 次的概率上界
-    k = compute_counter_max(32)
-    try:
-        log_p = k * math.log(mean) - mean - sum(math.log(i) for i in range(1, k + 1))
-    except (ValueError, OverflowError):
-        return 1.0
-    return min(1.0, depth * width * math.exp(log_p))
+    """缺少更新分布、计数器位宽及相关性假设，无法给出可用概率界。"""
+    raise NotImplementedError("overflow probability requires a validated workload and counter model")
 
 
 def compute(spec: CountMinSketchSpec) -> CountMinSketchMetrics:
@@ -122,6 +108,7 @@ def compute(spec: CountMinSketchSpec) -> CountMinSketchMetrics:
     # 若指定了 w，反推实际 ε
     epsilon = spec.epsilon if spec.width == 0 else compute_relative_error_bound(w, spec.n)
 
+    actual_delta = spec.delta if spec.depth == 0 else math.exp(-d)
     abs_err = compute_absolute_error(epsilon, spec.n)
     num_counters = compute_num_counters(w, d)
     mem_bits = compute_memory_bits(w, d, spec.counter_bits)
@@ -133,7 +120,7 @@ def compute(spec: CountMinSketchSpec) -> CountMinSketchMetrics:
         width=w,
         depth=d,
         epsilon=epsilon,
-        delta=spec.delta,
+        delta=actual_delta,
         counter_bits=spec.counter_bits,
         absolute_error=abs_err,
         num_counters=num_counters,

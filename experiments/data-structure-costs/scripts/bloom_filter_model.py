@@ -61,8 +61,8 @@ def compute_fpr(m: int, n: int, k: int) -> float:
 
 
 def compute_memory(m: int) -> int:
-    """内存占用。m 比特 = m/8 字节。"""
-    return m // 8
+    """内存占用。m 比特按整字节向上取整；不包含对象或分配器开销。"""
+    return (m + 7) // 8
 
 
 def compute_expected_fills(m: int, n: int, k: int) -> float:
