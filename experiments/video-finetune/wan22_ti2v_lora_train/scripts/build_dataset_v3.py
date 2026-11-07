@@ -11,7 +11,20 @@ SRC_V2 = "data/rzqduck_clips_v2"
 SRC_V3 = "data/rzqduck_clips_v3"
 DST = "data/rzqduck_clips_v3_full"
 
-os.makedirs(DST, exist_ok=True)
+if os.path.exists(DST):
+    raise SystemExit(f"output already exists: {DST}; choose a fresh output before assembling")
+sources = [os.path.join(src, f) for src in (SRC_V2, SRC_V3)
+           for f in sorted(os.listdir(src)) if f.endswith((".mp4", ".txt"))]
+names = [os.path.basename(p) for p in sources]
+if len(names) != len(set(names)):
+    raise SystemExit("duplicate filenames in source datasets; no files copied")
+clips = {os.path.splitext(n)[0] for n in names if n.endswith('.mp4')}
+captions = {os.path.splitext(n)[0] for n in names if n.endswith('.txt')}
+if not clips:
+    raise SystemExit("no video clips found; no files copied")
+if clips != captions:
+    raise SystemExit(f"unpaired clips/captions: clips-only={sorted(clips-captions)}, captions-only={sorted(captions-clips)}")
+os.makedirs(DST)
 
 n = 0
 for src in (SRC_V2, SRC_V3):
