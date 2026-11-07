@@ -25,7 +25,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Diffusion language model speed](experiments/diffusion-language-models/README.en.md): Compare generation paths on three prompts with unequal output lengths and unmeasured quality.
 - [GB10 inference slots](experiments/gb10-inference/qwen36-35b-ab/README.en.md): Compare throughput and completion times for one versus eight slots on the same model and engine.
 - [LLM inference performance](experiments/llm-inference-perf/README.en.md): Performance analysis across models and inference configurations.
-- [Language model quantization](experiments/llm-mechanics/quantization/README.md): Compare model size, perplexity, and CPU speed; the BF16 path performed unusually slowly.
+- [Language model quantization](experiments/llm-mechanics/quantization/README.en.md): Compare model size, perplexity, and CPU speed; the BF16 path performed unusually slowly.
 - [LLM mechanics](experiments/llm-mechanics/README.md): Understand text generation through examples.
 - [Tokenizer mechanics](experiments/tokenizer-mechanics/README.en.md): Explore byte-level BPE, real encodings, and token costs.
 - [KV cache mechanics](experiments/llm-mechanics/kv_cache/README.en.md): Compare cached and full-prefix numerical results.
