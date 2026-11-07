@@ -18,7 +18,8 @@ def decode_tps(hw, model, dtype: str, efficiency: float = 1.0,
                ctx_len: int = 0, kv_dtype: str = "bf16") -> float:
     """单流 decode 吞吐 (tok/s)。
 
-    decode 是带宽瓶颈：每 token 读一遍权重 + 读一遍 KV cache。
+    假设每 token 从内存读取一遍权重和 KV cache，只计算带宽路径的玩具值；
+    这不证明 decode 的实际瓶颈，也不是经验证的速度预测。
         tok/s = 带宽 × 效率 / (权重字节 + KV cache 字节)
     ctx_len=0 时退化为纯权重（短上下文近似），ctx_len>0 时 KV cache
     随上下文增长，长上下文 decode 会变慢（这个公式补上了之前的缺口）。
@@ -48,14 +49,14 @@ def arithmetic_intensity(model, dtype: str) -> float:
     前向做约 2×P FLOP，搬运 P×bpp 字节权重：
         AI = 2 / bpp
     bf16: 1 FLOP/byte；fp8: 2 FLOP/byte；q4: 约 3.3 FLOP/byte。
-    与机器平衡点比较，判断瓶颈。GB10 平衡点约 220 FLOP/byte，
-    远高于任何 LLM 前向，所以 LLM 推理在 GB10 上几乎总是带宽瓶颈。
+    仅在假设每 token 重读全部权重、忽略激活与缓存流量时成立；
+    不能据此推断真实模型或具体硬件的性能瓶颈。
     """
     return 2.0 / DTYPE_BYTES[dtype]
 
 
 def roofline_time(hw, model, dtype: str, num_tokens: int) -> float:
-    """在 roofline 下处理 num_tokens 的理论时间（秒），取算力和带宽的上界。
+    """简化 roofline 的理想下界（秒），取计算时间和搬运时间的较大者。
 
     用于判断：给定任务量，算力界和带宽界哪个更紧。
     """

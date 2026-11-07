@@ -1,11 +1,8 @@
-"""
-模型加载与 IO 模型：冷启动时间，以及它由什么决定。
+"""UNVALIDATED historical I/O model: not a loading-time predictor.
 
-服务可用性、弹性伸缩、serverless 推理都受冷启动时间约束。
-这个模型回答：给定磁盘读带宽，加载一个模型要多久，页缓存和分片
-如何改变它。
-
-自测：用 GB10 实测磁盘读带宽 1.3 GB/s，验证加载时间公式。
+The old shard rule has no aggregate bandwidth ceiling and does not include
+allocation, parsing, transfer, or page-cache state. Source is retained for audit;
+its executable demonstration is disabled.
 """
 import sys
 from pathlib import Path
@@ -14,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from llm_spec import GB10, Qwen3_8_27B, DTYPE_BYTES
 
 
-# GB10 实测（2026-09-08）：dd 读 20GB 模型文件到 /dev/null，1.3 GB/s
+# 历史示例值，测量记录未核实，不作为设备实测。
 DISK_READ_BW_GBS = 1.3
 # 内存带宽（统一内存）
 MEM_BW_GBS = GB10.bw_gbs
@@ -87,4 +84,4 @@ def self_test():
 
 
 if __name__ == "__main__":
-    self_test()
+    raise SystemExit("UNVALIDATED: legacy loading-time extrapolation disabled; see docs/使用边界与审计.md")
