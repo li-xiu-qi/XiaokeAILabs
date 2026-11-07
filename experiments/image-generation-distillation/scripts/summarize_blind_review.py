@@ -1,6 +1,7 @@
 """Reveal and aggregate a completed, anonymous binary image review."""
 import argparse
 import csv
+import hashlib
 import json
 from collections import defaultdict
 from pathlib import Path
@@ -14,13 +15,19 @@ def main():
     parser.add_argument("--review", type=Path, required=True)
     parser.add_argument("--key", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--images", type=Path, help="optional reviewer images directory; verify hashes against private key")
     args = parser.parse_args()
     key = json.loads(args.key.read_text(encoding="utf-8"))
     with args.review.open(encoding="utf-8-sig", newline="") as f:
         rows = list(csv.DictReader(f))
     ids = [r["review_id"] for r in rows]
-    if len(ids) != len(set(ids)) or set(ids) != set(key):
+    if not ids or len(ids) != len(set(ids)) or set(ids) != set(key):
         raise ValueError("score file must contain every anonymized image exactly once")
+    if args.images:
+        for review_id in ids:
+            recorded = key[review_id].get('sha256')
+            if not recorded or hashlib.sha256((args.images / f'{review_id}.png').read_bytes()).hexdigest() != recorded:
+                raise ValueError(f'review image hash missing or mismatched: {review_id}')
     grouped = defaultdict(dict)
     totals = {arm: {field: {"yes": 0, "no": 0, "missing": 0} for field in FIELDS} for arm in ARMS}
     for row in rows:
@@ -49,7 +56,8 @@ def main():
     result = {"n_prompts": len(grouped), "n_images": len(rows),
               "by_arm": totals, "student_before_after_pairs": pair}
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    with args.out.open('x', encoding='utf-8') as output:
+        json.dump(result, output, ensure_ascii=False, indent=2)
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 

@@ -52,7 +52,10 @@ def main():
     image_dir = args.out / "images"
     image_dir.mkdir(exist_ok=True)
     for code, value in key.items():
-        (image_dir / f"{code}.png").write_bytes(Path(value["source"]).read_bytes())
+        data = Path(value["source"]).read_bytes()
+        if hashlib.sha256(data).hexdigest() != value["sha256"]:
+            raise ValueError(f"source image changed while preparing review: {code}")
+        (image_dir / f"{code}.png").write_bytes(data)
     with (args.out / "review.csv").open("w", encoding="utf-8-sig", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=tasks[0].keys())
         writer.writeheader()

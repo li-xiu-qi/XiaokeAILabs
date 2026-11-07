@@ -97,6 +97,8 @@ python scripts/generate.py --model stable-diffusion-v1-5/stable-diffusion-v1-5 \
 
 Prepare a blinded review and keep the mapping away from the reviewer. Both the review output directory and the identity-key path must be new; use new paths after an interruption to avoid overwriting existing scores.
 
+For a new review, add `--images review/blind/images` to `summarize_blind_review.py` to compare the anonymous image bytes with the private key's SHA-256 hashes; write the summary to a new path. This verifies image consistency, not reviewer independence or correctness. The published historical key contains no image hashes, so that check cannot verify the historical review.
+
 ```bash
 python scripts/prepare_review.py --results results --out review/blind --key review/identity-key.json
 python scripts/summarize_review.py --review review/blind/review.csv \

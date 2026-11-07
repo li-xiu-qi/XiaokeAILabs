@@ -30,7 +30,8 @@ def main():
             bucket = {"1": "yes", "0": "no", "": "missing"}[value]
             totals[arm][field][bucket] += 1
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(dict(totals), ensure_ascii=False, indent=2), encoding="utf-8")
+    with args.out.open('x', encoding='utf-8') as output:
+        json.dump(dict(totals), output, ensure_ascii=False, indent=2)
     print(json.dumps(dict(totals), ensure_ascii=False, indent=2))
 
 
