@@ -62,7 +62,7 @@ python scripts/generate.py --model /path/to/Wan2.1-T2V-1.3B-Diffusers \
 python scripts/generate.py --model /path/to/Wan2.1-T2V-1.3B-Diffusers \
   --manifest config/prompts.json --output ./work/lora --lora /path/to/adapter.safetensors
 
-# 复核仓库中已经提供的 4 组结果；输出哈希和逐帧像素差。
+# 复核仓库中已经提供的 4 组结果；输出哈希和逐帧像素差，需自行与历史记录比对哈希。
 python scripts/compare.py --baseline results/baseline --lora results/lora
 ```
 
@@ -84,6 +84,8 @@ python scripts/compare.py --baseline results/baseline --lora results/lora
 视频由本次实验的文本提示生成，不含实拍人物。教师和学生模型卡分别标注 [Wan2.2 TI2V 5B](https://huggingface.co/Wan-AI/Wan2.2-TI2V-5B) 与 [Wan2.1 T2V 1.3B](https://huggingface.co/Wan-AI/Wan2.1-T2V-1.3B-Diffusers) 为 Apache-2.0；实际运行的教师文件来自 [Comfy-Org 的适配发布](https://huggingface.co/Comfy-Org/Wan-2.2)。使用和再分发模型时仍应遵守相应许可及署名要求。仓库中的视频是实验输出，不包含模型权重。
 
 [历史逐帧统计与视频 SHA-256](results/frame-comparison.json) 保留了当时的结果。重新运行 `compare.py` 时，8 个视频哈希均匹配，但另一环境算得的四组平均逐帧像素差约为 12.74、2.44、8.86、11.50，与历史的 12.72、2.35、8.92、11.43 存在差异；原因尚未定位，数值不应视为严格复现。像素值范围为 0–255，像素差只是输出差异，不是质量评分。
+
+`compare.py` 要求两边的视频文件名集合完全一致，并输出当前文件的哈希；它不会自动读取历史记录核验哈希；文件集合检查修正后尚未重新解码视频。
 
 ## 四组留出观察
 

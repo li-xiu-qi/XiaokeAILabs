@@ -1,4 +1,4 @@
-"""Verify hashes and report frame-level differences for two output folders."""
+"""Report hashes and frame-level differences for two matched output folders."""
 import argparse
 import hashlib
 import json
@@ -12,10 +12,13 @@ parser.add_argument('--lora', required=True)
 args = parser.parse_args()
 report = []
 baseline = Path(args.baseline)
-for a in sorted(baseline.glob('*.mp4')):
-    b = Path(args.lora) / a.name
-    if not b.is_file():
-        raise SystemExit(f'Missing comparison for {a.name}')
+baseline_files = {p.name: p for p in baseline.glob('*.mp4')}
+lora_files = {p.name: p for p in Path(args.lora).glob('*.mp4')}
+if not baseline_files or baseline_files.keys() != lora_files.keys():
+    raise SystemExit(f'Unequal or empty video sets: baseline-only={sorted(baseline_files.keys() - lora_files.keys())}; '
+                     f'lora-only={sorted(lora_files.keys() - baseline_files.keys())}')
+for name, a in sorted(baseline_files.items()):
+    b = lora_files[name]
     sequences, item = [], {'id': a.stem}
     for label, path in [('baseline', a), ('lora', b)]:
         with av.open(str(path)) as video:
@@ -35,6 +38,4 @@ for a in sorted(baseline.glob('*.mp4')):
     diffs = [float(np.abs(x.astype(np.int16)-y.astype(np.int16)).mean()) for x, y in zip(*sequences)]
     item['paired_mae_mean'] = float(np.mean(diffs))
     report.append(item)
-if not report:
-    raise SystemExit('No baseline MP4 files found')
 print(json.dumps(report, indent=2))
