@@ -52,3 +52,5 @@ The following detailed documents are currently in Chinese:
 - [Historical index report](reports/向量索引-召回延迟与存储.md): measurements, limitations and evidence needed for a rerun.
 - [Memory measurement](reports/内存占用-测量范围与方法.md) and [hybrid search](reports/混合检索-向量与关键词融合.md): measurement scope and vector/keyword fusion.
 - [Environment](环境搭建.md), [debugging notes](docs/调试与排错记录.md), [project background](docs/项目与维护背景.md), [Chinese tokenizers](docs/六库分词器实现与中文支持.md), and [storage accounting](docs/各库体积与安装包数据.md): dated sources and measurement constraints.
+
+The historical scan variable named `ef` does not mean the same thing across systems: the LanceDB adapter passes it to `nprobes`, Qdrant passes it to `hnsw_ef`, and sqlite-vec ignores it. Equal numeric values do not imply equal search work. The missing raw run records also prevent verifying the effective runtime settings.
