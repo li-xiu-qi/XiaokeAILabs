@@ -1,5 +1,7 @@
 # MiniCPM-OCR 双模型部署：1.0 解析 + Jev 质检打分
 
+[English](README.en.md)
+
 本实验验证 OpenBMB 两个 MiniCPM-OCR 模型能否在 aarch64 统一内存机器上、不装 vLLM、不编译 Paddle 的前提下跑通，并接成一条闭环：1.0 负责「图片 → Markdown」，Jev 负责判断这份 Markdown 与原图是否一致。
 
 > **核心发现：官方主路线（vLLM 或 SGLang 加 Paddle 布局检测）在本次 aarch64 GB10 环境下三条路线均未跑通，换成 transformers 后两个模型都跑通。Jev 的分数复现官方公布值，偏差不超过 0.0045；闭环一次「识别 + 打分」耗时 2.5 秒，显存峰值 5.18 GiB。**

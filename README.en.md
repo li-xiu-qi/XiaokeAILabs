@@ -34,7 +34,7 @@ From model training and retrieval to multimodal systems and inference deployment
 - [Portrait matting](experiments/portrait-matting/README.en.md): Evaluate subject regions, boundaries, and forward time on 30 still images; results do not establish video performance.
 - [Table structure recognition](experiments/table-structure-recognition/README.en.md): Examine cropping and structure predictions on one synthetic table; text recognition is out of scope.
 - [Text detection and recognition](experiments/paddle-ocr-detection-recognition/README.en.md): Pass detected text regions to a recognizer; the two-stage result covers one synthetic table.
-- [MiniCPM-OCR](experiments/minicpm-ocr/README.md): Document recognition deployment and generation acceleration.
+- [MiniCPM-OCR](experiments/minicpm-ocr/README.en.md): Document recognition deployment and generation acceleration.
 - [Jina CLIP OpenVINO](experiments/jina-clip-openvino/README.md): Compare CPU and NPU correctness and workload-specific performance.
 - [Jev open-source evaluation](experiments/jev-open-source/README.md): Compare community implementations on a small decision-making sample.
 
