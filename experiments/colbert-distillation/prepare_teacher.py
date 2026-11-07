@@ -4,11 +4,12 @@
 """
 import argparse, hashlib, json, math, random
 from pathlib import Path
+from dataset_io import read_records
 
 PROMPT = 'Instruct: Given a scientific claim, retrieve documents that support or refute the claim\nQuery: '
 
 def load_lines(path):
-    return {r['_id']: r for r in (json.loads(s) for s in path.read_text(encoding='utf8').splitlines())}
+    return {r['_id']: r for r in read_records(path)}
 
 def synthetic(text):
     raw = hashlib.sha256(text.encode()).digest()

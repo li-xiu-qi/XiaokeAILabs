@@ -4,6 +4,7 @@ import numpy as np
 import torch
 from pylate import models, losses, rank
 from verify_binding import verify_binding
+from dataset_io import read_records
 
 os.environ['HF_HUB_OFFLINE']='1'
 ROOT=SOURCE=DATA=MODEL=None
@@ -21,7 +22,7 @@ def watchdog():
         time.sleep(1)
 
 def read_jsonl(path):
-    return [json.loads(x) for x in path.read_text(encoding='utf8').splitlines()]
+    return read_records(path)
 
 def save(path,obj):
     tmp=path.with_suffix(path.suffix+'.tmp')
@@ -33,9 +34,10 @@ def setup(smoke):
     manifest=json.loads((SOURCE/'manifest.json').read_text());teacher=json.loads((SOURCE/'teacher.json').read_text())
     verify_binding(SOURCE,DATA,manifest,teacher,smoke)
     train=manifest['train'];test=manifest['test'];scores=teacher['scores']
-    assert len(train)==128 and len(test)==300
-    assert all(len(row['candidates'])==4 and len(scores[row['id']])==4 for row in train)
-    assert all(len(row['candidates'])==30 and len(scores[row['id']])==30 for row in test)
+    if len(train)!=128 or len(test)!=300:
+        raise ValueError('expected 128 train and 300 test queries')
+    if any(len(row['candidates'])!=4 for row in train) or any(len(row['candidates'])!=30 for row in test):
+        raise ValueError('expected 4 train and 30 test candidates per query')
     return docs,queries,train[:2] if smoke else train,test[:2] if smoke else test,scores
 
 def evaluate(model,docs,queries,test):
