@@ -8,8 +8,9 @@ Compares:
                   MiniCPM-OCR-1.0-DSpark (0.3B 5-layer bidirectional block draft model +
                   low-rank Markov transition head + d2t vocabulary mapping)
 
-Includes exact hybrid state rollback for Qwen3_5GatedDeltaNet (18 linear attention layers +
-6 full attention layers), guaranteeing 100% lossless greedy token parity.
+Includes hybrid state rollback for Qwen3_5GatedDeltaNet (18 linear attention layers +
+6 full attention layers). Token parity is checked on the selected inputs; this
+does not establish parity for every input or execution environment.
 """
 
 from __future__ import annotations
@@ -323,8 +324,10 @@ def main():
     parser.add_argument("--testdata-dir", default="testdata")
     parser.add_argument("--examples-dir", default="repo/scripts/minicpm-ocr-jev/examples")
     parser.add_argument("--max-new-tokens", type=int, default=128)
-    parser.add_argument("--output-json", default="docs/evidence/acceleration_benchmark.json")
+    parser.add_argument("--output-json", required=True, help="Output path for this run; choose a new file to preserve historical evidence")
     args = parser.parse_args()
+    if Path(args.output_json).exists():
+        parser.error("output file already exists; choose a new path to preserve earlier results")
 
     device = "cuda"
     processor = AutoProcessor.from_pretrained(args.target_dir, trust_remote_code=True)

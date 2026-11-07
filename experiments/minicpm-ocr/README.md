@@ -88,26 +88,30 @@ Jev 不是 1.0 的另一个版本，是流水线的下一环。
 
 ### 推理加速 vs 非加速基线评测 (DSpark 投机采样与混合状态回滚)
 
-通过 `scripts/benchmark_acceleration.py` 在 GB10 (`aarch64`, `PyTorch 2.14.0+cu130`, `bfloat16`) 上实测 `MiniCPM-OCR-1.0` 标准贪婪自回归解码（Baseline）与挂载 `MiniCPM-OCR-1.0-DSpark`（0.3B 5 层双向块草稿模型 + 低秩马尔可夫状态转移头，`block_size = 15`）后的性能表现（覆盖中文综合版面、数学竞赛正文、多行复杂公式、国标结构化表格 4 组真实样本，共 343 个解码 Token）：
+通过 `scripts/benchmark_acceleration.py` 在 GB10 (`aarch64`, `PyTorch 2.14.0+cu130`, `bfloat16`) 上比较 `MiniCPM-OCR-1.0` 贪婪生成与加载 `MiniCPM-OCR-1.0-DSpark`（0.3B 五层草稿模型，`block_size = 15`）后的生成。四个输入包括自制中文测试页的裁切块和三个官方示例块，共生成 343 个 Token；这不是四份真实文档的代表性样本。
+
+计时从输入预处理完成后开始，包含带图片输入的首次模型前向及后续生成，不包含图片读取、预处理和模型加载。因此下表是**模型生成区间**，不能作为纯解码速度或完整 OCR 端到端延迟。每个样本先运行基线再运行加速版本，各一次，没有反向顺序或多轮测量；保存的是汇总 JSON 而非逐 Token 序列，仓库也未随附三个官方输入块，无法仅凭现有材料独立复算 Token 一致性。
 
 | 指标项 | 标准非加速基线 (Baseline) | DSpark 投机加速 (Accelerated) | 实测变化 / 收益 |
 |---|---|---|---|
-| **4 组样本总解码耗时** | 4.6461 秒 | **1.9676 秒** | **耗时降低 57.6%（整体 2.36x 加速）** |
-| **平均解码吞吐 (Tokens/s)** | 73.83 tok/s | **174.32 tok/s** | **吞吐提升 136.1%（最高 236.22 tok/s）** |
-| **单 Token 平均耗时** | 13.55 ms/tok | **5.74 ms/tok** | 单步解码耗时下降超过一半 |
+| **4 个样本总模型生成耗时** | 4.6461 秒 | **1.9676 秒** | **耗时降低 57.6%（整体 2.36x 加速）** |
+| **生成区间吞吐 (Tokens/s)** | 73.83 tok/s | **174.32 tok/s** | **吞吐提升 136.1%（最高 236.22 tok/s）** |
+| **每 Token 平均生成区间耗时** | 13.55 ms/tok | **5.74 ms/tok** | 总耗时除以生成 Token 数，包含首次前向 |
 | **主模型 (1.3B) 前向步数** | 343 步 | **44 步** | **减少 87.2% 的主模型串行前向** |
-| **单步平均接受长度 ($\tau$)** | 1.00 tok/step | **9.18 tok/step** | 四个样例各自平均值的算术平均，多行公式块为 **11.40** |
+| **脚本的平均 `n_accept + 1`** | 不适用 | **9.18** | 四个样本各自平均值的算术平均，不等于严格的接受 Token 数 |
 | **峰值显存占用 (BF16)** | 未单独测量 | **4.33 GiB** | 两个模型同时加载后运行四个样本的 PyTorch 峰值分配量，无法由此计算草稿模型带来的增量 |
-| **贪婪输出 Token 一致性** | 100% (343/343) | **100% 逐 Token 一致 (`True`)** | 四个样本的输出与基线一致 |
+| **贪婪输出 Token 对比** | 参照 | **四个样本均记录 `True`** | 汇总记录报告序列相同，未保存完整序列供独立复核 |
 
-| 测试任务 | 生成 Token 数 | Baseline 耗时 (`tok/s`) | DSpark 耗时 (`tok/s`) | 主模型步数 (`Base → DSpark`) | 平均接受长度 ($\tau$) | 实测加速比 | Token 一致性 |
+| 测试任务 | 生成 Token 数 | Baseline 耗时 (`tok/s`) | DSpark 耗时 (`tok/s`) | 主模型步数 (`Base → DSpark`) | 平均 `n_accept + 1` | 实测加速比 | Token 一致性 |
 |---|---|---|---|---|---|---|---|
 | 中文综合版面 (`case1_cn_document`) | 128 | 1.875s (`68.25`) | **0.935s (`136.83`)** | `128 → 18` | 7.53 | **2.00x** | `True` |
 | 数学竞赛证明正文 (`01_text_putnam`) | 84 | 1.076s (`78.07`) | **0.358s (`234.93`)** | `84 → 9` | 10.50 | **3.01x** | `True` |
 | 多行复杂数学公式 (`02_formula_putnam`) | 57 | 0.744s (`76.66`) | **0.241s (`236.22`)** | `57 → 6` | 11.40 | **3.08x** | `True` |
 | 中文国标结构化表格 (`03_table_gb_standard`) | 74 | 0.951s (`77.79`) | **0.433s (`170.78`)** | `74 → 11` | 7.30 | **2.20x** | `True` |
 
-> 针对 `MiniCPM-OCR-1.0` 主干中 18 层 `Qwen3_5GatedDeltaNet` 线性注意力在 `transformers` 原生辅助解码下无法回滚递归状态的限制，本实验在核验窗口（`seq_len <= 16`）内记录逐位置递归状态快照并同步裁剪 `conv_states` 与 `recurrent_states`。本次四个样本的模型生成耗时加速比为 **2.00x–3.08x（综合 2.36x）**，生成 Token 与贪婪基线一致。
+脚本每轮记录的 `n_accept + 1` 是通过验证的草稿 Token 数加一；最后一轮遇到结束符或长度上限时，额外的 Token 不一定实际生成。因此该数是实现定义的计数，不能直接当作严格的实际接受或生成长度。
+
+> 针对 `MiniCPM-OCR-1.0` 主干中 18 层 `Qwen3_5GatedDeltaNet` 线性注意力在 `transformers` 原生辅助解码下无法回滚递归状态的限制，本实验在核验窗口（`seq_len <= 16`）内记录逐位置递归状态快照并同步裁剪 `conv_states` 与 `recurrent_states`。本次四个样本记录的模型生成耗时加速比为 **2.00x–3.08x（综合 2.36x）**，摘要报告生成 Token 与贪婪基线一致。
 
 ## 三个绕开官方路线的决定
 
@@ -147,6 +151,8 @@ python scripts/jev_loop_block.py --block <块图> --truth <人工确认原文>
 # 7. 推理加速对比评测：基准对比 DSpark 投机采样与特征压缩提速比
 bash scripts/run_acceleration_benchmark.sh
 ```
+
+加速评测默认写入 `$MINICPM_OCR_HOME/benchmark-results/acceleration_benchmark.json`（未设置时为 `$HOME/minicpm-ocr/benchmark-results/acceleration_benchmark.json`）。若文件已存在，脚本会退出；为每次复测设置不同的 `OCR_BENCHMARK_OUTPUT`，避免覆盖历史证据。
 
 路径默认从 `$HOME/minicpm-ocr` 推导，可用环境变量覆盖：`MINICPM_OCR_HOME`、`OCR_MODEL_DIR`、`JEV_MODEL_DIR`、`JEV_REPO`、`RM_RENDER_PYTHON`、`OCR_URL`。
 

@@ -34,16 +34,16 @@ For one official text block, the documented three-candidate loop scored a human-
 
 ## DSpark speculative generation
 
-The [benchmark](scripts/benchmark_acceleration.py) compared baseline greedy autoregressive decoding with MiniCPM-OCR-1.0-DSpark on four document blocks: a Chinese mixed-layout sample, a mathematical proof, a multiline formula, and a structured table. The measured model-generation interval excludes image reading and preprocessing. Both paths generated the same 343 tokens across these four samples.
+The [benchmark](scripts/benchmark_acceleration.py) compared baseline greedy generation with MiniCPM-OCR-1.0-DSpark on a crop of a self-generated Chinese page and three official example blocks: a mathematical proof, a multiline formula, and a structured table. The model-generation interval starts after preprocessing and includes the first image-conditioned target-model forward pass and subsequent generation; it excludes image reading, preprocessing and model loading. It is neither pure decode time nor end-to-end OCR latency. The stored summary reports identical outputs across 343 tokens, but does not retain the token sequences, and the three official input blocks are not included here, so the equality result cannot be independently reconstructed from this repository alone. Baseline always ran first and each case was measured once.
 
 | Metric | Baseline | DSpark |
 |---|---:|---:|
 | Total model-generation time | 4.6461 s | 1.9676 s |
 | Aggregate throughput | 73.83 tokens/s | 174.32 tokens/s |
 | Target-model forward steps | 343 | 44 |
-| Greedy output token parity | 343 / 343 | 343 / 343 |
+| Greedy output token parity | Reference | Four case summaries report `True` |
 
-The aggregate time ratio is **2.36×**, with per-sample ratios of 2.00× to 3.08×. The arithmetic mean of the four per-sample accepted-length averages is 9.18 tokens per step. The measured PyTorch peak allocation with both models loaded was 4.33 GiB; baseline peak was not measured separately, so this does not show the draft model's incremental cost. The timing and equality results cover only these four cases, not end-to-end OCR or all documents. Full per-sample metrics are in the [recorded JSON](docs/evidence/acceleration_benchmark.json) and [benchmark report](docs/evidence/acceleration_benchmark.md).
+The aggregate time ratio is **2.36×**, with per-sample ratios of 2.00× to 3.08×. The arithmetic mean of the four per-case averages of the script's `n_accept + 1` count is 9.18. This count adds one to the number of verified draft tokens in each iteration; the extra token is not always emitted when the last iteration ends at EOS or a length limit, so it is not a strict count of accepted or emitted tokens. The measured PyTorch peak allocation with both models loaded was 4.33 GiB; baseline peak was not measured separately, so this does not show the draft model's incremental cost. The timing and equality results cover only these four cases, not end-to-end OCR or all documents. Per-sample summaries are in the [recorded JSON](docs/evidence/acceleration_benchmark.json) and [benchmark report](docs/evidence/acceleration_benchmark.md).
 
 The DSpark run uses a 0.3B five-layer draft model with `block_size=15`. The implementation records per-position recurrent state snapshots within the verification window (`seq_len <= 16`) and trims `conv_states` and `recurrent_states` after verification, addressing the rollback requirement of the backbone's linear-attention layers. The sample token-equality check does not prove equivalence for every possible input or configuration.
 
@@ -81,6 +81,8 @@ python scripts/jev_loop_block.py --block <block-image> --truth <verified-text>
 # Compare baseline and DSpark generation.
 bash scripts/run_acceleration_benchmark.sh
 ```
+
+The benchmark writes to `$MINICPM_OCR_HOME/benchmark-results/acceleration_benchmark.json`, or `$HOME/minicpm-ocr/benchmark-results/acceleration_benchmark.json` when the variable is unset. It refuses to overwrite an existing file; set `OCR_BENCHMARK_OUTPUT` to a new path for each run.
 
 The default paths are derived from `$HOME/minicpm-ocr`; `MINICPM_OCR_HOME`, `OCR_MODEL_DIR`, `JEV_MODEL_DIR`, `JEV_REPO`, `RM_RENDER_PYTHON`, and `OCR_URL` can override them. Rendering and scoring use separate environments. The renderer pins Playwright 1.62.0 and Pillow 12.3.0 because changing image rendering can change scores. `02b_fetch_sources.sh` stops if its destination or download already exists instead of overwriting it.
 

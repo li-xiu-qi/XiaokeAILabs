@@ -6,13 +6,18 @@ OCR_HOME="${MINICPM_OCR_HOME:-$HOME/minicpm-ocr}"
 PYTHON_BIN="${OCR_PYTHON:-$OCR_HOME/.venv-ocr/bin/python}"
 
 echo "[*] MiniCPM-OCR 1.0 + DSpark 推理加速对比评测启动..."
-mkdir -p "$BASE/docs/evidence"
+OUTPUT_JSON="${OCR_BENCHMARK_OUTPUT:-$OCR_HOME/benchmark-results/acceleration_benchmark.json}"
+if [[ -e "$OUTPUT_JSON" ]]; then
+    echo "Output already exists: $OUTPUT_JSON. Set OCR_BENCHMARK_OUTPUT to a new path." >&2
+    exit 1
+fi
+mkdir -p "$(dirname "$OUTPUT_JSON")"
 
 "$PYTHON_BIN" "$BASE/scripts/benchmark_acceleration.py" \
     --target-dir "${OCR_MODEL_DIR:-$OCR_HOME/models/MiniCPM-OCR-1.0}" \
     --dspark-dir "${DSPARK_MODEL_DIR:-$OCR_HOME/models/MiniCPM-OCR-1.0-DSpark}" \
     --testdata-dir "${OCR_TESTDATA_DIR:-$OCR_HOME/testdata}" \
     --examples-dir "${JEV_EXAMPLES_DIR:-$OCR_HOME/repo/scripts/minicpm-ocr-jev/examples}" \
-    --output-json "$BASE/docs/evidence/acceleration_benchmark.json"
+    --output-json "$OUTPUT_JSON"
 
-echo "[+] 评测完成！原始数据保存在 $BASE/docs/evidence/acceleration_benchmark.json"
+echo "[+] 评测完成！结果保存在 $OUTPUT_JSON"
