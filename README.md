@@ -16,7 +16,7 @@
 - [多模态重排序](experiments/multimodal-reranking/README.md)：探索图文候选的重排序，并查看匿名化评测结果。
 - [GUI 定位微调](experiments/gui-grounding-finetuning/README.md)：48 条分层留出样本中，基座命中 34、LoRA 命中 42；小样本不能保证跨应用泛化。
 - [教师视频训练水波纹生成模型](experiments/video-generation-distillation/README.md)：对照学生训练前后，以及教师和学生自产训练素材；[小样本来源对照](experiments/video-generation-distillation/results/source-control/README.md)的抽帧评审未显示教师数据组优于基模。
-- [合成数据训练文生图模型](experiments/image-generation-distillation/README.md)：比较教师与学生自产数据；相机开发集教师优势门槛未通过，本轮停止微调与最终测试。
+- [合成数据训练文生图模型](experiments/image-generation-distillation/README.md)：教师合成数据微调学生；相机场景的教师优势门槛未通过，陶瓷杯开发集检查通过，尚不能证明蒸馏成功。
 - [人物图像生成微调](experiments/image-finetune/README.md)：用人物照片训练 LoRA；现有基线与微调结果分辨率不同，不能直接比较。
 - [人物视频微调与排障](experiments/wan22-video-diagnostics/README.md)：检查视频基模、种子和 LoRA 生成结果；小规模留出评估未证明学会目标角色。
 - [向量数据库基准](experiments/vector-db-benchmark/README.md)：历史数据缺少原始结果，不用于产品排名。
