@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="490" height="250" viewBox="0 0 490 250" role="img" aria-labelledby="title desc">
+<title id="title">模型量化如何比较</title><desc id="desc">量化权重；测量体积；比较质量与速度</desc>
+<rect width="490" height="250" fill="#edf3ef"/><g fill="#203a32" font-family="system-ui, 'Microsoft YaHei', sans-serif">
+<text x="30" y="34" fill="#426459" font-size="13">方法示意</text><text x="30" y="72" font-size="23" font-weight="700">模型量化如何比较</text>
+<rect x="27" y="105" width="133" height="86" rx="9" fill="#fff" stroke="#a5b8af"/><text x="41" y="133" fill="#426459" font-size="13">01</text><text x="41" y="166" font-size="14">量化权重</text><path d="M163 147h11m-4-4 4 4-4 4" fill="none" stroke="#426459"/><rect x="178" y="105" width="133" height="86" rx="9" fill="#fff" stroke="#a5b8af"/><text x="192" y="133" fill="#426459" font-size="13">02</text><text x="192" y="166" font-size="14">测量文件体积</text><path d="M314 147h11m-4-4 4 4-4 4" fill="none" stroke="#426459"/><rect x="329" y="105" width="133" height="86" rx="9" fill="#fff" stroke="#a5b8af"/><text x="343" y="133" fill="#426459" font-size="13">03</text><text x="343" y="166" font-size="14">比较质量和速度</text>
+
+</g></svg>
