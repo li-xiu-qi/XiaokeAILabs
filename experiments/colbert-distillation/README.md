@@ -19,6 +19,8 @@
 | 教师分数蒸馏 | 0.6653 | 0.6421 |
 | 8B 教师 | 0.7341 | 0.7044 |
 
+上表是**历史运行**。2026 年 11 月 7 日用公开流程重跑时，基模与监督组排序一致，蒸馏组 nDCG@10 为 **0.6695**，略高于监督组的 **0.6686**；两者配对差值区间跨零，仍不足以确认优势。新旧教师分数存在差异，原因未查明，因此不能把某一次运行的组间高低当成稳定结论。完整数字与边界见[复验记录](RECHECK-20261107.md)。
+
 蒸馏相对原模型的 nDCG@10 差值为 +0.0117，按查询配对 bootstrap 的 95% 区间为 [0.0012, 0.0222]；相对监督为 -0.0033，区间为 [-0.0113, 0.0041]。只有一个训练种子，这些区间不反映训练随机性。预设目标是较原模型至少提升 0.02 且不低于监督对照，**本次未达到**。逐查询分数已用原始测试 qrels 独立复算，三组结果一致。[汇总数据](summary.json)包含时间和参数记录。
 
 ## 原理：跨模型架构学习排序偏好
@@ -58,6 +60,8 @@ python prepare_pools.py --data /path/to/scifact --original-claims /path/to/claim
 python prepare_teacher.py --data /path/to/scifact --pools /path/to/prepared/pools.json --model /path/to/Qwen3-Embedding-8B --device cuda --out /path/to/source
 python run.py --data /path/to/scifact --source /path/to/source --model /path/to/colbert --output /path/to/output --smoke
 ```
+
+上面的 `--smoke` 只跑两个训练查询、两个测试查询和两步训练，用于检查流程。正式实验需要去掉 `--smoke` 并使用新的输出子目录；仅完成冒烟不能用于比较模型效果。
 
 [prepare_teacher.py](prepare_teacher.py) 以种子 20261107 选训练查询，编码带任务指令的查询与标题加摘要，输出按候选顺序排列的余弦分数。它的 `--synthetic-encoder` 使用确定性伪向量，仅用于 CPU 数据接口冒烟，不能用于模型评估；本次 CPU 冒烟生成的训练及测试候选清单与原实验逐项一致。真实模型打分路径已重跑，新旧教师分数存在差异，原因尚未确定，详见[复验记录](RECHECK-20261107.md)。
 

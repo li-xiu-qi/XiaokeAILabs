@@ -17,6 +17,8 @@ On 300 held-out SciFact queries, nDCG@10 increased from **0.6536 to 0.6653**, bu
 | Teacher distillation | 0.6653 | 0.6421 |
 | 8B teacher | 0.7341 | 0.7044 |
 
+The table reports the **historical run**. In the public-pipeline rerun on November 7, 2026, baseline and supervised rankings matched the historical run, while distilled nDCG@10 was **0.6695**, slightly above supervised **0.6686**. The paired interval spans zero, so it still does not establish an advantage. Teacher scores differed between runs for an unresolved reason; neither ordering should be treated as stable. See the [rerun record](RECHECK-20261107.en.md) for the full comparison and its limitations.
+
 The paired query bootstrap 95% interval for distillation minus the initial model is [0.0012, 0.0222]; for distillation minus supervised it is [-0.0113, 0.0041]. There is only one training seed, so these intervals do not capture training variability.
 
 ## Data and method
