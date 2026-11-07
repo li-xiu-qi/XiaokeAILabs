@@ -30,7 +30,7 @@ The documented run used DGX Spark GB10, aarch64, unified memory, Ubuntu 24.04, C
 
 The recorded examples include an A4 end-to-end parsing run of 11.2 seconds, a WebUI run of 9.75 seconds, and a reported 3 GiB recognizer peak. Jev weight loading took 32.5 seconds, its reported peak was 5.18 GiB, and individual candidate forward times ranged from 0.13 to 1.16 seconds. These are individual observations rather than a latency distribution.
 
-For one official text block, the documented three-candidate loop scored a human-confirmed transcription 0.99522, the recognizer output 0.99505, and a deliberately corrupted version 0.00000. Recognition, rendering, and ranking three candidates took 2.5 seconds in that run. This small example is not an estimate of ranking accuracy on real documents.
+For one official text block, the documented three-candidate loop scored a human-confirmed transcription 0.99522, the recognizer output 0.99505, and a deliberately corrupted version 0.00000. Recognition, rendering, and ranking three candidates took 2.5 seconds in that run. The source image, candidate texts, rendered images and per-candidate score logs for this historical example are not retained in this repository, so its ranking and timing cannot be independently checked here. This small example is not an estimate of ranking accuracy on real documents.
 
 ## DSpark speculative generation
 
@@ -90,4 +90,6 @@ The scoring UI uses `/ui/score` and `/ui/ocr`; the latter calls the recognizer w
 
 Jev was checked against three official cropped blocks here; scans, photographs, mixed Chinese and English documents, and cross-machine reproduction were not tested. It expects layout blocks, not whole pages. A whole-page workflow needs layout detection and per-block scoring.
 
-The model's idea of consistency reflects its training labels. An official table example reportedly gives a human-confirmed transcription only 0.047 because its rendered layout differs from the source. A high score means the text and its rendering appear consistent with the image to the model; it does not guarantee semantic correctness. Missing fonts or formula rendering errors can also distort scores, so inspect the source and rendered images side by side. Candidate scores are for comparison within the same group and must not be interpreted as accuracy.
+The model's idea of consistency reflects its training labels. A historical record reports a 0.047 score for a human-confirmed table transcription, but the underlying example is not retained here; rendering differences may affect scores, but its cause is not established. A high score means the text and its rendering appear consistent with the image to the model; it does not guarantee semantic correctness. Missing fonts or formula rendering errors can also distort scores, so inspect the source and rendered images side by side. Candidate scores are for comparison within the same group and must not be interpreted as accuracy.
+
+The score is the positive-class softmax of two logits, not a validated probability of correctness. To choose thresholds, use independently labeled documents and report false acceptance, missed errors and review workload on a held-out test set. Calibration would require a separate reliability assessment; no general threshold is established here.
