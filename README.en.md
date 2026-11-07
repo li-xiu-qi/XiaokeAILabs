@@ -8,7 +8,7 @@ From model training and retrieval to multimodal systems and inference deployment
 
 - [Chinese embedding fine-tuning](experiments/embedding-research/model_finetuning/test_train_embedding/README.md): Learn in-batch contrastive training with query-document pairs; the four built-in examples do not establish a retrieval improvement.
 - [Reranker fine-tuning](experiments/reranker-finetune-scifact/README.en.md): Train a cross-encoder with queries, documents, and relevance labels.
-- [Embedding distillation](experiments/embedding-distillation/README.en.md): Transfer teacher scores to a smaller embedding model; candidate preparation uses scripts in the ColBERT distillation experiment.
+- [Embedding distillation](experiments/embedding-distillation/README.en.md): Transfer teacher scores to a smaller embedding model; candidate preparation uses the shared SciFact tool.
 - [Reranker distillation](experiments/reranker-distillation/README.en.md): Compare supervised training and score distillation on a fixed candidate pool.
 - [ColBERT distillation](experiments/colbert-distillation/README.en.md): Compare score distillation with supervised learning; distillation did not beat the supervised baseline.
 - [Visual multi-vector document retrieval](experiments/visual-multivector-retrieval/README.en.md): A page-retrieval baseline plus supervised fine-tuning and distillation comparisons on synthetic pages.

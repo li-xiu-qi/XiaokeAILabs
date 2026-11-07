@@ -42,9 +42,9 @@ This verifies aggregates and paired bootstrap intervals, not the underlying rank
 For a new run, obtain [BEIR SciFact](https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/scifact.zip), the [original training claims](https://github.com/allenai/scifact), the [teacher checkpoint](https://huggingface.co/Qwen/Qwen3-Embedding-8B/tree/1d8ad4ca9b3dd8059ad90a75d4983776a23d44af), and the student checkpoint. Run on Linux with CUDA and PyLate:
 
 ```bash
-python prepare_pools.py --data /path/to/scifact --original-claims /path/to/claims_train.jsonl --config pool_config.json --out /path/to/prepared
+python prepare_pools.py --data /path/to/scifact --original-claims /path/to/claims_train.jsonl --out /path/to/prepared
 python prepare_teacher.py --data /path/to/scifact --pools /path/to/prepared/pools.json --model /path/to/Qwen3-Embedding-8B --device cuda --out /path/to/source
 python run.py --data /path/to/scifact --source /path/to/source --model /path/to/colbert --output /path/to/output --smoke
 ```
 
-Remove `--smoke` for the full run. The candidate pool reconstructed on CPU matched the original SHA-256 `e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8`; see [input hashes](source-hashes.json). The rewritten real-teacher scoring path has **not** been rerun, so exact end-to-end reproduction of the original teacher scores is not established. Its synthetic encoder is for interface smoke tests only. The training script enforces a 50 GiB available-memory guard specific to this setup, not a general requirement.
+Remove `--smoke` for the full run. The candidate preparation entry point delegates to the [shared SciFact tool](../../utils/scifact-pools/README.en.md), which documents inputs, hashes and its Python 3.11 requirement. The candidate pool reconstructed on CPU matched the original SHA-256 `e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8`. The rewritten real-teacher scoring path has **not** been rerun, so exact end-to-end reproduction of the original teacher scores is not established. Its synthetic encoder is for interface smoke tests only. The training script enforces a 50 GiB available-memory guard specific to this setup, not a general requirement.

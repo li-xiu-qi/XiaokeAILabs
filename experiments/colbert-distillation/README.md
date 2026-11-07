@@ -51,10 +51,10 @@ python recompute_metrics.py
 
 ## 从数据准备候选与教师分数
 
-候选准备脚本 [prepare_pools.py](prepare_pools.py) 使用 [BEIR SciFact](https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/scifact.zip) 和 [SciFact 原始训练 claims](https://github.com/allenai/scifact)；先按证据句筛选正例，过滤跨分组高相似查询，再用 BM25 生成候选。配置见 [pool_config.json](pool_config.json)。BEIR 的四个输入文件 SHA-256 和原始 claims 的 SHA-256 见 [source-hashes.json](source-hashes.json)。本次复算在 CPU 上重建的 pools.json 与原始运行文件 SHA-256 完全一致（`e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8`）。
+使用 [SciFact 共享候选池工具](../../utils/scifact-pools/README.md)准备数据。它按证据句筛选正例，过滤跨分组高相似查询，再用 BM25 生成候选；数据来源、配置与输入哈希见工具说明。本次复算在 CPU 上重建的 pools.json 与原始运行文件 SHA-256 完全一致（`e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8`）。
 
 ```bash
-python prepare_pools.py --data /path/to/scifact --original-claims /path/to/claims_train.jsonl --config pool_config.json --out /path/to/prepared
+python prepare_pools.py --data /path/to/scifact --original-claims /path/to/claims_train.jsonl --out /path/to/prepared
 python prepare_teacher.py --data /path/to/scifact --pools /path/to/prepared/pools.json --model /path/to/Qwen3-Embedding-8B --device cuda --out /path/to/source
 python run.py --data /path/to/scifact --source /path/to/source --model /path/to/colbert --output /path/to/output --smoke
 ```

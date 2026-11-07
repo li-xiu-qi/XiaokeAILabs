@@ -33,7 +33,7 @@ The teacher is [MS MARCO MiniLM-L12](https://huggingface.co/cross-encoder/ms-mar
 
 ## Reproduce
 
-Prepare SciFact and `prepared/pools.json` using the [candidate-pool instructions](../colbert-distillation/README.en.md#reproduce-and-inspect); the pool SHA-256 should be `e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8`. Teacher scoring and training in that other experiment are unnecessary. Install Linux CUDA PyTorch, Transformers, NumPy and Hugging Face Hub, then run from this directory:
+Prepare SciFact and `prepared/pools.json` using the [shared candidate-pool instructions](../../utils/scifact-pools/README.en.md); the pool SHA-256 should be `e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8`. Preparation uses Python 3.11 or newer and runs on CPU. Copy the shared tool as well if copying this experiment on its own. Install Linux CUDA PyTorch, Transformers, NumPy and Hugging Face Hub, then run from this directory:
 
 ```bash
 DATA_ROOT=/path/to/data-root

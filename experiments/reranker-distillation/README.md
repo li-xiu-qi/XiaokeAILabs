@@ -43,7 +43,7 @@ $$\mathcal L_{\mathrm{KD}}=T^2\,D_{\mathrm{KL}}\!\left(\operatorname{softmax}(z_
 
 ## 复现
 
-需要 Linux、CUDA PyTorch、Transformers、NumPy 和 Hugging Face Hub。按 [ColBERT 实验的数据准备步骤](../colbert-distillation/README.md#从数据准备候选与教师分数)准备 `scifact/` 和 `prepared/pools.json`，只需运行候选池准备脚本，不必运行教师打分或训练。该候选文件的 SHA-256 应为 `e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8`；不同版本或候选池不能直接对比本文数字。
+需要 Linux、CUDA PyTorch、Transformers、NumPy 和 Hugging Face Hub。按 [SciFact 共享候选池步骤](../../utils/scifact-pools/README.md)准备 `scifact/` 和 `prepared/pools.json`；准备脚本使用 Python 3.11 及以上版本，在 CPU 运行。单独复制本实验时，也需复制共享工具。该候选文件的 SHA-256 应为 `e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8`；不同版本或候选池不能直接对比本文数字。
 
 从本实验目录运行，使用已准备数据的目录替换 `DATA_ROOT`：
 

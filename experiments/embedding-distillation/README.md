@@ -52,9 +52,9 @@ $$
 
 运行 `python scripts/verify.py` 可直接用随附的每查询指标复算表格与配对 bootstrap；证据包含查询 ID 和指标，不含原始文本、模型或数据集。复算只核对聚合和区间，不能独立验证原始模型推理与标注。本次公开脚本由设备侧脚本参数化整理，尚未重新完成端到端训练，下面是复现路径而非已验证的一键流程。
 
-在 Linux CUDA 环境中准备 PyTorch、NumPy 和 Sentence Transformers。按照 [ColBERT 实验的数据准备步骤](../colbert-distillation/README.md#从数据准备候选与教师分数)下载并校验输入，再运行候选池准备脚本；生成的 `pools.json` 决定训练正例和 BM25 候选。数据集及模型按各自许可从原始来源获取，不包含在本仓库内。BEIR 数据卡标注 CC BY-SA 4.0；原始 SciFact 的标注与语料许可不同，使用前请参照[原始许可](https://github.com/allenai/scifact/blob/master/LICENSE.md)。
+在 Linux CUDA 环境中准备 PyTorch、NumPy 和 Sentence Transformers。按照 [SciFact 共享候选池步骤](../../utils/scifact-pools/README.md)下载并校验输入，再运行候选池准备脚本；生成的 `pools.json` 决定训练正例和 BM25 候选。数据集及模型按各自许可从原始来源获取，不包含在本仓库内。BEIR 数据卡标注 CC BY-SA 4.0；原始 SciFact 的标注与语料许可不同，使用前请参照[原始许可](https://github.com/allenai/scifact/blob/master/LICENSE.md)。
 
-只需运行该步骤中的 `prepare_pools.py`，不需要运行 ColBERT 教师或学生训练命令。候选准备脚本使用 `hashlib.file_digest`，要求 Python 3.11 或更高版本；该脚本和配置目前由相邻实验维护，单独复制本目录时也需复制它们。
+候选准备脚本使用 `hashlib.file_digest`，要求 Python 3.11 或更高版本；单独复制本目录时也需复制共享工具。
 
 下载两个模型到本机并固定版本，例如：
 
