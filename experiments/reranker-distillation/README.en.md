@@ -17,7 +17,18 @@ On 300 held-out SciFact queries and the same fixed BM25 candidate pools:
 | Student, supervised | 4.39M | 0.6336 | 0.6053 |
 | Student, supervised plus distillation | 4.39M | 0.6355 | 0.6070 |
 
-The distilled-minus-supervised nDCG@10 difference is 0.00182, with a paired query bootstrap 95% interval of [-0.00296, 0.00685]. It does not establish an advantage over supervised training. There is one training seed, and the interval excludes retraining variability. Both checkpoints were already trained on MS MARCO; “before” means before this SciFact fine-tuning, not random initialization. Overlap with pretraining cannot be excluded. The planned BGE reranker v2-m3 did not finish downloading and was not evaluated.
+The distilled-minus-supervised nDCG@10 difference is 0.00182, with a paired query bootstrap 95% interval of [-0.00296, 0.00685]. It does not establish an advantage over supervised training. The table reports seed 20261107; the interval excludes retraining variability. Both checkpoints were already trained on MS MARCO; “before” means before this SciFact fine-tuning, not random initialization. Overlap with pretraining cannot be excluded. The planned BGE reranker v2-m3 did not finish downloading and was not evaluated.
+
+### Repeat with a second training seed
+
+We repeated supervised training and distillation with seed 20261108, keeping the data, candidate pools, checkpoints, steps and losses fixed. The same 300 test queries were reused.
+
+| Training seed | Supervised nDCG@10 | Distilled nDCG@10 | Difference | Paired query bootstrap 95% interval |
+|---|---:|---:|---:|---:|
+| 20261107 | 0.6336 | 0.6355 | +0.00182 | [-0.00296, 0.00685] |
+| 20261108 | 0.6357 | 0.6370 | +0.00126 | [-0.00420, 0.00664] |
+
+Both intervals cross zero, so neither comparison establishes an advantage for distillation. Two seeds provide limited information about training variability; reusing the same test set does not create an independent test. Query bootstrap intervals exclude variability across training seeds, candidate pools and datasets. Per-query metrics, training losses, manifest and analysis are in the [seed 20261108 evidence](docs/evidence/seed-20261108/).
 
 ## Data and training
 
