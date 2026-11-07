@@ -122,3 +122,9 @@ python scripts/generate.py --model stable-diffusion-v1-5/stable-diffusion-v1-5 \
 针对前次事后发现的相机类别差异，新增 8 条提示、每条两个种子，分别比较教师、学生原模型和 LoRA 学生。单名 AI 对缩略图盲评时，学生原模型和 LoRA 在“一台可辨认相机”指标均为 16/16，未重复观察到该指标提升。此结果是事后驱动的小样本探索，不能推广到其他物体；[提示词、配对评分与匿名接触表](camera-followup/README.md)可供复核，原始图片未公开。
 
 **English:** In an exploratory camera follow-up, eight new prompts with two seeds each yielded 16 paired student outputs. One blinded AI thumbnail reviewer rated both the base and LoRA student 16/16 on one recognizable camera, so the earlier improvement was not repeated on that measure. The small, post-hoc sample does not generalize; see the [prompts, paired scores and anonymized contact sheets](camera-followup/README.md). Original images are not distributed.
+
+## 教师数据与学生自生成数据对照
+
+在相机产品图场景，以相同训练预算对比学生自生成数据与教师生成数据。16 组配对中，单名 AI 的缩略图评分显示教师数据组在“一台可辨认相机”指标上较自生成组改善 3 例、下降 5 例、持平 8 例；这次没有观察到教师组优势。两条数据生成路径的模型、采样器及软件版本不同，不能单独归因模型大小。[对照设计、评分与配图](teacher-data-control/README.md)保留了方法和局限。
+
+**English:** A matched camera-image follow-up compares teacher-generated with student-generated training data. One blinded AI thumbnail reviewer found 3 improvements, 5 regressions and 8 unchanged cases for teacher data on the primary single-camera measure. The complete generation pipelines differ; see the [design and ratings](teacher-data-control/README.en.md).

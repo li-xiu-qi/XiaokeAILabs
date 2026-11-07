@@ -1,0 +1,126 @@
+{
+  "arm_counts": {
+    "eval-base": {
+      "single_camera": {
+        "1": 9,
+        "0": 7
+      },
+      "color_correct": {
+        "1": 10,
+        "0": 6
+      },
+      "background_correct": {
+        "1": 9,
+        "0": 7
+      },
+      "severe_artifact": {
+        "0": 10,
+        "1": 6
+      }
+    },
+    "eval-self": {
+      "single_camera": {
+        "1": 11,
+        "0": 5
+      },
+      "color_correct": {
+        "1": 11,
+        "0": 5
+      },
+      "background_correct": {
+        "1": 10,
+        "0": 6
+      },
+      "severe_artifact": {
+        "0": 12,
+        "1": 4
+      }
+    },
+    "eval-teacher": {
+      "single_camera": {
+        "1": 9,
+        "0": 7
+      },
+      "color_correct": {
+        "0": 8,
+        "1": 8
+      },
+      "background_correct": {
+        "1": 11,
+        "0": 5
+      },
+      "severe_artifact": {
+        "0": 11,
+        "1": 5
+      }
+    }
+  },
+  "paired_comparisons": {
+    "eval-base -> eval-self": {
+      "single_camera": {
+        "same": 8,
+        "worse": 3,
+        "improved": 5
+      },
+      "color_correct": {
+        "same": 13,
+        "worse": 1,
+        "improved": 2
+      },
+      "background_correct": {
+        "worse": 2,
+        "same": 11,
+        "improved": 3
+      },
+      "severe_artifact": {
+        "same": 10,
+        "worse": 2,
+        "improved": 4
+      }
+    },
+    "eval-base -> eval-teacher": {
+      "single_camera": {
+        "same": 12,
+        "worse": 2,
+        "improved": 2
+      },
+      "color_correct": {
+        "worse": 4,
+        "same": 10,
+        "improved": 2
+      },
+      "background_correct": {
+        "same": 12,
+        "worse": 1,
+        "improved": 3
+      },
+      "severe_artifact": {
+        "same": 11,
+        "worse": 2,
+        "improved": 3
+      }
+    },
+    "eval-self -> eval-teacher": {
+      "single_camera": {
+        "same": 8,
+        "improved": 3,
+        "worse": 5
+      },
+      "color_correct": {
+        "worse": 4,
+        "same": 11,
+        "improved": 1
+      },
+      "background_correct": {
+        "improved": 2,
+        "same": 13,
+        "worse": 1
+      },
+      "severe_artifact": {
+        "same": 9,
+        "improved": 3,
+        "worse": 4
+      }
+    }
+  }
+}
