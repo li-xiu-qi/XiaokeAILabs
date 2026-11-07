@@ -43,6 +43,14 @@ python scripts/hybrid_architecture_model.py --layers 16 --kv-heads 4 --head-dim 
 
 输出是等长序列的标准 KV 数据体积；FP8、FP4 只按理想元素位宽计算，量化比例因子和元数据未计入，不能据此判断引擎是否支持该精度。它不包含其他层状态与运行时开销。
 
+### 投机解码何时可能不划算？
+
+草稿模型先提出候选 token，目标模型再验证；接受率较低时，验证与草稿的额外工作可能抵消收益。[示例脚本](scripts/speculative_model.py)用以下假设做对照：每轮提出 $k$ 个草稿 token，每个 token 在前面草稿均已接受的条件下以固定概率 $\alpha$ 被接受，忽略结束符，每轮再输出一个修正或奖励 token。每轮期望输出与简化速度比为：
+
+$$E[N]=\sum_{i=0}^{k}\alpha^i,\qquad S=\frac{E[N]}{c_v+k c_d}.$$
+
+$c_v$ 是整轮验证成本，$c_d$ 是每个草稿 token 的成本，两者都以普通解码一步的时间为单位。运行 `python scripts/speculative_model.py`：在 $k=4$、$c_v=1$、$c_d=0.05$ 的假设下，$\alpha=0.05$ 得约 0.877 倍，$\alpha=0.70$ 得约 2.311 倍。这只是展示接受率与成本的关系：真实接受率会随位置和输入变化，验证与草稿成本也依设备、实现和负载变化，这些数字不是设备实测或速度预测。
+
 请求级 HTTP 计时需要先安装 `python -m pip install requests`，再运行 `python scripts/compare_engines.py --help`；它不拆分推理阶段。
 
 更多原理、输入输出和测量方案见[推理成本估算指南](docs/推理成本估算指南.md)。已有其他脚本是研究草稿，其参数与输出尚待逐项审计；运行前请先阅读[使用边界与审计](docs/使用边界与审计.md)。

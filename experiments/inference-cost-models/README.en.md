@@ -43,6 +43,14 @@ python scripts/hybrid_architecture_model.py --layers 16 --kv-heads 4 --head-dim 
 
 The output is standard KV payload for equal-length sequences. FP8 and FP4 are calculated using ideal element widths only; quantization scales and metadata are excluded. Their presence in this arithmetic does not establish that an engine supports those precisions. Other layer states and runtime overhead are also excluded.
 
+### When can speculative decoding cost more than it saves?
+
+A draft model proposes candidate tokens and a target model verifies them. Low acceptance can make the extra draft and verification work outweigh the benefit. The [example](scripts/speculative_model.py) assumes $k$ drafted tokens, a fixed conditional acceptance probability $\alpha$ for each token after all previous ones were accepted, no EOS, and one additional correction or bonus token per round:
+
+$$E[N]=\sum_{i=0}^{k}\alpha^i,\qquad S=\frac{E[N]}{c_v+k c_d}.$$
+
+Here $c_v$ is the cost of one verification round and $c_d$ the cost per drafted token, both relative to one ordinary decoding step. Run `python scripts/speculative_model.py`: with $k=4$, $c_v=1$, and $c_d=0.05$, the model gives about 0.877x at $\alpha=0.05$ and 2.311x at $\alpha=0.70$. These are illustrative assumptions, not device measurements or speed predictions: acceptance depends on position and input, while draft and verification costs vary with hardware, implementation, and workload.
+
 For request-level HTTP timing, install `requests` with `python -m pip install requests`, then run `python scripts/compare_engines.py --help`. The script does not separate inference stages.
 
 See the [inference cost guide](docs/推理成本估算指南.md) (Chinese) for assumptions, inputs, outputs, and measurement design. Other scripts are research drafts whose parameters and outputs still need individual review; read the [audit and usage limits](docs/使用边界与审计.md) before running them.

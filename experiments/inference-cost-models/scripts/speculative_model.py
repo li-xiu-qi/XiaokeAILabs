@@ -41,6 +41,8 @@ def solve_alpha_for_speedup(target_speedup: float, k: int, cost_ratio: float,
 
 
 if __name__ == "__main__":
-    print("Toy assumptions only: alpha=0.7, k=4, draft cost=0.05, verification cost=1")
-    print(f"expected output per round = {expected_output(0.7, 4):.4f} tokens")
-    print(f"modeled speedup = {speedup(0.7, 4, 0.05):.4f}x; no hardware measurement")
+    print("Toy assumptions only: k=4, draft cost per token=0.05, verification cost=1")
+    print("Assuming fixed conditional acceptance; EOS ignored; not a hardware measurement")
+    print("alpha    expected tokens/round    modeled speedup")
+    for alpha in (0.05, 0.70, 0.90):
+        print(f"{alpha:5.2f}    {expected_output(alpha, 4):21.4f}    {speedup(alpha, 4, 0.05):15.4f}x")

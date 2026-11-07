@@ -42,6 +42,9 @@ class CostTests(unittest.TestCase):
         self.assertEqual(expected_output(0.5, 2), 1.75)
         self.assertEqual(expected_output(0.0, 4), 1.0)
         self.assertEqual(expected_output(1.0, 4), 5.0)
+        self.assertAlmostEqual(speedup(0.05, 4, 0.05), (1 + 0.05 + 0.05**2 + 0.05**3 + 0.05**4) / 1.2)
+        self.assertLess(speedup(0.05, 4, 0.05), 1.0)
+        self.assertAlmostEqual(speedup(0.7, 4, 0.05), 2.310916666666667)
         target = speedup(0.7, 4, 0.05)
         self.assertAlmostEqual(solve_alpha_for_speedup(target, 4, 0.05), 0.7)
         for invalid in (-0.1, 1.1, float("nan")):
