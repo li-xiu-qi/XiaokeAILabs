@@ -118,3 +118,5 @@ For each image, mark object correctness, background correctness, completeness an
 - [SDXL model card and license](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0)
 - [Stable Diffusion 1.5 model card and license](https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5)
 - [Diffusers text-to-image training guide](https://huggingface.co/docs/diffusers/training/text2image)
+
+[Teacher-data development gate](teacher-advantage-check/README.en.md): 24 of 32 pairs were valid and the stated gate was not met, so this training run was stopped.

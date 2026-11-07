@@ -134,3 +134,5 @@ python scripts/generate.py --model stable-diffusion-v1-5/stable-diffusion-v1-5 \
 在相机产品图场景，以相同训练预算对比学生自生成数据与教师生成数据。16 组配对中，单名 AI 的缩略图评分显示教师数据组在“一台可辨认相机”指标上较自生成组改善 3 例、下降 5 例、持平 8 例；这次没有观察到教师组优势。两条数据生成路径的模型、采样器及软件版本不同，不能单独归因模型大小。[对照设计、评分与配图](teacher-data-control/README.md)保留了方法和局限。
 
 **English:** A matched camera-image follow-up compares teacher-generated with student-generated training data. One blinded AI thumbnail reviewer found 3 improvements, 5 regressions and 8 unchanged cases for teacher data on the primary single-camera measure. The complete generation pipelines differ; see the [design and ratings](teacher-data-control/README.en.md).
+
+[教师数据筛选开发集](teacher-advantage-check/README.md)：32 对中 24 对有效，预设门槛未通过，停止本轮训练。
