@@ -26,7 +26,7 @@ $$s_{\mathrm{retrieve}}(q,I)=\frac{e_q(q)\cdot e_I(I)}{\|e_q(q)\|\|e_I(I)\|}$$
 
 ## 数据和实验范围
 
-数据来自 [Flickr30k](https://shannon.cs.illinois.edu/DenotationGraph/) 的 Karpathy test 分割。对本地标注 CSV 中 `split == test` 的记录，以 Python `random.Random(20261107).sample` 抽取 100 条，每图取 `raw` 列中的第一条描述作为查询，同一批 100 张图充当图片库；以描述所属的图作为唯一标签。其余 99 张不一定都与描述无关。因此 93/100 和 98/100 都只针对这个小图片池。模型原有预训练数据是否包含评估图片未知。
+数据来自 [Flickr30k](https://shannon.cs.illinois.edu/DenotationGraph/) 的 Karpathy test 分割。对本地标注 CSV 中 `split == test` 的记录，以 Python `random.Random(20261107).sample` 抽取 100 条，每图取 `raw` 列中的第一条描述作为查询，同一批 100 张图充当图片库；以描述所属的图作为唯一标签。脚本要求抽样后文件名互异，并拒绝零向量或非有限向量，避免无效余弦分数产生任意排序。其余 99 张不一定都与描述无关。因此 93/100 和 98/100 都只针对这个小图片池。模型原有预训练数据是否包含评估图片未知。
 
 本次没有用这些样本训练或微调。原始 CSV 文件的 SHA-256 为 `395990db603ab8bafd5c7ab2746b22058bb1e75b78b3eb56ad755931364ac137`，但本地副本的具体上游下载地址未记录；不同版本或行顺序会改变抽样结果。请自行获取有权使用的图片和兼容标注，本仓库不分发图片、描述或文件名。`evidence/anonymous-ranks.json` 只包含打乱顺序的每条查询前后排名；它可复算汇总指标，但无法单凭它验证图片匹配是否合理。
 
