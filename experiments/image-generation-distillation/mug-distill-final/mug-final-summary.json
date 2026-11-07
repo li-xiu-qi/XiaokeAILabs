@@ -1,0 +1,2195 @@
+{
+  "manifest_sha256": "2e45677b4f920765f128e2a85d94f92bfdb7aa580946ca4e56d846b430753e87",
+  "reviewer_1": {
+    "arms": {
+      "base": {
+        "image_success": 20,
+        "image_failure": 42,
+        "image_unknown": 2,
+        "scenes": {
+          "test-000": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-001": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-002": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-003": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-004": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-005": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-006": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-007": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-008": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-009": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-010": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-011": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-012": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-013": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-014": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-015": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-016": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-017": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-018": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-019": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-020": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-021": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-022": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-023": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-024": {
+            "success": 0,
+            "failure": 1,
+            "unknown": 1
+          },
+          "test-025": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-026": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-027": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-028": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-029": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-030": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-031": {
+            "success": 1,
+            "failure": 0,
+            "unknown": 1
+          }
+        }
+      },
+      "self": {
+        "image_success": 17,
+        "image_failure": 43,
+        "image_unknown": 4,
+        "scenes": {
+          "test-000": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-001": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-002": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-003": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-004": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-005": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-006": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-007": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-008": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-009": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-010": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-011": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-012": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-013": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-014": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-015": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-016": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-017": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-018": {
+            "success": 0,
+            "failure": 1,
+            "unknown": 1
+          },
+          "test-019": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-020": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-021": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-022": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-023": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-024": {
+            "success": 0,
+            "failure": 1,
+            "unknown": 1
+          },
+          "test-025": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-026": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-027": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-028": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-029": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-030": {
+            "success": 0,
+            "failure": 1,
+            "unknown": 1
+          },
+          "test-031": {
+            "success": 1,
+            "failure": 0,
+            "unknown": 1
+          }
+        }
+      },
+      "teacher_student": {
+        "image_success": 32,
+        "image_failure": 30,
+        "image_unknown": 2,
+        "scenes": {
+          "test-000": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-001": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-002": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-003": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-004": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-005": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-006": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-007": {
+            "success": 1,
+            "failure": 0,
+            "unknown": 1
+          },
+          "test-008": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-009": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-010": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-011": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-012": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-013": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-014": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-015": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-016": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-017": {
+            "success": 1,
+            "failure": 0,
+            "unknown": 1
+          },
+          "test-018": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-019": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-020": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-021": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-022": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-023": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-024": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-025": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-026": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-027": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-028": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-029": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-030": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-031": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          }
+        }
+      },
+      "teacher_model": {
+        "image_success": 36,
+        "image_failure": 26,
+        "image_unknown": 2,
+        "scenes": {
+          "test-000": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-001": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-002": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-003": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-004": {
+            "success": 0,
+            "failure": 1,
+            "unknown": 1
+          },
+          "test-005": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-006": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-007": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-008": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-009": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-010": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-011": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-012": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-013": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-014": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-015": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-016": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-017": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-018": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-019": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-020": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-021": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-022": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-023": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-024": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-025": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-026": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-027": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-028": {
+            "success": 0,
+            "failure": 1,
+            "unknown": 1
+          },
+          "test-029": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-030": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-031": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          }
+        }
+      }
+    },
+    "paired_vs_base": {
+      "self": {
+        "improved": 6,
+        "worse": 9,
+        "unchanged": 45,
+        "unknown_pairs": 4,
+        "scene_differences": {
+          "test-000": [
+            -1,
+            0
+          ],
+          "test-001": [
+            0,
+            0
+          ],
+          "test-002": [
+            0,
+            1
+          ],
+          "test-003": [
+            0,
+            0
+          ],
+          "test-004": [
+            0,
+            0
+          ],
+          "test-005": [
+            0,
+            0
+          ],
+          "test-006": [
+            -1,
+            0
+          ],
+          "test-007": [
+            0,
+            0
+          ],
+          "test-008": [
+            0,
+            0
+          ],
+          "test-009": [
+            0,
+            1
+          ],
+          "test-010": [
+            0,
+            0
+          ],
+          "test-011": [
+            0,
+            0
+          ],
+          "test-012": [
+            0,
+            0
+          ],
+          "test-013": [
+            0,
+            0
+          ],
+          "test-014": [
+            0,
+            0
+          ],
+          "test-015": [
+            0,
+            0
+          ],
+          "test-016": [
+            -1,
+            0
+          ],
+          "test-017": [
+            0,
+            0
+          ],
+          "test-018": [
+            -1,
+            null
+          ],
+          "test-019": [
+            0,
+            0
+          ],
+          "test-020": [
+            1,
+            0
+          ],
+          "test-021": [
+            1,
+            0
+          ],
+          "test-022": [
+            -1,
+            0
+          ],
+          "test-023": [
+            -1,
+            0
+          ],
+          "test-024": [
+            null,
+            0
+          ],
+          "test-025": [
+            1,
+            0
+          ],
+          "test-026": [
+            -1,
+            0
+          ],
+          "test-027": [
+            0,
+            1
+          ],
+          "test-028": [
+            0,
+            0
+          ],
+          "test-029": [
+            -1,
+            0
+          ],
+          "test-030": [
+            null,
+            -1
+          ],
+          "test-031": [
+            null,
+            0
+          ]
+        }
+      },
+      "teacher_student": {
+        "improved": 18,
+        "worse": 5,
+        "unchanged": 37,
+        "unknown_pairs": 4,
+        "scene_differences": {
+          "test-000": [
+            0,
+            0
+          ],
+          "test-001": [
+            0,
+            0
+          ],
+          "test-002": [
+            0,
+            1
+          ],
+          "test-003": [
+            0,
+            0
+          ],
+          "test-004": [
+            0,
+            1
+          ],
+          "test-005": [
+            1,
+            0
+          ],
+          "test-006": [
+            -1,
+            0
+          ],
+          "test-007": [
+            1,
+            null
+          ],
+          "test-008": [
+            0,
+            1
+          ],
+          "test-009": [
+            1,
+            1
+          ],
+          "test-010": [
+            0,
+            0
+          ],
+          "test-011": [
+            0,
+            0
+          ],
+          "test-012": [
+            0,
+            0
+          ],
+          "test-013": [
+            0,
+            1
+          ],
+          "test-014": [
+            0,
+            0
+          ],
+          "test-015": [
+            0,
+            1
+          ],
+          "test-016": [
+            0,
+            0
+          ],
+          "test-017": [
+            null,
+            1
+          ],
+          "test-018": [
+            0,
+            0
+          ],
+          "test-019": [
+            0,
+            -1
+          ],
+          "test-020": [
+            1,
+            1
+          ],
+          "test-021": [
+            0,
+            1
+          ],
+          "test-022": [
+            -1,
+            0
+          ],
+          "test-023": [
+            0,
+            0
+          ],
+          "test-024": [
+            null,
+            1
+          ],
+          "test-025": [
+            1,
+            0
+          ],
+          "test-026": [
+            0,
+            0
+          ],
+          "test-027": [
+            0,
+            1
+          ],
+          "test-028": [
+            1,
+            0
+          ],
+          "test-029": [
+            0,
+            0
+          ],
+          "test-030": [
+            1,
+            -1
+          ],
+          "test-031": [
+            null,
+            -1
+          ]
+        }
+      },
+      "teacher_model": {
+        "improved": 23,
+        "worse": 7,
+        "unchanged": 30,
+        "unknown_pairs": 4,
+        "scene_differences": {
+          "test-000": [
+            -1,
+            1
+          ],
+          "test-001": [
+            0,
+            1
+          ],
+          "test-002": [
+            0,
+            1
+          ],
+          "test-003": [
+            0,
+            1
+          ],
+          "test-004": [
+            0,
+            null
+          ],
+          "test-005": [
+            0,
+            0
+          ],
+          "test-006": [
+            -1,
+            0
+          ],
+          "test-007": [
+            1,
+            1
+          ],
+          "test-008": [
+            0,
+            1
+          ],
+          "test-009": [
+            1,
+            0
+          ],
+          "test-010": [
+            1,
+            0
+          ],
+          "test-011": [
+            0,
+            1
+          ],
+          "test-012": [
+            0,
+            0
+          ],
+          "test-013": [
+            1,
+            1
+          ],
+          "test-014": [
+            1,
+            0
+          ],
+          "test-015": [
+            0,
+            1
+          ],
+          "test-016": [
+            0,
+            0
+          ],
+          "test-017": [
+            0,
+            1
+          ],
+          "test-018": [
+            0,
+            0
+          ],
+          "test-019": [
+            0,
+            -1
+          ],
+          "test-020": [
+            0,
+            0
+          ],
+          "test-021": [
+            1,
+            1
+          ],
+          "test-022": [
+            0,
+            0
+          ],
+          "test-023": [
+            -1,
+            -1
+          ],
+          "test-024": [
+            null,
+            1
+          ],
+          "test-025": [
+            1,
+            1
+          ],
+          "test-026": [
+            0,
+            1
+          ],
+          "test-027": [
+            0,
+            1
+          ],
+          "test-028": [
+            0,
+            null
+          ],
+          "test-029": [
+            -1,
+            0
+          ],
+          "test-030": [
+            1,
+            0
+          ],
+          "test-031": [
+            null,
+            -1
+          ]
+        }
+      }
+    }
+  },
+  "reviewer_2": {
+    "arms": {
+      "base": {
+        "image_success": 24,
+        "image_failure": 35,
+        "image_unknown": 5,
+        "scenes": {
+          "test-000": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-001": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-002": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-003": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-004": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-005": {
+            "success": 0,
+            "failure": 1,
+            "unknown": 1
+          },
+          "test-006": {
+            "success": 0,
+            "failure": 1,
+            "unknown": 1
+          },
+          "test-007": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-008": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-009": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-010": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-011": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-012": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-013": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-014": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-015": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-016": {
+            "success": 1,
+            "failure": 0,
+            "unknown": 1
+          },
+          "test-017": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-018": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-019": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-020": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-021": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-022": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-023": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-024": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-025": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-026": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-027": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-028": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-029": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-030": {
+            "success": 1,
+            "failure": 0,
+            "unknown": 1
+          },
+          "test-031": {
+            "success": 1,
+            "failure": 0,
+            "unknown": 1
+          }
+        }
+      },
+      "self": {
+        "image_success": 22,
+        "image_failure": 37,
+        "image_unknown": 5,
+        "scenes": {
+          "test-000": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-001": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-002": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-003": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-004": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-005": {
+            "success": 0,
+            "failure": 1,
+            "unknown": 1
+          },
+          "test-006": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-007": {
+            "success": 1,
+            "failure": 0,
+            "unknown": 1
+          },
+          "test-008": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-009": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-010": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-011": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-012": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-013": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-014": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-015": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-016": {
+            "success": 1,
+            "failure": 0,
+            "unknown": 1
+          },
+          "test-017": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-018": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-019": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-020": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-021": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-022": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-023": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-024": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-025": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-026": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-027": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-028": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-029": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-030": {
+            "success": 1,
+            "failure": 0,
+            "unknown": 1
+          },
+          "test-031": {
+            "success": 1,
+            "failure": 0,
+            "unknown": 1
+          }
+        }
+      },
+      "teacher_student": {
+        "image_success": 32,
+        "image_failure": 29,
+        "image_unknown": 3,
+        "scenes": {
+          "test-000": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-001": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-002": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-003": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-004": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-005": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-006": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-007": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-008": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-009": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-010": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-011": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-012": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-013": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-014": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-015": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-016": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-017": {
+            "success": 1,
+            "failure": 0,
+            "unknown": 1
+          },
+          "test-018": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-019": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-020": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-021": {
+            "success": 0,
+            "failure": 1,
+            "unknown": 1
+          },
+          "test-022": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-023": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-024": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-025": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-026": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-027": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-028": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-029": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-030": {
+            "success": 1,
+            "failure": 0,
+            "unknown": 1
+          },
+          "test-031": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          }
+        }
+      },
+      "teacher_model": {
+        "image_success": 35,
+        "image_failure": 25,
+        "image_unknown": 4,
+        "scenes": {
+          "test-000": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-001": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-002": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-003": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-004": {
+            "success": 0,
+            "failure": 1,
+            "unknown": 1
+          },
+          "test-005": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-006": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-007": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-008": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-009": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-010": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-011": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-012": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-013": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-014": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-015": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-016": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-017": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-018": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-019": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-020": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-021": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-022": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-023": {
+            "success": 0,
+            "failure": 1,
+            "unknown": 1
+          },
+          "test-024": {
+            "success": 1,
+            "failure": 0,
+            "unknown": 1
+          },
+          "test-025": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-026": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          },
+          "test-027": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-028": {
+            "success": 0,
+            "failure": 1,
+            "unknown": 1
+          },
+          "test-029": {
+            "success": 0,
+            "failure": 2,
+            "unknown": 0
+          },
+          "test-030": {
+            "success": 2,
+            "failure": 0,
+            "unknown": 0
+          },
+          "test-031": {
+            "success": 1,
+            "failure": 1,
+            "unknown": 0
+          }
+        }
+      }
+    },
+    "paired_vs_base": {
+      "self": {
+        "improved": 4,
+        "worse": 6,
+        "unchanged": 47,
+        "unknown_pairs": 7,
+        "scene_differences": {
+          "test-000": [
+            -1,
+            0
+          ],
+          "test-001": [
+            0,
+            0
+          ],
+          "test-002": [
+            0,
+            0
+          ],
+          "test-003": [
+            0,
+            0
+          ],
+          "test-004": [
+            0,
+            0
+          ],
+          "test-005": [
+            null,
+            null
+          ],
+          "test-006": [
+            0,
+            null
+          ],
+          "test-007": [
+            0,
+            null
+          ],
+          "test-008": [
+            0,
+            -1
+          ],
+          "test-009": [
+            0,
+            0
+          ],
+          "test-010": [
+            0,
+            0
+          ],
+          "test-011": [
+            0,
+            0
+          ],
+          "test-012": [
+            0,
+            0
+          ],
+          "test-013": [
+            0,
+            0
+          ],
+          "test-014": [
+            0,
+            0
+          ],
+          "test-015": [
+            0,
+            0
+          ],
+          "test-016": [
+            null,
+            0
+          ],
+          "test-017": [
+            0,
+            1
+          ],
+          "test-018": [
+            -1,
+            0
+          ],
+          "test-019": [
+            -1,
+            0
+          ],
+          "test-020": [
+            0,
+            0
+          ],
+          "test-021": [
+            1,
+            0
+          ],
+          "test-022": [
+            -1,
+            0
+          ],
+          "test-023": [
+            0,
+            0
+          ],
+          "test-024": [
+            0,
+            0
+          ],
+          "test-025": [
+            0,
+            1
+          ],
+          "test-026": [
+            -1,
+            0
+          ],
+          "test-027": [
+            0,
+            1
+          ],
+          "test-028": [
+            0,
+            0
+          ],
+          "test-029": [
+            0,
+            0
+          ],
+          "test-030": [
+            null,
+            0
+          ],
+          "test-031": [
+            null,
+            0
+          ]
+        }
+      },
+      "teacher_student": {
+        "improved": 11,
+        "worse": 4,
+        "unchanged": 42,
+        "unknown_pairs": 7,
+        "scene_differences": {
+          "test-000": [
+            0,
+            0
+          ],
+          "test-001": [
+            0,
+            0
+          ],
+          "test-002": [
+            0,
+            1
+          ],
+          "test-003": [
+            0,
+            0
+          ],
+          "test-004": [
+            0,
+            1
+          ],
+          "test-005": [
+            null,
+            0
+          ],
+          "test-006": [
+            0,
+            null
+          ],
+          "test-007": [
+            0,
+            0
+          ],
+          "test-008": [
+            1,
+            0
+          ],
+          "test-009": [
+            1,
+            0
+          ],
+          "test-010": [
+            0,
+            0
+          ],
+          "test-011": [
+            0,
+            0
+          ],
+          "test-012": [
+            0,
+            0
+          ],
+          "test-013": [
+            1,
+            1
+          ],
+          "test-014": [
+            0,
+            0
+          ],
+          "test-015": [
+            0,
+            1
+          ],
+          "test-016": [
+            null,
+            0
+          ],
+          "test-017": [
+            null,
+            1
+          ],
+          "test-018": [
+            0,
+            0
+          ],
+          "test-019": [
+            0,
+            -1
+          ],
+          "test-020": [
+            0,
+            1
+          ],
+          "test-021": [
+            null,
+            -1
+          ],
+          "test-022": [
+            -1,
+            0
+          ],
+          "test-023": [
+            0,
+            0
+          ],
+          "test-024": [
+            0,
+            0
+          ],
+          "test-025": [
+            0,
+            0
+          ],
+          "test-026": [
+            0,
+            0
+          ],
+          "test-027": [
+            0,
+            1
+          ],
+          "test-028": [
+            1,
+            0
+          ],
+          "test-029": [
+            0,
+            0
+          ],
+          "test-030": [
+            null,
+            0
+          ],
+          "test-031": [
+            null,
+            -1
+          ]
+        }
+      },
+      "teacher_model": {
+        "improved": 16,
+        "worse": 7,
+        "unchanged": 32,
+        "unknown_pairs": 9,
+        "scene_differences": {
+          "test-000": [
+            -1,
+            1
+          ],
+          "test-001": [
+            0,
+            1
+          ],
+          "test-002": [
+            0,
+            1
+          ],
+          "test-003": [
+            0,
+            0
+          ],
+          "test-004": [
+            0,
+            null
+          ],
+          "test-005": [
+            null,
+            0
+          ],
+          "test-006": [
+            0,
+            null
+          ],
+          "test-007": [
+            0,
+            1
+          ],
+          "test-008": [
+            0,
+            0
+          ],
+          "test-009": [
+            1,
+            -1
+          ],
+          "test-010": [
+            0,
+            1
+          ],
+          "test-011": [
+            0,
+            1
+          ],
+          "test-012": [
+            0,
+            0
+          ],
+          "test-013": [
+            1,
+            1
+          ],
+          "test-014": [
+            0,
+            1
+          ],
+          "test-015": [
+            0,
+            1
+          ],
+          "test-016": [
+            null,
+            0
+          ],
+          "test-017": [
+            0,
+            1
+          ],
+          "test-018": [
+            0,
+            0
+          ],
+          "test-019": [
+            0,
+            -1
+          ],
+          "test-020": [
+            -1,
+            0
+          ],
+          "test-021": [
+            1,
+            0
+          ],
+          "test-022": [
+            0,
+            0
+          ],
+          "test-023": [
+            null,
+            -1
+          ],
+          "test-024": [
+            null,
+            1
+          ],
+          "test-025": [
+            0,
+            1
+          ],
+          "test-026": [
+            0,
+            0
+          ],
+          "test-027": [
+            0,
+            1
+          ],
+          "test-028": [
+            0,
+            null
+          ],
+          "test-029": [
+            -1,
+            0
+          ],
+          "test-030": [
+            null,
+            0
+          ],
+          "test-031": [
+            null,
+            -1
+          ]
+        }
+      }
+    }
+  },
+  "reviewer_agreement": {
+    "single_mug": {
+      "agree": 249,
+      "disagree": 7,
+      "unknown_in_either": 10
+    },
+    "color_correct": {
+      "agree": 245,
+      "disagree": 11,
+      "unknown_in_either": 14
+    },
+    "background_correct": {
+      "agree": 225,
+      "disagree": 31,
+      "unknown_in_either": 0
+    },
+    "severe_artifact": {
+      "agree": 243,
+      "disagree": 13,
+      "unknown_in_either": 1
+    },
+    "composite": {
+      "agree_including_unknown": 213,
+      "disagree_including_unknown": 43,
+      "unknown_in_either": 21
+    }
+  },
+  "interpretation": "Descriptive matched results; two seeds belong to the same scene and are not independent scenes."
+}

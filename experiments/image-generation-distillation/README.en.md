@@ -6,6 +6,10 @@ Product imagery often needs consistent backgrounds, lighting and composition. Ca
 
 **Status:** Teacher images, student training and held-out generation are complete. One independent AI reviewer scored anonymized thumbnails. The student is supervised on teacher-generated images; this does not match the teacher's internal features, noise predictions or output distribution, and is not inference-step distillation. Training completion alone does not establish a quality improvement.
 
+## Ceramic mugs: teacher data versus self-generated data
+
+[Explore the tutorial and two rounds of AI blind review](mug-distill-final/README.en.md). The held-out set contains 32 scenes with two seeds each. Ratings, mappings and a recomputation script are included; images and model weights are not. Findings are limited to this setting and review protocol.
+
 ## What was run
 
 On one DGX Spark GPU, we generated 64 teacher training images and 32 held-out teacher images. The student LoRA trained for 400 optimizer steps in FP16, with batch size 1, gradient accumulation 4 and gradient checkpointing; the recorded training time was 5 minutes 52 seconds. Not all training images were manually reviewed, so some may violate their captions.

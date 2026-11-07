@@ -1,0 +1,257 @@
+blind_id,prompt,single_mug,color_correct,background_correct,severe_artifact,notes
+item-001,"A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",1,0,0,0,reviewer: review_matte
+item-002,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",1,1,1,0,reviewer: review_matte
+item-003,"A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",0,1,1,0,reviewer: review_matte
+item-004,"A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",0,1,1,1,reviewer: review_matte
+item-005,"A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",1,1,1,0,reviewer: review_matte
+item-006,"A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,1,1,0,reviewer: review_matte
+item-007,"A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",1,1,1,0,reviewer: review_matte
+item-008,"A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",1,1,1,0,reviewer: review_matte
+item-009,"A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",1,1,0,0,reviewer: review_matte
+item-010,"A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",1,1,1,0,reviewer: review_matte
+item-011,"A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",1,1,1,1,reviewer: review_matte
+item-012,"A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,0,0,reviewer: review_matte
+item-013,"A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",1,0,0,0,reviewer: review_matte
+item-014,"A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",1,1,1,0,reviewer: review_matte
+item-015,"A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",1,0,0,0,reviewer: review_matte
+item-016,"A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",1,0,0,0,reviewer: review_matte
+item-017,"A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,0,1,0,reviewer: review_matte
+item-018,"A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",1,1,0,0,reviewer: review_matte
+item-019,"A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",1,1,1,0,reviewer: review_matte
+item-020,"A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",0,1,1,0,reviewer: review_matte
+item-021,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,reviewer: review_matte
+item-022,"A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",1,1,1,0,reviewer: review_matte
+item-023,"A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",1,1,1,0,reviewer: review_matte
+item-024,"A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",1,0,0,0,reviewer: review_matte
+item-025,"A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",1,1,0,0,reviewer: review_matte
+item-026,"A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",0,1,1,0,reviewer: review_matte
+item-027,"A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",1,0,0,0,reviewer: review_matte
+item-028,"A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",1,0,1,1,reviewer: review_matte
+item-029,"A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",1,1,0,0,reviewer: review_matte
+item-030,"A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",1,1,0,0,reviewer: review_matte
+item-031,"A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",1,0,1,0,reviewer: review_matte
+item-032,"A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,0,0,reviewer: review_matte
+item-033,"A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",1,1,0,0,reviewer: Codex AI (agent AI-2); 深灰背景
+item-034,"A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",1,1,0,0,reviewer: Codex AI (agent AI-2); 绿色背景；双把手
+item-035,"A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,1,1,0,reviewer: Codex AI (agent AI-2); 杯身下半偏米色
+item-036,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",1,1,1,0,reviewer: Codex AI (agent AI-2)
+item-037,"A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",1,1,0,0,reviewer: Codex AI (agent AI-2); 背景为深灰
+item-038,"A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",1,1,1,0,reviewer: Codex AI (agent AI-2)
+item-039,"A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,0,1,0,reviewer: Codex AI (agent AI-2); 杯身米棕色
+item-040,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,0,0,reviewer: Codex AI (agent AI-2); 背景偏深灰；双把手
+item-041,"A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",1,1,1,1,reviewer: Codex AI (agent AI-2); 把手下方有断开的结构
+item-042,"A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,0,1,0,reviewer: Codex AI (agent AI-2); 杯身以米白色为主
+item-043,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",1,1,1,0,reviewer: Codex AI (agent AI-2)
+item-044,"A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",1,1,1,0,reviewer: Codex AI (agent AI-2)
+item-045,"A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,0,0,0,reviewer: Codex AI (agent AI-2); 杯身以米色为主；背景灰棕
+item-046,"A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",1,1,1,0,reviewer: Codex AI (agent AI-2); 杯体下部被裁切
+item-047,"A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",1,0,1,0,reviewer: Codex AI (agent AI-2); 杯身以灰白色为主
+item-048,"A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",0,1,1,1,reviewer: Codex AI (agent AI-2); 另一类似杯体的分离物体
+item-049,"A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",1,1,1,0,reviewer: Codex AI (agent AI-2)
+item-050,"A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",1,1,1,0,reviewer: Codex AI (agent AI-2)
+item-051,"A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,1,1,0,reviewer: Codex AI (agent AI-2)
+item-052,"A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,0,0,reviewer: Codex AI (agent AI-2); 背景深灰
+item-053,"A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,1,0,0,reviewer: Codex AI (agent AI-2); 背景偏棕色
+item-054,"A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,1,1,0,reviewer: Codex AI (agent AI-2)
+item-055,"A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",1,1,0,0,reviewer: Codex AI (agent AI-2); 背景灰绿
+item-056,"A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",unknown,1,1,0,reviewer: Codex AI (agent AI-2); 大部分杯身被画面裁切
+item-057,"A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",1,1,0,0,reviewer: Codex AI (agent AI-2); 背景偏橄榄绿
+item-058,"A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",1,1,0,1,reviewer: Codex AI (agent AI-2); 灰紫背景；把手严重畸形
+item-059,"A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",0,1,0,0,reviewer: Codex AI (agent AI-2); 两个杯状物；背景灰棕
+item-060,"A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",0,1,1,1,reviewer: Codex AI (agent AI-2); 多个互相重叠的杯体
+item-061,"A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",1,1,1,0,reviewer: Codex AI (agent AI-2)
+item-062,"A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",0,1,0,0,reviewer: Codex AI (agent AI-2); 两个杯子；背景灰蓝
+item-063,"A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,1,0,0,reviewer: Codex AI (agent AI-2); 深灰背景，杯体被部分裁切
+item-064,"A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,1,0,0,reviewer: Codex AI (agent AI-2); 背景偏棕色
+item-065,"A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",1,1,1,0,
+item-066,"A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,1,1,0,
+item-067,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,
+item-068,"A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",1,1,0,0,Background appears gray.
+item-069,"A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,1,1,0,
+item-070,"A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",1,1,0,0,Background appears gray.
+item-071,"A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",1,1,1,0,
+item-072,"A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",1,1,0,0,Background appears gray.
+item-073,"A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",1,1,1,0,
+item-074,"A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,1,1,0,Mug is cropped at left edge.
+item-075,"A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",1,0,1,0,Main body is pale blue.
+item-076,"A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,1,1,0,
+item-077,"A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",1,1,1,0,
+item-078,"A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,1,1,0,
+item-079,"A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",1,1,1,0,
+item-080,"A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",1,1,1,1,Handle appears detached and structurally broken.
+item-081,"A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",1,1,1,0,
+item-082,"A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,unknown,1,0,Blue and beige each cover substantial parts of body.
+item-083,"A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",1,unknown,1,0,Blue and beige each cover substantial parts of body.
+item-084,"A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",1,1,1,0,
+item-085,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,1,Handle appears detached from body.
+item-086,"A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",1,1,1,0,
+item-087,"A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",1,1,1,0,
+item-088,"A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",1,0,1,1,Mug body appears cyan; extra handle-like protrusion.
+item-089,"A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",1,0,0,0,Blue mug on gray background.
+item-090,"A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",1,unknown,1,0,Red and ivory each cover substantial parts of body.
+item-091,"A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",1,1,0,0,Background appears gray.
+item-092,"A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,0,0,Background predominantly blue.
+item-093,"A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,0,0,Background predominantly gray.
+item-094,"A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,unknown,1,0,Blue and beige each cover substantial parts of body.
+item-095,"A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",1,1,1,0,
+item-096,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,0,1,0,"Body predominantly gray, with red interior and handle."
+item-097,"A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",1,1,1,0,"Reviewed by Codex GPT-6, AI-4. green mug, ivory backdrop"
+item-098,"A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",1,1,1,0,"Reviewed by Codex GPT-6, AI-4. green mug, beige/ivory backdrop"
+item-099,"A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,0,0,"Reviewed by Codex GPT-6, AI-4. blue mug; background dark gray, not ivory"
+item-100,"A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",1,1,1,0,"Reviewed by Codex GPT-6, AI-4. red mug on blue"
+item-101,"A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",1,1,0,0,"Reviewed by Codex GPT-6, AI-4. red mug; background gray"
+item-102,"A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",1,1,0,0,"Reviewed by Codex GPT-6, AI-4. red mug; background brown"
+item-103,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,0,1,0,"Reviewed by Codex GPT-6, AI-4. predominantly gray cup with red rim/base"
+item-104,"A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,"Reviewed by Codex GPT-6, AI-4. white mug, gray background"
+item-105,"A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",1,1,1,0,"Reviewed by Codex GPT-6, AI-4. white mug, gray background"
+item-106,"A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",0,1,1,0,"Reviewed by Codex GPT-6, AI-4. two red mugs"
+item-107,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",1,0,1,0,"Reviewed by Codex GPT-6, AI-4. gray outer body; red interior"
+item-108,"A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,0,1,0,"Reviewed by Codex GPT-6, AI-4. predominantly beige body with blue band"
+item-109,"A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",unknown,1,1,0,"Reviewed by Codex GPT-6, AI-4. cup mostly outside frame; visible red fragment and handle"
+item-110,"A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",1,1,0,0,"Reviewed by Codex GPT-6, AI-4. green mug; background brown"
+item-111,"A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",1,0,0,0,"Reviewed by Codex GPT-6, AI-4. beige cup on green background"
+item-112,"A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,1,0,0,"Reviewed by Codex GPT-6, AI-4. blue cup, gray background"
+item-113,"A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,1,0,"Reviewed by Codex GPT-6, AI-4. white mug on ivory"
+item-114,"A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",1,1,0,0,"Reviewed by Codex GPT-6, AI-4. red mug; background gray"
+item-115,"A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",1,1,0,0,"Reviewed by Codex GPT-6, AI-4. blue mug; background blue gray; two handles"
+item-116,"A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",1,0,0,0,"Reviewed by Codex GPT-6, AI-4. mostly cream cup with red rim and base; gray background"
+item-117,"A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",1,1,1,0,"Reviewed by Codex GPT-6, AI-4. red mug on pale blue"
+item-118,"A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",unknown,unknown,1,0,"Reviewed by Codex GPT-6, AI-4. mug mostly outside frame; visible green interior/handle but body obscured"
+item-119,"A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",1,1,1,0,"Reviewed by Codex GPT-6, AI-4. red mug rim and handle; overhead view"
+item-120,"A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",unknown,1,0,0,"Reviewed by Codex GPT-6, AI-4. mostly cropped green mug; gray background"
+item-121,"A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",0,1,1,0,"Reviewed by Codex GPT-6, AI-4. two green cups"
+item-122,"A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",0,1,1,1,"Reviewed by Codex GPT-6, AI-4. extra tilted cup or cup fragment on saucer"
+item-123,"A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",1,1,1,0,"Reviewed by Codex GPT-6, AI-4. red mug on pale blue"
+item-124,"A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",1,1,1,0,"Reviewed by Codex GPT-6, AI-4. white mug on gray"
+item-125,"A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",1,0,1,0,"Reviewed by Codex GPT-6, AI-4. mostly white/cream body with red rim and base"
+item-126,"A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",1,0,0,0,"Reviewed by Codex GPT-6, AI-4. beige cup against dark green background"
+item-127,"A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",1,1,1,0,"Reviewed by Codex GPT-6, AI-4. white mug on warm beige"
+item-128,"A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",1,1,0,0,"Reviewed by Codex GPT-6, AI-4. green mug; lavender gray background"
+item-129,"A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5)
+item-130,"A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5)
+item-131,"A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5); handle has extra curve
+item-132,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5)
+item-133,"A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5); white shape inside mug
+item-134,"A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,0,0,Reviewer: OpenAI Codex GPT-6 (AI-5); background gray
+item-135,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5); mug partly cropped
+item-136,"A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",1,1,0,0,Reviewer: OpenAI Codex GPT-6 (AI-5); green background; two handles
+item-137,"A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",1,1,0,0,Reviewer: OpenAI Codex GPT-6 (AI-5); gray background
+item-138,"A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",1,1,0,0,Reviewer: OpenAI Codex GPT-6 (AI-5); gray background; two handles
+item-139,"A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",1,1,0,0,Reviewer: OpenAI Codex GPT-6 (AI-5); brown background
+item-140,"A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5)
+item-141,"A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,0,0,Reviewer: OpenAI Codex GPT-6 (AI-5); brown background; mug partly cropped
+item-142,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5)
+item-143,"A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5)
+item-144,"A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",unknown,1,0,0,Reviewer: OpenAI Codex GPT-6 (AI-5); most of mug cropped; remaining shape unclear
+item-145,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5); bicolor mug
+item-146,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5)
+item-147,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5)
+item-148,"A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5)
+item-149,"A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",1,1,0,0,Reviewer: OpenAI Codex GPT-6 (AI-5); brown background
+item-150,"A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5)
+item-151,"A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5)
+item-152,"A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",1,1,0,0,Reviewer: OpenAI Codex GPT-6 (AI-5); brown background; two handles
+item-153,"A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",1,1,0,0,Reviewer: OpenAI Codex GPT-6 (AI-5); green background
+item-154,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5)
+item-155,"A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5)
+item-156,"A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",1,1,1,1,Reviewer: OpenAI Codex GPT-6 (AI-5); malformed multiple protrusions around cup
+item-157,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5)
+item-158,"A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",1,1,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5); two handles
+item-159,"A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",1,0,0,0,Reviewer: OpenAI Codex GPT-6 (AI-5); blue mug; brown-purple background
+item-160,"A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",1,0,1,0,Reviewer: OpenAI Codex GPT-6 (AI-5); mostly pale blue-white mug with red rim
+item-161,"A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",1,1,0,1,reviewer=Codex AI-6; Extra small handle fused to lower side; background mauve-brown.
+item-162,"A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",1,1,1,0,reviewer=Codex AI-6
+item-163,"A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",1,1,0,0,reviewer=Codex AI-6; Gray background.
+item-164,"A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,1,1,0,reviewer=Codex AI-6; Overhead view; cup appears white.
+item-165,"A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",1,1,0,0,"reviewer=Codex AI-6; Warm tan background, not ivory."
+item-166,"A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",1,0,0,0,reviewer=Codex AI-6; Cup body predominantly cream; background brown.
+item-167,"A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",1,1,1,0,"reviewer=Codex AI-6; Two handles, but recognizable intact mug."
+item-168,"A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",1,1,1,0,reviewer=Codex AI-6
+item-169,"A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",1,1,1,0,reviewer=Codex AI-6
+item-170,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,reviewer=Codex AI-6
+item-171,"A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",1,1,1,0,reviewer=Codex AI-6
+item-172,"A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",1,0,0,0,"reviewer=Codex AI-6; Green interior, gray-white exterior; gray background."
+item-173,"A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,0,0,reviewer=Codex AI-6; Gray background.
+item-174,"A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,1,0,reviewer=Codex AI-6
+item-175,"A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,1,1,0,reviewer=Codex AI-6
+item-176,"A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,1,reviewer=Codex AI-6; Handle branches into overlapping loops.
+item-177,"A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",1,1,0,0,"reviewer=Codex AI-6; Turquoise-green background, not pale blue."
+item-178,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,0,0,reviewer=Codex AI-6; Dark gray background.
+item-179,"A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,1,0,0,reviewer=Codex AI-6; Gray background.
+item-180,"A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",1,0,1,0,reviewer=Codex AI-6; Pale blue exterior with red interior and handle.
+item-181,"A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",1,1,1,1,reviewer=Codex AI-6; Handle splits into overlapping loops.
+item-182,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",1,1,1,0,reviewer=Codex AI-6
+item-183,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,0,0,reviewer=Codex AI-6; Dark gray background.
+item-184,"A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,1,0,0,reviewer=Codex AI-6; Dark brown background.
+item-185,"A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",1,1,0,0,reviewer=Codex AI-6; Gray background.
+item-186,"A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",0,1,0,1,reviewer=Codex AI-6; Multiple cup-shaped fragments; gray background.
+item-187,"A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",0,1,1,0,reviewer=Codex AI-6; Two distinct mugs.
+item-188,"A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",1,1,0,0,reviewer=Codex AI-6; Gray background.
+item-189,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",1,1,1,1,reviewer=Codex AI-6; Mug clipped at frame edge; extra fused handle forms.
+item-190,"A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",1,0,0,0,reviewer=Codex AI-6; White exterior with red rim; brown-gray background.
+item-191,"A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",1,1,1,0,reviewer=Codex AI-6
+item-192,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",0,1,1,1,reviewer=Codex AI-6; Two mugs; foreground handle has multiple fused branches.
+item-193,"A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",1,1,1,0,reviewer: Codex / ocr_audit
+item-194,"A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-195,"A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-196,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",0,1,1,1,reviewer: Codex / ocr_audit
+item-197,"A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,reviewer: Codex / ocr_audit
+item-198,"A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,1,1,0,reviewer: Codex / ocr_audit
+item-199,"A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-200,"A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-201,"A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",1,1,1,0,reviewer: Codex / ocr_audit
+item-202,"A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-203,"A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",1,1,1,0,reviewer: Codex / ocr_audit
+item-204,"A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-205,"A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-206,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,reviewer: Codex / ocr_audit
+item-207,"A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,0,1,0,reviewer: Codex / ocr_audit
+item-208,"A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",1,1,1,0,reviewer: Codex / ocr_audit
+item-209,"A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-210,"A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-211,"A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-212,"A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",1,1,1,0,reviewer: Codex / ocr_audit
+item-213,"A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-214,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",1,0,1,0,reviewer: Codex / ocr_audit
+item-215,"A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",1,1,1,0,reviewer: Codex / ocr_audit
+item-216,"A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-217,"A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",0,1,1,1,reviewer: Codex / ocr_audit
+item-218,"A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-219,"A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-220,"A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-221,"A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-222,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,reviewer: Codex / ocr_audit
+item-223,"A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",1,1,0,0,reviewer: Codex / ocr_audit
+item-224,"A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",1,1,1,0,reviewer: Codex / ocr_audit
+item-225,"A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8
+item-226,"A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",1,0,0,0,AI reviewer: Codex AI-8
+item-227,"A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",1,1,0,0,AI reviewer: Codex AI-8
+item-228,"A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",1,1,1,1,AI reviewer: Codex AI-8. Handle visibly broken and detached.
+item-229,"A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",0,0,0,unknown,AI reviewer: Codex AI-8. Black output; artifact severity cannot be assessed.
+item-230,"A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8
+item-231,"A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",1,0,0,0,AI reviewer: Codex AI-8
+item-232,"A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8. One mug with two handles.
+item-233,"A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",1,1,0,0,AI reviewer: Codex AI-8
+item-234,"A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8
+item-235,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",0,1,1,0,AI reviewer: Codex AI-8. Two mugs.
+item-236,"A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8
+item-237,"A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",1,1,0,0,AI reviewer: Codex AI-8
+item-238,"A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",1,1,0,0,AI reviewer: Codex AI-8
+item-239,"A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",1,0,0,0,AI reviewer: Codex AI-8
+item-240,"A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8
+item-241,"A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",0,1,0,1,AI reviewer: Codex AI-8. Two mugs with fused handles.
+item-242,"A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8
+item-243,"A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,0,0,AI reviewer: Codex AI-8
+item-244,"A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",0,1,0,0,AI reviewer: Codex AI-8. Two mugs.
+item-245,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8
+item-246,"A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8
+item-247,"A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,0,0,AI reviewer: Codex AI-8
+item-248,"A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8
+item-249,"A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",0,1,0,0,AI reviewer: Codex AI-8. Two mugs.
+item-250,"A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,0,0,AI reviewer: Codex AI-8
+item-251,"A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8
+item-252,"A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8
+item-253,"A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8
+item-254,"A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",1,1,0,0,AI reviewer: Codex AI-8
+item-255,"A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8
+item-256,"A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",1,1,1,0,AI reviewer: Codex AI-8

@@ -1,0 +1,2306 @@
+[
+  {
+    "blind_id": "item-001",
+    "arm": "self",
+    "id": "test-012-0",
+    "seed": 430024,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",
+    "original_sha256": "111937df7c8bd3a4c495a08f174ab8eced8c9dc2bb96ea0f80c4c1c9e17bc127",
+    "review_sha256": "55dbbcea9f70bafb9cd2333c3c9d20cde6c34e712e32f542c15c187ecbdd6f99"
+  },
+  {
+    "blind_id": "item-002",
+    "arm": "teacher_model",
+    "id": "test-000-1",
+    "seed": 430001,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "4d8ae70c44f408229a7c627f21d2b3e2ef374440455321dc6210b9529e29f673",
+    "review_sha256": "260057ec86411cce3ea9a8979efdc16cdd9ebb8bcd095aa5238f051a0aae0eaf"
+  },
+  {
+    "blind_id": "item-003",
+    "arm": "self",
+    "id": "test-008-1",
+    "seed": 430017,
+    "prompt": "A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",
+    "original_sha256": "bf72863b82a2c61d64c5b5040195ffcd95f666dcf07c01eb7cb9e2ed9367bdc3",
+    "review_sha256": "30befb5c1bdc5e8611663b97bc153b81bab48c3b4b9dd55077481ccf08ccddc2"
+  },
+  {
+    "blind_id": "item-004",
+    "arm": "teacher_student",
+    "id": "test-001-1",
+    "seed": 430003,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",
+    "original_sha256": "884c0320e6732add4f715411b8dbb68f6d154069094a30b2e72794992a403447",
+    "review_sha256": "d6a3982832bf47f295109d039023fea53edf9e2fe78453189c8b7a6d34355423"
+  },
+  {
+    "blind_id": "item-005",
+    "arm": "teacher_student",
+    "id": "test-023-0",
+    "seed": 430046,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",
+    "original_sha256": "fdfe6568c806f34d7da1cd3a14b5e967861c964429ae8c3db2f1a139c633f00a",
+    "review_sha256": "26b32dd3b62014a1bd98d667c6a63c8632d852349fc24f0bc59bbaef2d9fef75"
+  },
+  {
+    "blind_id": "item-006",
+    "arm": "teacher_model",
+    "id": "test-018-0",
+    "seed": 430036,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "c765aaa586cb756e0bd21b3fa242ffd3262ab18b2fabc98f4b677546207ddd06",
+    "review_sha256": "29618279772d073474c0ac582926a53d16c4c0890ad68e78620c77f32a55a9d0"
+  },
+  {
+    "blind_id": "item-007",
+    "arm": "teacher_model",
+    "id": "test-011-0",
+    "seed": 430022,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "c34272ad027b25ddd592c0cd2dcea14c55b425ed53406f8c1547e86ef6ad2680",
+    "review_sha256": "0a5d5a3d82829bee0ecac6d0e49e4d8650a90379574753653289498f5aa9a563"
+  },
+  {
+    "blind_id": "item-008",
+    "arm": "teacher_student",
+    "id": "test-024-1",
+    "seed": 430049,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "0ac89d2f03f80d11ad9d52fd5220b206643d2e3db8708769374b0c5e2c28ca0d",
+    "review_sha256": "0922a86d1cadbf53a05656e24c360567ffe07064cbf41247b2b3697bfb7f7219"
+  },
+  {
+    "blind_id": "item-009",
+    "arm": "self",
+    "id": "test-005-0",
+    "seed": 430010,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "acd9f4ae87770c0999276bb44758ecd3ee916626e709b5e85f274524337cbcdd",
+    "review_sha256": "6058d940551dc3bfac3ed1dbd85568b26b736e8490271c48211f447911e4bb38"
+  },
+  {
+    "blind_id": "item-010",
+    "arm": "self",
+    "id": "test-017-0",
+    "seed": 430034,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",
+    "original_sha256": "ec4ccf5f0769738c84b39a537c7f4b83ee94c03e6498504a6a0cb85e679c8094",
+    "review_sha256": "f8dd08b268c562a14c86bc3babd140504abd9dafedb95098bef66ee2d2cd629e"
+  },
+  {
+    "blind_id": "item-011",
+    "arm": "teacher_student",
+    "id": "test-019-1",
+    "seed": 430039,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "8c5fe13ae8d784b45e1300cb27c2280ab03f83e279d87844d130cfaba720c5d9",
+    "review_sha256": "e146ffd26eb1975e24a18739725db129dbb2709dbdfbc664127acc3240430a20"
+  },
+  {
+    "blind_id": "item-012",
+    "arm": "self",
+    "id": "test-006-1",
+    "seed": 430013,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "cc76e13d5d879da275b08c96a5885fdd675e4c5892e388064bab558c8914d21c",
+    "review_sha256": "cf86e4e9cd7634d653d676f2a93c2531f610afffc382dde6c5b2b80f2ad25674"
+  },
+  {
+    "blind_id": "item-013",
+    "arm": "teacher_model",
+    "id": "test-005-1",
+    "seed": 430011,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "415ca25413763e0834367ebb6ab05a04c89303083bb922bb58853ea25dae694d",
+    "review_sha256": "a77625fd75b110d0b1f66b8ede31e780d874ccb3ca8d2ee4abb16d8b171919db"
+  },
+  {
+    "blind_id": "item-014",
+    "arm": "teacher_model",
+    "id": "test-022-0",
+    "seed": 430044,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "061eadf999c6ce2ebc3efb59fba3236efc120bdb3a9d142636112a4275516b2c",
+    "review_sha256": "bfdfa4d39fbc54d7d0d3e6c932644c7d7b63034daf9b01aaad4e84e3a0c565e7"
+  },
+  {
+    "blind_id": "item-015",
+    "arm": "teacher_model",
+    "id": "test-031-1",
+    "seed": 430063,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "de77a782f946584992c4f54cc0aee02df4cbc2ee1252dc79d94fed8cc5bcfb29",
+    "review_sha256": "5d3e286a50d26fd8dd6b6b96be56da9a95820fd91d623e9c20c887c8e55a006e"
+  },
+  {
+    "blind_id": "item-016",
+    "arm": "base",
+    "id": "test-012-0",
+    "seed": 430024,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",
+    "original_sha256": "d35cbd5337fa92f7912aea51381bdd0b3ed82eb48d37bc60bea2d8c01f24a069",
+    "review_sha256": "00cf57f7aca97d41174485c59db815036206a395f581203c0810a8579d3b0499"
+  },
+  {
+    "blind_id": "item-017",
+    "arm": "self",
+    "id": "test-013-0",
+    "seed": 430026,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "53ec21845aded4b740b4d25a5ee8bfe004799856d40d5a4d293fd831b958d6f3",
+    "review_sha256": "f75d77d83c5f896845dad81be820ef6b19699ea8a7e35c89d86469b932783d5c"
+  },
+  {
+    "blind_id": "item-018",
+    "arm": "teacher_student",
+    "id": "test-014-0",
+    "seed": 430028,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "c46e6ef497f97373840223a72215b63c47222b041342ea51b9862682663d1617",
+    "review_sha256": "156bebcb2477e4ffba69f53b3eaf8fb5294816ec0515ad31563965e414b83fdd"
+  },
+  {
+    "blind_id": "item-019",
+    "arm": "teacher_model",
+    "id": "test-010-0",
+    "seed": 430020,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",
+    "original_sha256": "3a7457c07bfc73476ac767eaecbf934911819c4520fc11e752be48ca5383dae7",
+    "review_sha256": "01c4b7d13655c59444a697b6cb804b6622fed8d5518d41441907dd6bbf14aa49"
+  },
+  {
+    "blind_id": "item-020",
+    "arm": "teacher_student",
+    "id": "test-022-0",
+    "seed": 430044,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "a9d5edbef3aff8abbeb83cb332ea7aec8e76f466ae0f9adc376f7d70e8bafdb8",
+    "review_sha256": "fa52a586fe6f2d4233200629371ea8a848285a127b68cb5d609e31a7be04f13e"
+  },
+  {
+    "blind_id": "item-021",
+    "arm": "self",
+    "id": "test-020-0",
+    "seed": 430040,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "6f3ea035fcdcfe80e34cc9813d1a4bdbf150ccfeed820e9e136e71bab3f617d6",
+    "review_sha256": "fd94e6c7e3c361b702ab939e823e33df5a08082d6125bf3c8ef12431dc4e8320"
+  },
+  {
+    "blind_id": "item-022",
+    "arm": "base",
+    "id": "test-023-1",
+    "seed": 430047,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",
+    "original_sha256": "f4f6a97ba6fd16cc6552477df77d060b6dbba1b3f01acbda589a61b3f9e11c38",
+    "review_sha256": "fd6160a98d6b0195d1664bb3428fc066ac5e24329a32975a63f3f3b548dcf675"
+  },
+  {
+    "blind_id": "item-023",
+    "arm": "base",
+    "id": "test-023-0",
+    "seed": 430046,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",
+    "original_sha256": "3c0eb6afa0cc2d30a756653f87cca86eb7844e2149637b0af41e6b69bc25609c",
+    "review_sha256": "69004b43096c00156b4c69dccacf65cbcab03653af71852d7322eb049ac5a0dc"
+  },
+  {
+    "blind_id": "item-024",
+    "arm": "teacher_model",
+    "id": "test-005-0",
+    "seed": 430010,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "90b499e71614bbced662735b0390649ffd44396e68a2e568d695833bf3216fa6",
+    "review_sha256": "9e4bacec51c8bb31f1fd7ec2095f6eb2e02d62bef67349c49e0310d97d5842ff"
+  },
+  {
+    "blind_id": "item-025",
+    "arm": "teacher_model",
+    "id": "test-003-0",
+    "seed": 430006,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "d6fca16cf64d6f800bcc0492526c6a0edcc58415b2a043a89467b1dd2df679e1",
+    "review_sha256": "7b9fbe7d42639d5ddf1de16cec5742e112ba367ba20e0ecadc0bca13d6722836"
+  },
+  {
+    "blind_id": "item-026",
+    "arm": "teacher_model",
+    "id": "test-001-0",
+    "seed": 430002,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",
+    "original_sha256": "19f18691022ed0cb8e472311bbcf1155aa860027ff535e3d11e21d7a657cb665",
+    "review_sha256": "c3bf46c451ac8e473eb499ec932c44fd1d0065e04efb60e57e7383634d7408e0"
+  },
+  {
+    "blind_id": "item-027",
+    "arm": "teacher_model",
+    "id": "test-029-1",
+    "seed": 430059,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "0297cfb4601805784de6056db3b0624b5329e8df17840a5b08de581c37cc8e0e",
+    "review_sha256": "3be69ca1d3758f5212980918971ecabc6334393437e8e57fbcd33b15dc5bc2a6"
+  },
+  {
+    "blind_id": "item-028",
+    "arm": "teacher_model",
+    "id": "test-023-1",
+    "seed": 430047,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",
+    "original_sha256": "3e5ab4ad4780d2483cb215ec4f9bd833e4eea84640bbc6d3dbb5e6a4ce5095cb",
+    "review_sha256": "a480260e85434ad1a41dc9c156a53c73ed4e3c874283f939ad5661edfc59329e"
+  },
+  {
+    "blind_id": "item-029",
+    "arm": "base",
+    "id": "test-007-0",
+    "seed": 430014,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "2e3725c1d07ea5834194598f682f2864f213341d79f120a6e2888adf978c78b4",
+    "review_sha256": "4cd467b721da6537d977cab7f7dc3d557984841bf5a594296c95d976ac37b108"
+  },
+  {
+    "blind_id": "item-030",
+    "arm": "base",
+    "id": "test-010-0",
+    "seed": 430020,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",
+    "original_sha256": "fdcde64d4a175237ffaa0f8bcf171bb718948388afbb5705ea8157f3248174da",
+    "review_sha256": "0fc95edb39e0efecb38d380c28ed4a2e3b7578031226cd9e0b720e5543410b1a"
+  },
+  {
+    "blind_id": "item-031",
+    "arm": "teacher_model",
+    "id": "test-012-0",
+    "seed": 430024,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",
+    "original_sha256": "2d1b6755e20651ba58145b42a3f09b98d650819aa896d8c552c3a2861d2c9fb7",
+    "review_sha256": "8cbaf8175f638c749bac3246de936c848684999f438cdb3e8e307672a48a2459"
+  },
+  {
+    "blind_id": "item-032",
+    "arm": "self",
+    "id": "test-015-0",
+    "seed": 430030,
+    "prompt": "A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "94b610f09f754177841581cfce8eddaa2c217c9802a8d28174db1f856d5c6b1f",
+    "review_sha256": "151014c1a829309672198624cd175874923cb8d44e0d8cad529a148399e51d91"
+  },
+  {
+    "blind_id": "item-033",
+    "arm": "teacher_student",
+    "id": "test-025-1",
+    "seed": 430051,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",
+    "original_sha256": "6d783889544b2bdac00484a82c2337ab7fafcaaac22f85024037be6698aa036e",
+    "review_sha256": "40753fe36c52aa0804a26b5f5f658d3ec213d8260d1e8878a7032272f182b5ba"
+  },
+  {
+    "blind_id": "item-034",
+    "arm": "teacher_student",
+    "id": "test-014-1",
+    "seed": 430029,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "d4171cb3b2c43f8845b1615b130100fa609b4b0b00eb3db259dca461875bf608",
+    "review_sha256": "33aac8e6a8e41850e8e5f15184a815e8702339c42a96bfd783a45d722b0da2e2"
+  },
+  {
+    "blind_id": "item-035",
+    "arm": "teacher_student",
+    "id": "test-030-0",
+    "seed": 430060,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "c1fa95a92363e134fc792ace59a186100317c26810a1918c85d47b4c604979ab",
+    "review_sha256": "0ccf40a2d4d7b965d593787c21a26cbd3e5e062ce00f74774497d178032d4137"
+  },
+  {
+    "blind_id": "item-036",
+    "arm": "teacher_model",
+    "id": "test-016-0",
+    "seed": 430032,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "1c24e940af02e51f4d845a6103f95a1254b5d675b4c9d3443448fa5b66cc327d",
+    "review_sha256": "c6dcee9628aa245e2a26b62c39a1b43bc0e23f09e69aa7fe206b6c8237bb95a8"
+  },
+  {
+    "blind_id": "item-037",
+    "arm": "self",
+    "id": "test-023-0",
+    "seed": 430046,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",
+    "original_sha256": "3d75bfa5e1bac5428eda404b0b5cf925f890053eb1cbde22dda9543f1648edb9",
+    "review_sha256": "35a3a8529dbafb9a415446c602bc4b954723f5e0b8c839fc0d5a5c34c7229f21"
+  },
+  {
+    "blind_id": "item-038",
+    "arm": "teacher_student",
+    "id": "test-026-0",
+    "seed": 430052,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",
+    "original_sha256": "d79e1faa4c50c9c8cfc191ae366186a6aa68acd42fec8a8b16c9f57b83be1d7a",
+    "review_sha256": "9a0539301517ebbde6224eca0b0735acd0ffda47c7ea01ae6dd25e1187b4a2f1"
+  },
+  {
+    "blind_id": "item-039",
+    "arm": "teacher_student",
+    "id": "test-013-0",
+    "seed": 430026,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "44cdb7de04b041146ff556a36c63e2ec075d93856e65b489ba96cb04f020947f",
+    "review_sha256": "aa6ea07cbb29fc375f55c36a14e8d338126bc74bb03b934dda04c49669ac0d8d"
+  },
+  {
+    "blind_id": "item-040",
+    "arm": "base",
+    "id": "test-020-0",
+    "seed": 430040,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "50194cf570a5ab96fa65cf058f0ee5f2ae53e527b580e6589e4bdfefbe58c1c8",
+    "review_sha256": "79e0e64ce14940c9fdff435a1e1e538ba6de4fd313b5d157b2d3e6ff64ddbcae"
+  },
+  {
+    "blind_id": "item-041",
+    "arm": "teacher_student",
+    "id": "test-010-0",
+    "seed": 430020,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",
+    "original_sha256": "346916c066bf4988cce313bbdb0ddb274fe6f4ececcdf0537dc1c13e294fb24c",
+    "review_sha256": "aa46116bc564c22eab62789389a0952fd64c973750d9b0aef8393247fe252355"
+  },
+  {
+    "blind_id": "item-042",
+    "arm": "teacher_model",
+    "id": "test-018-1",
+    "seed": 430037,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "b6bea18e2a9305b6da4fce5c145d6be71145ceaa9af4a36030b899aad5f264c6",
+    "review_sha256": "d7ffa3e0e9456d4f8651add90b2582081ce48e1a1efb6b03eed6de14b7faa5c9"
+  },
+  {
+    "blind_id": "item-043",
+    "arm": "self",
+    "id": "test-016-1",
+    "seed": 430033,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "e6f6253fff18905e2ef5236bb36e091db1323f056a0e7795e4fcf7a4319a5b45",
+    "review_sha256": "4dbbe4638483ceef1dd239d983f0914beb775e58544941fb722b2746627639b2"
+  },
+  {
+    "blind_id": "item-044",
+    "arm": "teacher_model",
+    "id": "test-007-0",
+    "seed": 430014,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "b8726e4e7363239aba581c4e8c6e1bb2c638ac61b17da0495021100049f9853b",
+    "review_sha256": "f8ff084f0142f69736ef38e64d5245738e02484b200d93bd9c40076e9a7fab6a"
+  },
+  {
+    "blind_id": "item-045",
+    "arm": "base",
+    "id": "test-018-1",
+    "seed": 430037,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "c6b86a5f14531fb6411737263c4d10d4348178b9a888ca1ae5601b065e704d77",
+    "review_sha256": "7c695b9646525cb8ae07eb9cf558542eeb6398f4862cae54e77c94c96a21eea7"
+  },
+  {
+    "blind_id": "item-046",
+    "arm": "base",
+    "id": "test-031-1",
+    "seed": 430063,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "d75431b0db8ddf484de3eda8206344b734697d7c46b183fcb8e429fee3b22b76",
+    "review_sha256": "d37f7bac66c00eba79ad0681dbbb0ec18ad48108e34d0a79a13d15c7fdabc17e"
+  },
+  {
+    "blind_id": "item-047",
+    "arm": "teacher_model",
+    "id": "test-019-1",
+    "seed": 430039,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "9f2774a6390c98802a703fdd4cb5348ba1907b429ae7839816f0cabf97b270d8",
+    "review_sha256": "ba6f9f71b6b8ac6b83143d9e66180df07f4df33b93bd1789683de19f969f08c4"
+  },
+  {
+    "blind_id": "item-048",
+    "arm": "teacher_student",
+    "id": "test-021-0",
+    "seed": 430042,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "0683488735199e3e5f9a568145d08e829711f60566fd171985cb625930ff94d7",
+    "review_sha256": "34dd035f313b47e50d9741ff53d2acf113b48890bed67b1e46c73714be3b26ce"
+  },
+  {
+    "blind_id": "item-049",
+    "arm": "teacher_student",
+    "id": "test-019-0",
+    "seed": 430038,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "080aeff29d989139c30fe20cbdf79d6368b1f94a30cb11cf4f8d1b42ca8d85e2",
+    "review_sha256": "ff2fff0195ef9f3beaed9b97484aef005e10100270a257ff29a159ba4c16787b"
+  },
+  {
+    "blind_id": "item-050",
+    "arm": "self",
+    "id": "test-022-1",
+    "seed": 430045,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "07e36e5dadc3007e49bb4772b404b8d0a6a3e48f9cd6916423c04ac692fbb28b",
+    "review_sha256": "bcedc859449f18844be264eaa3f1be7f5e606e3e5d21215e8123758af5504ee8"
+  },
+  {
+    "blind_id": "item-051",
+    "arm": "teacher_model",
+    "id": "test-013-0",
+    "seed": 430026,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "1fa8633ff7ce5c8f9516a059f0a765115f5e2673b0d9d981024f38a4ea9d85a1",
+    "review_sha256": "4c48f899c546d8fb2879039f4a2679933deac7f1659d517bcc62f782a5f33e24"
+  },
+  {
+    "blind_id": "item-052",
+    "arm": "self",
+    "id": "test-021-1",
+    "seed": 430043,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "5db544cc7cd7ceedfd8a7d8949b89690055182aa93c226da2733d59cd2e0333e",
+    "review_sha256": "e6c9d0dc235c94e83510c882d3cde7c457b38bb1407c2e73425c264339c70fa7"
+  },
+  {
+    "blind_id": "item-053",
+    "arm": "teacher_student",
+    "id": "test-030-1",
+    "seed": 430061,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "1a6ec5f6948d68299a09348121b412d2774a5ac2c4c5dca1c9104dfa0229e20a",
+    "review_sha256": "6071dbf87d6ea5edf8da76eb957f2c63ea8e2e42622bdec37c00986f1e626181"
+  },
+  {
+    "blind_id": "item-054",
+    "arm": "teacher_model",
+    "id": "test-013-1",
+    "seed": 430027,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "0dbc6a00fdb7fd5ef9935b48ff4bfae449c56aa226a106249e42b4574fcf8823",
+    "review_sha256": "b1a1f0a36097be7460324faa3b831f912e68af21f6386e5efa82c5ffab6d045d"
+  },
+  {
+    "blind_id": "item-055",
+    "arm": "teacher_student",
+    "id": "test-026-1",
+    "seed": 430053,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",
+    "original_sha256": "f41ac903b0e59e6aa9d68e54972f5a3bf02e00345e1d15e834ef9e64a91085a6",
+    "review_sha256": "4daed4254965a44fa6618386d5936046e3ae9a9314b98f7929eb9277795bb6a0"
+  },
+  {
+    "blind_id": "item-056",
+    "arm": "base",
+    "id": "test-031-0",
+    "seed": 430062,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "30898292eacdc6149faf3f5089e92fcf365c85096a3eca4830fb237148ee882d",
+    "review_sha256": "b91695fbb02b835704e24e1c49bf5d21aa8d34c356ad03c1e7fb52580b5669f6"
+  },
+  {
+    "blind_id": "item-057",
+    "arm": "self",
+    "id": "test-011-1",
+    "seed": 430023,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "d6e04fed69987f0b6781f02500080c5fed11835879ddbfdccba85a5561a4dbce",
+    "review_sha256": "fd36de0252a8ad4648a00d922cde476cf23dca2f03de8af6e7d2b7314c1366c0"
+  },
+  {
+    "blind_id": "item-058",
+    "arm": "base",
+    "id": "test-005-1",
+    "seed": 430011,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "2e5720ca6f409a6d3796bc99aaa4b1f39a819c8d4efe6e17cdb85aaba536b91b",
+    "review_sha256": "5a156258a73fbb2c55dcf25b153c622bc9ce43cab447c0a5346248536c4e9efd"
+  },
+  {
+    "blind_id": "item-059",
+    "arm": "self",
+    "id": "test-001-0",
+    "seed": 430002,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",
+    "original_sha256": "6eb10331871d9b2d2635f689ead64ce5a125f806226d005ea0a1fd269d48d35b",
+    "review_sha256": "50ef68203f8d7b8ae1b60147f1e4ee680bd7f4cc2708c15af365f95ebe83ed6f"
+  },
+  {
+    "blind_id": "item-060",
+    "arm": "teacher_model",
+    "id": "test-023-0",
+    "seed": 430046,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",
+    "original_sha256": "522771faccd6809326b4dffd603eefb552069822eef73937784bcbfcd305a8f0",
+    "review_sha256": "a6be620cade218eb5cc6f320b9ae4bbcbe1601829d7d6afc3ca2df437add1a84"
+  },
+  {
+    "blind_id": "item-061",
+    "arm": "teacher_student",
+    "id": "test-008-1",
+    "seed": 430017,
+    "prompt": "A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",
+    "original_sha256": "e5ec4232e19ab182b935fea0104b326519e520fc89b5bc43b62a49075a2386c6",
+    "review_sha256": "dec0aeb55f4d10d01fb48ec4f65170ad5fc3b8d738770fdf7d33b1dc181cefe2"
+  },
+  {
+    "blind_id": "item-062",
+    "arm": "base",
+    "id": "test-001-1",
+    "seed": 430003,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",
+    "original_sha256": "aa19b01f535a6a9900dc2450b7c0d2624fc570ca470f49c47627a5a20d46d4fb",
+    "review_sha256": "8541d1e09cf70ccf91c3cb2d299673ff63f5d5fbdd12b694ba36c6934ab227e2"
+  },
+  {
+    "blind_id": "item-063",
+    "arm": "base",
+    "id": "test-013-0",
+    "seed": 430026,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "8645541c30e1f689c749e02743139876f95ea6ee5279d01351a99f7b5743e082",
+    "review_sha256": "fcecd20f685f57cdb542eef919ee40da754e277c8d708a0abae1401393a3ff3e"
+  },
+  {
+    "blind_id": "item-064",
+    "arm": "self",
+    "id": "test-030-1",
+    "seed": 430061,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "85144abd672c22d68a340f7e9e304f051e79120efca45f84d20467c9e3323981",
+    "review_sha256": "35aaff01a971a4b133aae24824031ef42f2affad11d827585fa81684eaf8b465"
+  },
+  {
+    "blind_id": "item-065",
+    "arm": "self",
+    "id": "test-023-1",
+    "seed": 430047,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",
+    "original_sha256": "e3284cc765885b28ec4b67e8e4eb07f68b243ffe42ebbd00184669ce88314dc9",
+    "review_sha256": "a9eeba9dce5ae64ee3f11d38b8d9effa897e423e6eee7d8f5735abfff12f8b1e"
+  },
+  {
+    "blind_id": "item-066",
+    "arm": "base",
+    "id": "test-030-1",
+    "seed": 430061,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "3bddf0bf38a34d28745006cb6f9cb86ba1ea6774d54ac68854be1cd769d28864",
+    "review_sha256": "7523bf010894a777760972726ee3dfd4f8c33d2c00c5d45bfcf4ce4c6cf72399"
+  },
+  {
+    "blind_id": "item-067",
+    "arm": "self",
+    "id": "test-027-1",
+    "seed": 430055,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "655f0753567d18a433df8504c6bf15756afb9ff43622b7b1a616a19830c4a7d1",
+    "review_sha256": "02c4aa6a91a85e4fee85856d1e5ab6079f4696aa9e2a7a2df65a51e4d1cc2d76"
+  },
+  {
+    "blind_id": "item-068",
+    "arm": "base",
+    "id": "test-004-0",
+    "seed": 430008,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "ab0b51ba7d05954ac8e35f6ea62ac966366914ca8070a3c8c3d61ee87194f8f1",
+    "review_sha256": "6c3887f27c4bb451a9fa3360e044e7c407292d27a83bddc4ee5c748df37ffc3b"
+  },
+  {
+    "blind_id": "item-069",
+    "arm": "teacher_student",
+    "id": "test-028-1",
+    "seed": 430057,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "ab2a2cf8d73797a7483997719c5c6fdcc3c899ed044b1fff73391155e693fa3a",
+    "review_sha256": "d3d68e499f4647be8d455bc110d0a93a293fd43e30f21f5195d3491fac74f279"
+  },
+  {
+    "blind_id": "item-070",
+    "arm": "self",
+    "id": "test-010-0",
+    "seed": 430020,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",
+    "original_sha256": "c46f26d79a1502883b0d96900f0be40805d5102957012248de90b41b7b4166a1",
+    "review_sha256": "ca065edeaa139aed7fbdab9aa9db3e8ea4cbccba0988679b39e82c23246f3e6f"
+  },
+  {
+    "blind_id": "item-071",
+    "arm": "teacher_model",
+    "id": "test-026-1",
+    "seed": 430053,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",
+    "original_sha256": "4796d17a914338104229ff60caa7e70c50a5a13fa1fae37e0aa049839f23db55",
+    "review_sha256": "aacda3ea200a003f9d7d4d743247d5d5cafb3c6634e9e77ef20a670475230c8e"
+  },
+  {
+    "blind_id": "item-072",
+    "arm": "self",
+    "id": "test-010-1",
+    "seed": 430021,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",
+    "original_sha256": "5dd5c5f4dd5a6f36e6bb3cdeafb057d0b868e0cd82c618ee48d3a370ca5f5f69",
+    "review_sha256": "53703d13fada22e96524f39527b0e5fc4386db642eb3598887e2de408c08c93d"
+  },
+  {
+    "blind_id": "item-073",
+    "arm": "teacher_student",
+    "id": "test-017-1",
+    "seed": 430035,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",
+    "original_sha256": "bffa7b5e21d11aa8cf0b3638860e2be63d772bf6d42a3f5ada5d28d2547b6622",
+    "review_sha256": "b1f89ab98382354d7503a3b75ab14a754f87427ae3f3e19154eaa1845f3697cd"
+  },
+  {
+    "blind_id": "item-074",
+    "arm": "base",
+    "id": "test-018-0",
+    "seed": 430036,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "85633c2a2d4c8309515038d2b99d0859e4dbc8826eb35500d91888e4d3454858",
+    "review_sha256": "5f946f9cecd73f78e10431574837808ecd52449349d32b30507f99615b3685dd"
+  },
+  {
+    "blind_id": "item-075",
+    "arm": "teacher_model",
+    "id": "test-029-0",
+    "seed": 430058,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "47d81f92ec0de4cfc6e9a0401b0aef0cd2f7325849938473776919a95cd98fc5",
+    "review_sha256": "8f68e31a167267509a457a0e5c8294df31ca44e16952529c3f709faa36b05f95"
+  },
+  {
+    "blind_id": "item-076",
+    "arm": "teacher_student",
+    "id": "test-028-0",
+    "seed": 430056,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "417e58b8a64f605f7aff5c79c27cb3f1401d72f21bb4ecc9a3be4bd597f2a010",
+    "review_sha256": "ab8724e631f3ee92491ba844d7b2d51aa23a7cd28deb2a69b14ded0381cd10ec"
+  },
+  {
+    "blind_id": "item-077",
+    "arm": "teacher_student",
+    "id": "test-011-0",
+    "seed": 430022,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "5064ac0986cf53e2da65ea17809b31a2d4cd28d4e21468ef215a8396682e281c",
+    "review_sha256": "780f0fb6e3b40aa6463e2832342924802694bbbaee5b9952c75007e449e9626d"
+  },
+  {
+    "blind_id": "item-078",
+    "arm": "teacher_model",
+    "id": "test-030-0",
+    "seed": 430060,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "3dab77449723f6f47fcc0fd9402cf500962d87ca0bdf5256eee46989af537fff",
+    "review_sha256": "02f3c23775c3bd8d87e46a87e7a87c8a12f41597d1a049b0ea05b743441ce748"
+  },
+  {
+    "blind_id": "item-079",
+    "arm": "teacher_model",
+    "id": "test-002-0",
+    "seed": 430004,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "8500633c0e4163ae64ae2ba42277cc2e66339ec0fc9c241597e6772f69e0d700",
+    "review_sha256": "c6ee517e2b9b30eec3eef04e544874fab620329d022cc697c94313a6df85e250"
+  },
+  {
+    "blind_id": "item-080",
+    "arm": "self",
+    "id": "test-009-0",
+    "seed": 430018,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "10eded1209bce91da9a2e6d7d67194786ed1730f8d9f7f850e4d55bcd0f5c545",
+    "review_sha256": "9192b38356c84f4a0d89679364706a081ba7ffe2aaf5073549a54655995391ca"
+  },
+  {
+    "blind_id": "item-081",
+    "arm": "base",
+    "id": "test-029-0",
+    "seed": 430058,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "28b8e01eafc928371a76ccf45bcec315f342e796437081a15cfb4a4e6c1a5854",
+    "review_sha256": "ba1841a3a0aebf19d3e67da07944081a834193fa78525ccd056ad07a353d8c77"
+  },
+  {
+    "blind_id": "item-082",
+    "arm": "self",
+    "id": "test-018-1",
+    "seed": 430037,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "857a96e30acfe7516e07102c08da263fed903e8a8e61e1a5067f89f375d7b9c3",
+    "review_sha256": "3a36bbd643434d6269679ddd7cf8534b5db630e94006838c9d250e2407306d04"
+  },
+  {
+    "blind_id": "item-083",
+    "arm": "teacher_student",
+    "id": "test-017-0",
+    "seed": 430034,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",
+    "original_sha256": "5572460da7df0cb214d56c5c3527a1ad75ef783f434bf83ad65bed80239071dd",
+    "review_sha256": "5a7f59bcf0dabdba4ecc9684c008a77b5f975fecfbf01354f1703c305eb80dec"
+  },
+  {
+    "blind_id": "item-084",
+    "arm": "teacher_student",
+    "id": "test-009-1",
+    "seed": 430019,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "15f7301c1657cfbaf96c6907398361112f01cf6df68a93441aa8a4e79f8bd064",
+    "review_sha256": "a97d40cba516aee7bb321a619efaa0c9126cdf382b2cf862a0c45e5c624ccb4e"
+  },
+  {
+    "blind_id": "item-085",
+    "arm": "base",
+    "id": "test-027-1",
+    "seed": 430055,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "60791ed81a05f8a625060362a0b74567d457d186c34b45b18d1d7e2ca2e9b6ca",
+    "review_sha256": "ace52b7dae7a968cf0dc17f256dfacb5569854ba77f2aeeac4142cffc40b4a47"
+  },
+  {
+    "blind_id": "item-086",
+    "arm": "base",
+    "id": "test-022-0",
+    "seed": 430044,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "ed20e11f9ca9d3ed3b6daa75aa58cd2c4e3ac46143c0979226cf32ebdb1a98e0",
+    "review_sha256": "454638824a7a19e0e7e6fd72d1190ac7aa162fc6f4472fa85bd70fb61f10ca86"
+  },
+  {
+    "blind_id": "item-087",
+    "arm": "teacher_model",
+    "id": "test-031-0",
+    "seed": 430062,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "54a29af5731d432b57f1f9fe20ced61143ff0f84c4e198baba3d8ec2d89627dd",
+    "review_sha256": "7304c95ad2b74d562deeef02b6e3e1be463285b377bc17cfd019068382b68cc7"
+  },
+  {
+    "blind_id": "item-088",
+    "arm": "teacher_student",
+    "id": "test-031-0",
+    "seed": 430062,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "fb69578cacb6a443e7825383a1c16426419e3c9c31d0bbb7c43a10b4cd586d62",
+    "review_sha256": "244db2726bd26db528381f7dad3e483a707413f0c568f582db501f8f4da56289"
+  },
+  {
+    "blind_id": "item-089",
+    "arm": "self",
+    "id": "test-029-1",
+    "seed": 430059,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "026fa4861d115bca170342a824229dd253f948e3f02e212fc455d1ee26d71741",
+    "review_sha256": "047e0b8201a2d4d63face11e88f8db693ffc44515c0ea1da42c399265f27a29e"
+  },
+  {
+    "blind_id": "item-090",
+    "arm": "teacher_model",
+    "id": "test-004-1",
+    "seed": 430009,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "f7623a9e772aef6558326b5d63db5c6eaab866f65ef643497213ae67c996e2c0",
+    "review_sha256": "cddd320fb514e62a017aebae6cb6d34322a6be3231300ad22df92cb09f7fb8e9"
+  },
+  {
+    "blind_id": "item-091",
+    "arm": "teacher_model",
+    "id": "test-014-1",
+    "seed": 430029,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "00b140d951955f10ae0ad81da37213842756ae473803b6ab6e159ed1ae4a6077",
+    "review_sha256": "c9fb4ea943c7585d7a9a65b9b3f10266cd79946cfdcd0db22d31a9c74cffb956"
+  },
+  {
+    "blind_id": "item-092",
+    "arm": "teacher_student",
+    "id": "test-006-0",
+    "seed": 430012,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "d8f8ef273563b085ba8b537e491e544831f00e4013830e33e4e30b0a743f6953",
+    "review_sha256": "8f434c6ef7ec4e9653d14f1539ee07b3b3f31dc2eba61b9df561dd9dc5c58dfa"
+  },
+  {
+    "blind_id": "item-093",
+    "arm": "teacher_model",
+    "id": "test-006-0",
+    "seed": 430012,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "31885ad54d50ba701ace0dceea35fdf47a42918c01608ec81bec2c42f8d60f6c",
+    "review_sha256": "f2375dec46836ab68097f44149285464f3b1d965d6cb5026d1b04971628c49b3"
+  },
+  {
+    "blind_id": "item-094",
+    "arm": "teacher_model",
+    "id": "test-028-1",
+    "seed": 430057,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "dc5814590430a75b5ca7b81dea690983928108bdb0c0571bcd83858d39b3e7c8",
+    "review_sha256": "a8378351b20bb3c797f2ae96a5b60c2265731ad6ee80f77a1294ad92287b8b45"
+  },
+  {
+    "blind_id": "item-095",
+    "arm": "teacher_model",
+    "id": "test-008-1",
+    "seed": 430017,
+    "prompt": "A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",
+    "original_sha256": "99bddd8ca69660a357870f5f859a2f8db0f56616963386a1cd7c3fc78e020498",
+    "review_sha256": "1ff5458f9a676d2e740dad45d3b7ad30adacbbd5ef688f4e79468131a2b679ca"
+  },
+  {
+    "blind_id": "item-096",
+    "arm": "teacher_model",
+    "id": "test-020-0",
+    "seed": 430040,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "3fdb62ca40634501b525ce928230038dab2a6170fb79b1ec3d553a7dcc30be6a",
+    "review_sha256": "e50fd2321b772d3e06d7e9a3858011f91834786ee24baecf3f9a9b902e8b13d5"
+  },
+  {
+    "blind_id": "item-097",
+    "arm": "teacher_model",
+    "id": "test-024-1",
+    "seed": 430049,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "6a1e800782002f84a0b7072d8321d9d0f7f5898c359b8ba563b0c5e9fe8d5c0c",
+    "review_sha256": "eb5ed15723f761821b5ecd9ab2c270848982e85cc103cc98a826e87f5b57b0ce"
+  },
+  {
+    "blind_id": "item-098",
+    "arm": "teacher_model",
+    "id": "test-014-0",
+    "seed": 430028,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "1078b9248eee9aac7d050e1d59642e7b3d99f3d4c9d748ee784374e57ba2f5c2",
+    "review_sha256": "a8e72f53c1754cbab37309eaf64e7be768b29e8d4c53f3edd001474c42a773d4"
+  },
+  {
+    "blind_id": "item-099",
+    "arm": "base",
+    "id": "test-006-1",
+    "seed": 430013,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "69ded6280d46676ba4034f920a411e034febab687c607e8ebf99c410a09e5d87",
+    "review_sha256": "b5c1f3d3f509d74ec6b01035b0676c9a0b4b9dc39360d149ab7fca48c45a30aa"
+  },
+  {
+    "blind_id": "item-100",
+    "arm": "self",
+    "id": "test-031-1",
+    "seed": 430063,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "189acfb01521fa0c26bbaf2d103cfbfef66fd3b554474e215f5dedf5acecdb40",
+    "review_sha256": "c3112daf65383c58543e1668dc8dced89e0398ce1b0101a6ac8ff9d4afdfcb30"
+  },
+  {
+    "blind_id": "item-101",
+    "arm": "base",
+    "id": "test-010-1",
+    "seed": 430021,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",
+    "original_sha256": "a2df23fee9cf4d6d6df457167ef4e6be674d4cf05046d9ab8f07d97602094c57",
+    "review_sha256": "e046e3c9347f947653880297d2716ad5052e819f9dc4949b18d0786713788560"
+  },
+  {
+    "blind_id": "item-102",
+    "arm": "teacher_student",
+    "id": "test-010-1",
+    "seed": 430021,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",
+    "original_sha256": "b0659f09207a35c1935a323a7694882b681824e4588e0b5b6b326b273520adb7",
+    "review_sha256": "597dd7f1c898da633f4c052ebe1ecb93e227ffaf44ad6c783baec343b2ee9ba0"
+  },
+  {
+    "blind_id": "item-103",
+    "arm": "teacher_model",
+    "id": "test-020-1",
+    "seed": 430041,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "19e66cee372415f9a56cab49e2ce67a41ae1325d0ed3bb6ad91b0e6f8d9dc673",
+    "review_sha256": "74b3bfc86462b6d79e102774c75e276bcc16962fd22b0d851c25decdff5e86cb"
+  },
+  {
+    "blind_id": "item-104",
+    "arm": "self",
+    "id": "test-021-0",
+    "seed": 430042,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "494736149ee604ef4fe7b543b314443d97e90f8cd79839a22c9554088c9a6abe",
+    "review_sha256": "39dc457721db479e58d03ff6c44cfb1f24fbe90fff1c90db094418e574e804e7"
+  },
+  {
+    "blind_id": "item-105",
+    "arm": "base",
+    "id": "test-002-0",
+    "seed": 430004,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "7f5f7d7ece2256234c21236683165ffac55261a9b9af67dbf44a6d4b91c48515",
+    "review_sha256": "81f0a42dfbd44074c8d8cc48c3922a3e6bf4d4ff4356949bbd8119bacb890cd1"
+  },
+  {
+    "blind_id": "item-106",
+    "arm": "teacher_student",
+    "id": "test-031-1",
+    "seed": 430063,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "e7b9dc782b5d2f87d86e0f7ed3437ddf6dafac3c647bc50730676d7f0a59a75d",
+    "review_sha256": "374ae8491a662634f2318f5c9f3a34f986e11f5321d5b859a018e902f7e619cc"
+  },
+  {
+    "blind_id": "item-107",
+    "arm": "teacher_model",
+    "id": "test-000-0",
+    "seed": 430000,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "9d67b4696e7524eac937a7ee7a508f8adcbb32370314e442c23077e8aeeb48b1",
+    "review_sha256": "b2464cad0c34697b32c0839f8c30982ae1bb1f36d5cd5fd5b49124d61ef1122f"
+  },
+  {
+    "blind_id": "item-108",
+    "arm": "teacher_student",
+    "id": "test-018-1",
+    "seed": 430037,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "cd9a2052b77cb72810c28ba66026f2b0f840f56d181b9bf68bf36847bf663e56",
+    "review_sha256": "5e1a280717c6638534cda99effeeab967a611e4f6180a559972aa59640978d5e"
+  },
+  {
+    "blind_id": "item-109",
+    "arm": "self",
+    "id": "test-031-0",
+    "seed": 430062,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "11ac222cea7e66b6be6a565fb1766254933c340c0139117fce7bf780bc8ccfd0",
+    "review_sha256": "cdf647cdf55fbbcfa2c96660581067c6ad4e8251b306978917543582979b5603"
+  },
+  {
+    "blind_id": "item-110",
+    "arm": "base",
+    "id": "test-008-0",
+    "seed": 430016,
+    "prompt": "A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",
+    "original_sha256": "58837df0ec45b6be0c6e7037d5fe997189f674795451acff67e11de2749e2858",
+    "review_sha256": "30e4870af320c5fffff33526e60673c96321885b611f98bb6250b1bc5183239c"
+  },
+  {
+    "blind_id": "item-111",
+    "arm": "base",
+    "id": "test-026-1",
+    "seed": 430053,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",
+    "original_sha256": "99068cebaf99add3fca85de83e1e880f407fe57cb4952c7f94a25d9b981f09d0",
+    "review_sha256": "7236f235e111e787db6c5e460e8e8c1c4ab94756c41e1727e09ebd5d23e01403"
+  },
+  {
+    "blind_id": "item-112",
+    "arm": "base",
+    "id": "test-028-0",
+    "seed": 430056,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "78594ea49b19a44f44d9ca4afd41222e8e99f645b5ff45f46f2f2904a32ceeee",
+    "review_sha256": "c74fa5d8611aa86264416566acfadcd3086b92606ecf7da91863845aebaffa34"
+  },
+  {
+    "blind_id": "item-113",
+    "arm": "teacher_student",
+    "id": "test-015-1",
+    "seed": 430031,
+    "prompt": "A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "ab7a1690c3b2996e73d0f536723f2314f81154f22bff13229b9425e7c64f3106",
+    "review_sha256": "5db86f1bea3dfb43bee0a1d7a3d1d1f023df88d187712c78825bbb90f23e369b"
+  },
+  {
+    "blind_id": "item-114",
+    "arm": "teacher_student",
+    "id": "test-004-0",
+    "seed": 430008,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "b4ae642b2a668b1c70d8f0d85159f433ad54eacae04e6f6092b913751c02be6f",
+    "review_sha256": "c030832c4c04f676686281623481167d5a0635a0f00e032f0a6811e1b2a2a879"
+  },
+  {
+    "blind_id": "item-115",
+    "arm": "teacher_student",
+    "id": "test-003-0",
+    "seed": 430006,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "5f3cb5752232d0d90f83bc169f8aa84487cd89a22d50028c560ececdb47ca3ca",
+    "review_sha256": "ec05c49a71bd54f403ebdb2b51f7b2d1f7aadfd08af9a3ab2f7641a7df9db94e"
+  },
+  {
+    "blind_id": "item-116",
+    "arm": "base",
+    "id": "test-005-0",
+    "seed": 430010,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "d62d832eb1ff0e1c094d092c908bffdb68ac64005a413743750f78cd86f3c4f6",
+    "review_sha256": "8da6422fa29ebf64028727e38743a6766ff4705547c2b6f4c40686c80a39c10e"
+  },
+  {
+    "blind_id": "item-117",
+    "arm": "teacher_student",
+    "id": "test-029-0",
+    "seed": 430058,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "8706de8b128a9c18f7eb81286e1548b249bf4977a1486ebfd987cb83f9949086",
+    "review_sha256": "e285eebd52ad0217612809719b5eeac9476c919b64b5562fc9dcc641e36ca2a9"
+  },
+  {
+    "blind_id": "item-118",
+    "arm": "self",
+    "id": "test-030-0",
+    "seed": 430060,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "0ba0191b74a46e90cd4e334e8e06c1eb6912db46a44b9cb484ae53437e1c4359",
+    "review_sha256": "486976df12d44fef255fc98834ed4e71a7f58e741a85dfdcbcf050b2ed3ce7dd"
+  },
+  {
+    "blind_id": "item-119",
+    "arm": "teacher_student",
+    "id": "test-004-1",
+    "seed": 430009,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "624b372c05f3524ee1dd0f47d2aa89529cefc3d995b434ec0426ee70a1b8347f",
+    "review_sha256": "4cc8de170b0d31c51046d1ecdb6b5f0b158e198ad240d87c804ac637c429d791"
+  },
+  {
+    "blind_id": "item-120",
+    "arm": "base",
+    "id": "test-024-0",
+    "seed": 430048,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "60110ecc67a191599ebe143916750f69fcae72187b0ce9515f4e17d3294b1b3e",
+    "review_sha256": "af050b583ee00fea9059cbe3fbaba9c8f3b590460220c856b1ea3502fd01494e"
+  },
+  {
+    "blind_id": "item-121",
+    "arm": "teacher_model",
+    "id": "test-024-0",
+    "seed": 430048,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "3c9383f9cb0f76754ef1ee302377ed25eead4c176b9b2fc5a9f12c29b2126ea4",
+    "review_sha256": "1716711b233599b31e5ffb2fa5a621e246769d5fa67b9979a452f8ec83975dac"
+  },
+  {
+    "blind_id": "item-122",
+    "arm": "base",
+    "id": "test-021-0",
+    "seed": 430042,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "7f31de23554a2304324042b8755f88cfbd4df6c858fc058c19878a4097808ccf",
+    "review_sha256": "a249e6e79be88457e6b6ed8078d9a5e8f1d44f2fc11ca4c1abd8a3f91968a05c"
+  },
+  {
+    "blind_id": "item-123",
+    "arm": "teacher_model",
+    "id": "test-022-1",
+    "seed": 430045,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "ba915b70889214754b08b10349ce40929406ee91556aea7869c4e0e24ea9c2ab",
+    "review_sha256": "6b8722d9c29148c7f170d30c0216feb1d6d095d21cac79a608f438206a6830b0"
+  },
+  {
+    "blind_id": "item-124",
+    "arm": "teacher_model",
+    "id": "test-025-1",
+    "seed": 430051,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",
+    "original_sha256": "4d3adad0a95ffadeed99e8d247d728b9e081f174ee2f4361c6efda44795bca66",
+    "review_sha256": "74adb5aa27f62ad4f60eeb62d472adc9fcc90a5b51aa50cef86b67891c5afa6c"
+  },
+  {
+    "blind_id": "item-125",
+    "arm": "teacher_model",
+    "id": "test-004-0",
+    "seed": 430008,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "3425671fbb3f4e9cb69d9871a6a8c7f34ef6d7d2b694953a6b14b464763ace25",
+    "review_sha256": "8f63edf198c738675e25cf8559aa374e9a2e53622fd8e2bdbdeb8627e141e1a6"
+  },
+  {
+    "blind_id": "item-126",
+    "arm": "base",
+    "id": "test-011-1",
+    "seed": 430023,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "2047e4fd0d1e6361df029c25cba5d335f50eed0d10dc4e3b70e3193f654c604e",
+    "review_sha256": "f08d2be762908c3bbb0bed7a028de9cca122400cec6fb40e8a3f8675a068fc57"
+  },
+  {
+    "blind_id": "item-127",
+    "arm": "teacher_model",
+    "id": "test-007-1",
+    "seed": 430015,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "0704352d31d1c0e12c1acbb6c3fbb5a7f2fae5d1af30e621129a63afa7884cfc",
+    "review_sha256": "56935cadc172dd6fda8e8035acb593b1bfc60e11ec966eac35a19efa60a10672"
+  },
+  {
+    "blind_id": "item-128",
+    "arm": "base",
+    "id": "test-024-1",
+    "seed": 430049,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "d5b89412feff97c285ed815448c42845f2673ef65ac28abf568d44c96172f6a2",
+    "review_sha256": "61f90ec841365f66d3528d305fc58770b62d8efbdee055743f518f1e648a1f73"
+  },
+  {
+    "blind_id": "item-129",
+    "arm": "self",
+    "id": "test-002-0",
+    "seed": 430004,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "2a70cd0c015d4f5954a8c47cee38b794638832f269291f4b6a1eac4686857f9b",
+    "review_sha256": "cfdf1e990c0497734d7f1ae21723cd7f65f721db98000181a9b25e35e46c997e"
+  },
+  {
+    "blind_id": "item-130",
+    "arm": "base",
+    "id": "test-026-0",
+    "seed": 430052,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",
+    "original_sha256": "617c29e02e052f2417ba9ed5cd3326e1c8710f29e2309bec277e7941cf54aab8",
+    "review_sha256": "ff1c7b89c70cf6a1152fdbd4253ca57c0158732faca56e775289b52b1d26ece5"
+  },
+  {
+    "blind_id": "item-131",
+    "arm": "self",
+    "id": "test-019-0",
+    "seed": 430038,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "9e4859639123276bbdee210d92e0a142ae5c12b8ef78286e09cd4d9b179fb0a4",
+    "review_sha256": "5e8ba60d68e919205b8efa2676c4837315ac8b12d6af02d3585d3bd2ec6b7806"
+  },
+  {
+    "blind_id": "item-132",
+    "arm": "teacher_student",
+    "id": "test-027-0",
+    "seed": 430054,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "c4c5e12806151f20ec7afe181aa4440a165aa92c10f72a789bd1ddbfcab55fdf",
+    "review_sha256": "bebd065e698b23674dc28900b8481403b7c59926044b4c845cf0b2c1bbd68d3b"
+  },
+  {
+    "blind_id": "item-133",
+    "arm": "teacher_student",
+    "id": "test-005-0",
+    "seed": 430010,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "a20e0bc38e7bcd13f4b1d7809224b11793680ee40f1b7eec50db9465dd9e1411",
+    "review_sha256": "df67d023e932c539d0ca13a0c725df440d05267bd885669dba70d91b7edd495d"
+  },
+  {
+    "blind_id": "item-134",
+    "arm": "teacher_student",
+    "id": "test-006-1",
+    "seed": 430013,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "9115523e3898693df82791ce8458fd4ff7350a570a434db3027ed50438c9d97a",
+    "review_sha256": "5d29e3dc9f67ca1ec1f4ec4fe9e26c13e475c1a8772ddaa4ecf00d33f1298fef"
+  },
+  {
+    "blind_id": "item-135",
+    "arm": "teacher_student",
+    "id": "test-000-0",
+    "seed": 430000,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "3dc2c21a6d3315d33d69f1031306d77a120d69317f542b12385ea65d496b5447",
+    "review_sha256": "97f7435a7ad257d481b1d1b306396548fac5166ba02c779adbdb2a6d6df7b5e1"
+  },
+  {
+    "blind_id": "item-136",
+    "arm": "self",
+    "id": "test-014-1",
+    "seed": 430029,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "e08df1e41f9db2a3b73d2f91df6c49748fb1ccd580cdbe7d8a6f5629baf26e08",
+    "review_sha256": "bb276807438e9d6c7072144da83b683b5c1f0fd8b5d1b65394649c3869d04659"
+  },
+  {
+    "blind_id": "item-137",
+    "arm": "base",
+    "id": "test-007-1",
+    "seed": 430015,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "e99a27c7b8b3bfdfa803b3861b77d898ee021ac658dc80222af36babb2d01ec9",
+    "review_sha256": "04d96b0ef71d4213251fae96fa80305ec1d0865c4d4013efc8049dd493e429ff"
+  },
+  {
+    "blind_id": "item-138",
+    "arm": "self",
+    "id": "test-014-0",
+    "seed": 430028,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "fbaf030a126f8911dcca1a43a58dedd9b0ff3f7141793d41f2e1b484db4e9f67",
+    "review_sha256": "5f8223c5001e2694be44b31d1907175466d3f2b66ad849137e73e7b70ef4c070"
+  },
+  {
+    "blind_id": "item-139",
+    "arm": "base",
+    "id": "test-012-1",
+    "seed": 430025,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",
+    "original_sha256": "e101b3ac8edd207a357285b17e0840178bb9d614f02bf3240729e6a57e120370",
+    "review_sha256": "5da1c2b17007895329f2c4931c74d2eea33aed4e1020f68b0bc3b61a1fed1018"
+  },
+  {
+    "blind_id": "item-140",
+    "arm": "teacher_model",
+    "id": "test-017-0",
+    "seed": 430034,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",
+    "original_sha256": "ec39d78a32d3810f4cd702461045499905fc5b878639f2b0657f5ed162d3070b",
+    "review_sha256": "4471610fd9c4df19cade56a4a652045ffc671221b956b6e8d79bb95511e39007"
+  },
+  {
+    "blind_id": "item-141",
+    "arm": "base",
+    "id": "test-015-0",
+    "seed": 430030,
+    "prompt": "A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "1ef6d1fe2d2dc0cb9a2d6400be7b4f529a8727137ae5b09c2d14990963c546f0",
+    "review_sha256": "cbf2d7d5ae18038f25b18e271f4b6478c090452b257185d257e345eb311c7718"
+  },
+  {
+    "blind_id": "item-142",
+    "arm": "base",
+    "id": "test-016-1",
+    "seed": 430033,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "91897b02b16e5c62fd555795532d4cce5ba41a4f2c7c539113884ee528d0a826",
+    "review_sha256": "34b76571ed8b4064bb4e656ccacd06e1e42ddd639da9c7cd2d8a49f0bf60d628"
+  },
+  {
+    "blind_id": "item-143",
+    "arm": "teacher_student",
+    "id": "test-021-1",
+    "seed": 430043,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "8a1d23244d88fd1095163efc7cb17588ce0a48c057066cd0e252e29b25d27a84",
+    "review_sha256": "17945ecac48bf5efa0f9002e6247a97783da2678d1e419982341296aa899c963"
+  },
+  {
+    "blind_id": "item-144",
+    "arm": "self",
+    "id": "test-024-0",
+    "seed": 430048,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "9afdd0ed85a2c8a112de7b3e8444c6692cb22897c0eddf3fc18d4d4b05b461cc",
+    "review_sha256": "3b2f8b016097bb6bc46697dc5e01529d8dee76eda98b1242d211fe0c927229cd"
+  },
+  {
+    "blind_id": "item-145",
+    "arm": "base",
+    "id": "test-016-0",
+    "seed": 430032,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "38543f4a8edccb79a75e81992cd7cc2b59af55dec48159332f1b05abace9f613",
+    "review_sha256": "b02af7b377b2b05890b91c0f05da2bff9a079ef7ad0a54ef0f288eb5f00931b5"
+  },
+  {
+    "blind_id": "item-146",
+    "arm": "teacher_student",
+    "id": "test-016-1",
+    "seed": 430033,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "606ca409499e553264892f6cfe9cd3cceecfa3be916bfbb1b348da78b91954b1",
+    "review_sha256": "d7ee8f0711ee20a767642a84115407dee00243a108af4b198229b223102990a6"
+  },
+  {
+    "blind_id": "item-147",
+    "arm": "self",
+    "id": "test-027-0",
+    "seed": 430054,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "5acb2783baed14be08337039773fd17c6c9f260b191ec4c3956ad6c704d27151",
+    "review_sha256": "b1cb8f793dc0315c019d41eabc0677f3b578b8bb381f661eb59bfe08d5949406"
+  },
+  {
+    "blind_id": "item-148",
+    "arm": "teacher_model",
+    "id": "test-002-1",
+    "seed": 430005,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "0beb9f0f0631e18d854540685539c10fcc61bd0b014d28011536a9b1d916c3fc",
+    "review_sha256": "891ac94d804aa9bfbe78074195d90fd96ded361520ce9a29b2d1bd5cf3bedb3a"
+  },
+  {
+    "blind_id": "item-149",
+    "arm": "base",
+    "id": "test-002-1",
+    "seed": 430005,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "943604ca84f7e64942c15eb56ddeb6c2cbc74d6931e70025bf6a8d11a981ee09",
+    "review_sha256": "84656a9cbbf677e75ebf96da51f31de0afed1c3eb15bf068b6cafb012d9fbcb1"
+  },
+  {
+    "blind_id": "item-150",
+    "arm": "base",
+    "id": "test-019-0",
+    "seed": 430038,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "73684ca5e906872e7c5e40e7fbc35f7a4fdf45dc0212596dbcf26a9dc02c656f",
+    "review_sha256": "14f93cd5ea3da19c73ea2df236a153df8c24b7527cb741f0c028bb00137a1db1"
+  },
+  {
+    "blind_id": "item-151",
+    "arm": "base",
+    "id": "test-028-1",
+    "seed": 430057,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "40394726f522de12d7a49489ae3303e487fb4257203b47a77fa56f457bf8092b",
+    "review_sha256": "a1ae333f1453bba19fc471cc677c8d661804061ea606dfa0384f60f26b56494e"
+  },
+  {
+    "blind_id": "item-152",
+    "arm": "self",
+    "id": "test-003-1",
+    "seed": 430007,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "176077947714de20b216eee49de1de76f66f3aa312d99a0b4e5b0b87fd8da62d",
+    "review_sha256": "e416357be95af52cdd3eeee69a6b9808c8cf57277335c3b8cb15b3b834434d21"
+  },
+  {
+    "blind_id": "item-153",
+    "arm": "teacher_model",
+    "id": "test-008-0",
+    "seed": 430016,
+    "prompt": "A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",
+    "original_sha256": "6613843704d6391d24deeecd3d3d2f2fe019e09a9866e76743fb82f605f8800a",
+    "review_sha256": "9dea5dcc1716ececa98fc4813d6796bc26cbaaf2c4521046126c39dd1d3e9e40"
+  },
+  {
+    "blind_id": "item-154",
+    "arm": "base",
+    "id": "test-027-0",
+    "seed": 430054,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "777b5bff5a9ce36f6ed6e33ccd63338d6d7dbde8ccd6a7b9067cf480ac7a5e85",
+    "review_sha256": "2e4b11bdb42124116880af0a6125daabad51449fc93c18a1a74b121510de81fa"
+  },
+  {
+    "blind_id": "item-155",
+    "arm": "teacher_student",
+    "id": "test-018-0",
+    "seed": 430036,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "79fa394daeefc39c0479c3d3ebeed7197c579542a209606b03025e8848b153c8",
+    "review_sha256": "ac2c90dadae1f37305a285324ff37f71446ca304052ad66c220afd398d87c793"
+  },
+  {
+    "blind_id": "item-156",
+    "arm": "base",
+    "id": "test-025-1",
+    "seed": 430051,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",
+    "original_sha256": "daedc6ba5fe793662563fcd244fbdf76345dac1076025884c44a0f310105d49f",
+    "review_sha256": "dbb407682f92029c17c14a16ba6959286d3cd67f89e573d9ab46470f91c5947b"
+  },
+  {
+    "blind_id": "item-157",
+    "arm": "teacher_student",
+    "id": "test-027-1",
+    "seed": 430055,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "d88cc575063d1474a662d8ccd2b38c53ae6b4e1c3bbca38e9194a509cb8ec35f",
+    "review_sha256": "ca5555c9a4c9fd3646e574219bbdce61be18cfd30b69b3debc4fc6e6d0185b09"
+  },
+  {
+    "blind_id": "item-158",
+    "arm": "self",
+    "id": "test-019-1",
+    "seed": 430039,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "0614b8be19b8d96a2545d8b8f89684a53fafeaae4957777f883b088bc1c1a84d",
+    "review_sha256": "9d73ff362daaa368d08c58c80676fe047868778ea1f22a4c9f0b5a15a278c794"
+  },
+  {
+    "blind_id": "item-159",
+    "arm": "base",
+    "id": "test-029-1",
+    "seed": 430059,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "2d776faa1176babc2fba07634f6fc7b895ae0ba19ae1db14c6a4f53aad34aa1e",
+    "review_sha256": "ef7edb39752788222fb180ebafa8439b67c89c249f9988e8aac50997b9f71545"
+  },
+  {
+    "blind_id": "item-160",
+    "arm": "teacher_student",
+    "id": "test-029-1",
+    "seed": 430059,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "1a4e7c80c13ccfd2165f05cf0bc88517bfc4bbea4619446e7f3e2b2a5f5f2353",
+    "review_sha256": "852e2ef16e3b03527cfa91091e41218e6d40b33b376f542b68d40ccd18495504"
+  },
+  {
+    "blind_id": "item-161",
+    "arm": "self",
+    "id": "test-026-0",
+    "seed": 430052,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",
+    "original_sha256": "0b6a6fcd065b66b31b2258a8a2d1592c9ce11fe9b86ff68ccaa0f8aacb49bbf5",
+    "review_sha256": "d0178ec7cda499433edbe869a77be8ab0ad4a8ef019f0461a0ad5afa0dc374c4"
+  },
+  {
+    "blind_id": "item-162",
+    "arm": "teacher_student",
+    "id": "test-002-1",
+    "seed": 430005,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "27343fc63808742de4b09539c30f3c402e484c9686c3d6344918cbb5eda6c3a0",
+    "review_sha256": "20f37b56b5cc9ab572c4551980b5b807e4ce89e5d117dd88c72711cdd86e4412"
+  },
+  {
+    "blind_id": "item-163",
+    "arm": "base",
+    "id": "test-003-0",
+    "seed": 430006,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "b68a7e1f89f4ebb9c6ecfd54eacbe75bb09bc40b02724ecb0888488a0d7fe3ca",
+    "review_sha256": "ad0f9ccfb9075171e195b6766cc3e7b8f256d855b68d247032a832dfed5035ec"
+  },
+  {
+    "blind_id": "item-164",
+    "arm": "teacher_student",
+    "id": "test-013-1",
+    "seed": 430027,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "ee02d8c1e845c493b59b51c996d59eee98c8e6ca84ae7b480dd81f7607ceeaaf",
+    "review_sha256": "37e5e407adfa8b33bf06929f5f326bfa2dc73fd2b4feb265dc833f2230225c56"
+  },
+  {
+    "blind_id": "item-165",
+    "arm": "teacher_model",
+    "id": "test-012-1",
+    "seed": 430025,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",
+    "original_sha256": "7da3eed0838ecb8ef3feb7e37467f9c811011b4d78e74817dc522784e3f19380",
+    "review_sha256": "ab91143c2515e910f6c3b705b15b3c92b8b5f6152abd9f5c6cca05d33f37d4c1"
+  },
+  {
+    "blind_id": "item-166",
+    "arm": "teacher_student",
+    "id": "test-012-0",
+    "seed": 430024,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",
+    "original_sha256": "dc7dfe076b2a56cc0fa404aa8fb434f738caca5c3e4c07d7d1054ad94409f5ab",
+    "review_sha256": "00a3d5dfd39315bf8ddd0a0fc894c80b8b8a51cb9472a3e543a6618568e742db"
+  },
+  {
+    "blind_id": "item-167",
+    "arm": "self",
+    "id": "test-002-1",
+    "seed": 430005,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "92c3602b349e58fc523221029023d3bba1a0099cafc43e5cb4f339379ad12b9f",
+    "review_sha256": "3e87aa7a9163b73ff7da7468a1e95bc24cd98da266bae0af942fb6c55021d42a"
+  },
+  {
+    "blind_id": "item-168",
+    "arm": "self",
+    "id": "test-011-0",
+    "seed": 430022,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "feb815353269e8d339ab528c240671d8338eb946f638fc2ac2e6c511813c1070",
+    "review_sha256": "67723667e82301f77c95b017acced8ae33199409909dd2917da6211a075f7317"
+  },
+  {
+    "blind_id": "item-169",
+    "arm": "teacher_model",
+    "id": "test-025-0",
+    "seed": 430050,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",
+    "original_sha256": "be41e8985f1f39a8996be8f1a125ffc7c1bbe12208f92548ffbe9c05fcac8a09",
+    "review_sha256": "d3d63c9f2a4f63c746022974738822ba49e402c919d64b76d183a6f63ba0d0c5"
+  },
+  {
+    "blind_id": "item-170",
+    "arm": "teacher_model",
+    "id": "test-027-0",
+    "seed": 430054,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "b157d1b4db35196731b8e307f93950b6faa7d3d6112819f623af862af1f6f210",
+    "review_sha256": "bd49239f0ec136d4bb7b95b2e29058dc6204884028c1c6d10cf73142859f3fef"
+  },
+  {
+    "blind_id": "item-171",
+    "arm": "base",
+    "id": "test-017-0",
+    "seed": 430034,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",
+    "original_sha256": "fc11dc983e8e30727fa877002af0cb1f9044a7d9ccd7076bcb9929138d9383ca",
+    "review_sha256": "0267e33f7e1fcaaa5582279ce24091ab8a369a172237d4dec517a318be86b177"
+  },
+  {
+    "blind_id": "item-172",
+    "arm": "base",
+    "id": "test-014-1",
+    "seed": 430029,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "5a33c1ff450d582674a43867a979b5a7da60af5f7d6caa88c767058b6bc4fb56",
+    "review_sha256": "99ecbf5f8dacb35cc557179dafae9a06fa22b86ac6caf989ff55316b27f17398"
+  },
+  {
+    "blind_id": "item-173",
+    "arm": "base",
+    "id": "test-015-1",
+    "seed": 430031,
+    "prompt": "A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "11d65ecc64afa44cb8782f937b72f6d78987531006b34aff3f951aa4ba64538e",
+    "review_sha256": "8c46f6658128fae49065ac3a0acbd7d770877c6e6feeb3dd1904d5c94b67dbea"
+  },
+  {
+    "blind_id": "item-174",
+    "arm": "teacher_model",
+    "id": "test-015-1",
+    "seed": 430031,
+    "prompt": "A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "0f8af4ceb6cc528b38539654c08a3d7d400604eb20808ae1f07658bda529fcde",
+    "review_sha256": "e433f4c3136561029d369569bc785e8ff004952363f98d63a051407c8cd19c68"
+  },
+  {
+    "blind_id": "item-175",
+    "arm": "teacher_model",
+    "id": "test-030-1",
+    "seed": 430061,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "816b1bebad78422bef750ff62fe0a60275d7efab81082b7b767d78bcdca21eaa",
+    "review_sha256": "55aa19706dd1606e8476cf4aa3ce056f89b620e6fb08d222cd3d0da5c6034759"
+  },
+  {
+    "blind_id": "item-176",
+    "arm": "teacher_student",
+    "id": "test-005-1",
+    "seed": 430011,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "777cd085cc4516c8d92968b84717258eae3dba4d03f393e5ebab94ee90cfa6d9",
+    "review_sha256": "5cc37e538d48ccfb404f76ae834445fb108932f2759e2d2fdde1791698db97bf"
+  },
+  {
+    "blind_id": "item-177",
+    "arm": "base",
+    "id": "test-008-1",
+    "seed": 430017,
+    "prompt": "A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",
+    "original_sha256": "4e917be29691e1b6d7a28334b06926b94f11a0ca492483c6936002278277924c",
+    "review_sha256": "abfad9fce8a45c3a4e45726eeb259ddfee2e70a466fca031ab9c42a6618ed70d"
+  },
+  {
+    "blind_id": "item-178",
+    "arm": "base",
+    "id": "test-020-1",
+    "seed": 430041,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "3face0f69c7d98cc8d31471357956d6004cc44e7d5a5b4cfda229e9283bac868",
+    "review_sha256": "10fa0ba688f9fa85b31a9fd44d74d0da5af25925fdff8a32ef59a9f3794648f5"
+  },
+  {
+    "blind_id": "item-179",
+    "arm": "base",
+    "id": "test-013-1",
+    "seed": 430027,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "ede851f4111db8e79cf12bed28db8fc3f4c8d4e814acb65ead938935aca33436",
+    "review_sha256": "cfaf9d6310fb00a0bbb057d85dde170624eb376edb98b473693af943ad04de35"
+  },
+  {
+    "blind_id": "item-180",
+    "arm": "teacher_model",
+    "id": "test-009-1",
+    "seed": 430019,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "94fbcf5f28cef830fd302ae8541a2f235e1f1f1a197d65e2003d038439d88753",
+    "review_sha256": "834974b988cbf1ef6595b84ab279d5689dd1714aab03a604e6f401af2a53e4ae"
+  },
+  {
+    "blind_id": "item-181",
+    "arm": "teacher_student",
+    "id": "test-011-1",
+    "seed": 430023,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "1f842d087735ca4a7fb00f3e1a0a8655b6ea6467d985cc5a93ed4ebfeffa9dd3",
+    "review_sha256": "8bedd0218cb72f4b924dba46743be14741173b9dee4c8d02cf843bbf1117a28d"
+  },
+  {
+    "blind_id": "item-182",
+    "arm": "teacher_student",
+    "id": "test-016-0",
+    "seed": 430032,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "a243e71ee6dd3e759ff74b76db0bf47819fd2d369ed6f8aa4d91414389b4855d",
+    "review_sha256": "9d1a0bf41e1f4397ab11d690015e11d3a0d5ddbf666f378608e4a287a765eb20"
+  },
+  {
+    "blind_id": "item-183",
+    "arm": "self",
+    "id": "test-020-1",
+    "seed": 430041,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "6361409f8b7d54f426cc48614a642aa69f70436b77193a9aba4bb22c00cddde0",
+    "review_sha256": "2f094ac541a00b686882b887deb6361c78cc2ec77148391dbc21ba081e1029d9"
+  },
+  {
+    "blind_id": "item-184",
+    "arm": "self",
+    "id": "test-028-0",
+    "seed": 430056,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "2b4776932c962482ebd5f02f540d3cd37857b65df286fdf793fa293cb48d2087",
+    "review_sha256": "f01289e6c77764710608ac6dca253b313833861c800d7f27ffcee28f37a7a3ea"
+  },
+  {
+    "blind_id": "item-185",
+    "arm": "teacher_student",
+    "id": "test-003-1",
+    "seed": 430007,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "50484171e7b148a3bf88b927ce186775340c9da70900bdf6e269d44f6a195ff7",
+    "review_sha256": "02b4535a9180a79550e7c935e4ac2076192e6c708e0b941d74ca0bc3e36f9c7e"
+  },
+  {
+    "blind_id": "item-186",
+    "arm": "self",
+    "id": "test-005-1",
+    "seed": 430011,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "a67cfdf46bcf57cfdad9568a1f78ac6bc124b64c6610b3cb53024e122be04245",
+    "review_sha256": "aa2685ac013eef5fb6427462f82e01ec072df907ed0e43d43e025c5b64ce82d1"
+  },
+  {
+    "blind_id": "item-187",
+    "arm": "teacher_student",
+    "id": "test-001-0",
+    "seed": 430002,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",
+    "original_sha256": "2db3919ae432fa5b1e745b17b8c520599613c1402620df0559dda19c0a38ed55",
+    "review_sha256": "0b30a8da44580aedc0b7f3b324619c1fe89861efaae600be14f6082fb11cab64"
+  },
+  {
+    "blind_id": "item-188",
+    "arm": "self",
+    "id": "test-007-1",
+    "seed": 430015,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "79851198ee9d21ea921c5240175aefc59e83876023052ec9301f93a62ebf30e8",
+    "review_sha256": "b5b66ab56b6e63eab912a417889900c47f7d4556ef9f7e809f2765bf2fdaa92e"
+  },
+  {
+    "blind_id": "item-189",
+    "arm": "self",
+    "id": "test-000-0",
+    "seed": 430000,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "290ff91afc0b01a95c5ba67292c7ad0a27226a166a25e5d47e21f6fe51b078cc",
+    "review_sha256": "d48e8547357a1736242740ea053e074e63b2e95da19749eb60db58983110ffb9"
+  },
+  {
+    "blind_id": "item-190",
+    "arm": "base",
+    "id": "test-004-1",
+    "seed": 430009,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "ed6868199c3c44a7d237444899f0b7a2a979f9623ecab7ed21203d28c0bc0c9f",
+    "review_sha256": "032ee4216d3eb0a014f2697180c2d71497995da7f36c4ec8850a0557839b70a3"
+  },
+  {
+    "blind_id": "item-191",
+    "arm": "teacher_model",
+    "id": "test-019-0",
+    "seed": 430038,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "400f728f9c7cb7e6ae71aceac1300e1775077826559740214f49624d098b3a17",
+    "review_sha256": "17265f79e1b57954156bef44623af5c045f65e88df2da1f3ba15ad4d9db66c19"
+  },
+  {
+    "blind_id": "item-192",
+    "arm": "base",
+    "id": "test-000-1",
+    "seed": 430001,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "6c6e29943770710b401123b1d05f4201560828d827a6d15a382e340b86095257",
+    "review_sha256": "9f5d7535af80487279c4845068f60e9f0918bbe351d8e887491324eed460ebf6"
+  },
+  {
+    "blind_id": "item-193",
+    "arm": "teacher_model",
+    "id": "test-011-1",
+    "seed": 430023,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "df477c2f05b70a323bc0ec62a5be7a0f34c2ce755f9b88e68a64e0a70a60c95f",
+    "review_sha256": "169874affb19239cd2ca2105058ce13805c251dbf2940c6e501f15026af2c475"
+  },
+  {
+    "blind_id": "item-194",
+    "arm": "base",
+    "id": "test-025-0",
+    "seed": 430050,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",
+    "original_sha256": "eefaa5f8d4a32c96cb84635b6284a65c89c4e581fd62e4553a297f1bcc4569b1",
+    "review_sha256": "4d6e58ba988fa3b2b5bdb6f94f1054a5deb50eaf944e88a00a0fe43757183edf"
+  },
+  {
+    "blind_id": "item-195",
+    "arm": "base",
+    "id": "test-003-1",
+    "seed": 430007,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "142e522f88ceb90f12077549176ed4b8a9a55535157e775eedc5f48c7bd45b7c",
+    "review_sha256": "99e434d01aee80283556f1926f2aae4f42a5d7cab3d2333b65efd6a7aea5aff3"
+  },
+  {
+    "blind_id": "item-196",
+    "arm": "teacher_student",
+    "id": "test-000-1",
+    "seed": 430001,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "8d2b64f7eeb88acba7b38d3820a8f3bb7a6327b44d845043478fa52007fa5ca7",
+    "review_sha256": "741f169283f34b090aafd88467a9e25039e550124f0851f1ddcfe23871ec3195"
+  },
+  {
+    "blind_id": "item-197",
+    "arm": "teacher_model",
+    "id": "test-021-0",
+    "seed": 430042,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "ad385bf5c7db061cfda413c547cb3c03da7946588ac268d94d2765ea69c9c19f",
+    "review_sha256": "2c95414e7d83dc9ee5dae89df2330d9581594a60ed53230fcc7f49b38fdb3385"
+  },
+  {
+    "blind_id": "item-198",
+    "arm": "self",
+    "id": "test-028-1",
+    "seed": 430057,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "4c9f4841d0e416356972dc81a25e687fd46382919e21b8991aa3918592779bf2",
+    "review_sha256": "b6283be35c3d72a476dbf3ce0534cc96c33b7d90a172c9f8e28d263ae9f9aebf"
+  },
+  {
+    "blind_id": "item-199",
+    "arm": "self",
+    "id": "test-017-1",
+    "seed": 430035,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",
+    "original_sha256": "1fa7aed69226523c46a588a51830a5cbe275854ee704849600f413575087346e",
+    "review_sha256": "e3789d232c162fb698c9ebf9ffa57b1af25e75d19abc7a0a362c582240530216"
+  },
+  {
+    "blind_id": "item-200",
+    "arm": "self",
+    "id": "test-024-1",
+    "seed": 430049,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "81ed88b179edbb56b4fd219a87a432ae5972b5a2a95a5a63c1c5941c73f736e7",
+    "review_sha256": "e3ba4355c3cc9755d33c9e5b9c12a21c281421f42c56a5406c3b31e736564256"
+  },
+  {
+    "blind_id": "item-201",
+    "arm": "teacher_model",
+    "id": "test-009-0",
+    "seed": 430018,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "4fc069f99213bad08a11f6803d9794986ce25c0fa6d560ce6517b0299fa1490b",
+    "review_sha256": "0919a6af596451ff68acb0f82788efa03b671ab519827622eafea37f34ef5f43"
+  },
+  {
+    "blind_id": "item-202",
+    "arm": "base",
+    "id": "test-009-1",
+    "seed": 430019,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "4a8814d53dbb541a00448eba9cacbb8204fae3672adcd7d723de0dfc4bd3ae9d",
+    "review_sha256": "14761b99dcb591614aca47b89bd5849166a15bc322d26e0820d5220c91bfe691"
+  },
+  {
+    "blind_id": "item-203",
+    "arm": "base",
+    "id": "test-022-1",
+    "seed": 430045,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "8140b781c876a587c566a2a7ee9db00f2ac0c67169e6c754e27e3b9a4c88f43e",
+    "review_sha256": "60557a476b2bc74a330ee3e47e6b8a59fe1e1497bf078979414e8977247e1ddd"
+  },
+  {
+    "blind_id": "item-204",
+    "arm": "self",
+    "id": "test-018-0",
+    "seed": 430036,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "c71b41e9a581391a534f7bf3a5491020f75c6965e3884da9c4dc3c12ca71ba35",
+    "review_sha256": "41dffd044c86e2855a8b8ec2af8c4981fdc7158c4018cbe0fe9f7a553d85321e"
+  },
+  {
+    "blind_id": "item-205",
+    "arm": "self",
+    "id": "test-008-0",
+    "seed": 430016,
+    "prompt": "A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",
+    "original_sha256": "7e0e17fc071b2da3db65f381b5a20ab54c9a15d642bd3ad90826ba22b749112e",
+    "review_sha256": "da1273ea2fa95e527776e1bbffda107d60fb044dbe6e33862f3ac8e19b9b9d5c"
+  },
+  {
+    "blind_id": "item-206",
+    "arm": "teacher_student",
+    "id": "test-020-1",
+    "seed": 430041,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "559048621d107787240e74386631a7c3a9c507afb5fed945d348b67dd3b04589",
+    "review_sha256": "396582aa12cdc54060fb7ec971846029f067feb1d2490d72d65317e8c5028ccd"
+  },
+  {
+    "blind_id": "item-207",
+    "arm": "teacher_model",
+    "id": "test-028-0",
+    "seed": 430056,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "7c395034384726fc4bf80e1ce3c325d1311cb79904455310b8c033436266db98",
+    "review_sha256": "fdbd6e0e151fb1a4241e5c98ff2e97c439d0007cb11844468d86fe4ea499963f"
+  },
+  {
+    "blind_id": "item-208",
+    "arm": "teacher_model",
+    "id": "test-026-0",
+    "seed": 430052,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",
+    "original_sha256": "3e30aa14ec547c3540944c684cbb6aa58a216b4b9a014322bc5a7944c86384f1",
+    "review_sha256": "c6631a76aee8a8f656cadfc3263498c63b6476d52a3102bf9ef7b87d9a560b41"
+  },
+  {
+    "blind_id": "item-209",
+    "arm": "teacher_student",
+    "id": "test-015-0",
+    "seed": 430030,
+    "prompt": "A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "a204a5e570ed0a0e2ee5e88d803b57a09f82f60c32b61c1555cf31465c8d95a2",
+    "review_sha256": "8bc1a789f67ccd97f379688dccddca3eec841ed53f15da5106cb9b28d32509e9"
+  },
+  {
+    "blind_id": "item-210",
+    "arm": "teacher_model",
+    "id": "test-010-1",
+    "seed": 430021,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, softbox light, no text, no logo.",
+    "original_sha256": "ae2402d4ca07d46a0e9906a6d8b143548b38bd6bf095c60208ef1ee733d67855",
+    "review_sha256": "7eb4460750850262bfaa7ed87eef3eb5aa45e9e3528d4da9fbdd8081167c1b16"
+  },
+  {
+    "blind_id": "item-211",
+    "arm": "teacher_model",
+    "id": "test-015-0",
+    "seed": 430030,
+    "prompt": "A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "bfacc7946bb5a99f971748dcf5817245758b33d124b88d2b4f5b687ecd5843e8",
+    "review_sha256": "bd677b7c638fefd8c4a69f200249b21267f0b26c51d8ccbcabf96644f4de4ffb"
+  },
+  {
+    "blind_id": "item-212",
+    "arm": "teacher_student",
+    "id": "test-022-1",
+    "seed": 430045,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "06c2e27b1d99d19e4e15459cf4b1b511b3acb76278c07d47f63f7fc8db8025bf",
+    "review_sha256": "82d6ed4c2d936e41cefd62faa2a5284abbbc00ccefdeeddb4d63c5ac08935dfc"
+  },
+  {
+    "blind_id": "item-213",
+    "arm": "self",
+    "id": "test-029-0",
+    "seed": 430058,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "7ec633428d56bb7414473c8be27adbb65617b4fdfef28d34d666643a04c51af2",
+    "review_sha256": "4181dfeb96d306bad454bf510d6fc04bcce59a1aaddf2cb02ad8b174de1af36a"
+  },
+  {
+    "blind_id": "item-214",
+    "arm": "self",
+    "id": "test-016-0",
+    "seed": 430032,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "f2132edb8889406e2a0a547ca8b8e5c1678e0a7e7acba68117d2dac6017ea80a",
+    "review_sha256": "2c514fbe5f0dd086c8269045363a119b025ef2b0051de7e0517a341b0a2dc8eb"
+  },
+  {
+    "blind_id": "item-215",
+    "arm": "teacher_model",
+    "id": "test-017-1",
+    "seed": 430035,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",
+    "original_sha256": "b1c5dd368471e6822f553267a6a0e6080c1b37c5b81c09044d780cd604fe5e7a",
+    "review_sha256": "086fa9ef1fc4c3241cfb26a984e57437f24363327223a3bb4c4cdd6a6913f557"
+  },
+  {
+    "blind_id": "item-216",
+    "arm": "base",
+    "id": "test-017-1",
+    "seed": 430035,
+    "prompt": "A product photograph of one blue ceramic mug on a warm beige background, side view, softbox light, no text, no logo.",
+    "original_sha256": "39fc6f301e427e5b758d7315a382117caaffd044a525d97f1e0e7ed416d2e760",
+    "review_sha256": "7f1fef11c60c3b9648dc321587b959f2471f627bb0f3a600d26f3ff9673f4a65"
+  },
+  {
+    "blind_id": "item-217",
+    "arm": "self",
+    "id": "test-022-0",
+    "seed": 430044,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "b747089a101620fc9e71a20215a46fc4040555afd5a7bb8b5e77cbb8c489d768",
+    "review_sha256": "74e9b1b8859e113124d683a939abe0913443aecf85d6fc3a330f764a6fa30d43"
+  },
+  {
+    "blind_id": "item-218",
+    "arm": "self",
+    "id": "test-025-1",
+    "seed": 430051,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",
+    "original_sha256": "24ee0837d9fcffff4f04b83a1482b1fd98fb5794259474b874bc59090494be8f",
+    "review_sha256": "d5c3b6c30d6fd8cbd3c4ae3e02e61eac7e5de2126522c6ce69fcd4d14f724e69"
+  },
+  {
+    "blind_id": "item-219",
+    "arm": "teacher_student",
+    "id": "test-008-0",
+    "seed": 430016,
+    "prompt": "A product photograph of one green ceramic mug on a pale blue background, side view, softbox light, no text, no logo.",
+    "original_sha256": "7e524c01b5c06e1c35b9c01db20d8c76071c23258766c3bd315e9710be36c2a3",
+    "review_sha256": "1b182eccdb33b241e42e86288a69d2a56638491a0939b2721f126ec2ce0f5ffc"
+  },
+  {
+    "blind_id": "item-220",
+    "arm": "self",
+    "id": "test-003-0",
+    "seed": 430006,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "294485df713b2cd6fba523b363d76d419fd1fe1208b1c8ff0d7776017033fe26",
+    "review_sha256": "b5511ca87b48fce72f1ca692bf2ccb7e54447ecdfd77846852761ea6d7d45f3d"
+  },
+  {
+    "blind_id": "item-221",
+    "arm": "self",
+    "id": "test-013-1",
+    "seed": 430027,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, three-quarter view, softbox light, no text, no logo.",
+    "original_sha256": "edd67051fe214ecf3e4e8d4311115b7f5b2d4e7448a832d6f5138b1dba996800",
+    "review_sha256": "a922ba8424444c5b31e77b9be220531d4f47bd1be820e8dccea9341acb7fe261"
+  },
+  {
+    "blind_id": "item-222",
+    "arm": "teacher_model",
+    "id": "test-027-1",
+    "seed": 430055,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "eea44ab4be63ece07875e8bb62c19d16113173a4894a7ac283adf6cf503cce19",
+    "review_sha256": "8879c822fbe2e42b1acd444352124bd11584b018ec8ad8235931ca149c3a9856"
+  },
+  {
+    "blind_id": "item-223",
+    "arm": "base",
+    "id": "test-014-0",
+    "seed": 430028,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "245f344e14ec6fb92f691ac633ac8ce133a79843b779a1877484e330f771ab6e",
+    "review_sha256": "efeb1a3372395abab508b27fd694fc640164e13896cb676863cd0545f65c2d19"
+  },
+  {
+    "blind_id": "item-224",
+    "arm": "teacher_model",
+    "id": "test-003-1",
+    "seed": 430007,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "2dbf65d0162fdc7f6405037701601c49bd5200aebc8594237e05e0108fa02195",
+    "review_sha256": "6c4be381ab885d5714bacf6d68bba1e29f3394945cd5a748524c16b957a7e501"
+  },
+  {
+    "blind_id": "item-225",
+    "arm": "teacher_model",
+    "id": "test-016-1",
+    "seed": 430033,
+    "prompt": "A product photograph of one blue ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "6b688083e1026e5049f3391cdadfa9e4f01f9071f2897aa8f3e2f827376e0b77",
+    "review_sha256": "450ddc236ee97bab2c7988fffb6d23a3e25edd68fe09fb028cca5cf7f1beca36"
+  },
+  {
+    "blind_id": "item-226",
+    "arm": "teacher_student",
+    "id": "test-024-0",
+    "seed": 430048,
+    "prompt": "A product photograph of one green ceramic mug on a ivory background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "13b4415423d3ced2426f5426538497f489e7026e825235b8e0b23cca50a341f9",
+    "review_sha256": "dfc52a6a1eb70245a91f79bc317a97218d6205f0b94e30a9f8e399e7037b291a"
+  },
+  {
+    "blind_id": "item-227",
+    "arm": "teacher_student",
+    "id": "test-012-1",
+    "seed": 430025,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",
+    "original_sha256": "16578bf428a55bde4c8929c62329dd8c4fabab6c5c35cf78e808c55f0c83cdfd",
+    "review_sha256": "f7fae077b6d44140d79082f287d36c1b32a55144e321233c00430b4c194d0347"
+  },
+  {
+    "blind_id": "item-228",
+    "arm": "base",
+    "id": "test-009-0",
+    "seed": 430018,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "274156d72b82e8a864e9ddf531f8a07bdd9d3b7d2424852ab63a442a8c7e02a5",
+    "review_sha256": "9259c087746855be86ae4849b8f932d3ccd6c882772c58194cab7c80ea77c6d4"
+  },
+  {
+    "blind_id": "item-229",
+    "arm": "teacher_student",
+    "id": "test-007-1",
+    "seed": 430015,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "e9c4a470ad900801f7de4f9402eb27af8a1cc00eac80d618ef16bac39fb27d33",
+    "review_sha256": "1707efe457307d0a5e2f5a1ec1cff55b2a44286f3c4d8dda32bf394be8963b8b"
+  },
+  {
+    "blind_id": "item-230",
+    "arm": "teacher_student",
+    "id": "test-009-0",
+    "seed": 430018,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "c2ce3dc667990f6c0ccd3a4725d0d8eda936c83896f3449b5c4b2763e7692324",
+    "review_sha256": "22645a4ecbed7bcfb63de6a9773f775683ad4fc138ebafbfded4c1281a2e3707"
+  },
+  {
+    "blind_id": "item-231",
+    "arm": "self",
+    "id": "test-004-1",
+    "seed": 430009,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "df42a2de7272e69876562edb5242e6f514039828621fe63075f63e4c2ef97ef0",
+    "review_sha256": "2447610652d7cc1b63d410612604ed1393aee783eaeba0ff77946cf96862cb79"
+  },
+  {
+    "blind_id": "item-232",
+    "arm": "self",
+    "id": "test-009-1",
+    "seed": 430019,
+    "prompt": "A product photograph of one red ceramic mug on a pale blue background, front view, soft overcast light, no text, no logo.",
+    "original_sha256": "3ade6bb8ca22038bea3fc220e423bb59826fa96f5e9696b3196ea754571b33d6",
+    "review_sha256": "8dd5d0538f800d34ddf51c454abcb21e1683f735b9ffc4cf5dd12fe08b41c004"
+  },
+  {
+    "blind_id": "item-233",
+    "arm": "self",
+    "id": "test-007-0",
+    "seed": 430014,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "edd0f1f48fcd5b9e3963e2bb97bdf52ed57c058c8ca6fe8522b0f6dbed997bbe",
+    "review_sha256": "62acc0637a1fb6b37f3af7b8f6bf9b7b14a8b8772eb0d8ec3b36ff4f46ab41ef"
+  },
+  {
+    "blind_id": "item-234",
+    "arm": "teacher_student",
+    "id": "test-002-0",
+    "seed": 430004,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "28477f57b34e554dad3414287ce603390936386b917be72173f0ee638569e9ae",
+    "review_sha256": "32a776702cdeca5395fb735f99f162754faf11d3453333cc0c94d9a2e180be54"
+  },
+  {
+    "blind_id": "item-235",
+    "arm": "self",
+    "id": "test-000-1",
+    "seed": 430001,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "d3bb7cd54b4c624764192b63090edc48bf5b03854ff7e66fc34ed077162fb08e",
+    "review_sha256": "2a6a6376fdd337cd8dee5cd70de8b300243e43940f77451a9e844866add3021e"
+  },
+  {
+    "blind_id": "item-236",
+    "arm": "teacher_model",
+    "id": "test-001-1",
+    "seed": 430003,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",
+    "original_sha256": "315926223a37e2cc26aaa5f1252ca4b357add5c0013334cce08ddb1771e501ba",
+    "review_sha256": "369a81b251cb2f8bc88e6fb6126f88639d25b71b7ec5037aab68d0de5e05f8ef"
+  },
+  {
+    "blind_id": "item-237",
+    "arm": "base",
+    "id": "test-030-0",
+    "seed": 430060,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "28aabb0b847fdf8543d122c8fc4ac6b263c2c687ca67ff652ae6920c6f08369d",
+    "review_sha256": "821301c87146a6bec0ddfc7ec8bbac54d7bcdb04a6d387f996910d28c90e26c0"
+  },
+  {
+    "blind_id": "item-238",
+    "arm": "self",
+    "id": "test-004-0",
+    "seed": 430008,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, front view, diffuse daylight, no text, no logo.",
+    "original_sha256": "da6625c445511941b2230f204b853f9fe81d14855ab2743b76de9102f779db08",
+    "review_sha256": "0d6e435aaf6f6bbb8a295a458fe17bcf63e582eb54f7c34986e4f208d28275a3"
+  },
+  {
+    "blind_id": "item-239",
+    "arm": "self",
+    "id": "test-026-1",
+    "seed": 430053,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, front view, softbox light, no text, no logo.",
+    "original_sha256": "dbb173b5f94caa325a56108cfaa1d11aea351056ebeb7c10a6dcf8df33d534ef",
+    "review_sha256": "dd56f27b301225ab8541941ab37e94155d9f19973a8d628888ed3aa3c3f18a6b"
+  },
+  {
+    "blind_id": "item-240",
+    "arm": "teacher_student",
+    "id": "test-007-0",
+    "seed": 430014,
+    "prompt": "A product photograph of one white ceramic mug on a warm beige background, side view, diffuse daylight, no text, no logo.",
+    "original_sha256": "db0039b2e3cbf793a1f409199bdbc90ac0fdeda3cd25eacd160581e6516b168d",
+    "review_sha256": "a319d14f568574ae1745912cbbf73eaf7fd4c19d53e1509ef6bb7b14a8ba535a"
+  },
+  {
+    "blind_id": "item-241",
+    "arm": "base",
+    "id": "test-001-0",
+    "seed": 430002,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",
+    "original_sha256": "79658ca61c39353f4f2a2d714fcd4200f15410bebf541efec881fb909f49e493",
+    "review_sha256": "8fb0076f55dd1e2de6361d9590c2bb28423391eab5c037f960412d6ae2c2df98"
+  },
+  {
+    "blind_id": "item-242",
+    "arm": "teacher_model",
+    "id": "test-021-1",
+    "seed": 430043,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "d5aef2071f82f078e8c6592efa6d43d4f74edba64cad2c95d4971bb71ea1fe33",
+    "review_sha256": "479e8b5ab89937ba7a28b828b7799c2a67002106d1956cbc2f1b196977c83c82"
+  },
+  {
+    "blind_id": "item-243",
+    "arm": "base",
+    "id": "test-021-1",
+    "seed": 430043,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "891daa1318d5928c1f0c3e6fa19b1db2cc3dc06938869f56308d1eb1756a807c",
+    "review_sha256": "0d6411b50b06bcc39756e907ebffd3047faeb10d16b022e60c9199fe14b041c4"
+  },
+  {
+    "blind_id": "item-244",
+    "arm": "self",
+    "id": "test-012-1",
+    "seed": 430025,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, side view, gentle window light, no text, no logo.",
+    "original_sha256": "8e2bd1878fa22f602a7411dbc869ee2af292ceac5be397f97ab24650114128b0",
+    "review_sha256": "9414ba36e2fae75f1bc3a49c82bd8be2352c0b5c86c3e9e8ccf27c166e3af908"
+  },
+  {
+    "blind_id": "item-245",
+    "arm": "teacher_student",
+    "id": "test-020-0",
+    "seed": 430040,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, soft overcast light, no text, no logo.",
+    "original_sha256": "44d7de11281d7c0c89797449c7d3ce66633536cf093fb269b4733d41264fec2c",
+    "review_sha256": "e1e899c1c5327348f5dc5111b3b594f9fe2de0f7be5dbf2fdaa1d959a0d9343f"
+  },
+  {
+    "blind_id": "item-246",
+    "arm": "base",
+    "id": "test-011-0",
+    "seed": 430022,
+    "prompt": "A product photograph of one green ceramic mug on a warm beige background, overhead view, softbox light, no text, no logo.",
+    "original_sha256": "213be1ec3a2df79b74ee6205c599107e97129b0d0bea47bc51bf0758822ea8fa",
+    "review_sha256": "6903a9dc98ac7cedd8334fda181b3055e8f320100ff10bb64f0df5bd079f746e"
+  },
+  {
+    "blind_id": "item-247",
+    "arm": "self",
+    "id": "test-006-0",
+    "seed": 430012,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "00f5dc1a6a7d5097714555dfb0affd0f8b3d7a4fa1d30aa5c14d7374d71f5964",
+    "review_sha256": "a525343af28019e1380ec711a4fc678bbbaebb3105238a8a2301076f3383ae4f"
+  },
+  {
+    "blind_id": "item-248",
+    "arm": "base",
+    "id": "test-019-1",
+    "seed": 430039,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, gentle window light, no text, no logo.",
+    "original_sha256": "b0f48debe12379a36c0d729ebdae89247f495495b8e79e485f4e3af33a555c8f",
+    "review_sha256": "fb4f689d004811bae635061ad63b094895bf3a399a5571a3d9240a0feb6c0293"
+  },
+  {
+    "blind_id": "item-249",
+    "arm": "self",
+    "id": "test-001-1",
+    "seed": 430003,
+    "prompt": "A product photograph of one red ceramic mug on a ivory background, overhead view, soft overcast light, no text, no logo.",
+    "original_sha256": "ecbd78615c6a19684386f9817e8c2c9a56c3eac1e96b517593d84f496fa22f98",
+    "review_sha256": "7e69105aebadf78cbe4091f01223e2cf46cabd264d98fbce797ea333738bbbbb"
+  },
+  {
+    "blind_id": "item-250",
+    "arm": "teacher_model",
+    "id": "test-006-1",
+    "seed": 430013,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "a74190c72a2809a6e53dbf75f03bca882d9d0b193c084385db3358cb289a02b4",
+    "review_sha256": "10258123f630bb3b1a9e90a007bfda05fe51c7ee6e55dad36db0e3b036cafdca"
+  },
+  {
+    "blind_id": "item-251",
+    "arm": "teacher_student",
+    "id": "test-023-1",
+    "seed": 430047,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, front view, softbox light, no text, no logo.",
+    "original_sha256": "e1855f8497c9cc679fd016a92bb3eb1cf291862fdf53faf1aeada56327aad915",
+    "review_sha256": "1a24c1c8357459d6fde0289d655128899f82d62588860c16cd48151fd21584b4"
+  },
+  {
+    "blind_id": "item-252",
+    "arm": "teacher_student",
+    "id": "test-025-0",
+    "seed": 430050,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",
+    "original_sha256": "389224ebfa5368779149ecd58cdc9df9bdb3802ecdc6eb997f77048f4df803f6",
+    "review_sha256": "2c9e9dab308b1f48fe43bce559b825981f627a6d40cb8d5358e6b081e0149939"
+  },
+  {
+    "blind_id": "item-253",
+    "arm": "base",
+    "id": "test-006-0",
+    "seed": 430012,
+    "prompt": "A product photograph of one blue ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "aed4d604dbe294e6dad700ee138c3bf45e2b33c5becbd79767f5e216c0a921cc",
+    "review_sha256": "df384b6936f28e55015fd84011c1bd4f71afeda9447dd98efca7ba397301e72c"
+  },
+  {
+    "blind_id": "item-254",
+    "arm": "self",
+    "id": "test-015-1",
+    "seed": 430031,
+    "prompt": "A product photograph of one white ceramic mug on a ivory background, three-quarter view, diffuse daylight, no text, no logo.",
+    "original_sha256": "c243741eb82cc274f45f881c57fc4a6098c3bb37f3a5ab7f542ae7bdae561c1b",
+    "review_sha256": "19a161e9776c43a4ffa2bcf724fb55b433c3506a352d7f2fdbeaa831acf96e66"
+  },
+  {
+    "blind_id": "item-255",
+    "arm": "base",
+    "id": "test-000-0",
+    "seed": 430000,
+    "prompt": "A product photograph of one red ceramic mug on a light gray background, three-quarter view, gentle window light, no text, no logo.",
+    "original_sha256": "54e791a7cf008ef511012e034a7761a75b017f550fd5036d16f01cc4154c1279",
+    "review_sha256": "c42c85a6c7a094f23e45fb232581ef25ad19c06dca568d656378e2d3b87ad34d"
+  },
+  {
+    "blind_id": "item-256",
+    "arm": "self",
+    "id": "test-025-0",
+    "seed": 430050,
+    "prompt": "A product photograph of one white ceramic mug on a light gray background, side view, soft overcast light, no text, no logo.",
+    "original_sha256": "8293a54319e688f125bf7355c33b3541434e155b242f068a5f8043fd099b6d6a",
+    "review_sha256": "b519c3d14520c66e020bce5474be88edd26f79171a69a8de9eac6052a9465bae"
+  }
+]
