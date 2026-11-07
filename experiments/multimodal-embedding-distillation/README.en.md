@@ -33,6 +33,14 @@ $$P^T_{ij}=\operatorname{softmax}_j(t_{ij}/\tau_d),\quad P^S_{ij}=\operatorname{
 
 $$\mathcal L=0.5\mathcal L_{pair}+0.5\mathcal L_{KD},\quad \mathcal L_{KD}=\tfrac12[\operatorname{KL}(P^T_{t\to i}\Vert P^S_{t\to i})+\operatorname{KL}(P^T_{i\to t}\Vert P^S_{i\to t})].$$
 
+The pair-supervision term averages the two retrieval directions as well:
+
+$$
+\mathcal L_{\rm pair}=\frac12\left[-\frac1N\sum_i\log\frac{e^{s_{ii}/\tau_p}}{\sum_j e^{s_{ij}/\tau_p}}-\frac1N\sum_j\log\frac{e^{s_{jj}/\tau_p}}{\sum_i e^{s_{ij}/\tau_p}}\right].
+$$
+
+Training uses batches of 16, so each direction normally compares 16 in-batch candidates. Pair supervision uses $\tau_p=0.07$ and distillation uses $\tau_d=0.05$. KL is averaged over the batch; the code does not multiply it by $\tau_d^2$. Consequently, the stated 0.5/0.5 weights and loss scales depend on these temperatures and cannot be transferred unchanged to implementations using different scaling. The supervised condition uses only $\mathcal L_{\rm pair}$; the distilled condition combines the two terms above.
+
 During training the teacher supplies soft relative scores. At inference the student independently encodes a query and images and ranks by cosine similarity; the teacher is no longer needed.
 
 ## Data and reproduction
