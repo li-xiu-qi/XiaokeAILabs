@@ -8,11 +8,14 @@ parser = argparse.ArgumentParser()
 parser.add_argument('path', nargs='?', default=str(Path(__file__).resolve().parent.parent / 'evidence/anonymous-ranks.json'))
 args = parser.parse_args()
 rows = json.loads(Path(args.path).read_text(encoding='utf-8'))
-assert len(rows) == 100 and all(set(r) == {'before_rank_at_5', 'after_rank_at_5'} for r in rows)
+if not isinstance(rows, list) or len(rows) != 100 or any(not isinstance(r, dict) or set(r) != {'before_rank_at_5', 'after_rank_at_5'} for r in rows):
+    raise ValueError('expected 100 paired rank records')
 before = [r['before_rank_at_5'] for r in rows]
 after = [r['after_rank_at_5'] for r in rows]
-assert all(v is None or 1 <= v <= 5 for v in before + after)
-assert all((a is None) == (b is None) for a, b in zip(before, after))
+if any(v is not None and (type(v) is not int or not 1 <= v <= 5) for v in before + after):
+    raise ValueError('ranks must be null or integers from 1 through 5')
+if any((a is None) != (b is None) for a, b in zip(before, after)):
+    raise ValueError('coverage must match within each fixed-candidate pair')
 changes = [int(b == 1) - int(a == 1) for a, b in zip(before, after)]
 rng = random.Random(20261107)
 boot = sorted(sum(rng.choice(changes) for _ in changes) / len(changes) for _ in range(10000))

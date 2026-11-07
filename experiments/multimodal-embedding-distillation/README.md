@@ -66,7 +66,7 @@ example.jpg,train,"['a caption', 'second caption', 'third caption', 'fourth capt
 
 本实验的标注文件 SHA-256 为 `395990db603ab8bafd5c7ab2746b22058bb1e75b78b3eb56ad755931364ac137`。抽样取决于输入行顺序：不同版本即使同为 Karpathy 划分，固定种子也不保证选到同一批图片。[公开标注镜像](https://huggingface.co/datasets/nlphuji/flickr30k/blob/006d3058228379086e8ea76b2b12959d21b168f8/flickr_annotations_30k.csv)的文件与本次使用文件哈希不同，因此可用来探索同类流程，不能声称精确重现本次样本。原图须按 [Flickr30k 发布方条件](https://shannon.cs.illinois.edu/DenotationGraph/data/)自行获取，并检查使用权；仓库不分发图片、标注、教师向量或学生权重。
 
-**复现状态：**原始设备脚本跑完了上表。公开脚本去除了设备私有路径和教师封装，但尚未在真实数据上从头重跑；数据准备已用合成图片检查。它需要 Linux CUDA 和约 50 GiB 可用系统内存。图文教师代码依赖模型自定义代码，应自行核查后运行。使用 Python 3.12、PyTorch 2.14.0+cu130、Transformers 5.16.1、Sentence Transformers 6.0.1、NumPy 和 Pillow。环境版本、标注顺序和硬件变化都可能影响结果。
+**复现状态：**原始设备脚本跑完了上表。公开脚本去除了设备私有路径和教师封装，并于 2026-11-07 在同一设备及数据上完成从头重跑；三组学生各 100 条测试排名均与原记录一致。[复现记录](evidence/reproduction-20261107.md)详述条件与边界。它需要 Linux CUDA 和约 50 GiB 可用系统内存。图文教师代码依赖模型自定义代码，应自行核查后运行。使用 Python 3.12、PyTorch 2.14.0+cu130、Transformers 5.16.1、Sentence Transformers 6.0.1、NumPy 和 Pillow。环境版本、标注顺序和硬件变化都可能影响结果。
 
 在本实验目录执行，`DATA` 指向自行获取的 CSV，`IMAGES` 指向图片目录，`WORK` 指向仓库以外的工作目录：
 
@@ -84,3 +84,5 @@ python scripts/verify.py
 `WORK` 必须是尚不存在的新目录。教师向量绑定样本清单的 SHA-256，学生训练会检查清单和向量数量，以防样本被重排后误用旧教师向量。重新准备数据或重跑时使用新的工作目录；旧版教师向量未记录该绑定，需重新生成。
 
 `verify.py` 使用[每查询学生排名](evidence/student-test-ranks.json)独立复算三组学生指标和配对区间，不含图片、描述或身份；教师只保留上表聚合指标，不能从这份排名文件复算。复算检查的是统计计算，不能替代重新运行模型。图片近重复、预训练数据重叠和同图其他有效描述仍未排除。
+
+三组排名以数组位置表示配对，但公开记录没有查询 ID 或可核验的对应指纹。因此复算区间依赖原始记录顺序正确，公开文件本身无法独立核验跨组配对。
