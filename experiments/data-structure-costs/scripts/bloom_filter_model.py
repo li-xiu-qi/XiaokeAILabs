@@ -46,17 +46,21 @@ class BloomFilterMetrics:
 
 
 def compute_optimal_k(m: int, n: int) -> int:
-    """最优哈希函数数。k = (m/n) × ln2。"""
-    return max(1, round((m / n) * math.log(2)))
+    """在近似 FPR 公式下比较连续最优点两侧的整数 k。"""
+    if m <= 0 or n <= 0:
+        raise ValueError("m and n must be positive")
+    continuous = (m / n) * math.log(2)
+    candidates = {max(1, math.floor(continuous)), max(1, math.ceil(continuous))}
+    return min(candidates, key=lambda k: (compute_fpr(m, n, k), k))
 
 
 def compute_optimal_m(n: int, fpr: float) -> int:
-    """最优比特数。m = -n × ln(p) / (ln2)^2。"""
+    """连续最优 k 假设下的位数估计；整数 k 的实际 FPR 需另行核验。"""
     return int(math.ceil(-n * math.log(fpr) / (math.log(2) ** 2)))
 
 
 def compute_fpr(m: int, n: int, k: int) -> float:
-    """假阳性率。p = (1 - e^{-kn/m})^k。"""
+    """常见近似假阳性率。p ≈ (1 - e^{-kn/m})^k。"""
     return (1 - math.exp(-k * n / m)) ** k
 
 
@@ -66,8 +70,12 @@ def compute_memory(m: int) -> int:
 
 
 def compute_expected_fills(m: int, n: int, k: int) -> float:
-    """期望被设置的位数。m × (1 - e^{-kn/m})。"""
-    return m * (1 - math.exp(-k * n / m))
+    """独立均匀哈希假设下，精确的期望已置位数。"""
+    if m <= 0 or n < 0 or k < 0:
+        raise ValueError("m must be positive; n and k must be non-negative")
+    if m == 1:
+        return float(n * k > 0)
+    return -m * math.expm1(k * n * math.log1p(-1 / m))
 
 
 def compute(spec: BloomFilterSpec) -> BloomFilterMetrics:
@@ -114,6 +122,12 @@ def _selftest():
     spec_k10 = BloomFilterSpec(n=1_000_000, bits_per_key=10, k=10)
     assert compute(spec_k1).fpr > m.fpr, "k 太小，假阳性率应更高"
     assert compute(spec_k10).fpr > m.fpr, "k 太大，假阳性率应更高"
+
+    # 舍入连续最优点不总给出最优整数；m/n=2.079 时 k=2 优于 k=1。
+    assert compute_optimal_k(2079, 1000) == 2
+    assert compute_fpr(2079, 1000, 2) < compute_fpr(2079, 1000, 1)
+    assert compute_expected_fills(2, 1, 1) == 1.0
+    assert compute_expected_fills(1, 1, 1) == 1.0
 
     # 最优 k 应使假阳性率最小
     optimal_k = compute_optimal_k(m.m, m.n)
