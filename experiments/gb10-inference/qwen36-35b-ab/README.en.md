@@ -19,7 +19,7 @@ With eight short requests arriving concurrently and each generating 128 tokens, 
 | 1 | 8 | 74.91 / 74.78 | 7.774 / 7.808 s | 8 |
 | 8 | 8 | 113.78 / 114.14 | 8.848 / 8.702 s | 8 |
 
-Aggregate throughput is the number of tokens actually generated in a run divided by elapsed client time from submission until all responses complete. It includes prefill, queueing, and network calls. Per-request completion time is measured from the HTTP request until its full response, including queueing; time to first token was not measured. The two server configurations ran sequentially, not in randomized order, so differences at client concurrency one should not be attributed directly to the slot count.
+Aggregate throughput is the number of tokens actually generated in a run divided by elapsed client time from thread-pool creation and submission until all responses complete. It includes prefill, queueing, and network calls. Per-request completion time is measured from the HTTP request until its full response, including queueing; time to first token was not measured. The two server configurations ran sequentially, not in randomized order, so differences at client concurrency one should not be attributed directly to the slot count.
 
 ![Batch throughput and completion time for one and eight slots](assets/slots-comparison.svg)
 
@@ -29,9 +29,9 @@ The test ran on November 6, 2026, on a DGX Spark GB10 with one GPU and unified m
 
 After one smoke request per server, the test ran client concurrency 1 and then 8, twice per setting. Each run used eight different short English prompts, with concurrency controlled by a client thread pool. Requests used `n_predict=128`, `temperature=0`, fixed seeds, `ignore_eos=true`, and `cache_prompt=false`. This holds generation length constant but does not evaluate answer quality.
 
-The [benchmark script](scripts/bench_llamacpp_slots.py) contains the startup parameters, prompts, and request code. Set `LLAMA_SERVER` and `MODEL_GGUF` before running it; it starts the two local server instances sequentially and requires the output directory not to exist. [Raw results](docs/evidence/bench-llamacpp-slots-20261106.json) contain per-request results and timings. The GGUF hash and repository revision were not recorded, so the exact weight file revision cannot be established.
+The [benchmark script](scripts/bench_llamacpp_slots.py) contains the startup parameters, prompts, and request code. Set `LLAMA_SERVER` and `MODEL_GGUF` before running it; it starts the two local server instances sequentially and requires the output directory not to exist. The server will not start if resource monitoring cannot initialize. On monitor failure or low available memory, the script kills the server process it started. When in-flight client requests return still depends on their connections and is not guaranteed to be immediate. [Raw results](docs/evidence/bench-llamacpp-slots-20261106.json) contain per-request results and timings. The GGUF hash and repository revision were not recorded, so the exact weight file revision cannot be established.
 
-The lowest observed system available memory during resource monitoring was approximately 46.9 GiB. The monitoring output did not report an applicable standalone GPU memory figure. Other services remained running and may have affected measurements, so this is not an exclusive-device result. The test servers exited after the run.
+The historical summary recorded approximately 46.9 GiB as the lowest available system memory; the individual resource-monitor samples were not retained in the repository, so that minimum cannot be independently recalculated from the published files. The monitoring output did not report an applicable standalone GPU memory figure. Other services remained running and may have affected measurements, so this is not an exclusive-device result. The test servers exited after the run.
 
 ## How to use this result, and its limits
 
