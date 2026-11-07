@@ -7,11 +7,14 @@ PORT=19433
 prompts=['Explain how a database index speeds up queries.','Describe three practical ways to evaluate a retrieval system.','Explain the tradeoffs between latency and throughput in model inference.','Describe how to debug an unexpectedly slow Python service.','Explain why training and test datasets should be separated.','Describe how caching improves a web application.','Explain how batching changes GPU inference throughput.','Describe practical checks for a machine learning dataset.']
 stop=threading.Event()
 monitor_ready=threading.Event()
+monitor_failed=threading.Event()
+monitor_thread=None
 server_lock=threading.Lock()
 current_server=None
 
 def emergency_stop():
  global current_server
+ monitor_failed.set()
  stop.set()
  with server_lock:
   if current_server is not None and current_server.poll() is None:
@@ -43,13 +46,24 @@ def request(i, label):
   with urllib.request.urlopen(req,timeout=240) as resp: obj=json.load(resp)
   return {'id':i,'label':label,'elapsed_s':time.monotonic()-t,'tokens_predicted':obj.get('tokens_predicted'),'tokens_evaluated':obj.get('tokens_evaluated'),'timings':obj.get('timings'),'stop':obj.get('stopped_limit'),'error':obj.get('error')}
  except Exception as e: return {'id':i,'label':label,'elapsed_s':time.monotonic()-t,'error':repr(e)}
+def validate_round(rows, interrupted):
+ if interrupted: raise RuntimeError('resource monitor interrupted round')
+ if len(rows) != 8 or any(x.get('error') or x.get('tokens_predicted') != 128 for x in rows):
+  raise RuntimeError('request failed or incomplete round')
+
+def finish_monitor(thread):
+ stop.set()
+ thread.join(timeout=6)
+ if thread.is_alive(): raise RuntimeError("resource monitor did not stop")
+ if monitor_failed.is_set(): raise RuntimeError("resource monitor failed before completion")
+
 def main():
- global current_server
+ global current_server, monitor_thread
  probe=socket.socket(); probe.settimeout(1)
  try:
   if probe.connect_ex(('127.0.0.1', PORT)) == 0: raise RuntimeError('benchmark port already in use')
  finally: probe.close()
- print('start',flush=True); threading.Thread(target=monitor,daemon=True).start()
+ print('start',flush=True); monitor_thread=threading.Thread(target=monitor,daemon=True); monitor_thread.start()
  if not monitor_ready.wait(10) or stop.is_set(): raise RuntimeError('resource monitor not ready or memory guard triggered')
  allres=[]
  for slots in (1,8):
@@ -80,9 +94,9 @@ def main():
       with concurrent.futures.ThreadPoolExecutor(max_workers=concurrency) as ex:
        rows=list(ex.map(lambda i: request(i,'measured'),range(8)))
       wall=time.monotonic()-start
+      validate_round(rows, stop.is_set())
       row={'slots':slots,'concurrency':concurrency,'run':run,'wall_s':wall,'requests':rows,'tokens':sum(x.get('tokens_predicted',0) or 0 for x in rows)}
       allres.append(row); (D/'results.json').write_text(json.dumps(allres,ensure_ascii=False,indent=2)); print(json.dumps({'slots':slots,'concurrency':concurrency,'run':run,'wall':wall,'tokens':row['tokens'],'errors':[x.get('error') for x in rows if x.get('error')]}),flush=True)
-      if any(x.get('error') or x.get('tokens_predicted')!=128 for x in rows): raise RuntimeError('request failed')
    finally:
     with server_lock:
      if p.poll() is None: p.terminate()
@@ -90,7 +104,14 @@ def main():
     try:p.wait(timeout=15)
     except subprocess.TimeoutExpired:p.kill();p.wait()
     time.sleep(5)
- stop.set(); print('complete',flush=True)
-try: main()
-except Exception:
- stop.set(); traceback.print_exc(); sys.exit(1)
+ if stop.is_set(): raise RuntimeError('resource monitor failed before completion')
+ finish_monitor(monitor_thread)
+ print('complete',flush=True)
+(D/'run-status.json').write_text(json.dumps({'status':'running'}))
+try:
+ main()
+ (D/'run-status.json').write_text(json.dumps({'status':'complete'}))
+except Exception as exc:
+ stop.set()
+ (D/'run-status.json').write_text(json.dumps({'status':'failed','error':repr(exc)}))
+ traceback.print_exc(); sys.exit(1)
