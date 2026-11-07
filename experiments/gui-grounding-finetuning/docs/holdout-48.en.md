@@ -45,7 +45,7 @@ python scripts/gui_eval_holdout.py
 python scripts/gui_summarize_holdout.py
 ```
 
-Run the evaluations sequentially with the same manifest, prompt, image resize settings and greedy decoding. The summarizer checks manifest and prompt hashes, base path, adapter role and per-example labels. It does not detect replaced model or adapter weights; keep them fixed and record their hashes. Evaluation outputs contain annotations and predictions and should remain private.
+Run the evaluations sequentially with the same manifest, prompt, image resize settings and greedy decoding. The summarizer checks manifest and prompt hashes, base path, adapter role and per-example labels, requires both outputs to cover the full manifest, and checks each hit against the saved point and box. Keep `GUI_EVAL_DIR` set to the original manifest directory while summarizing. It does not detect replaced model or adapter weights; keep them fixed and record their hashes. Evaluation outputs contain annotations and predictions and should remain private.
 
 The summary is created exclusively; use a new `GUI_ROOT` for another run to avoid overwriting saved results.
 

@@ -1,5 +1,5 @@
 import os
-import json, random, statistics
+import hashlib, json, math, random, statistics
 from pathlib import Path
 root=Path(os.environ['GUI_ROOT']).expanduser()
 def read(name):
@@ -23,10 +23,30 @@ for key in ('manifest_sha256', 'model_path', 'prompt_sha256'):
         raise ValueError(f'Evaluation contexts differ or lack {key}; do not compare these runs')
 if base_context.get('adapter_path') is not None or not tuned_context.get('adapter_path'):
     raise ValueError('Expected a base run and a run with an adapter')
+manifest_path=Path(os.environ['GUI_EVAL_DIR']).expanduser()/'manifest.json'
+manifest_bytes=manifest_path.read_bytes()
+if hashlib.sha256(manifest_bytes).hexdigest()!=base_context['manifest_sha256']:
+    raise ValueError('Evaluation manifest hash differs from the run context')
+manifest=json.loads(manifest_bytes)
+if not manifest or [x['row_idx'] for x in before] != [x['row_idx'] for x in manifest]:
+    raise ValueError('Evaluation is incomplete or does not match the manifest')
 if [x['row_idx'] for x in before]!=[x['row_idx'] for x in after]:
     raise ValueError('Evaluation rows differ or are not in the same order')
 if any((a['source'],a['type'],a['bbox']) != (b['source'],b['type'],b['bbox']) for a,b in zip(before,after)):
     raise ValueError('Evaluation labels differ; do not compare these runs')
+for sample, a, b in zip(manifest, before, after):
+    if (a['source'],a['type'],a['bbox']) != (sample['data_source'],sample['data_type'],sample['bbox_xyxy_normalized']):
+        raise ValueError('Evaluation labels do not match the manifest')
+    for row in (a,b):
+        point=row['point_normalized']; box=row['bbox']
+        if type(row['hit']) is not bool:
+            raise ValueError('hit must be a boolean')
+        if point is not None and (not isinstance(point,list) or len(point)!=2 or
+                                  any(type(x) not in (int,float) or not math.isfinite(x) for x in point)):
+            raise ValueError('Invalid point representation')
+        computed=bool(point and 0<=point[0]<=1 and 0<=point[1]<=1 and box[0]<=point[0]<=box[2] and box[1]<=point[1]<=box[3])
+        if row['hit'] != computed:
+            raise ValueError('Recorded hit disagrees with point and bounding box')
 n=len(before)
 delta=[int(y['hit'])-int(x['hit']) for x,y in zip(before,after)]; rng=random.Random(20261107)
 boot=sorted(sum(delta[rng.randrange(n)] for _ in range(n))/n for _ in range(10000))
