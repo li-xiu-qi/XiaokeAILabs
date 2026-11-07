@@ -2,6 +2,20 @@ import argparse,hashlib,json,random,threading,time,os
 from pathlib import Path
 from PIL import Image,ImageDraw,ImageFont
 
+def source_image_hashes(source, records):
+    """Hash every image named by the source records; fail on incomplete data."""
+    root = source.parent.resolve()
+    names = {r['image'] for r in records}
+    if not names:
+        raise ValueError('source records contain no images')
+    hashes = set()
+    for name in names:
+        path = (root / name).resolve()
+        if not path.is_relative_to(root) or not path.is_file():
+            raise ValueError(f'missing or unsafe source image: {name}')
+        hashes.add(hashlib.sha256(path.read_bytes()).hexdigest())
+    return hashes
+
 def check():
     for line in open('/proc/meminfo'):
         if line.startswith('MemAvailable:') and int(line.split()[1])<50*1024*1024:
@@ -30,7 +44,7 @@ def main():
             rows.append({'query':f'Which report lists {label.lower()} as {n}?','page':i,'value':n,'entity':f'ST-{code}'})
         path=a.out/f'page-{i:03}.png';im.save(path);pages.append(path)
     old=json.loads(a.source.read_text());assert not ({r['entity'] for r in old}&{r['entity'] for r in rows});assert not ({r['value'] for r in old}&{r['value'] for r in rows})
-    oldhash={hashlib.sha256(p.read_bytes()).hexdigest() for p in a.source.parent.glob('*/*.png')};assert oldhash, 'no original PNG pages found to compare';hashes=[hashlib.sha256(p.read_bytes()).hexdigest() for p in pages];assert len(set(hashes))==64 and not oldhash.intersection(hashes)
+    oldhash=source_image_hashes(a.source,old);hashes=[hashlib.sha256(p.read_bytes()).hexdigest() for p in pages];assert len(set(hashes))==64 and not oldhash.intersection(hashes)
     (a.out/'manifest.json').write_text(json.dumps({'seed':20261108,'records':rows,'page_sha256':hashes},indent=2))
     print('data prepared: 64 pages 192 queries, distinct entity values and image hashes',flush=True)
     torch.cuda.set_per_process_memory_fraction(.15)
