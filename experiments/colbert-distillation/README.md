@@ -35,7 +35,7 @@ $$s_S(q,d)=\sum_i\max_j \widehat{q_i}^{\mathsf T}\widehat{d_j}.$$
 
 [run.py](run.py) 是本次训练与评估脚本，需提供 `--data`（包含 corpus.jsonl、queries.jsonl）、`--source`（包含 manifest.json、teacher.json）、`--model` 和 `--output`；加 `--smoke` 先运行小样本。脚本要求 Linux、CUDA、PyLate，默认离线读取模型；数据清单应记录每条查询的 `id`、`candidates` 和 `relevant`，教师文件需要按查询 ID 保存候选顺序一致的 `scores`。脚本含 50 GiB 可用内存下限，这是此次设备上的保护设置，不是模型的普遍最低配置。
 
-**复现边界：**已提供候选池和教师打分脚本，但真实 8B 教师打分的新脚本尚未重新运行验证，因此现阶段不能声称从零精确复现原分数。更换清单、教师模型版本或环境后，应重新生成分数并单独报告结果；不要把本次数值视为所有场景的模型排名。
+**复现边界：**候选池和真实 8B 教师打分的新脚本已完成一次重新运行；新蒸馏结果与历史有差异，不能声称精确复现原分数，详见[复验记录](RECHECK-20261107.md)。更换清单、教师模型版本或环境后，应重新生成分数并单独报告结果；不要把本次数值视为所有场景的模型排名。
 
 模型卡分别标记学生为 MIT、教师为 Apache-2.0；数据集使用请同时遵循其原始来源许可。
 
@@ -59,8 +59,8 @@ python prepare_teacher.py --data /path/to/scifact --pools /path/to/prepared/pool
 python run.py --data /path/to/scifact --source /path/to/source --model /path/to/colbert --output /path/to/output --smoke
 ```
 
-[prepare_teacher.py](prepare_teacher.py) 以种子 20261107 选训练查询，编码带任务指令的查询与标题加摘要，输出按候选顺序排列的余弦分数。它的 `--synthetic-encoder` 使用确定性伪向量，仅用于 CPU 数据接口冒烟，不能用于模型评估；本次 CPU 冒烟生成的训练及测试候选清单与原实验逐项一致。真实模型打分路径尚未重跑，且计算实现与原始向量点积不同，结果可能存在浮点误差。
+[prepare_teacher.py](prepare_teacher.py) 以种子 20261107 选训练查询，编码带任务指令的查询与标题加摘要，输出按候选顺序排列的余弦分数。它的 `--synthetic-encoder` 使用确定性伪向量，仅用于 CPU 数据接口冒烟，不能用于模型评估；本次 CPU 冒烟生成的训练及测试候选清单与原实验逐项一致。真实模型打分路径已重跑，新旧教师分数存在差异，原因尚未确定，详见[复验记录](RECHECK-20261107.md)。
 
-教师输出绑定候选清单、语料和查询文件的 SHA-256；训练前会核对绑定、候选顺序对应的分数数量及有限性。旧格式没有这些绑定，必须重新生成教师分数。伪向量只允许配合 `--smoke` 使用；教师输出目录与每个训练输出子目录必须是新路径，避免覆盖或混入旧结果。本次校验修订尚未重跑真实教师打分与训练。
+教师输出绑定候选清单、语料和查询文件的 SHA-256；训练前会核对绑定、候选顺序对应的分数数量及有限性。旧格式没有这些绑定，必须重新生成教师分数。伪向量只允许配合 `--smoke` 使用；教师输出目录与每个训练输出子目录必须是新路径，避免覆盖或混入旧结果。本次校验修订已重跑真实教师打分与训练。
 
 本机教师的四片 safetensors SHA-256 与 [Hugging Face revision 1d8ad4ca](https://huggingface.co/Qwen/Qwen3-Embedding-8B/tree/1d8ad4ca9b3dd8059ad90a75d4983776a23d44af) 的 LFS 元数据一致；配置、分词器及池化配置也完成内容哈希对照。匹配这些文件支持模型权重与关键配置的来源判断，但并非对运行环境和仓库中全部文件的完整复现证明。
