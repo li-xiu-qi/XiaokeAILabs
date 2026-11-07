@@ -5,6 +5,11 @@ import time
 from pathlib import Path
 
 
+def prepare_output(path):
+    """Prevent stale images or metadata from contaminating a new run."""
+    path.mkdir(parents=True, exist_ok=False)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True)
@@ -25,7 +30,7 @@ def main():
     rows = [json.loads(line) for line in args.prompts.read_text(encoding="utf-8").splitlines()]
     if args.limit is not None:
         rows = rows[:args.limit]
-    args.out.mkdir(parents=True, exist_ok=True)
+    prepare_output(args.out)
     pipe = DiffusionPipeline.from_pretrained(
         args.model, revision=args.revision, torch_dtype=torch.float16,
         use_safetensors=True,

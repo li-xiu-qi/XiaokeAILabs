@@ -76,6 +76,8 @@ python scripts/summarize_blind_review.py --review evidence/review-scores.csv \
 
     python scripts/prepare_review.py --results results --out review/blind --key review/identity-key.json
 
+生成脚本和盲评准备脚本要求各自的输出目录不存在，盲评映射文件也必须是新路径，以免旧图混入或覆盖已有评分。中断后请使用新目录重新运行；不要把身份映射交给评审者。
+
 评估逐图标注对象是否正确、背景颜色是否满足、主体是否完整、是否有明显伪影；每项填 1（是）、0（否）或留空（无法判断），以同一规则对三个输出做盲评。完成后运行以下命令，按模型汇总每项的有、无和缺失数：
 
     python scripts/summarize_review.py --review review/blind/review.csv --key review/identity-key.json --out review/summary.json

@@ -15,6 +15,10 @@ def main():
                     help="Identity key outside the directory shared with reviewers")
     ap.add_argument("--seed", type=int, default=2026)
     args = ap.parse_args()
+    if args.key.resolve().is_relative_to(args.out.resolve()):
+        raise ValueError("identity key must be outside the reviewer directory")
+    if args.out.exists() or args.key.exists():
+        raise FileExistsError("review directory and identity key must be new paths")
     arms = ("teacher", "student-before", "student-after")
     rows = {}
     for arm in arms:
@@ -27,7 +31,6 @@ def main():
     ids = set(rows[arms[0]])
     if not ids or any(set(rows[arm]) != ids for arm in arms):
         raise ValueError("all arms must contain the same nonempty set of prompt IDs")
-    args.out.mkdir(parents=True, exist_ok=True)
     tasks = []
     key = {}
     for identifier in sorted(ids):
@@ -45,6 +48,7 @@ def main():
                           "object_correct": "", "background_correct": "",
                           "complete_subject": "", "obvious_artifact": "", "notes": ""})
     random.Random(args.seed).shuffle(tasks)
+    args.out.mkdir(parents=True, exist_ok=False)
     image_dir = args.out / "images"
     image_dir.mkdir(exist_ok=True)
     for code, value in key.items():
@@ -53,11 +57,9 @@ def main():
         writer = csv.DictWriter(f, fieldnames=tasks[0].keys())
         writer.writeheader()
         writer.writerows(tasks)
-    if args.key.resolve().is_relative_to(args.out.resolve()):
-        raise ValueError("identity key must be outside the reviewer directory")
     args.key.parent.mkdir(parents=True, exist_ok=True)
-    args.key.write_text(
-        json.dumps(key, ensure_ascii=False, indent=2), encoding="utf-8")
+    with args.key.open("x", encoding="utf-8") as f:
+        json.dump(key, f, ensure_ascii=False, indent=2)
     print(f"Prepared {len(tasks)} images. Keep identity_key.json away from reviewers.")
 
 
