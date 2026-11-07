@@ -1,0 +1,35 @@
+Loading weights:   0%|          | 0/197 [00:00<?, ?it/s]Loading weights: 100%|██████████| 197/197 [00:00<00:00, 56660.35it/s]
+[transformers] RobertaForSequenceClassification LOAD REPORT from: RoBERTa-base snapshot
+Key                         | Status     | 
+----------------------------+------------+-
+roberta.pooler.dense.weight | UNEXPECTED | 
+lm_head.dense.weight        | UNEXPECTED | 
+lm_head.layer_norm.weight   | UNEXPECTED | 
+lm_head.bias                | UNEXPECTED | 
+lm_head.dense.bias          | UNEXPECTED | 
+lm_head.decoder.weight      | UNEXPECTED | 
+lm_head.layer_norm.bias     | UNEXPECTED | 
+roberta.pooler.dense.bias   | UNEXPECTED | 
+classifier.dense.bias       | MISSING    | 
+classifier.out_proj.weight  | MISSING    | 
+classifier.dense.weight     | MISSING    | 
+classifier.out_proj.bias    | MISSING    | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+- MISSING:	those params were newly initialized because missing from the checkpoint. Consider training on your downstream task.
+evaluating initial scores on 300 queries
+initial scoring complete in 14.2s
+train 1/180 loss=0.67051 elapsed=0.3s
+train 20/180 loss=0.71689 elapsed=1.9s
+train 40/180 loss=0.70964 elapsed=3.5s
+train 60/180 loss=0.50081 elapsed=5.2s
+train 80/180 loss=0.48372 elapsed=6.9s
+train 100/180 loss=0.20107 elapsed=8.6s
+train 120/180 loss=0.18471 elapsed=10.2s
+train 140/180 loss=0.00826 elapsed=11.9s
+train 160/180 loss=0.18297 elapsed=13.5s
+train 180/180 loss=0.04757 elapsed=15.2s
+evaluating trained scores on 300 queries
+Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]Writing model shards: 100%|██████████| 1/1 [00:02<00:00,  2.06s/it]Writing model shards: 100%|██████████| 1/1 [00:02<00:00,  2.06s/it]
+{"all": {"queries": 300, "candidate_hit_rate": 0.87, "candidate_recall": 0.8553888888888889, "rankings": {"bm25": {"ndcg_at_10": 0.6616762967340878, "mrr_at_10": 0.6276177248677248}, "initial": {"ndcg_at_10": 0.1351326961622421, "mrr_at_10": 0.09185714285714286}, "finetuned": {"ndcg_at_10": 0.6375366629130154, "mrr_at_10": 0.5997923280423281}}, "finetuned_vs_bm25_ndcg_at_10": {"delta": -0.024139633821072294, "paired_bootstrap_ci95": [-0.05890604568091798, 0.010456675848538368], "query_directions": {"up": 51, "down": 77, "tied": 172}}}, "no_relevant_doc_seen_as_training_positive": {"queries": 206, "candidate_hit_rate": 0.8398058252427184, "candidate_recall": 0.8270226537216829, "rankings": {"bm25": {"ndcg_at_10": 0.6366837339056157, "mrr_at_10": 0.6009612421020187}, "initial": {"ndcg_at_10": 0.1467866642922934, "mrr_at_10": 0.1012155185698875}, "finetuned": {"ndcg_at_10": 0.6031874885152712, "mrr_at_10": 0.5562798582216057}}, "finetuned_vs_bm25_ndcg_at_10": {"delta": -0.033496245390344626, "paired_bootstrap_ci95": [-0.07583987233364677, 0.008708860359766502], "query_directions": {"up": 33, "down": 57, "tied": 116}}}, "no_relevant_doc_seen_in_training_pairs": {"queries": 153, "candidate_hit_rate": 0.8496732026143791, "candidate_recall": 0.8324618736383442, "rankings": {"bm25": {"ndcg_at_10": 0.6347567777823073, "mrr_at_10": 0.6031382923539786}, "initial": {"ndcg_at_10": 0.1407440954289338, "mrr_at_10": 0.09512916277622159}, "finetuned": {"ndcg_at_10": 0.6068702546702334, "mrr_at_10": 0.5601281253242038}}, "finetuned_vs_bm25_ndcg_at_10": {"delta": -0.02788652311207405, "paired_bootstrap_ci95": [-0.08133715435769506, 0.025125008203042563], "query_directions": {"up": 27, "down": 44, "tied": 82}}}}

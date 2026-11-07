@@ -28,7 +28,7 @@ jobs:
       - name: notebook 输出检查
         run: python scripts/check_notebook_outputs.py --all
 
-      - name: 克隆体积预算（全历史打包超过 32 MiB 拦截）
+      - name: 克隆体积预算（全历史打包超过 33 MiB 拦截）
         run: |
           packed=$(git rev-list --objects --all \
             | awk '{print $1}' | sort -u \
