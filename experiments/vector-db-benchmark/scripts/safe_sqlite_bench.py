@@ -1,5 +1,6 @@
 """Small exact-search check using a new, process-local SQLite database."""
 import argparse
+import importlib.metadata
 import sqlite3
 import time
 import numpy as np
@@ -30,7 +31,11 @@ def run(vectors=1000, queries=20, dimensions=32, seed=0):
                               (sqlite_vec.serialize_float32(v),)).fetchall()
             times.append((time.perf_counter() - start) * 1000)
             recalls.append(len(exact.intersection(row[0] for row in rows)) / 10)
-    return {'vectors': vectors, 'queries': queries, 'dimensions': dimensions,
+    return {'vectors': vectors, 'queries': queries, 'dimensions': dimensions, 'seed': seed,
+            'distance': 'L2', 'k': 10, 'warmup_queries': 0,
+            'numpy_version': np.__version__, 'sqlite_version': sqlite3.sqlite_version,
+            'sqlite_vec_version': importlib.metadata.version('sqlite-vec'),
+            'latency_scope': 'query serialization, SQLite execution and result fetch',
             'recall_at_10_mean': float(np.mean(recalls)),
             'latency_ms_median': float(np.median(times)),
             'note': 'in-memory exact search, synthetic data, local SQLite only'}
