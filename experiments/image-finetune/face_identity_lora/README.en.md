@@ -8,6 +8,8 @@ Can a small set of photographs and a trigger phrase help a general image generat
 
 The historical run used 20 training photographs and 10 held-out reference photographs of one CelebA identity. ArcFace encodes detected faces; the metric is cosine similarity between each generated face embedding and a target reference embedding. Images without a detected face are excluded from the mean.
 
+The held-out photos were not used for LoRA gradient updates, but the workflow uses them to form the reference for training-photo quality checks and checkpoint scores. They are therefore not an independent final test after checkpoint selection. A separate set of photos and generation conditions is needed for that assessment. Average-hash screening detects only some near duplicates and cannot rule out leakage.
+
 | Condition | Resolution | Detected | Mean target similarity |
 |---|---:|---:|---:|
 | Base model | 768×768 | 12/20 | −0.0172 |
@@ -56,6 +58,8 @@ python scripts/score_generations.py --size 512 scan --run-dir /path/to/checkpoin
 The evaluation script now explicitly configures DPM-Solver++; historical results predate the refactor and were not regenerated with this correction. To measure the effect of fine-tuning, regenerate baseline and LoRA outputs with matched resolution, scheduler, seeds and prompt template, and report all outputs including detection failures.
 
 `build_dataset.py` refuses to overwrite an existing identity directory; choose a new `FACE_DATA_DIR` for another export. `check_dataset.py` stops if a training or test face is not detected or no negative-control face can be detected. Face size, roll and sharpness are flags for manual review, not automatic failures; passing the checks does not guarantee dataset quality.
+
+The baseline and LoRA prompts differ by the trigger phrase, which may also affect the base model. The comparison checks recorded resolution, steps, guidance, sampler, sample count and identity IDs; it does not verify the reference image bytes or model weights, which must be fixed separately.
 
 `build_dataset.py` exports images and captions; `check_dataset.py` screens the samples; `train_lora.sh` writes the actual training directory as an absolute path to a temporary config and launches training; and `score_generations.py` generates and scores images. Check the individual licenses of the training toolkit, models and evaluation weights.
 

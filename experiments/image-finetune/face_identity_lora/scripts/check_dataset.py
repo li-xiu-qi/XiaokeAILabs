@@ -192,7 +192,7 @@ def main() -> None:
     for a, b, distance, tag in duplicates:
         print(f"    [check] {a} <-> {b}  d={distance}  ({tag})")
     if not duplicates:
-        print("    PASS: no duplicates, no train/test leakage")
+        print("    No near duplicates detected by this average-hash check")
 
     print("\n[4] face quality")
     print(f"    {'file':<14}{'conf':>6}{'face%':>8}{'roll':>7}{'sharp':>8}  flags")

@@ -46,7 +46,7 @@ python scripts/bench.py --host 127.0.0.1 --port 8835 --n-predict 400 --ignore-eo
 
 Record `gen_tokens` and generation speed, and verify the stop reason in the server logs or raw response: the client prints parsed metrics, not the full response or stop reason. Context limits, unsupported options or failures can still prevent a 400-token result. Stop the baseline server before starting `bash scripts/start-server.sh mtp` on the same port; then repeat the same request. Run `dflash` only after selecting a matching main and draft model, since the default draft is the MTP file. Override executable and paths with `LLAMA_BIN`, `MODEL_DIR`, `MAIN_MODEL` and `DRAFT_MODEL`.
 
-The example uses one service slot to match this single-request experiment; it does not establish a universal restriction on speculative decoding with concurrent requests. For a separate same-engine slot comparison, see [the 35B slot experiment](../gb10-inference/qwen36-35b-ab/README.md).
+The example uses one service slot to match this single-request experiment; it does not establish a universal restriction on speculative decoding with concurrent requests. For a separate same-engine slot comparison, see [the 35B slot experiment](../gb10-inference/qwen36-35b-ab/README.en.md).
 
 ## Files
 

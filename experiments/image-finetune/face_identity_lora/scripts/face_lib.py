@@ -32,8 +32,8 @@ TARGET_ID = int(os.environ.get("FACE_TARGET_ID", 14))
 NEGATIVE_ID = int(os.environ.get("FACE_NEGATIVE_ID", 15))
 TRIGGER = os.environ.get("FACE_TRIGGER", "vkqzm")
 
-# The trigger token is the only difference between the two prompts: the base
-# model has never seen it, so it conditions on nothing and the token is inert.
+# The trigger phrase is the only prompt difference. Its tokenizer pieces can
+# affect a base model too; do not assume an unfamiliar string is inert.
 PROMPT_WITH_LORA = f"{TRIGGER}, a photo of a person, front facing, sharp focus"
 PROMPT_BASE = "a photo of a person, front facing, sharp focus"
 

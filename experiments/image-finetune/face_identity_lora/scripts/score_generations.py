@@ -140,7 +140,17 @@ def report_reference(refs: dict) -> None:
     print(f"same-person ceiling (train vs test): {refs['cross_split']['mean']:.4f}")
 
 
-def print_gain(scored: dict, size: int, baseline: dict | None) -> None:
+def baseline_mismatches(baseline: dict, size: int, n: int) -> list[str]:
+    expected = {'size': size, 'steps': STEPS, 'guidance': GUIDANCE,
+                'sampler': SAMPLER, 'n_requested': n}
+    mismatches = [key for key, value in expected.items() if baseline.get(key) != value]
+    reference = baseline.get('reference', {})
+    if reference.get('celeb_id') != TARGET_ID or reference.get('negative_id') != NEGATIVE_ID:
+        mismatches.append('reference identities')
+    return mismatches
+
+
+def print_gain(scored: dict, size: int, n: int, baseline: dict | None) -> None:
     print(f"\n  resolution         : {size}px")
     print(f"  vs target identity : {scored['vs_target']['mean']:+.4f}  (n={scored['vs_target']['n']})")
     print(f"  vs other identity  : {scored['vs_other']['mean']:+.4f}")
@@ -148,14 +158,14 @@ def print_gain(scored: dict, size: int, baseline: dict | None) -> None:
     if baseline is None:
         print("\n  (no baseline.json yet — run `score_generations.py baseline` to add it)")
         return
-    if baseline.get("size") != size:
+    mismatches = baseline_mismatches(baseline, size, n)
+    if mismatches:
         print(
-            f"\n  baseline was generated at {baseline.get('size')}px, this run at {size}px.\n"
-            "  Similarity is not comparable across resolutions, so no difference is shown.\n"
-            f"  Re-run `score_generations.py --size {size} baseline` in a fresh output directory."
+            f"\n  baseline settings differ or are missing: {', '.join(mismatches)}.\n"
+            "  Re-run the baseline with matching settings in a fresh output directory."
         )
         return
-    print(f"  base model         : {baseline['vs_target']['mean']:+.4f}   <- same settings")
+    print(f"  base model         : {baseline['vs_target']['mean']:+.4f}   <- recorded settings match; reference bytes are not checked")
 
 
 def cmd_baseline(args) -> None:
@@ -234,7 +244,7 @@ def cmd_lora(args) -> None:
     path.write_text(json.dumps(result, indent=1), encoding="utf-8")
 
     print("\n=== with LoRA ===")
-    print_gain(scored, args.size, baseline)
+    print_gain(scored, args.size, args.n, baseline)
     print(f"result -> {path}")
 
 
@@ -330,6 +340,8 @@ def main() -> None:
     scan.set_defaults(func=cmd_scan)
 
     args = parser.parse_args()
+    if args.n < 1 or args.size < 1:
+        parser.error('--n and --size must be positive')
     args.func(args)
 
 
