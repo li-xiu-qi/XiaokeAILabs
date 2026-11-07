@@ -15,7 +15,7 @@
 - [多模态 Embedding 蒸馏](experiments/multimodal-embedding-distillation/README.md)：探索图文检索教师与轻量学生之间的知识迁移。
 - [多模态重排序](experiments/multimodal-reranking/README.md)：探索图文候选的重排序，并查看匿名化评测结果。
 - [GUI 定位微调](experiments/gui-grounding-finetuning/README.md)：训练截图与指令到坐标的映射；30 个留出样本不足以证明泛化提升。
-- [教师视频训练水波纹生成模型](experiments/video-generation-distillation/README.md)：对照四组留出视频及八组新增学生视频；训练样本事后筛选，新增结果来自单名 AI 抽帧评审，均不足以证明质量提升。
+- [教师视频训练水波纹生成模型](experiments/video-generation-distillation/README.md)：对照学生训练前后，以及教师和学生自产训练素材；[小样本来源对照](experiments/video-generation-distillation/results/source-control/README.md)的抽帧评审未显示教师数据组优于基模。
 - [合成数据训练文生图模型](experiments/image-generation-distillation/README.md)：用教师合成数据训练学生 LoRA，并与学生自生成数据对照；小样本相机复测中单名 AI 缩略图评审未观察到教师数据优势，两条生成流程不同。
 - [人物图像生成微调](experiments/image-finetune/README.md)：用人物照片训练 LoRA；现有基线与微调结果分辨率不同，不能直接比较。
 - [人物视频微调与排障](experiments/wan22-video-diagnostics/README.md)：检查视频基模、种子和 LoRA 生成结果；小规模留出评估未证明学会目标角色。

@@ -110,4 +110,4 @@ python scripts/compare.py --baseline results/baseline --lora results/lora
 
 ## 教师素材与学生自产素材对照
 
-同一学生分别使用教师视频和自产视频训练相同的 200 步后，我们增加了基模与两组 LoRA 的留出抽帧盲评。样本只有两条提示词各配两个种子，评分未显示教师数据组优于基模，也无法判断运动连贯性。[查看实验设计、视频、匿名评分与复算方法](results/source-control/README.md)。
+同一学生分别使用教师视频和自产视频训练相同的 200 步后，我们增加了基模与两组 LoRA 的留出抽帧盲评。样本只有两条提示词各配两个种子，评分未显示教师数据组优于基模，也无法判断运动连贯性。[查看实验设计、匿名抽帧、评分与复算方法](results/source-control/README.md)。

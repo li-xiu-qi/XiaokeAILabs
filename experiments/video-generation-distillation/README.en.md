@@ -103,4 +103,4 @@ Four new water-ripple descriptions, each with two new seeds, produced eight base
 
 ## Teacher-generated versus student-generated training data
 
-We trained the same student for 200 steps on teacher-generated and self-generated videos, then compared both adapters with the base on two held-out prompts and two seeds per prompt. A sampled-frame blind review did not show the teacher-data group outperforming the base; it cannot assess motion continuity. [Read the design, videos, blinded ratings and recomputation method](results/source-control/source-control.en.md).
+We trained the same student for 200 steps on teacher-generated and self-generated videos, then compared both adapters with the base on two held-out prompts and two seeds per prompt. A sampled-frame blind review did not show the teacher-data group outperforming the base; it cannot assess motion continuity. [Read the design, anonymous sampled frames, blinded ratings and recomputation method](results/source-control/source-control.en.md).
