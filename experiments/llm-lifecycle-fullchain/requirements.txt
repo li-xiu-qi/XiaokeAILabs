@@ -1,0 +1,5 @@
+# 实测运行环境（见 results/run_manifest.json）
+torch>=2.2
+tokenizers>=0.20
+# 可选：绘制 loss / reward 曲线，缺失时自动跳过 PNG 输出
+matplotlib>=3.8
