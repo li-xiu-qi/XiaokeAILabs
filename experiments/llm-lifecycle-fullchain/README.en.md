@@ -22,7 +22,7 @@ bash run.sh --config configs/gpu-smoke.json
 
 | Stage | Script | Description |
 |---|---|---|
-| **1. Data Prep** | `examples/generate_toy_dataset.py` | Generate offline validation data (`corpus.txt`, `sft.jsonl`, `rl.jsonl`) |
+| **1. Data Prep** | `scripts/prepare_data.py` | One-click download of real open datasets (Wikitext-2 / Alpaca / GSM8K), or `--source toy` for offline smoke testing |
 | **2. Tokenizer** | `scripts/01_train_tokenizer.py` | Train Byte-Level BPE tokenizer, export `tokenizer.json` and `token_bytes.pt` |
 | **3. Pretraining** | `scripts/03_pretrain.py` | Pretraining loss convergence, Muon vs. AdamW baseline |
 | **4. Midtraining** | `scripts/04_midtrain.py` | Low-lr dialogue format continual pretraining |

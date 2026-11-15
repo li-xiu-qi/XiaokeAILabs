@@ -30,7 +30,7 @@ bash run.sh --config configs/gpu-smoke.json
 
 | 阶段 | 对应脚本 | 核心任务与输出 |
 |---|---|---|
-| **1. 数据准备** | `examples/generate_toy_dataset.py` | 离线生成验证语料（`corpus.txt`、`sft.jsonl`、`rl.jsonl`），支持替换为真实开源数据 |
+| **1. 数据准备** | `scripts/prepare_data.py` | 一键下载真实开源语料（Wikitext-2 / Alpaca / GSM8K），或传 `--source toy` 离线快速冒烟 |
 | **2. 训练分词器** | `scripts/01_train_tokenizer.py` | 训练 Byte-Level BPE 分词器，导出 `tokenizer.json` 与 `token_bytes.pt` 缓存 |
 | **3. 基础预训练** | `scripts/03_pretrain.py` | 预训练模型自监督收敛，对比 Muon 与 AdamW 曲线（可先跑 `02_model.py` 算子等价性自检） |
 | **4. 对话中训练** | `scripts/04_midtrain.py` | 低学习率对话续训，平滑过渡概率分布，建立多轮问答语感 |

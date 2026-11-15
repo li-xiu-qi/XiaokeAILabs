@@ -1,0 +1,184 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""prepare_data.py — 全生命周期实验数据集自动化下载与准备脚本。
+
+提供两种真实可执行的数据就绪方式：
+1. 真实公开数据集接入（--source real，默认）：
+   - 预训练语料：Wikitext-2 / TinyStories 高质量开源纯文本语料 -> $XL_DATA_DIR/corpus.txt
+   - SFT 指令微调：Stanford Alpaca 开源高质量指令问答集 -> $XL_DATA_DIR/sft.jsonl
+   - RL 强化学习：OpenAI GSM8K 经典小学数学可验证推理集 -> $XL_DATA_DIR/rl.jsonl
+   支持国内镜像自动回退（raw.githubusercontent.com / jsdelivr / ghproxy），免 Token、直接开箱即用。
+
+2. 离线快速冒烟验证（--source toy）：
+   - 零网络依赖，5 秒内生成离线测试小语料，用于快速验证单机环境与代码链路。
+
+用法：
+    # 默认：下载并构建真实公开数据集
+    python scripts/prepare_data.py
+
+    # 离线环境：生成本地冒烟测试数据
+    python scripts/prepare_data.py --source toy
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+import urllib.request
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import llm_common as lc
+
+
+def get_data_dir(custom_dir: str | None = None) -> Path:
+    if custom_dir:
+        d = Path(custom_dir)
+    elif os.environ.get("XL_DATA_DIR"):
+        d = Path(os.environ["XL_DATA_DIR"])
+    else:
+        d = Path(__file__).resolve().parents[1] / ".work" / "data"
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+def download_with_fallback(urls: list[str], timeout: int = 20) -> bytes:
+    """按候选 URL 顺序尝试下载，避免单一源被墙或超时。"""
+    last_err = None
+    for u in urls:
+        try:
+            req = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0 (XiaokeAILabs/1.0)"})
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                data = resp.read()
+                if len(data) > 0:
+                    return data
+        except Exception as e:
+            last_err = e
+            continue
+    raise RuntimeError(f"所有下载镜像均失败，最后报错: {last_err}")
+
+
+def prepare_real_pretrain(out_dir: Path, max_lines: int = 50000) -> Path:
+    corpus_file = out_dir / "corpus.txt"
+    print(f"[*] 正在下载真实预训练语料 (Wikitext-2)...")
+    urls = [
+        "https://raw.githubusercontent.com/pytorch/examples/master/word_language_model/data/wikitext-2/train.txt",
+        "https://cdn.jsdelivr.net/gh/pytorch/examples@master/word_language_model/data/wikitext-2/train.txt",
+        "https://ghproxy.net/https://raw.githubusercontent.com/pytorch/examples/master/word_language_model/data/wikitext-2/train.txt",
+    ]
+    raw_data = download_with_fallback(urls)
+    lines = raw_data.decode("utf-8", errors="replace").splitlines()
+    
+    # 过滤空行与纯符号标题
+    clean_lines = [l.strip() for l in lines if l.strip() and not l.strip().startswith("=")]
+    if max_lines and len(clean_lines) > max_lines:
+        clean_lines = clean_lines[:max_lines]
+    
+    with open(corpus_file, "w", encoding="utf-8") as f:
+        f.write("\n".join(clean_lines) + "\n")
+    print(f"[✓] 预训练语料就绪: {corpus_file} ({len(clean_lines)} 行文本, {corpus_file.stat().st_size / 1024 / 1024:.2f} MB)")
+    return corpus_file
+
+
+def prepare_real_sft(out_dir: Path, max_samples: int = 2000) -> Path:
+    sft_file = out_dir / "sft.jsonl"
+    print(f"[*] 正在下载真实 SFT 指令数据集 (Stanford Alpaca)...")
+    urls = [
+        "https://raw.githubusercontent.com/tatsu-lab/stanford_alpaca/main/alpaca_data.json",
+        "https://cdn.jsdelivr.net/gh/tatsu-lab/stanford_alpaca@main/alpaca_data.json",
+        "https://ghproxy.net/https://raw.githubusercontent.com/tatsu-lab/stanford_alpaca/main/alpaca_data.json",
+    ]
+    raw_data = download_with_fallback(urls)
+    alpaca_items = json.loads(raw_data.decode("utf-8", errors="replace"))
+    
+    records = []
+    for item in alpaca_items[:max_samples]:
+        inst = item.get("instruction", "").strip()
+        inp = item.get("input", "").strip()
+        out = item.get("output", "").strip()
+        if not inst or not out:
+            continue
+        prompt = f"User: {inst}\n{inp}\nAssistant:" if inp else f"User: {inst}\nAssistant:"
+        records.append({"prompt": prompt, "response": f" {out}"})
+        
+    with open(sft_file, "w", encoding="utf-8") as f:
+        for r in records:
+            f.write(json.dumps(r, ensure_ascii=False) + "\n")
+    print(f"[✓] SFT 指令数据就绪: {sft_file} ({len(records)} 条高质量对话)")
+    return sft_file
+
+
+def prepare_real_rl(out_dir: Path, max_samples: int = 1500) -> Path:
+    rl_file = out_dir / "rl.jsonl"
+    print(f"[*] 正在下载真实强化学习推理数据集 (OpenAI GSM8K)...")
+    urls = [
+        "https://raw.githubusercontent.com/openai/grade-school-math/master/grade_school_math/data/train.jsonl",
+        "https://cdn.jsdelivr.net/gh/openai/grade-school-math@master/grade_school_math/data/train.jsonl",
+        "https://ghproxy.net/https://raw.githubusercontent.com/openai/grade-school-math/master/grade_school_math/data/train.jsonl",
+    ]
+    raw_data = download_with_fallback(urls)
+    lines = raw_data.decode("utf-8", errors="replace").splitlines()
+    
+    records = []
+    for line in lines:
+        if not line.strip():
+            continue
+        item = json.loads(line)
+        q = item.get("question", "").strip()
+        a_full = item.get("answer", "").strip()
+        if not q or "####" not in a_full:
+            continue
+        # 提取最终精确答案（数字）
+        ans = a_full.split("####")[-1].strip().replace(",", "")
+        prompt = f"User: {q}\nAssistant:"
+        records.append({
+            "prompt": prompt,
+            "answer": ans,
+            "response": f" {a_full}"
+        })
+        if max_samples and len(records) >= max_samples:
+            break
+            
+    with open(rl_file, "w", encoding="utf-8") as f:
+        for r in records:
+            f.write(json.dumps(r, ensure_ascii=False) + "\n")
+    print(f"[✓] RL 强化学习数据就绪: {rl_file} ({len(records)} 条带客观标准答案的推导题)")
+    return rl_file
+
+
+def main():
+    parser = argparse.ArgumentParser(description="XiaokeAILabs 全生命周期实验数据准备工具")
+    parser.add_argument("--source", choices=["real", "toy"], default="real",
+                        help="数据源类型：real 为真实开源数据集（默认），toy 为本地快速离线冒烟数据")
+    parser.add_argument("--out-dir", type=str, default=None,
+                        help="数据落盘目录，未指定时默认取 $XL_DATA_DIR 或 ./.work/data")
+    parser.add_argument("--max-pretrain-lines", type=int, default=50000,
+                        help="真实预训练文本最大截断行数（默认 50000）")
+    parser.add_argument("--max-sft", type=int, default=2000,
+                        help="SFT 样本条数（默认 2000）")
+    parser.add_argument("--max-rl", type=int, default=1500,
+                        help="RL 任务样本条数（默认 1500）")
+    args = parser.parse_args()
+
+    out_dir = get_data_dir(args.out_dir)
+    print(f"=== XiaokeAILabs 数据准备阶段 ===")
+    print(f"数据落盘路径: {out_dir.resolve()}")
+    print(f"选择模式: {args.source.upper()}")
+
+    if args.source == "toy":
+        from examples.generate_toy_dataset import generate_toy_data
+        print("[*] 正在执行本地快速离线冒烟数据生成...")
+        generate_toy_data(out_dir=out_dir)
+        print("[✓] 离线冒烟数据初始化完成！")
+    else:
+        prepare_real_pretrain(out_dir, max_lines=args.max_pretrain_lines)
+        prepare_real_sft(out_dir, max_samples=args.max_sft)
+        prepare_real_rl(out_dir, max_samples=args.max_rl)
+        print("=== 真实数据集全部就绪，可直接执行后续 01~08 完整训练脚本 ===")
+
+
+if __name__ == "__main__":
+    main()
