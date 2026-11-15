@@ -1,6 +1,6 @@
 # 大语言模型指令微调：损失掩码、LoRA 秩选择与灾难性遗忘控制
 
-> **阅读导航**：[大模型推理与机理](README.md) · [项目首页](../../../README.md) · [大模型全链路实验](../../../experiments/llm-lifecycle-fullchain/) · [GUI 多模态微调](../../../experiments/gui-grounding-finetuning/)
+> **阅读导航**：[大模型推理与机理](README.md) · [项目首页](../../../README.md) · [大模型全链路实验](../../../experiments/llm-lifecycle-fullchain/) · GUI 多模态微调
 
 在实际部署大语言模型时，很少有团队需要从头预训练一个千亿模型，但几乎每个应用都需要进行**监督指令微调（Supervised Fine-Tuning, SFT）**。
 
