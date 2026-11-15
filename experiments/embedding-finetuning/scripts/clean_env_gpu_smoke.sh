@@ -15,6 +15,7 @@ EXP_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 REPO_DIR=$(cd "$EXP_DIR/../.." && pwd)
 PYTHON_BIN=${PYTHON_BIN:-python3.12}
 TORCH_INDEX_URL=${TORCH_INDEX_URL:-https://download.pytorch.org/whl/cu132}
+TORCH_PACKAGE=${TORCH_PACKAGE:-torch==2.15.0+cu132}
 RUN_DIR=$XL_DATA_DIR/embedding-clean-$XL_RUN_ID
 VENV_DIR=$XL_DATA_DIR/venvs/embedding-clean-$XL_RUN_ID
 HF_HOME=$XL_DATA_DIR/huggingface-$XL_RUN_ID
@@ -25,14 +26,17 @@ for path in "$RUN_DIR" "$VENV_DIR" "$HF_HOME" "$OUT_DIR"; do
 done
 mkdir -p "$RUN_DIR" "$(dirname "$VENV_DIR")"
 
-# The machine's inherited proxy may be stale. Clear it only for this run.
-unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY
+# Set XL_CLEAR_PROXY=1 only when inherited proxy settings are known to block
+# this run's package/model sources. Otherwise preserve the caller's network setup.
+if [[ "${XL_CLEAR_PROXY:-0}" == "1" ]]; then
+  unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY all_proxy ALL_PROXY
+fi
 
 "$PYTHON_BIN" -m venv "$VENV_DIR"
 PY=$VENV_DIR/bin/python
 "$PY" -m pip install --disable-pip-version-check pip==24.0
 "$PY" -m pip install --disable-pip-version-check --index-url "$TORCH_INDEX_URL" \
-  torch==2.15.0+cu132
+  "$TORCH_PACKAGE"
 "$PY" -c 'import importlib.metadata as m; print("torch==" + m.version("torch"))' \
   > "$RUN_DIR/torch-constraint.txt"
 "$PY" -m pip install --disable-pip-version-check -c "$RUN_DIR/torch-constraint.txt" \
@@ -42,11 +46,22 @@ PY=$VENV_DIR/bin/python
 
 export HF_HOME
 mkdir -p "$HF_HOME"
-DATASET_DIR=$RUN_DIR/dataset
+DATASET_DIR=${T2RETRIEVAL_DATA_DIR:-$RUN_DIR/dataset}
 MODEL_DIR=$RUN_DIR/base-model
-"$VENV_DIR/bin/hf" download mteb/T2Retrieval --repo-type dataset \
-  --revision 921dd3af6e78d1ae7ee0368aa8d7eaee02c8f08e --include '*.parquet' \
-  --local-dir "$DATASET_DIR"
+if [[ -z "${T2RETRIEVAL_DATA_DIR:-}" ]]; then
+  "$VENV_DIR/bin/hf" download mteb/T2Retrieval --repo-type dataset \
+    --revision 921dd3af6e78d1ae7ee0368aa8d7eaee02c8f08e --include '*.parquet' \
+    --local-dir "$DATASET_DIR"
+fi
+[[ -d "$DATASET_DIR" ]] || { echo "FATAL: dataset directory not found: $DATASET_DIR" >&2; exit 2; }
+(
+  cd "$DATASET_DIR"
+  sha256sum -c <<'SHA256'
+8f0400530c6ba664e580e2ae7bb5ed41a908b8abc17c3b3934f42cc65992ac1e  corpus/dev-00000-of-00001.parquet
+c4c6ffd715faf151e0832a26dfcf2d7ec1edc17d9620a9aa99e721cc2436d7d2  data/dev-00000-of-00001.parquet
+186b4d0a13cc4d8339eccfc6d465d1b2d4d1f6572defa8d39f3c8da3b66b0210  queries/dev-00000-of-00001.parquet
+SHA256
+)
 "$VENV_DIR/bin/hf" download BAAI/bge-base-zh-v1.5 \
   --revision f03589ceff5aac7111bd60cfc7d497ca17ecac65 --local-dir "$MODEL_DIR"
 "$PY" "$EXP_DIR/scripts/t2retrieval_subset.py" prepare --source "$DATASET_DIR" \

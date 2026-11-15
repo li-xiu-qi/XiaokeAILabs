@@ -1,6 +1,5 @@
-# Direct dependencies; install a compatible PyTorch build for the target device first.
-# Versions are not locked; validate the resulting environment before training.
-torch
-numpy
-sentence-transformers
-huggingface_hub
+# Install PyTorch separately with a build compatible with the target GPU.
+numpy==2.5.4
+sentence-transformers==6.3.0
+transformers==5.23.0
+huggingface_hub==2.4.0

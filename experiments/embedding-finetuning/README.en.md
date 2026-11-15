@@ -18,7 +18,21 @@ python -c "import torch; print('PyTorch:', torch.__version__, 'CUDA build:', tor
 python -c "import transformers, sentence_transformers, tqdm; print('Dependencies imported successfully')"
 ```
 
-The dependencies are not version-locked, and there is no record of a complete install-and-train run from scratch. The first use of the default model downloads [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5); you can instead download and verify it in advance, then use a local path. Network access and disk space for the model and checkpoints are required. The script enables `trust_remote_code=True`; inspect the selected model's code and license before loading it.
+[`requirements.txt`](requirements.txt) and [`requirements-eval.txt`](requirements-eval.txt) pin the direct dependencies used in the latest validation; install PyTorch separately with a build compatible with the target GPU. On 2026-11-15, a fresh Linux ARM64 / NVIDIA GB10 virtual environment completed GPU fine-tuning and evaluation on real data; see the run record below. The first use of the default model downloads [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5); you can instead download and verify it in advance, then use a local path. Network access and disk space for the model, data, and checkpoints are required. The script enables `trust_remote_code=True`; inspect the selected model's code and license before loading it.
+
+To run the validated workflow from an empty environment, run this script from the experiment directory. It creates a fresh virtual environment, checks CUDA and dependencies, verifies the data files, trains, and evaluates. Use a new `XL_RUN_ID` for each run, and keep data and output directories outside the repository. The default PyTorch build is for the tested GB10; for other devices set a compatible `TORCH_INDEX_URL` and `TORCH_PACKAGE`.
+
+```bash
+export XL_REQUIRE_EXTERNAL_ENV=1
+export XL_RUN_ID="$(date +%Y%m%d-%H%M%S)"
+export XL_DATA_DIR="$HOME/xl-data"
+export XL_OUT_DIR="$HOME/xl-output"
+# If needed for network access: export HF_ENDPOINT=https://hf-mirror.com
+# If the inherited proxy is broken, also set: export XL_CLEAR_PROXY=1
+bash scripts/clean_env_gpu_smoke.sh
+```
+
+By default, the script downloads T2Retrieval from its pinned revision. If that revision is already available, set `T2RETRIEVAL_DATA_DIR` to its directory; the script still verifies every file's SHA-256. It downloads the model from a pinned revision. This small development-set workflow is not a substitute for full training or a formal test.
 
 Set data and output paths outside the repository. Point `--output_dir` to a new, nonexistent directory or an empty directory. Existing files, nonempty directories, or training data located inside the output directory are rejected to protect existing results. The following runs the bundled demo data. If the default `demo_data.jsonl` is missing, the script creates it. To avoid writing into the repository, first change to an external working directory and use the script's absolute path:
 
@@ -42,7 +56,11 @@ On 2026-11-14, a copied and adjusted isolated environment ran one CUDA epoch wit
 
 ## Small-scale Run on Real Chinese Retrieval Data
 
-On 2026-11-14, the isolated environment above ran on a subset of [T2Retrieval](https://huggingface.co/datasets/mteb/T2Retrieval): 256 training queries and 100 test queries selected from its original `dev` split, with 409 candidate documents. Query texts and training-positive versus test-relevant document IDs did not overlap. The default model completed 32 CUDA training steps in one epoch. Hit@10 was 0.99 both before and after training; MRR changed from 0.9753 to 0.9736. This small candidate pool has a near-ceiling baseline, only one training run, and no checks for semantic near-duplicates or pretraining overlap. It is neither an official test score nor evidence of a business improvement.
+On 2026-11-14, the copied and adjusted isolated environment above ran on a subset of [T2Retrieval](https://huggingface.co/datasets/mteb/T2Retrieval): 256 training queries and 100 test queries selected from its original `dev` split, with 409 candidate documents. Query texts and training-positive versus test-relevant document IDs did not overlap. The default model completed 32 CUDA training steps in one epoch. Hit@10 was 0.99 both before and after training; MRR changed from 0.9753 to 0.9736.
+
+On 2026-11-15, a fresh virtual environment on Linux ARM64 / NVIDIA GB10 installed the pinned dependencies from scratch; `pip check` passed. Using the pinned BGE model and T2Retrieval revisions, it completed one 32-step CUDA epoch. Hit@10 on 100 test queries was 0.99 before and after training; MRR changed from 0.9753 to 0.9805. The dataset came from an existing copy whose three Parquet SHA-256 values matched the ones listed below; the model was downloaded from a mirror during this run. See [`evidence/clean-env-gpu-smoke-2026-11-15.json`](evidence/clean-env-gpu-smoke-2026-11-15.json) for the run summary.
+
+Both runs used a small candidate pool, a near-ceiling baseline, and one random seed. The training script does not fix its random seed, and semantic near-duplicates or pretraining overlap have not been ruled out. These scores do not establish a generalizable improvement, and they are not official test-set results.
 
 Install `pandas`, `pyarrow`, and the Hugging Face download tool in the isolated environment. The three fixed-revision files `corpus/dev-00000-of-00001.parquet`, `data/dev-00000-of-00001.parquet`, and `queries/dev-00000-of-00001.parquet` have SHA-256 values `8f0400530c6ba664e580e2ae7bb5ed41a908b8abc17c3b3934f42cc65992ac1e`, `c4c6ffd715faf151e0832a26dfcf2d7ec1edc17d9620a9aa99e721cc2436d7d2`, and `186b4d0a13cc4d8339eccfc6d465d1b2d4d1f6572defa8d39f3c8da3b66b0210`, respectively. Run from this experiment directory, with a new `WORK` outside the repository:
 
@@ -60,7 +78,7 @@ python scripts/train_embedding.py --model_name_or_path "$WORK/base-model" --trai
 python scripts/t2retrieval_subset.py evaluate --data "$WORK/subset/eval.json" --model "$WORK/model/checkpoint-epoch-1" --output "$WORK/finetuned.json"
 ```
 
-The split uses seed 42, but the training script does not fix its random seed. The run used an existing isolated environment and a mirror; the CLI download commands and a clean installation have not been verified end to end. The pool contains all labeled positives for the selected test queries plus 200 random documents. Hit@10 is the fraction of queries with at least one labeled relevant document in the top ten.
+The split uses seed 42, but the training script does not fix its random seed. The pool contains all labeled positives for the selected test queries plus 200 random documents. Hit@10 is the fraction of queries with at least one labeled relevant document in the top ten.
 
 ## Using Your Own Data
 

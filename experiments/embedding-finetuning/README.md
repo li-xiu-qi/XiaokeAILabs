@@ -18,7 +18,21 @@ python -c "import torch; print('PyTorch:', torch.__version__, 'CUDA build:', tor
 python -c "import transformers, sentence_transformers, tqdm; print('依赖导入成功')"
 ```
 
-上述依赖未锁版本，也没有从零安装并训练的完整验证记录。首次使用默认模型会从 [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5) 下载；也可预先获取并核验模型后用本地路径。需要网络、模型与检查点磁盘空间；脚本启用 `trust_remote_code=True`，加载前应检查所用模型的代码和许可。
+[`requirements.txt`](requirements.txt) 和 [`requirements-eval.txt`](requirements-eval.txt) 固定了本次验证的直接依赖；PyTorch 仍需按目标 GPU 单独安装。2026-11-15 在 Linux ARM64 / NVIDIA GB10 上从新建虚拟环境安装并完成真实数据 GPU 微调和评估，版本与范围见下方记录。首次使用默认模型会从 [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5) 下载；也可预先获取并核验模型后用本地路径。需要网络及模型、数据、检查点的磁盘空间；脚本启用 `trust_remote_code=True`，加载前应检查所用模型的代码和许可。
+
+要从空目录执行这次验证的快速流程，可在实验目录运行下列脚本。它会新建独立虚拟环境、检查 CUDA 与依赖、校验数据文件、训练并评估；每次运行必须使用新的 `XL_RUN_ID`，数据和输出目录必须位于仓库外。默认 PyTorch 配置对应已验证的 GB10；其他设备需设置匹配的 `TORCH_INDEX_URL` 与 `TORCH_PACKAGE`。
+
+```bash
+export XL_REQUIRE_EXTERNAL_ENV=1
+export XL_RUN_ID="$(date +%Y%m%d-%H%M%S)"
+export XL_DATA_DIR="$HOME/xl-data"
+export XL_OUT_DIR="$HOME/xl-output"
+# 网络环境需要镜像时设置：export HF_ENDPOINT=https://hf-mirror.com
+# 若继承的代理不可用，再加：export XL_CLEAR_PROXY=1
+bash scripts/clean_env_gpu_smoke.sh
+```
+
+脚本默认从固定 revision 下载 T2Retrieval；若已有该版本的数据，可通过 `T2RETRIEVAL_DATA_DIR` 指向数据目录，脚本仍会逐文件校验 SHA-256。模型从固定 revision 下载。该流程使用小规模开发集，不替代完整训练或正式测试。
 
 将数据和输出指定到仓库外，并让 `--output_dir` 指向不存在的新目录或空目录；已有文件、非空目录或位于输出目录内的训练数据会被拒绝，以保护已有结果。下面运行随附演示数据（若指定路径是缺失的默认 `demo_data.jsonl`，脚本会创建它；为避免向仓库写入，先切到仓外工作目录，并使用脚本的绝对路径）：
 
@@ -42,7 +56,11 @@ python "$REPO/experiments/embedding-finetuning/scripts/train_embedding.py" --out
 
 ## 真实中文数据的小规模验证
 
-2026-11-14 在上述独立环境使用固定版本的 [T2Retrieval](https://huggingface.co/datasets/mteb/T2Retrieval) 中文数据：从原 `dev` 划出 256 条训练查询和 100 条测试查询，候选池共 409 篇文档；查询文本与训练正例文档 ID 和测试相关文档 ID 不重叠。默认模型 CUDA 训练 1 轮、32 步，Hit@10 从 0.99 到 0.99，MRR 从 0.9753 到 0.9736。候选池较小、基线接近满分、只运行一次，且未排除语义近重复或模型预训练数据重叠；不能据此判断真实业务收益，也不是官方测试集成绩。
+2026-11-14 在复制并调整的独立环境使用固定版本的 [T2Retrieval](https://huggingface.co/datasets/mteb/T2Retrieval) 中文数据：从原 `dev` 划出 256 条训练查询和 100 条测试查询，候选池共 409 篇文档；查询文本与训练正例文档 ID 和测试相关文档 ID 不重叠。默认模型 CUDA 训练 1 轮、32 步，Hit@10 从 0.99 到 0.99，MRR 从 0.9753 到 0.9736。
+
+2026-11-15 在 Linux ARM64 / NVIDIA GB10 的新建虚拟环境中，按上述依赖版本从零安装，`pip check` 通过。使用固定 revision 的 BGE 模型和 T2Retrieval 数据完成 1 轮、32 步 CUDA 微调：100 条测试查询的 Hit@10 为 0.99（训练前后相同），MRR 从 0.9753 到 0.9805。此次数据来自已有数据副本，三个 Parquet 文件的 SHA-256 均与下方记录一致；模型在本次运行中从镜像下载。运行摘要见 [`evidence/clean-env-gpu-smoke-2026-11-15.json`](evidence/clean-env-gpu-smoke-2026-11-15.json)。
+
+两次运行的候选池都较小，基线接近满分，且只运行一个随机种子；训练脚本未固定随机种子，也未排除语义近重复或模型预训练数据重叠。指标变化不能证明微调带来可推广的提升，也不是官方测试集成绩。
 
 以下流程需要额外的 `pandas`、`pyarrow` 和 Hugging Face 下载工具；固定数据版本的三个 Parquet 文件分别是 `corpus/dev-00000-of-00001.parquet`、`data/dev-00000-of-00001.parquet` 和 `queries/dev-00000-of-00001.parquet`，其 SHA-256 依次为 `8f0400530c6ba664e580e2ae7bb5ed41a908b8abc17c3b3934f42cc65992ac1e`、`c4c6ffd715faf151e0832a26dfcf2d7ec1edc17d9620a9aa99e721cc2436d7d2`、`186b4d0a13cc4d8339eccfc6d465d1b2d4d1f6572defa8d39f3c8da3b66b0210`。在实验目录执行，`WORK` 须是仓库外的新目录：
 
@@ -60,7 +78,7 @@ python scripts/train_embedding.py --model_name_or_path "$WORK/base-model" --trai
 python scripts/t2retrieval_subset.py evaluate --data "$WORK/subset/eval.json" --model "$WORK/model/checkpoint-epoch-1" --output "$WORK/finetuned.json"
 ```
 
-数据划分固定随机种子 42；训练脚本未固定随机种子，数值不保证一致。上述版本从已有独立环境运行，数据经镜像下载；CLI 下载命令和全新安装尚未端到端验证。候选池包含测试查询的已标注正例及 200 个随机文档，`Hit@10` 表示前十篇至少命中一个已标注相关文档的查询比例。
+数据划分固定随机种子 42；训练脚本未固定随机种子，数值不保证一致。候选池包含测试查询的已标注正例及 200 个随机文档，`Hit@10` 表示前十篇至少命中一个已标注相关文档的查询比例。
 
 ## 使用自己的数据
 

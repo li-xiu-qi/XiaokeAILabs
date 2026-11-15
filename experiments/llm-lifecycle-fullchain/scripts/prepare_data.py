@@ -5,15 +5,15 @@
 提供两种真实可执行的数据就绪方式：
 1. 真实公开数据集接入（--source real，默认）：
    - 预训练语料：Wikitext-2 高质量开源纯文本语料 -> $XL_DATA_DIR/corpus.txt
-   - SFT 指令微调：Stanford Alpaca 开源高质量指令问答集 -> $XL_DATA_DIR/sft.jsonl
+   - SFT 指令微调：Stanford Alpaca / CodeAlpaca 高质量对话问答集 -> $XL_DATA_DIR/sft.jsonl
    - RL 强化学习：OpenAI GSM8K 经典小学数学可验证推理集 -> $XL_DATA_DIR/rl.jsonl
-   支持国内镜像自动回退（raw.githubusercontent.com / jsdelivr / ghproxy），免 Token、开箱即用。
+   内置多镜像自动故障切换机制（国内加速代理 / 官方源 / 备用 CDN），免 Token、开箱即用。
 
 2. 离线极速自检验证（--source toy）：
    - 零网络依赖，5 秒内生成离线自测小语料（基础语言事实与算术），用于快速验证单机环境与全流程代码链路。
 
 用法：
-    # 默认：下载并构建真实公开数据集
+    # 默认：下载并构建真实公开数据集（自动多镜像回退）
     python scripts/prepare_data.py
 
     # 离线环境：生成本地自测数据
@@ -27,6 +27,7 @@ import json
 import os
 import random
 import sys
+import time
 import urllib.request
 from pathlib import Path
 
@@ -238,7 +239,7 @@ def generate_toy_data(seed: int = 1234, out_dir: Path | None = None):
 
 
 # ==========================================
-# 真实公开数据集下载与标准化逻辑
+# 真实公开数据集多镜像下载与标准化逻辑
 # ==========================================
 
 def get_data_dir(custom_dir: str | None = None) -> Path:
@@ -252,31 +253,68 @@ def get_data_dir(custom_dir: str | None = None) -> Path:
     return d
 
 
-def download_with_fallback(urls: list[str], timeout: int = 20) -> bytes:
-    """按候选 URL 顺序尝试下载，避免单一源被墙或超时。"""
+def download_with_fallback(urls: list[str], task_name: str, out_dir: Path, timeout: int = 15) -> bytes:
+    """按候选镜像列表顺序尝试下载，若连接失败或超时则自动切换备用镜像，支持流式分块。"""
     last_err = None
-    for u in urls:
+    total_mirrors = len(urls)
+
+    for idx, u in enumerate(urls, 1):
+        domain_label = u.split("/")[2]
+        print(f"  -> [{idx}/{total_mirrors}] 正在连接镜像源 ({domain_label})...", flush=True)
+        t0 = time.time()
         try:
-            req = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0 (XiaokeAILabs/1.0)"})
+            req = urllib.request.Request(
+                u,
+                headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) XiaokeAILabs/1.0"}
+            )
             with urllib.request.urlopen(req, timeout=timeout) as resp:
-                data = resp.read()
-                if len(data) > 0:
+                # 分块流式读取（64KB 块），避免整块读取挂起
+                chunks = []
+                total_bytes = 0
+                while True:
+                    chunk = resp.read(64 * 1024)
+                    if not chunk:
+                        break
+                    chunks.append(chunk)
+                    total_bytes += len(chunk)
+
+                if total_bytes > 0:
+                    data = b"".join(chunks)
+                    elapsed = time.time() - t0
+                    speed_mb = (total_bytes / 1024 / 1024) / max(elapsed, 0.001)
+                    print(f"     [✓] 下载完成 ({total_bytes / 1024 / 1024:.2f} MB, 耗时 {elapsed:.2f}s, 均速 {speed_mb:.2f} MB/s)", flush=True)
                     return data
         except Exception as e:
             last_err = e
+            print(f"     [!] 当前镜像连接受阻 ({e.__class__.__name__})，正在自动尝试下一个备用源...", flush=True)
             continue
-    raise RuntimeError(f"所有下载镜像均失败，最后报错: {last_err}")
+
+    # 所有镜像均失败时的友好指引
+    err_msg = (
+        f"\n{'='*65}\n"
+        f"[网络连接提示] {task_name} 下载未成功：已依次尝试全部 {total_mirrors} 个镜像源。\n"
+        f"最后异常: {last_err}\n\n"
+        f"建议处置方案：\n"
+        f"1. 检查当前主机的外网访问或网络代理配置；\n"
+        f"2. 若处于无外网连接的机房/离线环境，推荐一键使用零网络依赖的离线自测模式：\n"
+        f"   python scripts/prepare_data.py --source toy\n"
+        f"3. 亦可手动将语料文件放置到数据目录: {out_dir.resolve()}\n"
+        f"{'='*65}\n"
+    )
+    raise RuntimeError(err_msg)
 
 
 def prepare_real_pretrain(out_dir: Path, max_lines: int = 50000) -> Path:
     corpus_file = out_dir / "corpus.txt"
-    print(f"[*] 正在下载真实预训练语料 (Wikitext-2)...")
+    print(f"[*] 准备预训练语料 (Wikitext-2)...")
     urls = [
-        "https://raw.githubusercontent.com/pytorch/examples/master/word_language_model/data/wikitext-2/train.txt",
-        "https://cdn.jsdelivr.net/gh/pytorch/examples@master/word_language_model/data/wikitext-2/train.txt",
+        # 国内直连加速镜像
         "https://ghproxy.net/https://raw.githubusercontent.com/pytorch/examples/master/word_language_model/data/wikitext-2/train.txt",
+        "https://mirror.ghproxy.com/https://raw.githubusercontent.com/pytorch/examples/master/word_language_model/data/wikitext-2/train.txt",
+        # 官方 raw 镜像
+        "https://raw.githubusercontent.com/pytorch/examples/master/word_language_model/data/wikitext-2/train.txt",
     ]
-    raw_data = download_with_fallback(urls)
+    raw_data = download_with_fallback(urls, task_name="预训练语料 (Wikitext-2)", out_dir=out_dir)
     lines = raw_data.decode("utf-8", errors="replace").splitlines()
     
     clean_lines = [l.strip() for l in lines if l.strip() and not l.strip().startswith("=")]
@@ -291,13 +329,17 @@ def prepare_real_pretrain(out_dir: Path, max_lines: int = 50000) -> Path:
 
 def prepare_real_sft(out_dir: Path, max_samples: int = 2000) -> Path:
     sft_file = out_dir / "sft.jsonl"
-    print(f"[*] 正在下载真实 SFT 指令数据集 (Stanford Alpaca)...")
+    print(f"[*] 准备 SFT 指令对话数据集 (Stanford Alpaca / CodeAlpaca)...")
     urls = [
+        # 1. 官方 Alpaca 源（直连）
         "https://raw.githubusercontent.com/tatsu-lab/stanford_alpaca/main/alpaca_data.json",
-        "https://cdn.jsdelivr.net/gh/tatsu-lab/stanford_alpaca@main/alpaca_data.json",
+        # 2. 国内加速反代镜像
         "https://ghproxy.net/https://raw.githubusercontent.com/tatsu-lab/stanford_alpaca/main/alpaca_data.json",
+        # 3. CodeAlpaca 高可用备用源（同样为标准 instruction/input/output 格式）
+        "https://raw.githubusercontent.com/sahil280114/codealpaca/master/data/code_alpaca_20k.json",
+        "https://ghproxy.net/https://raw.githubusercontent.com/sahil280114/codealpaca/master/data/code_alpaca_20k.json",
     ]
-    raw_data = download_with_fallback(urls)
+    raw_data = download_with_fallback(urls, task_name="SFT 指令数据集", out_dir=out_dir)
     alpaca_items = json.loads(raw_data.decode("utf-8", errors="replace"))
     
     records = []
@@ -319,13 +361,15 @@ def prepare_real_sft(out_dir: Path, max_samples: int = 2000) -> Path:
 
 def prepare_real_rl(out_dir: Path, max_samples: int = 1500) -> Path:
     rl_file = out_dir / "rl.jsonl"
-    print(f"[*] 正在下载真实强化学习推理数据集 (OpenAI GSM8K)...")
+    print(f"[*] 准备强化学习客观推导数据集 (OpenAI GSM8K)...")
     urls = [
+        # 1. 官方 raw 源
         "https://raw.githubusercontent.com/openai/grade-school-math/master/grade_school_math/data/train.jsonl",
-        "https://cdn.jsdelivr.net/gh/openai/grade-school-math@master/grade_school_math/data/train.jsonl",
+        # 2. 国内加速代理镜像
         "https://ghproxy.net/https://raw.githubusercontent.com/openai/grade-school-math/master/grade_school_math/data/train.jsonl",
+        "https://mirror.ghproxy.com/https://raw.githubusercontent.com/openai/grade-school-math/master/grade_school_math/data/train.jsonl",
     ]
-    raw_data = download_with_fallback(urls)
+    raw_data = download_with_fallback(urls, task_name="RL 强化学习数据集 (OpenAI GSM8K)", out_dir=out_dir)
     lines = raw_data.decode("utf-8", errors="replace").splitlines()
     
     records = []

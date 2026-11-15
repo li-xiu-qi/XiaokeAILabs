@@ -1,6 +1,4 @@
-# Direct dependencies; install a compatible PyTorch build for the target device first.
-# Versions are not locked; validate the resulting environment before training.
-torch
-transformers
-sentence-transformers
-tqdm
+# PyTorch is installed separately with a build compatible with the target GPU.
+transformers==5.23.0
+sentence-transformers==6.3.0
+tqdm==4.70.1

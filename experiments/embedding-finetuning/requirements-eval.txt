@@ -1,4 +1,4 @@
-# Optional dependencies for preparing the T2Retrieval subset.
-pandas
-pyarrow
-huggingface_hub[cli]
+# Dependencies for preparing the pinned T2Retrieval subset and downloading assets.
+pandas==3.1.1
+pyarrow==26.0.1
+huggingface_hub[cli]==2.4.0
