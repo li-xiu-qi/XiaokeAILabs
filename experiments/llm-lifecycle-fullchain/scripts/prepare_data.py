@@ -9,14 +9,14 @@
    - RL 强化学习：OpenAI GSM8K 经典小学数学可验证推理集 -> $XL_DATA_DIR/rl.jsonl
    支持国内镜像自动回退（raw.githubusercontent.com / jsdelivr / ghproxy），免 Token、开箱即用。
 
-2. 离线快速冒烟验证（--source toy）：
-   - 零网络依赖，5 秒内生成离线测试小语料（基础语言事实与算术），用于快速验证单机环境与全流程代码链路。
+2. 离线极速自检验证（--source toy）：
+   - 零网络依赖，5 秒内生成离线自测小语料（基础语言事实与算术），用于快速验证单机环境与全流程代码链路。
 
 用法：
     # 默认：下载并构建真实公开数据集
     python scripts/prepare_data.py
 
-    # 离线环境：生成本地冒烟测试数据
+    # 离线环境：生成本地自测数据
     python scripts/prepare_data.py --source toy
 """
 
@@ -34,7 +34,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import llm_common as lc
 
 # ==========================================
-# 离线冒烟数据（Toy Dataset）合成逻辑
+# 离线自测数据（Toy Dataset）合成逻辑
 # ==========================================
 
 EOS = "<|endoftext|>"
@@ -206,7 +206,7 @@ def generate_toy_data(seed: int = 1234, out_dir: Path | None = None):
     # 写出预训练语料
     corpus_file = out / "corpus.txt"
     corpus_file.write_text(corpus_text, encoding="utf-8")
-    print(f"已生成冒烟预训练语料: {corpus_file} ({len(corpus_text):,} 字符)")
+    print(f"已生成自测预训练语料: {corpus_file} ({len(corpus_text):,} 字符)")
 
     # 生成 SFT 指令数据
     sft = [{"prompt": f"User: {q}\nAssistant:", "response": f" {a}"} for q, a in qa_pairs]
@@ -219,7 +219,7 @@ def generate_toy_data(seed: int = 1234, out_dir: Path | None = None):
     with open(sft_file, "w", encoding="utf-8") as f:
         for item in sft:
             f.write(json.dumps(item, ensure_ascii=False) + "\n")
-    print(f"已生成冒烟 SFT 数据: {sft_file} ({len(sft)} 条记录)")
+    print(f"已生成自测 SFT 数据: {sft_file} ({len(sft)} 条记录)")
 
     # 生成 RL 可验证任务数据
     rl_tasks = [
@@ -234,7 +234,7 @@ def generate_toy_data(seed: int = 1234, out_dir: Path | None = None):
     with open(rl_file, "w", encoding="utf-8") as f:
         for item in rl_tasks:
             f.write(json.dumps(item, ensure_ascii=False) + "\n")
-    print(f"已生成冒烟 RL 数据: {rl_file} ({len(rl_tasks)} 条任务)")
+    print(f"已生成自测 RL 数据: {rl_file} ({len(rl_tasks)} 条任务)")
 
 
 # ==========================================
@@ -357,7 +357,7 @@ def prepare_real_rl(out_dir: Path, max_samples: int = 1500) -> Path:
 def main():
     parser = argparse.ArgumentParser(description="XiaokeAILabs 全生命周期实验数据准备工具")
     parser.add_argument("--source", choices=["real", "toy"], default="real",
-                        help="数据源类型：real 为真实开源数据集（默认），toy 为本地快速离线冒烟数据")
+                        help="数据源类型：real 为真实开源数据集（默认），toy 为本地快速自测数据")
     parser.add_argument("--out-dir", type=str, default=None,
                         help="数据落盘目录，未指定时默认取 $XL_DATA_DIR 或 ./.work/data")
     parser.add_argument("--seed", type=int, default=1234,
@@ -376,9 +376,9 @@ def main():
     print(f"选择模式: {args.source.upper()}")
 
     if args.source == "toy":
-        print("[*] 正在执行本地快速离线冒烟数据生成...")
+        print("[*] 正在生成本地快速自测数据...")
         generate_toy_data(seed=args.seed, out_dir=out_dir)
-        print("[✓] 离线冒烟数据初始化完成！")
+        print("[✓] 离线自测数据生成完成！")
     else:
         prepare_real_pretrain(out_dir, max_lines=args.max_pretrain_lines)
         prepare_real_sft(out_dir, max_samples=args.max_sft)

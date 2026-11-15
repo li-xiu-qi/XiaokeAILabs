@@ -7,7 +7,7 @@
 2. 支持流式读取单个文本文件或大语料文本（如 $XL_DATA_DIR/corpus.txt）
 3. 支持统一文档截断（doc_cap）与字符上限限制（max_chars）
 4. 提供标准 SFT 与 RL 数据集加载器，与核心训练算法完全解耦
-5. 核心模块不内联任何静态玩具数据，离线冒烟测试数据通过 examples/ 独立生成
+5. 核心模块不内联任何静态玩具数据，离线快速自测数据通过 scripts/prepare_data.py --source toy 生成
 """
 
 from __future__ import annotations
@@ -79,7 +79,7 @@ def text_file_iter_batched(filepath: str | Path, chunk_size: int = 1000) -> Iter
         raise FileNotFoundError(
             f"未检测到语料文件: {path}\n"
             f"如需使用标准公开数据集，请指定 --corpus-path 参数或运行 python scripts/prepare_data.py；\n"
-            f"如需进行快速冒烟测试，请运行: python scripts/prepare_data.py --source toy"
+            f"如需进行快速自测验证，请运行: python scripts/prepare_data.py --source toy"
         )
 
     batch = []
