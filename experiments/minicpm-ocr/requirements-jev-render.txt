@@ -1,0 +1,4 @@
+# Renderer dependencies recorded upstream; Chromium and Node.js are separate.
+playwright==1.62.0
+Pillow==12.3.0
+Markdown==3.10.3

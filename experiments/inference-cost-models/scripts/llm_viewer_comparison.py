@@ -1,3 +1,5 @@
+raise SystemExit("UNVALIDATED legacy phase timing disabled; use scripts/compare_engines.py")
+
 #!/usr/bin/env python3
 """LLM-Viewer 逐层结果汇总 + 混合架构修正 + Q4 对比"""
 

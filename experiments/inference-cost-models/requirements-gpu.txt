@@ -1,0 +1,2 @@
+# Optional legacy embedding benchmark; install platform-compatible torch first.
+sentence-transformers

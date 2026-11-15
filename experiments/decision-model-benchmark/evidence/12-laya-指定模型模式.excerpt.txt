@@ -1,0 +1,12 @@
+原始运行输出摘录，行号对应原始日志；仅列测量条件、结果及相关范围。
+
+6: MemAvailable 基线: 40.2 GB
+7: Router 就绪，常驻 CUDA 4.36 GB
+10: 模式                             p50 ms       choice       conf routing.reason
+12: 不指定（自动路由）                       35.15      billing     1.0000 non-Latin script (han, 100% of letters); the English checkpo
+13: model=multilingual              35.33      billing     1.0000 explicit model='multilingual'
+14: model=english（强灌）               55.42      billing     0.5022 explicit model='english'
+15: model=typed-decisions           57.41      billing     0.2137 explicit model='typed-decisions'
+16: Router(default=multilingual)      35.83      billing     1.0000 non-Latin script (han, 100% of letters); the English checkpo
+18: [收尾] CUDA: 5.60 GB，MemAvailable: 30.7 GB
+19: 结果已写入 ~/laya-pin-result.json

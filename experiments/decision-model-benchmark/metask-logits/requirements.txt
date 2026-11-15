@@ -1,0 +1,5 @@
+# PyTorch is installed separately by metask-install.sh for the selected platform.
+# The remaining direct dependencies retain the installer's historical constraints.
+transformers>=4.53
+accelerate
+huggingface_hub

@@ -1,0 +1,6 @@
+# Install platform-appropriate PyTorch first; see README.
+numpy
+# Only needed for the model prototypes.
+transformers
+# Used to download the pinned example model snapshot.
+huggingface_hub

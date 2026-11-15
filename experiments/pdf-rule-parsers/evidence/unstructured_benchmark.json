@@ -1,0 +1,126 @@
+{
+  "timestamp": "2026-11-08T23:45:25",
+  "benchmark_description": "unstructured partition_pdf element-chunking evaluation: rule-based 'fast' (pdfminer vector stream) vs model-based 'hi_res' (yolox layout detection + tesseract OCR + table-transformer structure recognition); each run isolated in a fresh subprocess for cold-start timing",
+  "environment": {
+    "unstructured": "0.27.37",
+    "python": "3.13.0",
+    "unstructured-inference": "1.6.17",
+    "onnxruntime": "1.31.0",
+    "onnx": "1.20.1",
+    "opencv-python": "5.0.0.93",
+    "torch": "2.15.0+cpu",
+    "torchvision": "0.29.2",
+    "transformers": "5.22.2",
+    "timm": "1.0.31",
+    "pypdfium2": "5.15.1",
+    "pdfminer.six": "20260107",
+    "unstructured-pytesseract": "0.3.15",
+    "tesseract_binary_version": "5.5.0.20241111",
+    "ocr_agent": "unstructured.partition.utils.ocr_models.tesseract_ocr.OCRAgentTesseract",
+    "hf_endpoint": "https://hf-mirror.com"
+  },
+  "files_evaluated": [
+    {
+      "filename": "rapidocr_direct_and_image.pdf",
+      "size_kb": 703.71,
+      "runs": [
+        {
+          "strategy": "fast",
+          "success": true,
+          "error": null,
+          "elapsed_ms": 3394.13,
+          "total_elements": 25,
+          "element_counts": {
+            "Footer": 1,
+            "ListItem": 1,
+            "NarrativeText": 9,
+            "Title": 7,
+            "UncategorizedText": 7
+          },
+          "title_count": 7,
+          "narrative_text_count": 9,
+          "table_count": 0,
+          "image_count": 0,
+          "total_chars": 3724,
+          "page_count": 1,
+          "text_preview": "0 2 0 2 b e F 5 2 ] V C . s c [ 2 v 0 0 2 0 1 . 2 0 0 2 : v i X r a ABCNet: Real-time Scene Text Spotting with Adaptive Bezier-Curve Network∗ Yuliang Liu‡† , Hao Chen†, Chunhua Shen†, Tong He†, Lianwe"
+        },
+        {
+          "strategy": "hi_res",
+          "success": true,
+          "error": null,
+          "elapsed_ms": 35026.87,
+          "total_elements": 43,
+          "element_counts": {
+            "FigureCaption": 2,
+            "Footer": 2,
+            "Header": 3,
+            "Image": 4,
+            "NarrativeText": 19,
+            "Title": 6,
+            "UncategorizedText": 7
+          },
+          "title_count": 6,
+          "narrative_text_count": 19,
+          "table_count": 0,
+          "image_count": 4,
+          "total_chars": 6730,
+          "page_count": 2,
+          "text_preview": "0 2 0 2 b e F 5 2 ] V C . s c [ 2 v 0 0 2 0 1 . 2 0 0 2 : v arX1V i X r a ABCNet: Real-time Scene Text Spotting with Adaptive Bezier-Curve Network∗ Hao Chen’, Chunhua Shen’, Tong He’, *South China Uni"
+        }
+      ]
+    },
+    {
+      "filename": "pdfplumber_federal_register.pdf",
+      "size_kb": 697.26,
+      "runs": [
+        {
+          "strategy": "fast",
+          "success": true,
+          "error": null,
+          "elapsed_ms": 4717.57,
+          "total_elements": 446,
+          "element_counts": {
+            "Footer": 77,
+            "Header": 29,
+            "ListItem": 16,
+            "NarrativeText": 185,
+            "Title": 106,
+            "UncategorizedText": 33
+          },
+          "title_count": 106,
+          "narrative_text_count": 185,
+          "table_count": 0,
+          "image_count": 0,
+          "total_chars": 58552,
+          "page_count": 15,
+          "text_preview": "S L A S O P O R P h t i w D O R P 2 X 7 W S L J K S D n o l l e b j 47698 Proposed Rules Federal Register Vol. 85, No. 152 Thursday, August 6, 2020 This section of the FEDERAL REGISTER contains notice"
+        },
+        {
+          "strategy": "hi_res",
+          "success": true,
+          "error": null,
+          "elapsed_ms": 113164.91,
+          "total_elements": 1021,
+          "element_counts": {
+            "FigureCaption": 1,
+            "Header": 29,
+            "Image": 11,
+            "ListItem": 1,
+            "NarrativeText": 177,
+            "Table": 2,
+            "Title": 57,
+            "UncategorizedText": 743
+          },
+          "title_count": 57,
+          "narrative_text_count": 177,
+          "table_count": 2,
+          "image_count": 11,
+          "total_chars": 69509,
+          "page_count": 15,
+          "text_preview": "S L A S O P O R P h t i w D O R P 2 X 7 W S L J K S D n o l l e b j 47698 Proposed Rules Federal Register Vol. 85, No. 152 Thursday, August 6, 2020 This section of the FEDERAL REGISTER contains notice"
+        }
+      ]
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 #!/bin/bash
-source /home/ke/xinfer-env/bin/activate
+source $HOME/xinfer-env/bin/activate
 
 echo "=== 验证 vLLM 和 torch ==="
-/home/ke/vllm-env/bin/python -c "
+$HOME/vllm-env/bin/python -c "
 import vllm
 import torch
 print('vLLM version:', vllm.__version__)

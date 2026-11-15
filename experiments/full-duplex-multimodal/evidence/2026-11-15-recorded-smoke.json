@@ -1,0 +1,17 @@
+{
+  "date": "2026-11-15",
+  "model": "openbmb/MiniCPM-o-4_5",
+  "model_revision": "fb09628e98b1f55d8d5b863e0eccfcdd11bff499",
+  "input": "assets/omni_duplex1.mp4",
+  "reference_audio": "assets/HT_ref_audio.wav",
+  "mode": "recorded-chunks",
+  "hardware": "NVIDIA GB10",
+  "python": "3.12",
+  "torch": "2.11.0+cu130",
+  "transformers": "4.51.0",
+  "chunks_processed": 4,
+  "listening_chunks": 4,
+  "text_responses": 0,
+  "interpretation": "All four chunks returned listening state; audio arrays alone do not demonstrate audible speech. Live interaction and interruption were not tested.",
+  "limitations": "The exploratory isolated environment did not pass pip check; PyTorch is outside the version range on the model card."
+}

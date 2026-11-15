@@ -16,6 +16,13 @@
   ./.venv/Scripts/python.exe scripts/probe_bm25.py
   ./.venv/Scripts/python.exe scripts/probe_bm25.py --only milvus qdrant
 """
+
+if __package__:
+    from .legacy_safety import require_isolated_instance
+else:
+    from legacy_safety import require_isolated_instance
+
+require_isolated_instance()
 import argparse
 import json
 import sys

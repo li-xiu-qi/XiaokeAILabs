@@ -1,0 +1,2053 @@
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \end{equation}
+
+\begin{equation} \chi^2 = \sum_{i=1}^{k} \frac{(O_i - E_i)^2}{E_i} \end{equation}
+
+\begin{equation} \sin^2 \theta + \cos^2 \theta = 1 \end{equation}
+
+\begin{equation} \lim_{n \to \infty} \left(1 + \frac{x}{n}\right)^n = e^x \end{equation}
+\begin{equation} \nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0} \end{equation}
+
+\begin{equation} \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi} \end{equation}
+
+\begin{equation} \mathcal{L}(\theta) = -\sum_{i=1}^{N} y_i \log p(y_i \mid x_i; \theta) + \lambda \|\theta\|_2^2 \end{equation}
+
+\begin{equation} \frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} \end{equation}
+
+\begin{equation} \mathbf{A} \mathbf{x} = \lambda \mathbf{x}, \quad \mathbf{A} \in \mathbb{R}^{n \times n} \end{equation}
+
+\begin{equation} P(A \mid B) = \frac{P(B \mid A) P(A)}{P(B)} \end{equation}
+
+\begin{equation} \sum_{k=0}^{\infty} \frac{x^k}{k!} = e^x \end{equation}
+
+\begin{equation} \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{r} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} \end{equation}
+
+\begin{equation} \sigma^2 = \frac{1}{N} \sum_{i=1}^{N} (x_i - \mu)^2 \end{equation}
+
+\begin{equation} \frac{d}{dx} \left( \int_a^x f(t) dt \right) = f(x) \end{equation}
+
+\begin{equation} (a + b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k \end{equation}
+
+\begin{equation} \mathbf{v}(t) = \mathbf{v}_0 + \int_0^t \mathbf{a}(\tau) d\tau \en

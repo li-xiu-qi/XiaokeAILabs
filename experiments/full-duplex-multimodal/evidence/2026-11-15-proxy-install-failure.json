@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-15",
+  "experiment": "Empty-venv installation self-check for the realtime Python environment",
+  "script": "experiments/full-duplex-multimodal/scripts/validate_realtime_environment.sh",
+  "run_id": "<redacted-run-id>",
+  "git_commit": "eea423bcdc63",
+  "device_class": "NVIDIA GB10",
+  "platform": {
+    "system": "Linux",
+    "machine": "aarch64",
+    "platform": "Linux-6.17.0-1032-nvidia-aarch64-with-glibc2.39",
+    "cuda_wheel_index": "https://download.pytorch.org/whl/cu130"
+  },
+  "purpose": "Verify the README's realtime environment steps from an empty venv: create the venv, install the pinned CUDA wheels and requirements-realtime.txt, run pip check, import the realtime modules, check CUDA availability, and decode a generated 1-second WAV with TorchCodec AudioDecoder. Environment only; no model weights, no training data, no model service.",
+  "install_order": [
+    "pip==24.0",
+    "torch==2.11.0 torchaudio==2.11.0 (index https://download.pytorch.org/whl/cu130)",
+    "torchcodec==0.15.0 (same index)",
+    "requirements-realtime.txt"
+  ],
+  "environment": {
+    "python": "3.12.3",
+    "pip": "24.0",
+    "venv_naming": "venv-realtime-<run-id> under the run data directory; empty-venv policy enforced by the script"
+  },
+  "result": {
+    "stage": "install_torch",
+    "ok": false,
+    "error": "pip could not download torch==2.11.0 from https://download.pytorch.org/whl/cu130: the device-side pip proxy refused the connection (ProxyError: Cannot connect to proxy; [Errno 111] connection refused) across pip's retries; final pip errors: 'Could not find a version that satisfies the requirement torch==2.11.0 (from versions: none)' and 'No matching distribution found for torch==2.11.0'",
+    "stages_completed": [
+      "venv_create",
+      "pip_upgrade"
+    ],
+    "stages_not_reached": [
+      "install_torchcodec",
+      "install_requirements",
+      "pip_check",
+      "imports",
+      "cuda",
+      "torchcodec_decode"
+    ]
+  },
+  "not_verified": [
+    "from-empty installation of the full realtime Python dependency set (stopped at the torch download)",
+    "pip check in an empty venv",
+    "imports of av, torch, torchaudio, torchcodec, transformers, fastapi, websockets, stepaudio2_minicpmo in an empty venv",
+    "CUDA availability and TorchCodec AudioDecoder decode in an empty venv",
+    "model inference of any kind; the earlier GPU streaming evidence is independent and unaffected"
+  ],
+  "interpretation": "This run verified the script's empty-venv creation, pinned install order, fail-fast behavior and machine-readable summary, and documented a concrete blocker: on this device the pip proxy refuses connections to the PyTorch wheel index. Per the run contract the failure stopped the run immediately with no version change, repair attempt or retry. A from-empty installation of the realtime dependencies remains unverified until rerun on a device or network that can reach the index."
+}

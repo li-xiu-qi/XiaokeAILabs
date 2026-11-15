@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-13",
+  "hardware": "DGX Spark GB10, Linux aarch64",
+  "software": {
+    "cuda_toolkit": "13.0",
+    "gcc": "13.3.0",
+    "cmake": "3.28.3",
+    "ninja": "1.13.2",
+    "ffmpeg": "9.0.2",
+    "libcurl": "8.23.0",
+    "engine_revision": "4c2fc2f9504d2f373c84e896bf18523906a646d7"
+  },
+  "model": {
+    "revision": "196cc2ce161d7239976fcd5dc07adf06ae31a35c",
+    "bytes": 23773675264,
+    "sha256": "3c2d39f364a8932c82b41d4c424c940285573b0309481a67c2fde048368bf808"
+  },
+  "build": {
+    "result": "completed",
+    "final_build_exit_code": 0
+  },
+  "smoke": {
+    "context_tokens": 2048,
+    "kv_capacity": 2048,
+    "max_concurrency": 1,
+    "max_output_tokens": 128,
+    "draft_tokens": 7,
+    "vision": true,
+    "cuda_graph": true,
+    "checks": {
+      "text_has_391": true,
+      "text_finished": true,
+      "image_finished": true,
+      "image_has_red_circle": true,
+      "image_has_blue_square": true,
+      "image_has_text": true
+    },
+    "passed": true,
+    "service_stopped": true,
+    "exit_code": 0
+  },
+  "scope": "One text and one image request. The historical concurrent throughput comparison was not rerun."
+}

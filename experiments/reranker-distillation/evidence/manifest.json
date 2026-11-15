@@ -1,0 +1,21 @@
+{
+  "seed": 20261107,
+  "max_length": 192,
+  "steps": 180,
+  "batch_queries": 8,
+  "temperature": 2.0,
+  "distill_weight": 0.5,
+  "teacher": "cross-encoder/ms-marco-MiniLM-L12-v2@7b0235231ca2674cb8ca8f022859a6eba2b1c968",
+  "student": "cross-encoder/ms-marco-TinyBERT-L2-v2@81d1926f67cb8eee2c2be17ca9f793c7c3bd20cc",
+  "pools_sha256": "e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8",
+  "counts": {
+    "train": 390,
+    "dev": 89,
+    "test": 300
+  },
+  "pairs": {
+    "teacher_train": 3550,
+    "eval": 11670
+  },
+  "caveats": "student trained on MS MARCO; unjudged != guaranteed negative; query-held-out, documents can overlap"
+}

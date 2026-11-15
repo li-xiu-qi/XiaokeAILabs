@@ -1,0 +1,86 @@
+{
+  "date": "2026-11-15",
+  "purpose": "small real-data pipeline check; not a quality benchmark or paper reproduction",
+  "status": "completed",
+  "platform": {
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "cuda_runtime": "13.2",
+    "gpu": "NVIDIA GB10",
+    "transformers": "5.16.1",
+    "datasets": "5.2.0",
+    "numpy": "2.5.4",
+    "pip_check": "passed"
+  },
+  "model": {
+    "repo_id": "google-bert/bert-base-uncased",
+    "revision": "86b5e0934494bd15c9632b12f734a8a67f723594"
+  },
+  "datasets": {
+    "wikimedia/wikipedia": {
+      "config": "20231101.en",
+      "split": "train (streaming prefix)",
+      "revision": "b04c8d1ceb2f5cd4588862100d08de323dccfbaa"
+    },
+    "stanfordnlp/snli": {
+      "split": "train (first 20,000 streamed rows searched)",
+      "revision": "cdb5c3d5eed6ead6e5a341c8e56e669bb666725b"
+    },
+    "nyu-mll/glue": {
+      "config": "stsb",
+      "split": "validation (first 100 rows)",
+      "revision": "bcdcba79d07bc864c1c254ccfcedcce55bcc9a8c"
+    }
+  },
+  "selection": {
+    "wikipedia_sentences": 32,
+    "snli_triplets": 32,
+    "stsb_validation_pairs": 100
+  },
+  "data_files": {
+    "unsup_wiki.jsonl": {
+      "rows": 32,
+      "sha256": "66a7fa01802fcbdca560b3662248bda62e9a2756df50a21690a29357d10bed69"
+    },
+    "snli_triplets.jsonl": {
+      "rows": 32,
+      "sha256": "ec475d711dbba5c0d5a24d4aebe9785893b17c343dc14c510285ca80e77a59b8"
+    },
+    "stsb_val.jsonl": {
+      "rows": 100,
+      "sha256": "d377990169d0d75b425c50e7c8f9613a929d1b4a0378d0def193479b0755fee8"
+    }
+  },
+  "training": {
+    "epochs": 1,
+    "batch_size": 8,
+    "learning_rate": 0.00003,
+    "temperature": 0.05,
+    "device": "CUDA",
+    "seed": 42,
+    "steps_per_variant": 4
+  },
+  "evaluation": {
+    "base": {
+      "stsb_val/spearman": -0.015461865812540054,
+      "stsb_val/pearson": -0.02009083516895771,
+      "stsb_val/n": 100
+    },
+    "unsupervised": {
+      "stsb_val/spearman": 0.0387268029153347,
+      "stsb_val/pearson": 0.018987348303198814,
+      "stsb_val/n": 100
+    },
+    "supervised": {
+      "stsb_val/spearman": 0.33368054032325745,
+      "stsb_val/pearson": 0.3120359778404236,
+      "stsb_val/n": 100
+    }
+  },
+  "limitations": [
+    "Only four optimizer steps per variant and a 100-pair STS-B prefix; scores are not evidence of model quality.",
+    "This is not a full reproduction of the SimCSE paper settings or results.",
+    "The configured Hugging Face mirror had intermittent dataset file read timeouts; the run completed after retries.",
+    "A separate earlier Hub attempt failed before any downloads; see clean-env-real-data-blocked-2026-11-15.json."
+  ]
+}

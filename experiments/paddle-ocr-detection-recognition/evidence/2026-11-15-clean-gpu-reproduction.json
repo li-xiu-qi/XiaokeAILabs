@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-15",
+  "experiment": "PP-OCRv5 clean-environment CUDA reproduction",
+  "platform": {
+    "system": "Linux",
+    "architecture": "aarch64",
+    "python": "3.12.3"
+  },
+  "device": "NVIDIA GB10",
+  "packages": {
+    "torch": "2.15.0+cu132",
+    "torchvision": "0.29.1+cu130",
+    "transformers": "5.17.0",
+    "opencv": "5.0.0",
+    "pillow": "13.0.0",
+    "huggingface_hub": "1.33.0"
+  },
+  "models": {
+    "detection_revision": "cbea9f3c3254c6ff7b0016cfbf90549e1ad4c5bb",
+    "recognition_revision": "542979d7cc3791732bb12af35313a6840952d79f",
+    "weight_sha256": {
+      "det_model.safetensors": "06e7a44aa5c4146531e88703140e0f7329910b92f84f8bf2756bfd37cec5cb0a",
+      "rec_model.safetensors": "da94c5dd42c88b00c44081942b157bee8eda9ccd0481dbd0af3824f6c241aa91"
+    },
+    "source": "verified local cache"
+  },
+  "input": {
+    "file": "figures/synthetic-table.png",
+    "sha256": "3bc084da2c422c23b7c04a1bdc63078e0e5ef363420323065ee1a2189d0b1802"
+  },
+  "result": {
+    "device": "cuda",
+    "detections": 12,
+    "recognized_text": [
+      "Item",
+      "Units",
+      "Price",
+      "Notebook",
+      "12",
+      "6.50",
+      "Marker",
+      "24",
+      "2.00",
+      "Paper",
+      "8",
+      "4.00"
+    ],
+    "matches_expected": true
+  }
+}

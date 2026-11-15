@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">人脸身份 LoRA 的训练与评估</title>
+  <desc id="desc">上半部分从训练照片和文字说明构造扩散模型输入并训练 LoRA；下半部分根据提示词生成图片，用人脸向量与测试参考比较。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#78938f"/></marker>
+  </defs>
+  <rect width="1200" height="520" rx="24" fill="#f5f8f7"/>
+  <text x="54" y="65" font-family="Arial, Microsoft YaHei, sans-serif" font-size="26" font-weight="700" fill="#142e2a">人脸身份 LoRA：从照片到可评估的生成</text>
+  <text x="54" y="99" font-family="Arial, Microsoft YaHei, sans-serif" font-size="15" fill="#58736d">TRAINING AND EVALUATION  /  SDXL</text>
+  <text x="54" y="157" font-family="Arial, Microsoft YaHei, sans-serif" font-size="17" font-weight="700" fill="#358176">训练</text>
+  <rect x="54" y="177" width="220" height="104" rx="15" fill="#ffffff" stroke="#d6e4e0"/>
+  <text x="74" y="216" font-family="Arial, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1d3632">20 张训练照片</text>
+  <text x="74" y="249" font-family="Arial, Microsoft YaHei, sans-serif" font-size="15" fill="#5b716c">每张配一条相同 caption</text>
+  <path d="M284 229H318" stroke="#78938f" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="329" y="177" width="220" height="104" rx="15" fill="#ffffff" stroke="#d6e4e0"/>
+  <text x="349" y="216" font-family="Arial, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1d3632">潜变量 + 随机噪声</text>
+  <text x="349" y="249" font-family="Arial, Microsoft YaHei, sans-serif" font-size="15" fill="#5b716c">照片编码；文字作条件</text>
+  <path d="M559 229H593" stroke="#78938f" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="604" y="177" width="220" height="104" rx="15" fill="#ddf1ec" stroke="#94cbbc"/>
+  <text x="624" y="216" font-family="Arial, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#15594e">U-Net + LoRA</text>
+  <text x="624" y="249" font-family="Arial, Microsoft YaHei, sans-serif" font-size="15" fill="#347769">更新 LoRA 参数</text>
+  <path d="M834 229H868" stroke="#78938f" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="879" y="177" width="266" height="104" rx="15" fill="#ffffff" stroke="#d6e4e0"/>
+  <text x="899" y="216" font-family="Arial, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1d3632">预测噪声并计算损失</text>
+  <text x="899" y="249" font-family="Arial, Microsoft YaHei, sans-serif" font-size="15" fill="#5b716c">反向传播更新 LoRA</text>
+  <text x="54" y="334" font-family="Arial, Microsoft YaHei, sans-serif" font-size="17" font-weight="700" fill="#a2693d">评估</text>
+  <rect x="54" y="354" width="220" height="104" rx="15" fill="#fff" stroke="#d6e4e0"/>
+  <text x="74" y="393" font-family="Arial, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1d3632">提示词 + 底模 + LoRA</text>
+  <text x="74" y="426" font-family="Arial, Microsoft YaHei, sans-serif" font-size="15" fill="#5b716c">生成图片</text>
+  <path d="M284 406H318" stroke="#78938f" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="329" y="354" width="220" height="104" rx="15" fill="#fff" stroke="#d6e4e0"/>
+  <text x="349" y="393" font-family="Arial, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#1d3632">人脸检测与编码</text>
+  <text x="349" y="426" font-family="Arial, Microsoft YaHei, sans-serif" font-size="15" fill="#5b716c">未检测到的人脸不计分</text>
+  <path d="M559 406H593" stroke="#78938f" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="604" y="354" width="541" height="104" rx="15" fill="#fff4e9" stroke="#e9ceb5"/>
+  <text x="624" y="393" font-family="Arial, Microsoft YaHei, sans-serif" font-size="18" font-weight="700" fill="#785033">比较目标与负对照身份参考向量</text>
+  <text x="624" y="426" font-family="Arial, Microsoft YaHei, sans-serif" font-size="15" fill="#8c6f59">留出照片只用于参考，不参与训练；报告有效样本数</text>
+</svg>

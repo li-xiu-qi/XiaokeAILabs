@@ -1,0 +1,5 @@
+{"query_id": "q01", "text": "BM25 排序函数原理"}
+{"query_id": "q02", "text": "稀疏向量检索与倒排索引"}
+{"query_id": "q03", "text": "SPLADE 模型词项扩展机制"}
+{"query_id": "q04", "text": "神经稀疏检索与词汇不匹配"}
+{"query_id": "q05", "text": "信息检索 MRR 与 Recall 指标"}

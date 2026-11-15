@@ -1,0 +1,3099 @@
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. **RoPE**：旋转位置编码，通过复数旋转矩阵 $e^{i m \theta}$ 将绝对位置转换为相对注意力偏置。
+3. **Muon 优化器**：对二维权重矩阵应用 Newton-Schulz 正交化迭代，提升小批量训练的泛化稳定性。
+
+在 gpu-srv-1 上，模型配置为 `d_model=320`、`n_layers=6`、`n_heads=8`、`d_ff=1280`，总参数量约为 12.6M。词嵌入层贡献 `vocab_size × d_model` 个参数，lm_head 贡献 `d_model × vocab_size` 个参数。
+
+## 分布式训练 (Distributed Training)
+
+当使用 `torchrun` 启动多卡训练时，每个 rank 独立初始化模型副本，并通过 AllReduce 同步梯度。`init_distributed` 函数自动检测 `WORLD_SIZE` 环境变量并选择后端：CUDA 环境优先使用 NCCL，否则回退到 Gloo。
+
+```python
+ctx = init_distributed(device='auto', backend='auto')
+model = wrap_ddp(build_model(cfg, seed=seed), ctx)
+```
+
+在 Windows 环境下，NCCL 可能未编译进官方 PyTorch wheel，此时需显式指定 `--backend gloo`。虽然带宽较低，但对于小模型和 CPU 训练场景完全可接受。
+
+## 常见问题 (Troubleshooting)
+
+- **OOM（Out of Memory）**：减小 `batch_size` 或 `block_size`，或启用 `grad-accum` 累积多步梯度。
+- **梯度消失**：检查是否使用了 Pre-Norm 和残差连接，并确认学习率未过低。
+- **分词 roundtrip 失败**：确保 `tok.encode` 与 `tok.decode` 使用相同的特殊 token 处理策略（`skip_special_tokens=False` 用于一致性校验）。
+
+# Quick Start
+在本节中，我们将快速搭建一个最小化的 Transformer 语言模型训练流水线。首先克隆仓库并创建虚拟环境：
+
+```bash
+git clone https://github.com/example/llm-lifecycle.git
+cd llm-lifecycle
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+上述命令会在当前目录创建 `.venv` 并安装 `torch`、`tokenizers` 和 `matplotlib`。注意：Windows 用户请使用 `python -m venv .venv` 并运行 `.venv\Scripts\activate`。
+
+## 分词器训练 (Tokenizer Training)
+
+分词器训练是构建语言模型的第一步。我们使用 `tokenizers` 库中的 BPE 实现，并采用 GPT-4 风格的正则预分词模式。关键代码片段如下：
+
+```python
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\p{L}\p{N}]?\p{L}+"
+    "|\p{N}{1,3}"
+    "| ?[^\s\p{L}\p{N}]+[\r\n]*"
+    "|\s*[\r\n]+"
+    "|\s+(?!\S)"
+    "|\s+"
+)
+```
+
+上述正则表达式将文本拆分为单词、数字和符号片段，随后由 ByteLevel 编码器将其映射为字节序列。这种两阶段分词策略保证了罕见字符和表情符号的可处理性。
+
+## 模型架构 (Model Architecture)
+
+我们实现的 CausalLM 基于 Pre-Norm 残差结构，包含以下核心组件：
+
+1. **RMSNorm**：无学习参数的均方根归一化，公式为 $\hat{x}_i = x_i / \sqrt{rac{1}{d}\sum_j x_j^2 + \epsilon}$。
+2. *

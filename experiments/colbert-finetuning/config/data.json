@@ -1,0 +1,10 @@
+{
+  "seed": 20261106,
+  "pool_size": 30,
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "dev_queries": 100,
+  "query_jaccard_cutoff": 0.8,
+  "hard_negatives": 8,
+  "audit_samples": 12
+}

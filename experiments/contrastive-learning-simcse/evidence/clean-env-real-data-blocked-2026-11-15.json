@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-15",
+  "purpose": "real-data smoke preparation in the fresh isolated environment; stopped before model or dataset download",
+  "platform": "Linux aarch64",
+  "hardware": "NVIDIA GB10",
+  "python": "3.12.3",
+  "pytorch": {
+    "version": "2.15.0+cu132",
+    "cuda_runtime": "13.2",
+    "cuda_available": true
+  },
+  "direct_dependencies": {
+    "transformers": "5.16.1",
+    "datasets": "5.2.0",
+    "numpy": "2.5.4"
+  },
+  "checks": {
+    "pip_check": "passed",
+    "imports": "passed",
+    "model_and_dataset_metadata": "not reached"
+  },
+  "failure": {
+    "stage": "Hugging Face Hub dataset revision lookup",
+    "exception": "httpx.ConnectError",
+    "message": "Connection refused while requesting dataset metadata from the Hugging Face Hub API. No dataset or model files were downloaded; no training or evaluation started."
+  },
+  "limitations": [
+    "This records a network failure in one run and does not establish that the endpoint is generally unavailable.",
+    "The clean Python environment was valid, but real-data training and evaluation were not verified in it."
+  ]
+}

@@ -1,0 +1,33 @@
+原始运行输出摘录，行号对应原始日志；仅列测量条件、结果及相关范围。
+
+8: MemAvailable 基线: 116.5 GB
+11: [A] 模型加载（冷启动，无缓存预热）
+13: Agent(english) 单 checkpoint 加载      :  19.72 s
+14: Router(preload=True, 三 checkpoint 常驻):  50.05 s
+15: Router 就绪后当前可用内存              : 108.3 GB
+16: CUDA 已分配                            : 5.93 GB
+17: CUDA 峰值                              : 5.93 GB
+20: [B] 路由判定开销：router.route() 单独调用，不含任何前向
+22: 英文输入 route() 判定                            n=2000 min    0.01  p50    0.02  p90    0.02  p99    0.02  max     0.22  均值    0.02 ms
+23: 中文输入 route() 判定                            n=2000 min    0.19  p50    0.19  p90    0.20  p99    0.20  max     0.25  均值    0.19 ms
+26: [C] 单题前向（1 个 choice，4 个 criteria），各 300 次
+28: 英文 → english（经 Router）                     n=300  min   16.36  p50   16.41  p90   16.55  p99   17.72  max   737.17  均值   18.87 ms
+29:       ^^ 实际落到 english，置信度 0.835，choice=billing
+30: 中文 → multilingual（经 Router）                n=300  min    8.27  p50    8.31  p90    8.33  p99    8.84  max    10.32  均值    8.33 ms
+31:       ^^ 实际落到 multilingual，置信度 1.000，choice=billing
+34: [E] 同一条英文输入：Router 路径 vs 直接 Agent 路径
+36: 经 Router（英文分流到 english）                    n=300  min   16.37  p50   16.41  p90   16.45  p99   17.25  max    17.50  均值   16.45 ms
+37: 直接用 Agent（跳过分流）                            n=300  min   16.43  p50   16.48  p90   16.52  p99   17.10  max    17.30  均值   16.51 ms
+40: [D] 一次 predict 塞 N 个题，看单题边际成本（英文 checkpoint）
+42: 题数            总时长ms       单题ms      单前向判定
+43: 1             16.47      16.47         基准
+44: 2             18.09       9.04       1.62
+45: 4             22.22       5.55       4.13
+46: 8             28.86       3.61       6.64
+47: 16            44.34       2.77      15.48
+50: [F] 资源占用
+52: CUDA 当前分配   : 5.96 GB
+53: CUDA 峰值       : 6.68 GB
+54: MemAvailable     : 107.0 GB
+55: 引擎线程数       : 20
+58: [附] multilingual checkpoint 出厂温度系数告警（首次加载时打印）

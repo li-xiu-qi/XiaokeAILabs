@@ -1,0 +1,23 @@
+{
+  "model": "FacebookAI/roberta-base",
+  "model_revision": "e2da8e2f811d1448a5b465c236feacd80ffbac7b",
+  "seed": 20261106,
+  "pool_size": 30,
+  "bm25_k1": 1.2,
+  "bm25_b": 0.75,
+  "dev_queries": 100,
+  "query_jaccard_cutoff": 0.8,
+  "hard_negatives": 8,
+  "audit_samples": 12,
+  "max_length": 192,
+  "train_batch_queries": 8,
+  "eval_batch_pairs": 64,
+  "steps": 180,
+  "lr": 0.00002,
+  "weight_decay": 0.01,
+  "warmup_steps": 18,
+  "bootstrap_resamples": 10000,
+  "smoke_steps": 4,
+  "smoke_queries": 16,
+  "memory_floor_gib": 24
+}

@@ -1,0 +1,57 @@
+{
+  "distilled_minus_baseline": {
+    "mean_difference": 0.008814028712819163,
+    "bootstrap95": [
+      0.0028357800470532653,
+      0.015233980301734182
+    ],
+    "n_queries": 300
+  },
+  "supervised_minus_baseline": {
+    "mean_difference": 0.0069949944326032545,
+    "bootstrap95": [
+      0.00029104124431677,
+      0.013895114187307517
+    ],
+    "n_queries": 300
+  },
+  "distilled_minus_supervised": {
+    "mean_difference": 0.0018190342802159075,
+    "bootstrap95": [
+      -0.002964364875890137,
+      0.006845876926015271
+    ],
+    "n_queries": 300
+  },
+  "teacher_minus_baseline": {
+    "mean_difference": 0.03162863834753353,
+    "bootstrap95": [
+      0.012704565865169938,
+      0.050937817733350474
+    ],
+    "n_queries": 300
+  },
+  "monitor": {
+    "min_memavailable_gib": 70.43087768554688,
+    "samples": 19,
+    "interval_seconds": 2
+  },
+  "timing": {
+    "teacher": {
+      "seconds_dev_and_test": 14.87597740883939,
+      "caveat": "Single sequential scoring pass, includes tokenization, not a production latency benchmark"
+    },
+    "baseline": {
+      "seconds_dev_and_test": 2.8900262608658522,
+      "caveat": "Single sequential scoring pass, includes tokenization, not a production latency benchmark"
+    },
+    "supervised": {
+      "seconds_dev_and_test": 2.8010572369676083,
+      "caveat": "Single sequential scoring pass, includes tokenization, not a production latency benchmark"
+    },
+    "distilled": {
+      "seconds_dev_and_test": 2.8379964069463313,
+      "caveat": "Single sequential scoring pass, includes tokenization, not a production latency benchmark"
+    }
+  }
+}

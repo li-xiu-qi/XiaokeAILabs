@@ -1,0 +1,2 @@
+# Optional: download models with the Hugging Face CLI. Benchmark clients use the standard library.
+huggingface_hub

@@ -21,6 +21,13 @@ BM25 那一路搜的是无关文本，结论无效。现版本由 load_real(retu
 用法:
   ./.venv/Scripts/python.exe scripts/hybrid_search_bench.py
 """
+
+if __package__:
+    from .legacy_safety import require_isolated_instance
+else:
+    from legacy_safety import require_isolated_instance
+
+require_isolated_instance()
 import json
 import sys
 import time
@@ -36,6 +43,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import numpy as np  # noqa: E402
 
 from index_bench import load_real  # noqa: E402
+from paired_texts import load_aligned_texts  # noqa: E402
 
 # 20news 是英文技术文本，通用词密度高，不滤停用词时词项重叠 GT 会覆盖
 # 近半语料，指标失去区分度。这里用一份标准英文停用词表。
@@ -291,10 +299,9 @@ def main():
     if not texts_p.exists():
         print("缺 data/20news_texts.npz")
         return
-    z = np.load(texts_p, allow_pickle=True)
-    docs_text = [str(t) for t in z["train_texts"][:len(vecs)]]
+    docs_text, test_texts = load_aligned_texts(ROOT / "data" / "20news_emb.npz", texts_p)
     # 关键：查询文本必须用同一批采样行号取，不能取 test_texts[:40]
-    q_texts = [str(z["test_texts"][i]) for i in idx]
+    q_texts = [test_texts[i] for i in idx]
 
     print("库: %d 条文档, 查询: %d 条, min_overlap=%d" % (len(docs_text), len(queries), min_overlap))
     scan_threshold(docs_text, q_texts)

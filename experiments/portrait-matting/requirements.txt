@@ -1,0 +1,3 @@
+# Install compatible torch and torchvision separately.
+numpy
+pillow

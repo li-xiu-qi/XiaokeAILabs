@@ -1,9 +1,6 @@
 name: 仓库体积闸门
 
-# 本地钩子可以用 git commit --no-verify 绕过，这层绕不过。
-# 本仓的教训是：体积规则一旦只写在本机配置里就形同虚设
-# （.pre-commit-config.yaml 从未安装执行，.git 涨到 608MB）。
-# 所以体积约束同时放在 pre-commit 与 CI 两处，任何一条路径进仓库都要过。
+# CI 检查受跟踪文件大小、notebook 输出及仓库历史打包体积。
 
 on:
   push:
@@ -28,7 +25,7 @@ jobs:
       - name: notebook 输出检查
         run: python scripts/check_notebook_outputs.py --all
 
-      - name: 克隆体积预算（全历史打包 >30MB 拦截）
+      - name: 检查仓库历史打包体积
         run: |
           packed=$(git rev-list --objects --all \
             | awk '{print $1}' | sort -u \

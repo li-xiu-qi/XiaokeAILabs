@@ -1,4 +1,11 @@
 """最终对比：同数据集、同查询集、同 ef，SurrealDB vs Milvus。"""
+
+if __package__:
+    from .legacy_safety import require_isolated_instance
+else:
+    from legacy_safety import require_isolated_instance
+
+require_isolated_instance()
 import sys, time
 import numpy as np
 from surrealdb import Surreal

@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-15",
+  "model": "openbmb/MiniCPM-OCR-Jev",
+  "revision": "a0ed278eb6aa1f333a711665ab610055a4a816ab",
+  "model_safetensors_sha256": "6e8e43049340a9d18f711634dcc88eb5880a3cd69c852815e76d5de3aea28dcc",
+  "device": "NVIDIA GB10",
+  "platform": "Linux ARM64",
+  "python": "3.12.3",
+  "torch": "2.15.0+cu132",
+  "transformers": "5.23.0",
+  "dtype": "bfloat16",
+  "prompt_md5": "9aab68e8ba8ab4da17ba9752bddb199c",
+  "results": [
+    {
+      "case": "text_putnam_2009",
+      "score": 0.0025308330077677965,
+      "reference": 0.00702
+    },
+    {
+      "case": "formula_putnam_1999",
+      "score": 0.9654436111450195,
+      "reference": 0.96552
+    },
+    {
+      "case": "table_gb_standard",
+      "score": 0.0009764680871739984,
+      "reference": 0.00116
+    }
+  ],
+  "limitations": [
+    "One candidate with existing reference render per case",
+    "Source examples downloaded from unpinned main",
+    "Copied isolated environment, not a clean installation",
+    "Rendering, service, and recognition-to-ranking loop not tested"
+  ]
+}

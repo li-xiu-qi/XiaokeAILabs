@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-15",
+  "experiment": "ColBERT synthetic GPU smoke in a clean environment",
+  "device_class": "NVIDIA GB10",
+  "platform": {
+    "system": "Linux",
+    "architecture": "aarch64",
+    "python": "3.12"
+  },
+  "environment": {
+    "torch": "2.15.0+cu132",
+    "pylate": "1.2.0",
+    "datasets": "4.1.1",
+    "accelerate": "1.10.1",
+    "sentence-transformers": "4.0.2",
+    "transformers": "4.48.2",
+    "attrs": "26.1.0",
+    "pillow": "13.0.0"
+  },
+  "checks": {
+    "pip_check": "passed",
+    "cuda_available": true,
+    "gpu_training_steps": 2,
+    "candidate_reranking": "completed before and after training"
+  },
+  "scope": "Empty virtual environment; synthetic tiny randomly initialized BERT and synthetic data; no original model or dataset downloaded.",
+  "limitations": [
+    "PyLate 1.2.0 loss differs from 1.4.0.",
+    "This does not reproduce the original retrieval result.",
+    "PyLate 1.4.0 complete-dependency installation on Linux ARM64 remains unverified."
+  ]
+}

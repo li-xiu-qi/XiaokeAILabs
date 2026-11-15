@@ -1,0 +1,35 @@
+{
+  "config": {
+    "dim": 768,
+    "doc_tokens": 2048,
+    "chunk_tokens": 256,
+    "num_docs": 100,
+    "num_chunks_per_doc": 8
+  },
+  "results": [
+    {
+      "strategy": "朴素独立切分 (Naive Chunking, 先切后编)",
+      "pronoun_resolution_cossim": 0.0073,
+      "pronoun_top2_recall": 0.19,
+      "inter_chunk_homogenization": 0.003,
+      "encoding_latency_ms": 230.85,
+      "relative_compute_cost": 1.0
+    },
+    {
+      "strategy": "滑动窗口重叠切分 (Chunk Overlap 25%)",
+      "pronoun_resolution_cossim": 0.0081,
+      "pronoun_top2_recall": 0.31,
+      "inter_chunk_homogenization": 0.0078,
+      "encoding_latency_ms": 311.93,
+      "relative_compute_cost": 1.35
+    },
+    {
+      "strategy": "全局注意力迟分 (Late Chunking, 先编后切)",
+      "pronoun_resolution_cossim": 0.0149,
+      "pronoun_top2_recall": 0.19,
+      "inter_chunk_homogenization": 0.2095,
+      "encoding_latency_ms": 188.38,
+      "relative_compute_cost": 0.82
+    }
+  ]
+}

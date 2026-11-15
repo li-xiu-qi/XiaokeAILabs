@@ -1,0 +1,4 @@
+# For structure prediction; install matching device-appropriate torch and torchvision separately.
+# Assembly and robustness scripts use only the Python standard library.
+transformers==5.22.2
+pillow==12.0.0

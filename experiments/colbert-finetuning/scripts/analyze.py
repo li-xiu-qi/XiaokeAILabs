@@ -1,0 +1,8 @@
+import argparse, json, random, statistics
+from pathlib import Path
+parser=argparse.ArgumentParser(); parser.add_argument('--results',type=Path,required=True); parser.add_argument('--pairs',type=Path,required=True); args=parser.parse_args(); root=args.results
+a=json.load(open(root/'before-per-query.json')); b=json.load(open(root/'after-per-query.json')); t=[json.loads(x) for x in open(args.pairs)]; seen={x[k] for x in t for k in ['positive_doc_id','unjudged_doc_id']}; positive={x['positive_doc_id'] for x in t}; assert [x['query_id'] for x in a]==[x['query_id'] for x in b]; rng=random.Random(20261107)
+result={}
+for label,idx in [('all',list(range(len(a)))),('no_test_relevant_doc_seen_train', [i for i,x in enumerate(a) if not set(x['relevant']) & seen]),('no_test_relevant_doc_as_train_positive',[i for i,x in enumerate(a) if not set(x['relevant']) & positive])]:
+    delta=[b[i]['ndcg10']-a[i]['ndcg10'] for i in idx]; boot=sorted(sum(rng.choice(delta) for _ in delta)/len(delta) for n in range(10000)); result[label]={'n':len(idx),'before_ndcg10':statistics.mean(a[i]['ndcg10'] for i in idx),'after_ndcg10':statistics.mean(b[i]['ndcg10'] for i in idx),'bm25_ndcg10':statistics.mean(a[i]['bm25_ndcg10'] for i in idx),'before_mrr10':statistics.mean(a[i]['mrr10'] for i in idx),'after_mrr10':statistics.mean(b[i]['mrr10'] for i in idx),'bm25_mrr10':statistics.mean(a[i]['bm25_mrr10'] for i in idx),'delta_ndcg10':statistics.mean(delta),'paired_bootstrap_ci95':[boot[250],boot[9750]],'query_better':sum(d>1e-12 for d in delta),'query_worse':sum(d< -1e-12 for d in delta),'query_tied':sum(abs(d)<=1e-12 for d in delta)}
+(root/'comparison.json').write_text(json.dumps(result,indent=2)); print(json.dumps(result,indent=2))

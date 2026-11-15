@@ -1,0 +1,265 @@
+{
+  "generated_at": "2026-11-11T20:24:08+08:00",
+  "cluster": {
+    "node0": {
+      "role": "master",
+      "gpu": "NVIDIA GB10"
+    },
+    "node1": {
+      "role": "worker",
+      "gpu": "NVIDIA RTX Spark N1X 64GB"
+    }
+  },
+  "model": {
+    "d_model": 320,
+    "n_layers": 6,
+    "n_heads": 8,
+    "d_ff": 1280,
+    "block_size": 256
+  },
+  "val_source": "karpathy/climbmix-400b-shuffle: shard_06542.parquet",
+  "val_max_chars": 2000000,
+  "train_source": "karpathy/climbmix-400b-shuffle: shard_00000.parquet",
+  "sft_source": "HuggingFaceTB/smol-smoltalk: train-00000-of-00004.parquet",
+  "tokenizer": "本实验训练（climbmix 30M 字符，vocab 8192）",
+  "pretrain_config": {
+    "steps": 600,
+    "batch_size": 16,
+    "lr": 0.0003,
+    "eval_every": 100,
+    "eval_windows": 64,
+    "save_every": 100,
+    "amp": "bf16",
+    "seed": 1234
+  },
+  "sft_config": {
+    "steps": 200,
+    "batch_size": 16,
+    "lr_scale": 0.2,
+    "eval_every": 50,
+    "hit_eval_rows": 24,
+    "val_eval_rows": 256,
+    "save_every": 50
+  },
+  "modes": {
+    "single": [
+      {
+        "tier": "t1_micro_100k",
+        "max_chars": 100000,
+        "note": "100K chars (~26K tokens, multi-epoch memorization / overfitting regime)",
+        "mode": "single",
+        "pretrain": {
+          "docs": 44,
+          "train_tokens": 26447,
+          "val_tokens": 505997,
+          "model_params": 12615680,
+          "steps": 600,
+          "batch_size": 16,
+          "block_size": 256,
+          "world_size": 1,
+          "wall_seconds": 35.3,
+          "tokens_seen": 2457600,
+          "tokens_per_sec": 69620.4,
+          "final_val_loss": 10.9045,
+          "best_val_loss": 9.0413,
+          "best_val_step": 0,
+          "bpb": 3.697447,
+          "ppl": 98309.4259,
+          "eval_tokens": 16320,
+          "train_data_cpu_mb": 0.202,
+          "peak_vram_allocated_mb": 1086.22,
+          "peak_vram_reserved_mb": 1356.0,
+          "train_source": "karpathy/climbmix-400b-shuffle: shard_00000.parquet",
+          "val_source": "karpathy/climbmix-400b-shuffle: shard_06542.parquet"
+        },
+        "sft": {
+          "train_pairs": 17000,
+          "val_pairs": 3000,
+          "wall_seconds": 13.2,
+          "final_val_loss": 5.3935,
+          "val_answer_hit_rate": 0.0,
+          "train_answer_hit_rate": 0.0,
+          "test_bpb": 2.209108,
+          "test_ppl": 961.4331,
+          "peak_vram_allocated_mb": 1017.47,
+          "peak_vram_reserved_mb": 1234.0
+        },
+        "failover_events": []
+      },
+      {
+        "tier": "t2_small_2m",
+        "max_chars": 2000000,
+        "note": "2M chars (~506K tokens, moderate multi-pass transition regime)",
+        "mode": "single",
+        "pretrain": {
+          "docs": 782,
+          "train_tokens": 506151,
+          "val_tokens": 505997,
+          "model_params": 12615680,
+          "steps": 600,
+          "batch_size": 16,
+          "block_size": 256,
+          "world_size": 1,
+          "wall_seconds": 35.5,
+          "tokens_seen": 2457600,
+          "tokens_per_sec": 69228.2,
+          "final_val_loss": 7.2568,
+          "best_val_loss": 7.0872,
+          "best_val_step": 299,
+          "bpb": 2.596178,
+          "ppl": 3203.1122,
+          "eval_tokens": 16320,
+          "train_data_cpu_mb": 3.862,
+          "peak_vram_allocated_mb": 1086.22,
+          "peak_vram_reserved_mb": 1356.0,
+          "train_source": "karpathy/climbmix-400b-shuffle: shard_00000.parquet",
+          "val_source": "karpathy/climbmix-400b-shuffle: shard_06542.parquet"
+        },
+        "sft": {
+          "train_pairs": 17000,
+          "val_pairs": 3000,
+          "wall_seconds": 13.2,
+          "final_val_loss": 4.7142,
+          "val_answer_hit_rate": 0.0,
+          "train_answer_hit_rate": 0.0,
+          "test_bpb": 2.05992,
+          "test_ppl": 604.6071,
+          "peak_vram_allocated_mb": 1017.47,
+          "peak_vram_reserved_mb": 1234.0
+        },
+        "failover_events": []
+      },
+      {
+        "tier": "t3_mid_20m",
+        "max_chars": 20000000,
+        "note": "20M chars (~5.07M tokens, proportional 1800-step ~7.37M seen tokens regime)",
+        "mode": "single",
+        "pretrain": {
+          "docs": 7537,
+          "train_tokens": 5072481,
+          "val_tokens": 505997,
+          "model_params": 12615680,
+          "steps": 1800,
+          "batch_size": 16,
+          "block_size": 256,
+          "world_size": 1,
+          "wall_seconds": 105.7,
+          "tokens_seen": 7372800,
+          "tokens_per_sec": 69752.1,
+          "final_val_loss": 6.1866,
+          "best_val_loss": 6.1451,
+          "best_val_step": 1799,
+          "bpb": 2.301836,
+          "ppl": 1282.7073,
+          "eval_tokens": 16320,
+          "train_data_cpu_mb": 38.7,
+          "peak_vram_allocated_mb": 1086.22,
+          "peak_vram_reserved_mb": 1356.0,
+          "train_source": "karpathy/climbmix-400b-shuffle: shard_00000.parquet",
+          "val_source": "karpathy/climbmix-400b-shuffle: shard_06542.parquet"
+        },
+        "sft": {
+          "train_pairs": 17000,
+          "val_pairs": 3000,
+          "wall_seconds": 13.1,
+          "final_val_loss": 4.471,
+          "val_answer_hit_rate": 0.0,
+          "train_answer_hit_rate": 0.0,
+          "test_bpb": 1.88374,
+          "test_ppl": 349.6066,
+          "peak_vram_allocated_mb": 1017.47,
+          "peak_vram_reserved_mb": 1234.0
+        },
+        "failover_events": []
+      }
+    ],
+    "failover": [
+      {
+        "tier": "t1_micro_100k",
+        "max_chars": 100000,
+        "note": "100K chars (~26K tokens, multi-epoch memorization / overfitting regime)",
+        "mode": "failover",
+        "pretrain": null,
+        "sft": null,
+        "failover_events": []
+      },
+      {
+        "tier": "t2_small_2m",
+        "max_chars": 2000000,
+        "note": "2M chars (~506K tokens, moderate multi-pass transition regime)",
+        "mode": "failover",
+        "pretrain": {
+          "docs": 782,
+          "train_tokens": 506151,
+          "val_tokens": 505997,
+          "model_params": 12615680,
+          "steps": 600,
+          "batch_size": 16,
+          "block_size": 256,
+          "world_size": 1,
+          "wall_seconds": 35.4,
+          "tokens_seen": 2457600,
+          "tokens_per_sec": 69423.7,
+          "final_val_loss": 7.2568,
+          "best_val_loss": 7.0872,
+          "best_val_step": 299,
+          "bpb": 2.596178,
+          "ppl": 3203.1122,
+          "eval_tokens": 16320,
+          "train_data_cpu_mb": 3.862,
+          "peak_vram_allocated_mb": 1086.22,
+          "peak_vram_reserved_mb": 1356.0,
+          "train_source": "karpathy/climbmix-400b-shuffle: shard_00000.parquet",
+          "val_source": "karpathy/climbmix-400b-shuffle: shard_06542.parquet"
+        },
+        "sft": {
+          "train_pairs": 17000,
+          "val_pairs": 3000,
+          "wall_seconds": 13.1,
+          "final_val_loss": 4.7142,
+          "val_answer_hit_rate": 0.0,
+          "train_answer_hit_rate": 0.0,
+          "test_bpb": 2.05992,
+          "test_ppl": 604.6071,
+          "peak_vram_allocated_mb": 1017.47,
+          "peak_vram_reserved_mb": 1234.0
+        },
+        "failover_events": [
+          {
+            "timestamp": "2026-11-11T20:17:43+08:00",
+            "stage": "preflight",
+            "from_mode": "dual",
+            "from_world_size": 2,
+            "to_mode": "single_failover",
+            "to_world_size": 1,
+            "recovered_on": "node0",
+            "reason": "node1_unreachable_preflight",
+            "resumed_step": 0
+          },
+          {
+            "timestamp": "2026-11-11T20:17:59+08:00",
+            "stage": "pretrain",
+            "from_mode": "dual",
+            "from_world_size": 1,
+            "to_mode": "single_failover",
+            "to_world_size": 1,
+            "recovered_on": "node0",
+            "reason": "exit_1",
+            "resumed_from": "断点续训 checkpoint（与指标同目录）",
+            "resumed_step": 200
+          }
+        ]
+      },
+      {
+        "tier": "t3_mid_20m",
+        "max_chars": 20000000,
+        "note": "20M chars (~5.07M tokens, proportional 1800-step ~7.37M seen tokens regime)",
+        "mode": "failover",
+        "pretrain": null,
+        "sft": null,
+        "failover_events": []
+      }
+    ]
+  },
+  "single_vs_dual": []
+}

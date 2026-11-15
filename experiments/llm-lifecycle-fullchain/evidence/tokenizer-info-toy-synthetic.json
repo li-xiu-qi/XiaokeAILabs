@@ -1,0 +1,16 @@
+{
+  "tokenizer": "ByteLevel BPE (tokenizers, GPT-4 regex pre-split, nanochat aligned)",
+  "corpus_path": "玩具合成语料（examples/generate_toy_dataset.py 生成）",
+  "vocab_size": 771,
+  "requested_vocab_size": 2048,
+  "special_tokens": {
+    "<|endoftext|>": 0,
+    "<|pad|>": 1
+  },
+  "sample_tokens": 399,
+  "sample_bytes": 1507,
+  "bytes_per_token": 3.777,
+  "roundtrip_checked_lines": 50,
+  "roundtrip_failures": 0,
+  "train_seconds": 0.02
+}

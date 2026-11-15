@@ -1,0 +1,120 @@
+{
+  "status": "success",
+  "all_cells_matched": true,
+  "detected_rows": 4,
+  "detected_cols_per_row": [
+    3,
+    3,
+    3,
+    3
+  ],
+  "total_cells": 12,
+  "markdown": "| Item | Units | Price |\n| --- | --- | --- |\n| Notebook | 12 | 6.50 |\n| Marker | 24 | 2.00 |\n| Paper | 8 | 4.00 |",
+  "assembled_html": "<html><body><table><tr><td>Item</td><td>Units</td><td>Price</td></tr><tr><td>Notebook</td><td>12</td><td>6.50</td></tr><tr><td>Marker</td><td>24</td><td>2.00</td></tr><tr><td>Paper</td><td>8</td><td>4.00</td></tr></table></body></html>",
+  "grid_data": [
+    [
+      {
+        "text": "Item",
+        "center": [
+          93.5,
+          137.5
+        ],
+        "score": 0.9639
+      },
+      {
+        "text": "Units",
+        "center": [
+          418.0,
+          136.5
+        ],
+        "score": 0.9995
+      },
+      {
+        "text": "Price",
+        "center": [
+          706.2,
+          136.5
+        ],
+        "score": 0.9996
+      }
+    ],
+    [
+      {
+        "text": "Notebook",
+        "center": [
+          131.5,
+          211.0
+        ],
+        "score": 0.9997
+      },
+      {
+        "text": "12",
+        "center": [
+          398.5,
+          211.5
+        ],
+        "score": 0.9999
+      },
+      {
+        "text": "6.50",
+        "center": [
+          702.5,
+          211.0
+        ],
+        "score": 0.9998
+      }
+    ],
+    [
+      {
+        "text": "Marker",
+        "center": [
+          112.0,
+          286.0
+        ],
+        "score": 0.9991
+      },
+      {
+        "text": "24",
+        "center": [
+          399.0,
+          286.5
+        ],
+        "score": 0.9999
+      },
+      {
+        "text": "2.00",
+        "center": [
+          702.0,
+          286.0
+        ],
+        "score": 0.9999
+      }
+    ],
+    [
+      {
+        "text": "Paper",
+        "center": [
+          102.5,
+          362.8
+        ],
+        "score": 0.9981
+      },
+      {
+        "text": "8",
+        "center": [
+          389.0,
+          362.0
+        ],
+        "score": 0.9998
+      },
+      {
+        "text": "4.00",
+        "center": [
+          702.5,
+          361.0
+        ],
+        "score": 0.9999
+      }
+    ]
+  ]
+}

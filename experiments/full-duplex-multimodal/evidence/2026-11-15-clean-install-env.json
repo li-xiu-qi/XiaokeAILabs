@@ -1,0 +1,48 @@
+{
+  "date": "2026-11-15",
+  "experiment": "Empty-venv installation self-check for the realtime Python environment",
+  "script": "scripts/validate_realtime_environment.sh",
+  "run_id": "<redacted-run-id>",
+  "device_class": "NVIDIA GB10",
+  "platform": {
+    "system": "Linux",
+    "architecture": "aarch64",
+    "python": "3.12.3"
+  },
+  "environment": {
+    "venv": "new empty venv; did not copy an existing environment",
+    "pip": "24.0",
+    "torch": "2.11.0+cu130",
+    "torchaudio": "2.11.0+cu130",
+    "torchcodec_requested": "0.15.0",
+    "requirements_realtime": "installed from the experiment's pinned requirements-realtime.txt",
+    "proxy_override": "proxy environment variables were removed for this run only"
+  },
+  "result": {
+    "exit_code": 1,
+    "stage": "imports",
+    "ok": false,
+    "pip_check": {
+      "ok": true,
+      "output": "No broken requirements found."
+    },
+    "imports_completed": [
+      "av 16.0.1",
+      "torch 2.11.0+cu130",
+      "torchaudio 2.11.0+cu130"
+    ],
+    "torchcodec": {
+      "import": "failed",
+      "reason": "TorchCodec could not load an FFmpeg backend because the required FFmpeg shared libraries were unavailable; the error included missing libavutil.so.56 for core4/core5 backend attempts."
+    },
+    "cuda_check": "not reached",
+    "audio_decode_check": "not reached"
+  },
+  "not_verified": [
+    "TorchCodec import with an FFmpeg runtime library prefix",
+    "CUDA availability from this clean venv",
+    "AudioDecoder decoding the generated WAV",
+    "model inference; no model weights or data were downloaded or loaded"
+  ],
+  "interpretation": "The empty-venv Python package installation and pip check passed after removing the inherited proxy environment for this run. The self-check then stopped because TorchCodec could not load FFmpeg shared libraries. CUDA and AudioDecoder checks were not reached, and no model inference was run. This does not alter the separate successful GPU streaming runs."
+}

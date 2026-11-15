@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+<title id="title">SimCSE training objectives</title><desc id="desc">Unsupervised SimCSE feeds one sentence through the same encoder twice with different dropout masks and treats the two views as a positive pair. Supervised SimCSE uses NLI anchor, positive and hard negative triples. Both losses pull positives together and push in-batch negatives apart, then embeddings are scored on STS and recall.</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#f5f8f7"/><stop offset="1" stop-color="#e7efed"/></linearGradient><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#68817a"/></marker></defs>
+<rect width="1200" height="560" rx="30" fill="url(#bg)"/>
+<text x="54" y="62" fill="#17372f" font-family="Arial,sans-serif" font-weight="700" font-size="27">Two SimCSE objectives, one encoder</text>
+<text x="54" y="93" fill="#59736b" font-family="Arial,sans-serif" font-size="16">Dropout pairs without labels · NLI triples with hard negatives</text>
+<rect x="54" y="130" width="520" height="250" rx="22" fill="#fff" stroke="#ccdcd6"/>
+<text x="80" y="168" fill="#1c4036" font-family="Arial,sans-serif" font-weight="700" font-size="19">Unsupervised: dropout as augmentation</text>
+<rect x="80" y="192" width="150" height="86" rx="16" fill="#d4ebe2"/><text x="100" y="226" fill="#315b4e" font-family="Arial,sans-serif" font-size="14">One sentence</text><text x="100" y="252" fill="#315b4e" font-family="Arial,sans-serif" font-size="14">no labels</text><text x="100" y="270" fill="#315b4e" font-family="Arial,sans-serif" font-size="12">wiki corpus</text>
+<rect x="270" y="182" width="150" height="52" rx="14" fill="#153d32"/><text x="290" y="214" fill="#fff" font-family="Arial,sans-serif" font-weight="700" font-size="16">Pass 1 · dropout</text>
+<rect x="270" y="246" width="150" height="52" rx="14" fill="#153d32"/><text x="290" y="278" fill="#fff" font-family="Arial,sans-serif" font-weight="700" font-size="16">Pass 2 · new mask</text>
+<path d="M230 226H262" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/><path d="M230 262H262" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="466" y="192" width="86" height="106" rx="14" fill="#fff" stroke="#bdd2ca"/><text x="482" y="226" fill="#17372f" font-family="Arial,sans-serif" font-size="13">z1, z2</text><text x="482" y="250" fill="#567269" font-family="Arial,sans-serif" font-size="12">L2 norm</text><text x="482" y="274" fill="#567269" font-family="Arial,sans-serif" font-size="12">cosine / tau</text>
+<path d="M420 208H458" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/><path d="M420 272H458" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="80" y="300" width="472" height="56" rx="16" fill="#c77f45"/><text x="102" y="325" fill="#fff" font-family="Arial,sans-serif" font-weight="700" font-size="16">InfoNCE: diagonal is positive, other rows are negatives</text><text x="102" y="347" fill="#fff3e5" font-family="Arial,sans-serif" font-size="13">symmetric cross-entropy over the batch similarity matrix</text>
+<path d="M552 246V320H560" fill="none" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="626" y="130" width="520" height="250" rx="22" fill="#fff" stroke="#ccdcd6"/>
+<text x="652" y="168" fill="#1c4036" font-family="Arial,sans-serif" font-weight="700" font-size="19">Supervised: NLI triples</text>
+<rect x="652" y="192" width="150" height="106" rx="16" fill="#d4ebe2"/><text x="672" y="224" fill="#315b4e" font-family="Arial,sans-serif" font-size="14">anchor</text><text x="672" y="248" fill="#315b4e" font-family="Arial,sans-serif" font-size="14">positive</text><text x="672" y="272" fill="#315b4e" font-family="Arial,sans-serif" font-size="14">hard negative</text><text x="672" y="292" fill="#315b4e" font-family="Arial,sans-serif" font-size="12">entail / contradict</text>
+<rect x="842" y="222" width="150" height="52" rx="14" fill="#153d32"/><text x="862" y="254" fill="#fff" font-family="Arial,sans-serif" font-weight="700" font-size="16">Shared encoder</text>
+<path d="M802 245H834" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="1038" y="192" width="86" height="106" rx="14" fill="#fff" stroke="#bdd2ca"/><text x="1054" y="226" fill="#17372f" font-family="Arial,sans-serif" font-size="13">3 views</text><text x="1054" y="250" fill="#567269" font-family="Arial,sans-serif" font-size="12">batch size 512</text><text x="1054" y="274" fill="#567269" font-family="Arial,sans-serif" font-size="12">in-batch negs</text>
+<path d="M992 248H1030" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="652" y="300" width="472" height="56" rx="16" fill="#c77f45"/><text x="674" y="325" fill="#fff" font-family="Arial,sans-serif" font-weight="700" font-size="16">Paired + in-batch cross-entropy</text><text x="674" y="347" fill="#fff3e5" font-family="Arial,sans-serif" font-size="13">each anchor competes with its own hard negative first</text>
+<path d="M992 274V320H1128" fill="none" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="54" y="412" width="1092" height="106" rx="22" fill="#153d32"/>
+<text x="82" y="450" fill="#c2e6d8" font-family="Arial,sans-serif" font-size="14" font-weight="700">EVALUATION</text>
+<text x="82" y="484" fill="#fff" font-family="Arial,sans-serif" font-weight="700" font-size="20">STS Spearman · Pearson · retrieval Recall@10</text>
+<text x="82" y="508" fill="#c2e6d8" font-family="Arial,sans-serif" font-size="14">Same encoder, same pooling, same tokenizer for base and trained models; temperature and batch size stay fixed within one comparison.</text>
+</svg>

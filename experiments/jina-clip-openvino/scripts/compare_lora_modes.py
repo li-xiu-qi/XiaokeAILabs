@@ -3,15 +3,11 @@
 
 from __future__ import annotations
 
+import argparse
 import json
-import os
 from pathlib import Path
 
-os.environ.setdefault("HF_ENDPOINT", "https://hf-mirror.com")
 
-import numpy as np
-import torch
-from transformers import AutoModel, AutoTokenizer
 
 MODEL_ID = "jinaai/jina-clip-v2"
 MODEL_REVISION = "e10d47f5691d0454a0fb5d13f46f2199b74cb436"
@@ -20,22 +16,31 @@ TEXTS = ["a photo of a beach", "a photo of a dog", "a photo of a seal"]
 
 
 def normalize(values):
+    import numpy as np
     return values / (np.linalg.norm(values, axis=1, keepdims=True) + 1e-12)
 
 
 def main():
     root = Path(__file__).resolve().parents[1]
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--cache-dir", type=Path, default=root / "models/huggingface")
+    parser.add_argument("--preprocessor", type=Path, default=root / "artifacts/fp16/preprocessor")
+    parser.add_argument("--output", type=Path, default=root / "artifacts/lora-disable-probe.json")
+    args = parser.parse_args()
+    import numpy as np
+    import torch
+    from transformers import AutoModel, AutoTokenizer
     model = AutoModel.from_pretrained(
         MODEL_ID,
         revision=MODEL_REVISION,
         code_revision=CODE_REVISION,
         trust_remote_code=True,
-        cache_dir=str(root / "models/huggingface"),
+        cache_dir=str(args.cache_dir),
         local_files_only=True,
         dtype=torch.float32,
     ).eval()
     tokenizer = AutoTokenizer.from_pretrained(
-        root / "artifacts/fp16/preprocessor", trust_remote_code=True
+        args.preprocessor, trust_remote_code=True, local_files_only=True
     )
     inputs = tokenizer(
         TEXTS,
@@ -64,8 +69,8 @@ def main():
             "disabled_norm_mean": float(np.mean(np.linalg.norm(disabled, axis=1))),
         }
     )
-    out = root / "artifacts/lora-disable-probe.json"
-    out.write_text(json.dumps(result, indent=2), encoding="utf-8")
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(result, indent=2), encoding="utf-8")
     print(json.dumps(result, indent=2), flush=True)
 
 

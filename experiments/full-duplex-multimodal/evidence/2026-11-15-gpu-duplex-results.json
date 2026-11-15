@@ -1,0 +1,61 @@
+{
+  "date": "2026-11-15",
+  "experiment": "Open-source full-duplex audio/video interaction validation",
+  "device_class": "NVIDIA GB10",
+  "model": "openbmb/MiniCPM-o-4_5",
+  "model_revision": "fb09628e98b1f55d8d5b863e0eccfcdd11bff499",
+  "demo": "OpenBMB/MiniCPM-o-Demo",
+  "input": "35.3-second recorded video; fixed prerecorded material",
+  "client_audio_chunk_ms": 1000,
+  "runs": {
+    "video": {
+      "result": "success",
+      "input_audio_chunks": 100,
+      "input_video_frames": 100,
+      "source_video_frames": 36,
+      "response_deltas_with_vision_metrics": 126,
+      "output_audio_chunks": 28,
+      "output_audio_ms": 27600,
+      "output_audio_rms": 0.126,
+      "first_audio_ms": 6735,
+      "input_after_first_audio_ms": 93707,
+      "output_sample_rate_hz": 24000
+    },
+    "audio_only": {
+      "result": "success",
+      "input_audio_chunks": 70,
+      "input_video_frames": 0,
+      "response_deltas_with_vision_metrics": 0,
+      "output_audio_chunks": 25,
+      "output_audio_ms": 23920,
+      "output_audio_rms": 0.103,
+      "first_audio_ms": 6364,
+      "input_after_first_audio_ms": 64106,
+      "output_sample_rate_hz": 24000
+    }
+  },
+  "follow_up_rerun": {
+    "result": "failed_before_probe_input",
+    "model_loaded": true,
+    "cause": "torchcodec could not load because the FFmpeg shared library libavutil.so was unavailable",
+    "cleanup": "services stopped and ports released"
+  },
+  "ffmpeg_repair_attempt": {
+    "result": "incomplete",
+    "attempt": "Unpacked Ubuntu arm64 FFmpeg 6 runtime libraries in a separate work area",
+    "initial_diagnosis_later_corrected": "libavutil.so.58 was incorrectly considered incompatible with a .so.60 requirement; torchcodec 0.15 core6 works with FFmpeg 6.1.1. The actual blockers were missing transitive dependencies and blas/lapack subdirectories.",
+    "probe_started": false,
+    "conclusion_at_the_time": "No complete FFmpeg shared-library dependency chain had been established in this earlier attempt",
+    "later_resolution": "See evidence/2026-11-15-rerun-newenv-video.json"
+  },
+  "not_verified": [
+    "160 ms client input chunks",
+    "live microphone and speaker interaction",
+    "human interruption during model speech",
+    "human listening assessment",
+    "human-perceived end-to-end latency",
+    "Higgs Realtime Duplex weights, training, architecture or benchmark reproduction",
+    "clean-room dependency installation"
+  ],
+  "interpretation": "The two successful runs show non-silent speech output while prerecorded input continued; the video run also processed video frames. They do not establish parity with Higgs Realtime Duplex or validate human-facing latency."
+}

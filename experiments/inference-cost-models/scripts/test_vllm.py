@@ -1,9 +1,12 @@
+raise SystemExit("UNVALIDATED legacy phase timing disabled; use scripts/compare_engines.py")
+
+import os
 import requests
 import json
 import time
 
 url = "http://localhost:8000/v1/completions"
-model = "/home/ke/models/Qwen3.8-27B-BF16"
+model = os.path.expanduser("~/models/Qwen3.8-27B-BF16")
 
 print("=== 测试 1: Decode 吞吐（单次推理）===")
 print("Prompt: '你好' | 生成: 128 tokens")

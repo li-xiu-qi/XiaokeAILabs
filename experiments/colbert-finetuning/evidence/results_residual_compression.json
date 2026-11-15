@@ -1,0 +1,56 @@
+{
+  "config": {
+    "dim": 128,
+    "num_docs": 5000,
+    "tokens_per_doc": 180,
+    "num_centroids": 1024,
+    "plaid_topk_centroids": 16,
+    "num_queries": 50
+  },
+  "compression": [
+    {
+      "method": "FP32 原生浮点 (未压缩)",
+      "bytes_per_token": 512.0,
+      "total_bytes_mb": 439.45,
+      "compression_ratio": 1.0,
+      "reconstruction_cosine": 1.0
+    },
+    {
+      "method": "FP16 半精度浮点",
+      "bytes_per_token": 256.0,
+      "total_bytes_mb": 219.73,
+      "compression_ratio": 2.0,
+      "reconstruction_cosine": 1.0
+    },
+    {
+      "method": "ColBERTv2 残差量化 (2-bit)",
+      "bytes_per_token": 34.0,
+      "total_bytes_mb": 29.68,
+      "compression_ratio": 14.81,
+      "reconstruction_cosine": 0.5737
+    },
+    {
+      "method": "ColBERTv2 残差量化 (1-bit 极低位宽)",
+      "bytes_per_token": 18.0,
+      "total_bytes_mb": 15.95,
+      "compression_ratio": 27.55,
+      "reconstruction_cosine": 0.7834
+    }
+  ],
+  "retrieval": [
+    {
+      "method": "全量暴力 MaxSim (未剪枝)",
+      "avg_latency_ms": 387.57,
+      "speedup": 1.0,
+      "candidate_pruning_rate": 0.0,
+      "recall_at_10": 1.0
+    },
+    {
+      "method": "PLAID 三级剪枝流水线",
+      "avg_latency_ms": 13.88,
+      "speedup": 27.93,
+      "candidate_pruning_rate": 0.0086,
+      "recall_at_10": 0.982
+    }
+  ]
+}

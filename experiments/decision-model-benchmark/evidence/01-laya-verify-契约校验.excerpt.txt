@@ -1,0 +1,60 @@
+原始运行输出摘录，行号对应原始日志；仅列测量条件、结果及相关范围。
+
+4: laya: 0.3.5 | torch: 2.14.0+cu130 | cuda: True
+5: MemAvailable 基线: 44.9 GB
+7: Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]
+8: Fetching 5 files:  20%|██        | 1/5 [00:00<00:03,  1.05it/s]
+9: Fetching 5 files:  60%|██████    | 3/5 [00:02<00:01,  1.44it/s]
+10: Fetching 5 files:  80%|████████  | 4/5 [00:20<00:05,  5.00s/it]
+11: Fetching 5 files: 100%|██████████| 5/5 [00:31<00:00,  6.22s/it]
+12: Fetching 5 files: 100%|██████████| 5/5 [00:31<00:00,  6.22s/it]
+16: english checkpoint 加载: 56.9 s
+18: ########## 1. 输出结构 ##########
+19: 顶层 keys: ['answers', 'model', 'usage']
+20: answers keys: ['churn_risk', 'department', 'refund_requested', 'urgency']
+21:   department       type=choice  value_keys=['action', 'choice', 'confidence', 'probabilities', 'type']
+22:   urgency          type=score   value_keys=['action', 'confidence', 'legend', 'probabilities', 'score', 'type']
+23:   churn_risk       type=noul    value_keys=['action', 'confidence', 'noul', 'type']
+24:   refund_requested type=noul    value_keys=['action', 'confidence', 'noul', 'type']
+26: ########## 2. 四种题型的完整输出（原样 dump）##########
+33:     "billing": 0.9646,
+34:     "technical": 0.0142,
+35:     "sales": 0.0102,
+36:     "other": 0.0109
+38:   "confidence": 0.8619,
+40:     "act_probability": 1.0
+47:   "score": 1.4398,
+49:     "0": "not urgent",
+50:     "1": "soon",
+51:     "2": "critical deadline or blocking issue"
+54:     "0": 0.1181,
+55:     "1": 0.3241,
+56:     "2": 0.5579
+58:   "confidence": 0.1416,
+60:     "act_probability": 1.0
+67:   "noul": 0.8235,
+68:   "confidence": 0.8235,
+70:     "act_probability": 1.0
+74: ########## 3. 取值与自检 ##########
+76: department.confidence  : 0.8619
+77: choice 概率字段名      : probabilities
+78: choice 概率            : {'billing': 0.9646, 'technical': 0.0142, 'sales': 0.0102, 'other': 0.0109}
+79: choice 概率和          : 0.999900  OK(≈1)
+80: urgency.score          : 1.4398
+81: urgency.confidence     : 0.1416
+82: churn_risk.noul        : 0.8235
+83: refund_requested.noul  : 0.8437
+84: churn_risk.confidence  : 0.8235
+86: ########## 4. 延迟（10 次，4 题合并单次 forward）##########
+87: min 24.1 | p50 24.8 | max 25.9 | mean 24.7 ms
+89: ########## 5. Router 模式 ##########
+91: Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]
+92: Fetching 5 files: 100%|██████████| 5/5 [00:00<00:00, 2410.24it/s]
+102:       "latin": 1.0
+107:     "diacritic_rate": 0.0,
+108:     "non_latin_fraction": 0.0
+112: routed department: billing conf: 0.8619
+114: --- 不跑 forward 的路由判断 ---
+118: ########## 6. 内存 ##########
+119: 基线 44.9 GB -> 现在 38.2 GB（+6.7 GB）
+120: CUDA 峰值: 3.87 GB

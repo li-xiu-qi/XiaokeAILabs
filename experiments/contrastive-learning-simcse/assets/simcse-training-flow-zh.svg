@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+<title id="title">SimCSE 训练目标</title><desc id="desc">无监督 SimCSE 把同一句子经同一编码器前向两次，靠不同的 dropout 掩码得到两个视图当作正例对；监督 SimCSE 使用 NLI 的 anchor、正例与难负例三元组。两种损失都拉近正例、推开批内负例，最后用 STS 与检索指标评测句向量。</desc>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#f5f8f7"/><stop offset="1" stop-color="#e7efed"/></linearGradient><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#68817a"/></marker></defs>
+<rect width="1200" height="560" rx="30" fill="url(#bg)"/>
+<text x="54" y="62" fill="#17372f" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-weight="700" font-size="27">同一编码器，两种 SimCSE 目标</text>
+<text x="54" y="93" fill="#59736b" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="16">无监督靠 dropout 造正例 · 监督靠 NLI 难负例</text>
+<rect x="54" y="130" width="520" height="250" rx="22" fill="#fff" stroke="#ccdcd6"/>
+<text x="80" y="168" fill="#1c4036" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-weight="700" font-size="19">无监督：dropout 即数据增强</text>
+<rect x="80" y="192" width="150" height="86" rx="16" fill="#d4ebe2"/><text x="100" y="226" fill="#315b4e" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="14">同一句子</text><text x="100" y="252" fill="#315b4e" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="14">无需标注</text><text x="100" y="270" fill="#315b4e" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="12">通用语料</text>
+<rect x="270" y="182" width="150" height="52" rx="14" fill="#153d32"/><text x="290" y="214" fill="#fff" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-weight="700" font-size="16">前向一 · dropout</text>
+<rect x="270" y="246" width="150" height="52" rx="14" fill="#153d32"/><text x="290" y="278" fill="#fff" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-weight="700" font-size="16">前向二 · 换掩码</text>
+<path d="M230 226H262" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/><path d="M230 262H262" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="466" y="192" width="86" height="106" rx="14" fill="#fff" stroke="#bdd2ca"/><text x="482" y="226" fill="#17372f" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="13">z1、z2</text><text x="482" y="250" fill="#567269" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="12">L2 归一化</text><text x="482" y="274" fill="#567269" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="12">余弦 / 温度</text>
+<path d="M420 208H458" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/><path d="M420 272H458" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="80" y="300" width="472" height="56" rx="16" fill="#c77f45"/><text x="102" y="325" fill="#fff" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-weight="700" font-size="16">InfoNCE：对角线是正例，其余全为负例</text><text x="102" y="347" fill="#fff3e5" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="13">批内相似度矩阵上做对称交叉熵</text>
+<path d="M552 246V320H560" fill="none" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="626" y="130" width="520" height="250" rx="22" fill="#fff" stroke="#ccdcd6"/>
+<text x="652" y="168" fill="#1c4036" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-weight="700" font-size="19">监督：NLI 三元组</text>
+<rect x="652" y="192" width="150" height="106" rx="16" fill="#d4ebe2"/><text x="672" y="224" fill="#315b4e" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="14">anchor</text><text x="672" y="248" fill="#315b4e" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="14">正例</text><text x="672" y="272" fill="#315b4e" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="14">难负例</text><text x="672" y="292" fill="#315b4e" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="12">蕴含 / 矛盾</text>
+<rect x="842" y="222" width="150" height="52" rx="14" fill="#153d32"/><text x="862" y="254" fill="#fff" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-weight="700" font-size="16">同一编码器</text>
+<path d="M802 245H834" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="1038" y="192" width="86" height="106" rx="14" fill="#fff" stroke="#bdd2ca"/><text x="1054" y="226" fill="#17372f" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="13">三个视图</text><text x="1054" y="250" fill="#567269" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="12">批大小 512</text><text x="1054" y="274" fill="#567269" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="12">批内负例</text>
+<path d="M992 248H1030" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="652" y="300" width="472" height="56" rx="16" fill="#c77f45"/><text x="674" y="325" fill="#fff" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-weight="700" font-size="16">配对负例 + 批内负例交叉熵</text><text x="674" y="347" fill="#fff3e5" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="13">每个 anchor 先与自己的难负例竞争</text>
+<path d="M992 274V320H1128" fill="none" stroke="#68817a" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="54" y="412" width="1092" height="106" rx="22" fill="#153d32"/>
+<text x="82" y="450" fill="#c2e6d8" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="14" font-weight="700">评测</text>
+<text x="82" y="484" fill="#fff" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-weight="700" font-size="20">STS Spearman · Pearson · 检索 Recall@10</text>
+<text x="82" y="508" fill="#c2e6d8" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="14">基座与训练产物共用同一编码器、池化与分词器；同一组对比里温度与批大小保持不变。</text>
+</svg>

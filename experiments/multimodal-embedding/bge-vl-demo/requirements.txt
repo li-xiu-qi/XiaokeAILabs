@@ -1,0 +1,6 @@
+# Install compatible torch separately.
+jupyterlab
+ipykernel
+transformers==4.46.3
+pillow
+FlagEmbedding==1.4.2

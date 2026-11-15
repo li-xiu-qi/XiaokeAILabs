@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-labelledby="title desc">
+<title id="title">从文本到词元再到文本</title><desc id="desc">文本编码为词元 ID，输入语言模型处理，再解码为文本。</desc>
+<rect width="1200" height="300" rx="24" fill="#101b20"/>
+<text x="50" y="52" fill="#c2e5d7" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="20" letter-spacing="3">分词与生成</text>
+<g font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" text-anchor="middle"><g fill="#203b3b" stroke="#5fb99b"><rect x="50" y="90" width="205" height="120" rx="16"/><rect x="350" y="90" width="205" height="120" rx="16"/><rect x="650" y="90" width="205" height="120" rx="16"/><rect x="950" y="90" width="200" height="120" rx="16"/></g><g fill="#f0faf5" font-size="22"><text x="152" y="140">输入文本</text><text x="452" y="140">词元 ID</text><text x="752" y="140">语言模型</text><text x="1050" y="140">输出文本</text></g><g fill="#a9c8bc" font-size="15"><text x="152" y="173">UTF-8 / 文本归一化</text><text x="452" y="173">词表映射</text><text x="752" y="173">预测下一个词元</text><text x="1050" y="173">解码为文本</text></g></g>
+<g stroke="#d4ad65" stroke-width="3" fill="none"><path d="M270 150h62m-9-7 9 7-9 7"/><path d="M570 150h62m-9-7 9 7-9 7"/><path d="M870 150h62m-9-7 9 7-9 7"/></g>
+<text x="50" y="258" fill="#98b4aa" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="16">一个词元不一定对应一个词或一个汉字。</text></svg>

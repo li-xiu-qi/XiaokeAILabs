@@ -1,0 +1,34 @@
+原始运行输出摘录，行号对应原始日志；仅列测量条件、结果及相关范围。
+
+3: [transformers] Missing validation function in 'RotaryEmbeddingConfigMixin' for 'rope_type'='axial'
+5: 官方温度系数: {'choice': 1.9, 'noul': 2.375, 'score': 2.3, 'global': 2.05} | ECE 0.1141 -> 0.0396
+6: MemAvailable 基线: 107.1 GB
+9: [A] 加载与输出契约
+14: [transformers] Missing validation function in 'RotaryEmbeddingConfigMixin' for 'rope_type'='axial'
+15: load_model 完成 327.14 s，device=cuda，当前可用 97.9 GB
+16: CUDA 已分配: 8.55 GB  峰值: 8.55 GB
+18: 样例输出: {"prediction": "billing", "probabilities": {"billing": 0.9536668658256531, "technical": 0.031163936480879784, "sales": 0.005633522756397724, "other": 0.009535785764455795}, "logits": {"billing": 25.5, "technical": 19.0, "sales": 15.75, "other": 16.75}}
+21: [B] 延迟基准，单次 score，1 个 enum 字段 4 选项
+23: 英文（官方 T=1.90）                              n=120  min   131.10  p50   133.35  p90   134.82  p99   135.43  max    135.67 ms
+24: 英文（T=1.0，未校准）                              n=40   min   131.49  p50   133.88  p90   134.71  p99   135.88  max    135.88 ms
+27: [C] 中英平行对比，与 laya 同一套测试集
+30: --- 英文 ---
+31:   准确率    : 19/20 = 95.0%
+32:   置信度均值: 0.940
+33:   延迟      : p50 133.5 ms, min 132.0, max 135.0
+34:     错例 期望 sales      实得 other      置信 0.819
+35:            概率 {'billing': 0.04, 'technical': 0.059, 'sales': 0.082, 'other': 0.819}
+37: --- 中文 ---
+38:   准确率    : 20/20 = 100.0%
+39:   置信度均值: 0.927
+40:   延迟      : p50 133.7 ms, min 132.3, max 136.3
+43: [D] 温度系数前后，同一个分布的校准差异
+45: 样本           T=1 置信    T=1.90 置信 | T=1 熵     T=1.90 熵 
+46: billing      0.998     0.954          | 0.010     0.164    
+47: billing      0.955     0.794          | 0.142     0.474    
+48: other        1.000     0.986          | 0.001     0.065    
+49: other        0.989     0.875          | 0.049     0.362    
+52: [F] 资源占用
+54: CUDA 当前分配: 8.58 GB
+55: CUDA 峰值    : 8.64 GB
+56: MemAvailable  : 97.0 GB

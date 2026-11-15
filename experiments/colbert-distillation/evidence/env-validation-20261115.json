@@ -1,0 +1,118 @@
+{
+  "experiment": "colbert-distillation",
+  "recorded_at": "2026-11-15",
+  "kind": "environment-validation",
+  "summary": "From-scratch validation of the documented environment setup in isolated per-experiment virtual environments on a Linux ARM64 CUDA GPU, using the synthetic-data smoke check only. No model weights and no benchmark datasets were downloaded.",
+  "device": {
+    "product": "NVIDIA DGX Spark (GB10)",
+    "os": "Linux ARM64",
+    "python": "3.12.3",
+    "cuda": "13.2",
+    "gpu": "NVIDIA GB10",
+    "system_memory_gib_available_at_run": 117.7
+  },
+  "runs": [
+    {
+      "run_id": "20261115-094150-eea423b-ufced3ed425d943dfb03ed17a42664e98-dirty",
+      "purpose": "interpreter, venv, GPU, memory and network probe",
+      "exit_code": 0
+    },
+    {
+      "run_id": "20261115-094247-eea423b-u5c5cd1848fa04132bf77de38dfd29c32-dirty",
+      "purpose": "network diagnosis (dead local proxy env vars; direct IPv4/IPv6 reachability)",
+      "exit_code": 0
+    },
+    {
+      "run_id": "20261115-094541-eea423b-ue30827146d4944f8bb11e9cc95f4529b-dirty",
+      "purpose": "pip download path check and torch cu132 aarch64 wheel listing",
+      "exit_code": 0
+    },
+    {
+      "run_id": "20261115-094737-eea423b-u04ab175d7ff940699eb8334b8fb98b05-dirty",
+      "purpose": "smoke environment from-scratch install plus gpu_synthetic_smoke.py",
+      "exit_code": 0
+    },
+    {
+      "run_id": "20261115-095013-eea423b-u40de2088fab14d3d952dfba2f92dfee7-dirty",
+      "purpose": "fallback environment from-scratch install plus import check",
+      "exit_code": 0
+    },
+    {
+      "run_id": "20261115-095252-eea423b-u6d04dc1fbdde4554a078b01d6d416739-dirty",
+      "purpose": "fast-plaid distribution availability probe",
+      "exit_code": 0
+    }
+  ],
+  "smoke_env": {
+    "name": "smoke-pylate120-20261115",
+    "install": "python3.12 -m venv .venv-smoke; pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cu132; pip install -c torch-constraint.txt -r requirements-smoke.txt",
+    "packages": {
+      "torch": "2.15.0+cu132",
+      "pylate": "1.2.0",
+      "datasets": "4.1.1",
+      "accelerate": "1.10.1",
+      "attrs": "26.1.0",
+      "pillow": "13.0.0",
+      "transformers": "4.48.2",
+      "sentence-transformers": "4.0.2",
+      "tokenizers": "0.21.4",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1"
+    },
+    "pip_check": {"exit_code": 0, "output": "No broken requirements found."},
+    "smoke": {
+      "exit_code": 0,
+      "cuda_available": true,
+      "steps": 2,
+      "batch_queries": 4,
+      "lr": 3e-06,
+      "seconds": 0.3472674959921278,
+      "first_step_loss": 1.9221656322479248
+    }
+  },
+  "fallback_env": {
+    "name": "fallback-pylate140-20261115",
+    "install": "python3.12 -m venv .venv; pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cu132; pip install -c torch-constraint.txt -r requirements-base.txt; pip install --no-deps pylate==1.4.0",
+    "packages": {
+      "torch": "2.15.0+cu132",
+      "pylate": "1.4.0",
+      "sentence-transformers": "5.1.1",
+      "transformers": "4.56.2",
+      "tokenizers": "0.22.1",
+      "huggingface-hub": "0.36.2",
+      "datasets": "4.1.1",
+      "accelerate": "1.10.1",
+      "numpy": "2.5.3",
+      "scipy": "1.18.1",
+      "sqlitedict": "2.1.0",
+      "pandas": "3.1.1",
+      "ujson": "5.10.0",
+      "ninja": "1.11.1.4",
+      "fastkmeans": "0.5.0",
+      "voyager": "2.2.3"
+    },
+    "pip_check": {
+      "exit_code": 1,
+      "output": "pylate 1.4.0 requires fast-plaid, which is not installed."
+    },
+    "import_check": {
+      "exit_code": 0,
+      "imports": ["torch", "numpy", "sentence_transformers", "pylate"],
+      "cuda_available": true
+    }
+  },
+  "fast_plaid_probe": {
+    "index": "PyPI default index",
+    "binary_only": "ERROR: Could not find a version that satisfies the requirement fast-plaid (from versions: none)",
+    "any_distribution": "ERROR: No matching distribution found for fast-plaid",
+    "conclusion": "On Linux ARM64 with CPython 3.12 the default index offers no installable fast-plaid distribution, neither wheel nor sdist."
+  },
+  "scope": "Environment preparation only: isolated virtual environments created from scratch, dependency installation, import checks and the synthetic-data CUDA smoke training function. The full workflow (teacher scoring, dev-set gate, supervised and distilled training, test evaluation) was not run on this date.",
+  "limits": [
+    "Synthetic smoke uses a randomly initialized tiny BERT and two training steps; it checks the CUDA training function, not model quality.",
+    "PyLate 1.2.0 (smoke) and 1.4.0 (fallback) have different loss implementations; smoke results do not transfer to the 1.4.0 experiment path.",
+    "The fallback environment omits fast-plaid and does not satisfy PyLate's complete dependencies; PLAID indexing remains unverified.",
+    "Model revisions and weight hashes of the original distillation run are still unconfirmed; no models were downloaded in this validation.",
+    "Verified on one Linux ARM64 CUDA device with Python 3.12; other platforms need their own verification."
+  ]
+}

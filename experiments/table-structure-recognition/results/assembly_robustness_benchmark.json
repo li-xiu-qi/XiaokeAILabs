@@ -1,0 +1,32 @@
+{
+  "clean": {
+    "noise_type": "clean",
+    "elapsed_ms": 0.058,
+    "cell_accuracy": 1.0,
+    "structure_exact": true,
+    "all_slots_filled": true,
+    "pred_cells": 12,
+    "expected_slots": 12,
+    "cascade_error_observed": false
+  },
+  "drop_one_text": {
+    "noise_type": "drop_one_text",
+    "elapsed_ms": 0.032,
+    "cell_accuracy": 0.8333,
+    "structure_exact": false,
+    "all_slots_filled": true,
+    "pred_cells": 11,
+    "expected_slots": 12,
+    "cascade_error_observed": true
+  },
+  "extra_structure_row": {
+    "noise_type": "extra_structure_row",
+    "elapsed_ms": 0.032,
+    "cell_accuracy": 1.0,
+    "structure_exact": true,
+    "all_slots_filled": true,
+    "pred_cells": 12,
+    "expected_slots": 15,
+    "cascade_error_observed": false
+  }
+}

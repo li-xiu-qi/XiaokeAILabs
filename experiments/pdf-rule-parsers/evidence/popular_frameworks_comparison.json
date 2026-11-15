@@ -1,0 +1,150 @@
+{
+  "timestamp": "2026-11-08T23:10:26",
+  "benchmark_description": "Cross-framework evaluation on real-world reference PDFs from RapidOCR & pdfplumber",
+  "tested_frameworks": [
+    "PyMuPDF",
+    "pypdf",
+    "pdfplumber",
+    "pdfminer.six"
+  ],
+  "files_evaluated": [
+    {
+      "filename": "rapidocr_direct_and_image.pdf",
+      "size_kb": 703.71,
+      "frameworks": {
+        "PyMuPDF": {
+          "success": true,
+          "elapsed_ms": 98.8,
+          "ms_per_page": 49.4,
+          "page_count": 2,
+          "chars_extracted": 3710,
+          "images_detected": 3,
+          "tables_detected": 0,
+          "text_preview": "ABCNet: Real-time Scene Text Spotting with Adaptive Bezier-Curve Network∗ Yuliang Liu‡† , Hao Chen†, Chunhua Shen†, Tong"
+        },
+        "pypdf": {
+          "success": true,
+          "elapsed_ms": 49.17,
+          "ms_per_page": 24.58,
+          "page_count": 2,
+          "chars_extracted": 3712,
+          "images_detected": 3,
+          "tables_detected": "Not supported natively",
+          "text_preview": "ABCNet: Real-time Scene Text Spotting with Adaptive Bezier-Curve Network∗ Yuliang Liu‡† , Hao Chen †, Chunhua Shen †, To"
+        },
+        "pdfplumber": {
+          "success": true,
+          "elapsed_ms": 99.54,
+          "ms_per_page": 49.77,
+          "page_count": 2,
+          "chars_extracted": 3505,
+          "images_detected": "Via objects inspection",
+          "tables_detected": 0,
+          "text_preview": "ABCNet: Real-time Scene Text Spotting with Adaptive Bezier-Curve Network∗ YuliangLiu‡† , HaoChen†, ChunhuaShen†, TongHe†"
+        },
+        "pdfminer.six": {
+          "success": true,
+          "elapsed_ms": 57.36,
+          "ms_per_page": 28.68,
+          "page_count": 2,
+          "chars_extracted": 3788,
+          "images_detected": "Via layout LTImage",
+          "tables_detected": "Not supported natively",
+          "text_preview": "ABCNet: Real-time Scene Text Spotting with Adaptive Bezier-Curve Network∗  Yuliang Liu‡† , Hao Chen†, Chunhua Shen†,  To"
+        }
+      }
+    },
+    {
+      "filename": "pdfplumber_federal_register.pdf",
+      "size_kb": 697.26,
+      "frameworks": {
+        "PyMuPDF": {
+          "success": true,
+          "elapsed_ms": 1662.09,
+          "ms_per_page": 110.81,
+          "page_count": 15,
+          "chars_extracted": 60144,
+          "images_detected": 11,
+          "tables_detected": 2,
+          "text_preview": "This section of the FEDERAL REGISTER contains notices to the public of the proposed issuance of rules and regulations. T"
+        },
+        "pypdf": {
+          "success": true,
+          "elapsed_ms": 287.09,
+          "ms_per_page": 19.14,
+          "page_count": 15,
+          "chars_extracted": 60087,
+          "images_detected": 11,
+          "tables_detected": "Not supported natively",
+          "text_preview": "This section of the FEDERAL REGISTER contains notices to the public of the proposed issuance of rules and regulations. T"
+        },
+        "pdfplumber": {
+          "success": true,
+          "elapsed_ms": 1755.71,
+          "ms_per_page": 117.05,
+          "page_count": 15,
+          "chars_extracted": 58492,
+          "images_detected": "Via objects inspection",
+          "tables_detected": 2,
+          "text_preview": "47698 Proposed Rules Federal Register Vol. 85, No. 152 Thursday, August 6, 2020 This section of the FEDERAL REGISTER • F"
+        },
+        "pdfminer.six": {
+          "success": true,
+          "elapsed_ms": 662.1,
+          "ms_per_page": 44.14,
+          "page_count": 15,
+          "chars_extracted": 61485,
+          "images_detected": "Via layout LTImage",
+          "tables_detected": "Not supported natively",
+          "text_preview": "47698   Proposed Rules  Federal Register  Vol.  85,  No.  152   Thursday,  August  6,  2020   This section of the FEDERA"
+        }
+      }
+    },
+    {
+      "filename": "testpage_cn.pdf",
+      "size_kb": 285.35,
+      "frameworks": {
+        "PyMuPDF": {
+          "success": true,
+          "elapsed_ms": 16.72,
+          "ms_per_page": 16.72,
+          "page_count": 1,
+          "chars_extracted": 0,
+          "images_detected": 1,
+          "tables_detected": 0,
+          "text_preview": ""
+        },
+        "pypdf": {
+          "success": true,
+          "elapsed_ms": 1.72,
+          "ms_per_page": 1.72,
+          "page_count": 1,
+          "chars_extracted": 0,
+          "images_detected": 1,
+          "tables_detected": "Not supported natively",
+          "text_preview": ""
+        },
+        "pdfplumber": {
+          "success": true,
+          "elapsed_ms": 2.45,
+          "ms_per_page": 2.45,
+          "page_count": 1,
+          "chars_extracted": 0,
+          "images_detected": "Via objects inspection",
+          "tables_detected": 0,
+          "text_preview": ""
+        },
+        "pdfminer.six": {
+          "success": true,
+          "elapsed_ms": 1.47,
+          "ms_per_page": 1.47,
+          "page_count": 1,
+          "chars_extracted": 1,
+          "images_detected": "Via layout LTImage",
+          "tables_detected": "Not supported natively",
+          "text_preview": ""
+        }
+      }
+    }
+  ]
+}

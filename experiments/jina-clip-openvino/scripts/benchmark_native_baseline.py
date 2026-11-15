@@ -11,7 +11,6 @@ import platform
 import time
 from pathlib import Path
 
-os.environ.setdefault("HF_ENDPOINT", "https://hf-mirror.com")
 
 import numpy as np
 import torch

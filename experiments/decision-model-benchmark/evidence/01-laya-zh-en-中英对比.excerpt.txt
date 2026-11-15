@@ -1,0 +1,62 @@
+原始运行输出摘录，行号对应原始日志；仅列测量条件、结果及相关范围。
+
+4: MemAvailable 基线: 60.5 GB
+7: [1] Router 自动路由：中英平行对比
+10: Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]
+11: Fetching 5 files: 100%|██████████| 5/5 [00:00<00:00, 1680.01it/s]
+15: Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]
+16: Fetching 5 files: 100%|██████████| 5/5 [00:00<00:00, 573.67it/s]
+18: Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]
+19: Fetching 5 files:  20%|██        | 1/5 [00:00<00:02,  1.51it/s]
+20: Fetching 5 files:  40%|████      | 2/5 [00:00<00:01,  2.01it/s]
+21: Fetching 5 files:  80%|████████  | 4/5 [00:01<00:00,  3.47it/s]
+22: Fetching 5 files:  80%|████████  | 4/5 [00:11<00:02,  2.82s/it]
+23: Fetching 5 files: 100%|██████████| 5/5 [00:37<00:00,  7.49s/it]
+24: Fetching 5 files: 100%|██████████| 5/5 [00:37<00:00,  7.49s/it]
+25: Router(preload=True) 就绪: 98.8 s，当前可用 55.0 GB
+27: --- 英文 ---
+28:   准确率      : 19/20 = 95.0%
+29:   路由到      : {'english': 20}
+30:   路由理由    : ['English Latin text']
+31:   延迟        : p50 56.5 ms, min 53.1, max 1904.7
+32:   置信度均值  : 0.506（答对 0.530 / 答错 0.044）
+33:     billing    5/5
+34:     technical  5/5
+35:     sales      4/5
+36:     other      5/5
+38: --- 中文 ---
+39:   准确率      : 19/20 = 95.0%
+40:   路由到      : {'multilingual': 20}
+41:   路由理由    : ['non-Latin script (han, 85% of letters); the English checkpoint cannot read it', 'non-Latin script (han, 100% of letters); the English checkpoint cannot read it', 'non-Latin script (han, 59% of letters); the English checkpoint cannot read it', 'non-Latin script (han, 68% of letters); the English checkpoint cannot read it']
+42:   延迟        : p50 36.5 ms, min 35.5, max 55.1
+43:   置信度均值  : 0.866（答对 0.863 / 答错 0.906）
+44:     billing    5/5
+45:     technical  5/5
+46:     sales      5/5
+47:     other      4/5
+49:   [en] 答错 1 条:
+50:     期望 sales      实得 other      置信 0.044  概率分布 {'billing': 0.17, 'technical': 0.31, 'sales': 0.16, 'other': 0.36}
+52:   [zh] 答错 1 条:
+53:     期望 other      实得 billing    置信 0.906  概率分布 {'billing': 0.98, 'technical': 0.01, 'sales': 0.0, 'other': 0.01}
+56: [2] 强灌实验：中文输入直接打 english checkpoint
+59: Fetching 5 files:   0%|          | 0/5 [00:00<?, ?it/s]
+60: Fetching 5 files: 100%|██████████| 5/5 [00:00<00:00, 4120.95it/s]
+63:   中文 + english checkpoint: 准确率 15/20 = 75.0%, 置信度均值 0.384
+64:   对照：同一 Router  multilingual 下中文准确率见 [1]
+67: [3] noul 题型中英对比
+69:   --- 英文 ---  路由: {'english'}
+70:     真值 True  noul=0.862  对
+71:     真值 True  noul=0.656  对
+72:     真值 False noul=0.000  对
+73:     真值 False noul=0.000  对
+74:     真值 True  noul=0.809  对
+75:     TP 3 FN 0 FP 0 TN 2
+76:   --- 中文 ---  路由: {'multilingual'}
+77:     真值 True  noul=0.025  错
+78:     真值 True  noul=0.051  错
+79:     真值 False noul=0.003  对
+80:     真值 False noul=0.009  对
+81:     真值 True  noul=0.028  错
+82:     TP 0 FN 3 FP 0 TN 2
+84: [内存] 基线 60.5 GB -> 现在 51.8 GB（占用 8.7 GB），CUDA 峰值 6.65 GB
+86: [口径] 样本量小（每题 20 条、noul 5 条），只说明方向，不构成基准对比。

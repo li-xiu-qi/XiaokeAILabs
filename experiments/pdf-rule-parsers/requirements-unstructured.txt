@@ -1,0 +1,6 @@
+unstructured[pdf]
+unstructured-inference
+pi-heif
+pikepdf
+pdf2image
+unstructured-pytesseract

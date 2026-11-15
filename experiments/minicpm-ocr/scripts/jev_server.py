@@ -37,6 +37,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from rm_render import CATEGORIES, Candidate, render_candidates  # noqa: E402
 
 from jev_score import JevScorer, build_prompt, _assert_prompt_unchanged  # noqa: E402
+from score_selection import best_scored_index
 
 INPUT_FORMS = ("binary", "ternary")
 MAX_ITEMS = 8
@@ -175,8 +176,9 @@ def _score_one_block(req: ScoreBestRequest, include_renders: bool = False):
         stage["forward_sec"] = round(time.time() - t1, 3)
         stage["forward_rows"] = float(sum(1 for v in verdicts if v == "scored"))
 
-        ok = [i for i, v in enumerate(verdicts) if v == "scored"]
-        best = max(ok, key=lambda i: scores[i]) if ok else 0
+        best = best_scored_index(scores, verdicts)
+        if best is None:
+            raise HTTPException(422, "No candidate could be scored")
         renders_b64 = None
         if include_renders:
             renders_b64 = [

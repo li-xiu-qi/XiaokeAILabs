@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-15",
+  "experiment": "sparse-retrieval clean-environment CUDA training check",
+  "status": "completed",
+  "platform": "Linux-6.17.0-1032-nvidia-aarch64-with-glibc2.39",
+  "architecture": "aarch64",
+  "python": "3.12.3",
+  "gpu": "NVIDIA GB10",
+  "cuda_build": "13.2",
+  "packages": {
+    "torch": "2.15.0+cu132",
+    "transformers": "5.16.1"
+  },
+  "model": {
+    "id": "hf-internal-testing/tiny-random-bert",
+    "revision": "f171d7baecaf37b5da5a3616d8833b9969753535"
+  },
+  "data": {
+    "kind": "four bundled synthetic triplets",
+    "examples": 4
+  },
+  "training": {
+    "epochs": 1,
+    "optimizer_steps": 2,
+    "batch_size": 2,
+    "max_len_q": 16,
+    "max_len_d": 32
+  },
+  "artifacts": {
+    "weights_saved": true,
+    "metrics_saved": true
+  },
+  "pip_check": "passed",
+  "limitations": [
+    "Synthetic data and a random tiny model only check installation and the CUDA training path.",
+    "This does not validate retrieval quality or satisfy the experiment success criteria."
+  ]
+}

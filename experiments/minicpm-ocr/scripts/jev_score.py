@@ -201,6 +201,11 @@ def main() -> int:
     ap.add_argument("--json-out", type=Path)
     args = ap.parse_args()
 
+    if bool(args.original) != bool(args.render):
+        ap.error("--original and --render must be provided together")
+    if not args.original and not args.examples.is_dir():
+        ap.error(f"Examples directory does not exist: {args.examples}")
+
     md5 = _assert_prompt_unchanged()
     print(f"prompt 模板 md5 校验通过: {md5}")
 
@@ -223,6 +228,8 @@ def main() -> int:
         return 0
 
     results = run_examples(scorer, args.examples)
+    if not results:
+        raise RuntimeError(f"No examples with matching reference renders found in {args.examples}")
     print(f"\n{'case':<34}{'role':<14}{'label':<14}{'prob_yes':>9}{'官方值':>9}{'偏差':>8}{'秒':>7}")
     print("-" * 96)
     for r in results:

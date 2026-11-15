@@ -1,0 +1,11 @@
+# Install the CUDA-compatible PyTorch build separately before this file.
+# Two versions were recorded in the historical environment; remaining
+# dependencies are unpinned. This is not a complete lockfile.
+transformers==5.16.1
+tokenizers
+sentence-transformers==6.0.1
+peft
+numpy
+pillow
+huggingface_hub
+datasets

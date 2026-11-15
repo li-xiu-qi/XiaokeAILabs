@@ -1,0 +1,11 @@
+# Install the CUDA-compatible PyTorch build separately before this file.
+# Transformers matches the recorded native CUDA run; other versions were not
+# fully recorded. This is not a complete lockfile.
+transformers==4.57.6
+numpy
+pillow
+einops
+timm
+safetensors
+sentencepiece
+requests

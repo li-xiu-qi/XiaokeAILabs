@@ -22,6 +22,13 @@ src/index/detail/vector/common/bruteforce.h:433：
 用法（用隔离的 .venv-viking）：
   ./.venv-viking/Scripts/python.exe scripts/probe_vikingdb.py
 """
+
+if __package__:
+    from .legacy_safety import require_isolated_instance
+else:
+    from legacy_safety import require_isolated_instance
+
+require_isolated_instance()
 import shutil
 import sys
 import time

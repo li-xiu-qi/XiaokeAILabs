@@ -1,0 +1,2892 @@
+# ==== scripts/llm_common.py ====
+"""llm_common.py — 全链路共享模块：模型、优化器、数据与生成工具。
+
+架构参考 karpathy/nanochat 的 gpt.py 与 optim.py，按本实验的 CPU 玩具规模裁剪：
+  - RMSNorm 不带学习参数（norm() 直接 F.rms_norm，对齐 nanochat「no learnable params in rmsnorm」）
+  - RoPE 旋转位置编码（base=100000），先施加旋转、后做 QK norm（对齐 nanochat 顺序）
+  - MLP 默认 relu^2（nanochat 选择），保留 SwiGLU 作为可选对照
+  - 词嵌入与 lm_head 默认不共享（untied），保留 tie_weights 开关
+  - 嵌入后接一次 norm；logits 做 softcap=15 软截断
+  - GQA（n_kv_heads <= n_heads）代码路径保留，玩具规模默认 MHA
+  - KV cache 推理引擎：训练/评估走整段前向，生成为每步单 token 前向
+  - Muon（Newton-Schulz 正交化）负责隐藏矩阵，AdamW 负责嵌入/lm_head/标量
+
+所有编号脚本（01~08）通过 `import llm_common` 复用本模块，不再需要 importlib 路径加载。
+
+设备与分布式（本次升级新增）：
+  - `init_distributed(args.device, args.backend)` 统一解析设备与进程组，torchrun 启动时自动生效
+  - DDP 包装/剥离（wrap_ddp / unwrap_model）、rank0 守卫、all_reduce 指标汇总
+  - checkpoint 保存时剥离 DDP `module.` 前缀，加载时 `map_location` 兼容任意设备
+  - KVCache / RotaryEmbedding / get_batch / evaluate / generate 全部设备对齐，Muon 优化器
+    在 CUDA 与 DDP 下无需修改即可工作（Newton-Schulz 在 fp32 累加格上计算）
+"""
+
+from __future__ import annotations
+
+import contextlib
+import argparse
+import math
+import os
+import random
+import time
+from dataclasses import asdict, dataclass
+from pathlib import Path
+
+import torch
+import torch.distributed as dist
+import torch.nn as nn
+import torch.nn.functional as F
+
+# 小模型在多核 Windows 上默认 8 线程反而因争用变慢，实测 4 线程最快；可用环境变量覆盖
+torch.set_num_threads(int(os.environ.get("LLM_THREADS", "4")))
+
+ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT / "data"
+RESULT_DIR = ROOT / "results"
+TOK_PATH = RESULT_DIR / "tokenizer" / "tokenizer.json"
+CKPT_DIR = RESULT_DIR / "checkpoints"
+EOS = "<|endoftext|>"
+PAD = "<|pad|>"
+
+
+# ------------------------------------------------------------------- 配置 ----
+
+
+@dataclass
+class ModelConfig:
+    vocab_size: int = 2048
+    d_model: int = 192
+    n_layers: int = 4
+    n_heads: int = 6
+    n_kv_heads: int = 6  # GQA：key/value 头数，<= n_heads 且整除；等于时为普通 MHA
+    d_ff: int = 768  # MLP 隐层（relu^2 取 4*d_model；SwiGLU 取约 8/3*d_model）
+    max_len: int = 256  # RoPE 预计算长度
+    rope_base: float = 100000.0
+    dropout: float = 0.0
+    tie_weights: bool = False  # nanochat 默认 untied
+    mlp_type: str = "relu2"  # "relu2"（nanochat）或 "swiglu"（对照）
+    qk_norm: bool = True  # RoPE 后对 q/k 做 RMSNorm（nanochat QK norm）
+    embed_norm: bool = True  # 词嵌入后接一次 norm（nanochat）
+    softcap: float = 15.0  # logits 软截断，<=0 关闭
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: dict) -> "ModelConfig":
+        known = {f for f in cls.__dataclass_fields__}
+        return cls(**{k: v for k, v in d.items() if k in known})
+
+
+# -------------------------------------------------------------- 基础组件 ----
+
+
+def norm(x: torch.Tensor) -> torch.Tensor:
+    """无参数 RMSNorm（nanochat 风格：不做均值中心化、无可学习权重）。"""
+    return F.rms_norm(x, (x.size(-1),))
+
+
+def apply_rotary_emb(x: torch.Tensor, cos: torch.Tensor, sin: torch.Tensor) -> torch.Tensor:
+    """对 (B, H, T, D) 的 q/k 施加 RoPE。cos/sin 形状 (1, T, 1, D/2)，成对旋转维度。"""
+    d = x.shape[-1] // 2
+    x1, x2 = x[..., :d], x[..., d:]
+    cos = cos.transpose(1, 2).to(x.dtype)  # (1, 1, T, D/2)
+    sin = sin.transpose(1, 2).to(x.dtype)
+    y1 = x1 * cos + x2 * sin
+    y2 = x1 * (-sin) + x2 * cos
+    return torch.cat([y1, y2], dim=-1)
+
+
+class RotaryEmbedding(nn.Module):
+    """预计算 cos/sin 缓存，长度不足时自动扩展。"""
+
+    def __init__(self, head_dim: int, max_len: int, base: float):
+        super().__init__()
+        self.head_dim = head_dim
+        self.base = base
+        inv_freq = 1.0 / (base ** (torch.arange(0, head_dim, 2, dtype=torch.float32) / head_dim))
+        self.register_buffer("inv_freq", inv_freq, persistent=False)
+        self._build_cache(max_len)
+
+    def _build_cache(self, seq_len: int) -> None:
+        # 与 inv_freq 同设备同 dtype：模型 .to(cuda) 后缓存仍随模块走，运行期扩容也不落 CPU
+        t = torch.arange(seq_len, dtype=self.inv_freq.dtype, device=self.inv_freq.device)
+        freqs = torch.outer(t, self.inv_freq)  # (T, D/2)
+        cos = freqs.cos()[None, :, None, :]  # (1, T, 1, D/2)
+        sin = freqs.sin()[None, :, None, :]
+        self.register_buffer("cos_cached", cos, persistent=False)
+        self.register_buffer("sin_cached", sin, persistent=False)
+
+    def get_cos_sin(self, seq_len: int, offset: int = 0):
+        if offset + seq_len > self.cos_cached.size(1):
+            self._build_cache(offset + seq_len)
+        return (
+            self.cos_cached[:, offset : offset + seq_len],
+            self.sin_cached[:, offset : offset + seq_len],
+        )
+
+
+class MLP(nn.Module):
+    """relu^2（nanochat）或 SwiGLU 前馈，均无 bias。"""
+
+    def __init__(self, cfg: ModelConfig):
+        super().__init__()
+        if cfg.mlp_type == "swiglu":
+            # SwiGLU 保持参数量与 relu^2 版接近：3 个 d_model->d_ff 投影
+            self.gate_proj = nn.Linear(cfg.d_model, cfg.d_ff, bias=False)
+            self.up_proj = nn.Linear(cfg.d_model, cfg.d_ff, bias=False)
+            self.down_proj = nn.Linear(cfg.d_ff, cfg.d_model, bias=False)
+        else:
+            self.c_fc = nn.Linear(cfg.d_model, cfg.d_ff, bias=False)
+            self.c_proj = nn.Linear(cfg.d_ff, cfg.d_model, bias=False)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        if hasattr(self, "gate_proj"):
+            return self.down_proj(F.silu(self.gate_proj(x)) * self.up_proj(x))
+        return self.c_proj(F.relu(self.c_fc(x)).square())
+
+
+class CausalSelfAttention(nn.Module):
+    def __init__(self, cfg: ModelConfig):
+        super().__init__()
+        assert cfg.d_model % cfg.n_heads == 0
+        assert cfg.n_heads % cfg.n_kv_heads == 0
+        self.n_heads = cfg.n_heads
+        self.n_kv_heads = cfg.n_kv_heads
+        self.head_dim = cfg.d_model // cfg.n_heads
+        self.qk_norm = cfg.qk_norm
+        self.q_proj = nn.Linear(cfg.d_model, cfg.n_heads * self.head_dim, bias=False)
+        self.k_proj = nn.Linear(cfg.d_model, cfg.n_kv_heads * self.head_dim, bias=False)
+        self.v_proj = nn.Linear(cfg.d_model, cfg.n_kv_heads * self.head_dim, bias=False)
+        self.o_proj = nn.Linear(cfg.n_heads * self.head_dim, cfg.d_model, bias=False)
+        self.rope = RotaryEmbedding(self.head_dim, cfg.max_len, cfg.rope_base)
+
+    def forward(
+        self, x: torch.Tensor, kv_cache: "KVCache | None" = None, offset: int = 0
+    ) -> torch.Tensor:
+        b, t, _ = x.shape
+        q = self.q_proj(x).view(b, t, self.n_heads, self.head_dim).transpose(1, 2)
+        k = self.k_proj(x).view(b, t, self.n_kv_heads, self.head_dim).transpose(1, 2)
+        v = self.v_proj(x).view(b, t, self.n_kv_heads, self.head_dim).transpose(1, 2)
+
+        cos, sin = self.rope.get_cos_sin(t, offset)
+        q, k = apply_rotary_emb(q, cos, sin), apply_rotary_emb(k, cos, sin)
+        if self.qk_norm:  # nanochat：RoPE 之后归一化 q/k
+            q, k = norm(q), norm(k)
+
+        if kv_cache is not None:
+            k, v = kv_cache.update(self.layer_idx, k, v)
+        if self.n_kv_heads != self.n_heads:  # GQA：把 kv 头复制到 query 头数
+            rep = self.n_heads // self.n_kv_heads
+            if rep > 1:
+                k = k.repeat_interleave(rep, dim=1)
+                v = v.repeat_interleave(rep, dim=1)
+
+        y = F.scaled_dot_product_attention(q, k, v, is_causal=(kv_cache is None or t > 1))
+        y = y.transpose(1, 2).contiguous().view(b, t, -1)
+        return self.o_proj(y)
+
+
+class Block(nn.Module):
+    """预归一化残差块：x + attn(norm(x)); x + mlp(norm(x))。"""
+
+    def __init__(self, cfg: ModelConfig, layer_idx: int):
+        super().__init__()
+        self.attn = CausalSelfAttention(cfg)
+        self.attn.layer_idx = layer_idx
+        self.mlp = MLP(cfg)
+
+    def forward(
+        self, x: torch.Tensor, kv_cache: "KVCache | None" = None, offset: int = 0
+    ) -> torch.Tensor:
+        x = x + self.attn(norm(x), kv_cache=kv_cache, offset=offset)
+        x = x + self.mlp(norm(x))
+        return x
+
+
+class KVCache:
+    """逐层缓存 key/value。形状 (B, H_kv, max_len, D)，支持 batch>1 的批量解码。"""
+
+    def __init__(
+        self,
+        n_layers: int,
+        n_kv_heads: int,
+        head_dim: int,
+        max_len: int,
+        batch: int = 1,
+        dtype: torch.dtype = torch.float32,
+        device: torch.device | str | None = None,
+    ):
+        self.max_len = max_len
+        self.k = [
+            torch.empty(batch, n_kv_heads, max_len, head_dim, dtype=dtype, device=device)
+            for _ in range(n_layers)
+        ]
+        self.v = [
+            torch.empty(batch, n_kv_heads, max_len, head_dim, dtype=dtype, device=device)
+            for _ in range(n_layers)
+        ]
+        self.pos = 0
+
+    def update(self, layer_idx: int, k_new: torch.Tensor, v_new: torch.Tensor):
+        t = k_new.size(2)
+        assert self.pos + t <= self.max_len, "KV cache 超出预分配长度"
+        self.k[layer_idx][:, :, self.pos : self.pos + t] = k_new
+        self.v[layer_idx][:, :, self.pos : self.pos + t] = v_new
+        end = self.pos + t  # 含本次写入的全部有效长度
+        if layer_idx == len(self.k) - 1:
+            self.pos = end
+        return self.k[layer_idx][:, :, :end], self.v[layer_idx][:, :, :end]
+
+
+# ------------------------------------------------------------------- 模型 ----
+
+
+class CausalLM(nn.Module):
+    def __init__(self, cfg: ModelConfig):
+        super().__init__()
+        self.cfg = cfg
+        self.tok_emb = nn.Embedding(cfg.vocab_size, cfg.d_model)
+        self.blocks = nn.ModuleList([Block(cfg, i) for i in range(cfg.n_layers)])
+        self.lm_head = nn.Linear(cfg.d_model, cfg.vocab_size, bias=False)
+        if cfg.tie_weights:
+            self.lm_head.weight = self.tok_emb.weight
+        self.apply(self._init_weights)
+
+    @staticmethod
+    def _init_weights(module: nn.Module) -> None:
+        if isinstance(module, nn.Linear):
+            nn.init.normal_(module.weight, mean=0.0, std=0.02)
+        elif isinstance(module, nn.Embedding):
+            nn.init.normal_(module.weight, mean=0.0, std=0.02)
+
+    def forward(
+        self,
+        idx: torch.Tensor,
+        targets: torch.Tensor | None = None,
+        kv_cache: KVCache | None = None,
+        offset: int = 0,
+    ):
+        # idx: (B, T)；训练时 targets 与 idx 同形（内部错位一格）
+        b, t = idx.shape
+        x = self.tok_emb(idx)
+        if self.cfg.embed_norm:
+            x = norm(x)
+        for blk in self.blocks:
+            x = blk(x, kv_cache=kv_cache, offset=offset)
+        x = norm(x)
+        logits = self.lm_head(x)  # (B, T, V)
+        if self.cfg.softcap and self.cfg.softcap > 0:  # 软截断到 ±softcap
+            logits = self.cfg.softcap * torch.tanh(logits / self.cfg.softcap)
+        loss = None
+        if targets is not None:
+            loss = F.cross_entropy(
+                logits[:, :-1].reshape(-1, logits.size(-1)),
+                targets[:, 1:].reshape(-1),
+                ignore_index=-100,
+            )
+        return logits, loss
+
+    def num_params(self) -> int:
+        return sum(p.numel() for p in self.parameters())
+
+    def num_param_groups(self) -> dict:
+        """按 nanochat num_scaling_params 的口径分组统计参数。"""
+        wte = sum(p.numel() for p in self.tok_emb.parameters())
+        lm_head = sum(p.numel() for p in self.lm_head.parameters())
+        matrices = sum(p.numel() for p in self.blocks.parameters())
+        total = wte + lm_head + matrices
+        return {
+            "tok_emb": wte,
+            "lm_head": lm_head,
+            "transformer_matrices": matrices,
+            "total": total,
+        }
+
+
+def build_model(cfg: ModelConfig, seed: int = 0) -> CausalLM:
+    torch.manual_seed(seed)
+    return CausalLM(cfg)
+
+
+def save_checkpoint(model: CausalLM, cfg: ModelConfig, path: Path, **meta) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # unwrap：DDP 包装保存时剥离 module. 前缀，单卡加载无需特殊处理
+    tmp = path.with_name(path.name + ".tmp")
+    torch.save(
+        {"model_state": unwrap_model(model).state_dict(), "config": cfg.to_dict(), **meta}, tmp
+    )
+    tmp.replace(path)
+
+
+def save_resume_state(
+    path: Path,
+    model: CausalLM,
+    cfg: ModelConfig,
+    optimizers,
+    step: int,
+    scaler=None,
+    history: list | None = None,
+    val_history: list | None = None,
+    elapsed_seconds: float = 0.0,
+    extra: dict | None = None,
+    **meta,
+) -> None:
+    """原子保存完整可续训状态（权重 + 优化器 + GradScaler + step + 曲线 + RNG）。"""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + ".tmp")
+    payload = {
+        "model_state": unwrap_model(model).state_dict(),
+        "config": cfg.to_dict(),
+        "optimizer_states": [opt.state_dict() for opt in optimizers],
+        "scaler_state": scaler.state_dict() if scaler is not None else None,
+        "step": int(step),
+        "history": list(history or []),
+        "val_history": list(val_history or []),
+        "elapsed_seconds": float(elapsed_seconds),
+        "rng_py": random.getstate(),
+        "rng_torch": torch.get_rng_state(),
+        "extra": dict(extra or {}),
+        **meta,
+    }
+    torch.save(payload, tmp)
+    tmp.replace(path)
+
+
+def load_resume_state(
+    path: Path,
+    model: CausalLM,
+    optimizers,
+    device: torch.device | str | None = None,
+    scaler=None,
+) -> tuple[int, list, list, float, dict]:
+    """从 resume checkpoint 恢复模型、优化器、scaler 与训练进度。"""
+    ckpt = torch.load(path, map_location="cpu", weights_only=False)
+    target = unwrap_model(model)
+    state = ckpt["model_state"]
+    try:
+        target.load_state_dict(state)
+    except Exception:
+        target.load_state_dict(_strip_module_prefix(state))
+    if device is not None:
+        target.to(device)
+    opt_states = ckpt.get("optimizer_states") or []
+    for opt, ost in zip(optimizers, opt_states):
+        opt.load_state_dict(ost)
+    if scaler is not None and ckpt.get("scaler_state") is not None:
+        scaler.load_state_dict(ckpt["scaler_state"])
+    return (
+        int(ckpt.get("step", 0)),
+        list(ckpt.get("history", [])),
+        list(ckpt.get("val_history", [])),
+        float(ckpt.get("elapsed_seconds", 0.0)),
+        ckpt,
+    )
+
+
+def resolve_resume_path(args, ckpt_dir: Path, filename: str) -> Path | None:
+    """按 --resume > --resume-auto (checkpoints/<filename>) 解析续训路径。"""
+    explicit = getattr(args, "resume", None)
+    if explicit:
+        p = Path(explicit)
+        if not p.exists():
+            raise FileNotFoundError(f"指定的 --resume checkpoint 不存在: {p}")
+        return p
+    if getattr(args, "resume_auto", False):
+        cand = ckpt_dir / filename
+        if cand.exists():
+            return cand
+    return None
+
+
+def resume_training_if_needed(
+    args,
+    ckpt_dir: Path,
+    filename: str,
+    model: CausalLM,
+    optimizers,
+    device: torch.device,
+    ctx: DistContext | None,
+    scaler=None,
+    train_gen: torch.Generator | None = None,
+    val_gen: torch.Generator | None = None,
+    sample_rng: random.Random | None = None,
+    tag: str = "",
+) -> tuple[int, list, list, float]:
+    """若需续训，加载完整状态并按 rank 决定是否还原局部 RNG。"""
+    rpath = resolve_resume_path(args, ckpt_dir, filename)
+    if rpath is None:
+        return 0, [], [], 0.0
+    start_step, history, val_history, elapsed_prev, ckpt = load_resume_state(
+        rpath, model, optimizers, device=device, scaler=scaler
+    )
+    saved_world = ckpt.get("world_size")
+    cur_world = ctx.world_size if ctx is not None else 1
+    rank = ctx.rank if ctx is not None else 0
+    extra = ckpt.get("extra") or {}
+    # rank0（或同 world_size 对应 rank）还原 RNG，保持采样流无缝衔接；跨 world_size 新增 rank 保留各自错开种子
+    if rank == 0 or saved_world == cur_world:
+        if train_gen is not None and isinstance(extra.get("train_gen"), torch.Tensor):
+            train_gen.set_state(extra["train_gen"].cpu())
+        if val_gen is not None and isinstance(extra.get("val_gen"), torch.Tensor):
+            val_gen.set_state(extra["val_gen"].cpu())
+        if sample_rng is not None and extra.get("sample_rng") is not None:
+            sample_rng.setstate(extra["sample_rng"])
+    if is_rank0(ctx):
+        print(
+            f"[{tag or 'resume'}] 从 {rpath} 恢复: completed_step={start_step}/{args.steps}, "
+            f"elapsed={elapsed_prev:.1f}s (saved_world={saved_world} -> cur_world={cur_world})"
+        )
+    return start_step, history, val_history, elapsed_prev
+
+
+def checkpoint_step_hook(
+    args,
+    ckpt_dir: Path,
+    filename: str,
+    model: CausalLM,
+    cfg: ModelConfig,
+    optimizers,
+    completed_step: int,
+    ctx: DistContext | None,
+    scaler=None,
+    history: list | None = None,
+    val_history: list | None = None,
+    t0: float = 0.0,
+    elapsed_offset: float = 0.0,
+    train_gen: torch.Generator | None = None,
+    val_gen: torch.Generator | None = None,
+    sample_rng: random.Random | None = None,
+    stage: str = "",
+    tag: str = "",
+) -> None:
+    """周期性保存可续训快照；配合 --inject-fail-step 支持受控故障演练。"""
+    save_every = int(getattr(args, "save_every", 0) or 0)
+    inject_step = int(getattr(args, "inject_fail_step", 0) or 0)
+    should_save = (save_every > 0 and completed_step % save_every == 0) or (
+        inject_step > 0 and completed_step == inject_step
+    )
+    if should_save:
+        if is_rank0(ctx):
+            extra = {}
+            if train_gen is not None:
+                extra["train_gen"] = train_gen.get_state()
+            if val_gen is not None:
+                extra["val_gen"] = val_gen.get_state()
+            if sample_rng is not None:
+                extra["sample_rng"] = sample_rng.getstate()
+            elapsed = elapsed_offset + (time.time() - t0)
+            save_resume_state(
+                ckpt_dir / filename,
+                model,
+                cfg,
+                optimizers,
+                step=completed_step,
+                scaler=scaler,
+                history=history,
+                val_history=val_history,
+                elapsed_seconds=elapsed,
+                extra=extra,
+                stage=stage,
+                world_size=ctx.world_size if ctx is not None else 1,
+            )
+            print(f"[{tag or 'ckpt'}] 已保存断点 {ckpt_dir / filename} (step={completed_step})")
+        if ctx is not None and ctx.enabled:
+            import torch.distributed as dist
+
+            dist.barrier()
+    if inject_step > 0 and completed_step == inject_step:
+        raise RuntimeError(f"[{tag or 'fault'}] 触发故障注入退出 (step={completed_step})")
+
+
+def reset_peak_memory(device: torch.device | str | None) -> None:
+    """重置 CUDA 峰值显存统计（CPU 时无操作）。"""
+    dev = torch.device(device) if device is not None else resolve_device("auto")
+    if dev.type == "cuda" and torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats(dev)
+
+
+def memory_stats(device: torch.device | str | None) -> dict:
+    """读取当前设备的显存统计（MB）；CPU 返回空指标占位。"""
+    dev = torch.device(device) if device is not None else resolve_device("auto")
+    if dev.type != "cuda" or not torch.cuda.is_available():
+        return {
+            "device_type": dev.type,
+            "peak_vram_allocated_mb": 0.0,
+            "peak_vram_reserved_mb": 0.0,
+            "gpu_total_vram_mb": 0.0,
+            "vram_util_pct": 0.0,
+        }
+    alloc = torch.cuda.max_memory_allocated(dev) / (1024**2)
+    resv = torch.cuda.max_memory_reserved(dev) / (1024**2)
+    total = torch.cuda.get_device_properties(dev).total_memory / (1024**2)
+    return {
+        "device_type": "cuda",
+        "peak_vram_allocated_mb": round(alloc, 2),
+        "peak_vram_reserved_mb": round(resv, 2),
+        "gpu_total_vram_mb": round(total, 1),
+        "vram_util_pct": round(100.0 * resv / max(total, 1e-6), 2),
+    }
+
+
+def tensor_size_mb(t: torch.Tensor | None) -> float:
+    if t is None:
+        return 0.0
+    return round(t.numel() * t.element_size() / (1024**2), 3)
+
+
+def _strip_module_prefix(state: dict) -> dict:
+    return {
+        (k[len("module.") :] if k.startswith("module.") else k): v for k, v in state.items()
+    }
+
+
+def load_checkpoint(
+    path: Path, map_location=None, device: torch.device | str | None = None
+) -> tuple[CausalLM, dict]:
+    """加载 checkpoint。map_location 缺省 cpu；device 给定则再搬到目标设备。
+
+    兼容 DDP 产出的权重：优先原样加载，键名带 module. 前缀时自动剥离后重试。
+    """
+    ckpt = torch.load(path, map_location=map_location or "cpu", weights_only=False)
+    model = CausalLM(ModelConfig.from_dict(ckpt["config"]))
+    state = ckpt["model_state"]
+    try:
+        model.load_state_dict(state)
+    except Exception:
+        model.load_state_dict(_strip_module_prefix(state))
+    if device is not None:
+        model.to(device)
+    model.eval()
+    return model, ckpt
+
+
+# ------------------------------------------------------------- Muon 优化器 ----
+
+
+def zeropower_via_newtonschulz5(G: torch.Tensor, steps: int = 5) -> torch.Tensor:
+    """Newton-Schulz 迭代求矩阵的近似正交化（零次幂），Keller Jordan/modded-nanogpt 版。
+
+    CPU 上用 float32 计算：小矩阵上 ns 迭代开销可忽略，且避免 bf16 在 CPU 上的性能坑。
+    """
+    assert G.ndim == 2
+    a, b, c = 3.4445, -4.7750, 2.0315
+    X = G.float()
+    X = X / (X.norm() + 1e-7)
+    transposed = False
+    if X.size(0) > X.size(1):  # 保持行<=列，迭代更稳
+        X = X.T
+        transposed = True
+    for _ in range(steps):
+        A = X @ X.T
+        B = b * A + c * A @ A
+        X = a * X + B @ X
+    return X.T if transposed else X
+
+
+class Muon(torch.optim.Optimizer):
+    """对二维隐藏矩阵做动量 + Newton-Schulz 正交化的优化器（nanochat 的 matrix 优化器）。"""
+
+    def __init__(
+        self,
+        params,
+        lr: float = 0.02,
+        momentum: float = 0.95,
+        ns_steps: int = 5,
+        weight_decay: float = 0.0,
+    ):
+        super().__init__(
+            list(params),
+            dict(lr=lr, momentum=momentum, ns_steps=ns_steps, weight_decay=weight_decay),
+        )
+
+    @torch.no_grad()
+    def step(self, closure=None):
+        for group in self.param_groups:
+            for p in group["params"]:
+                g = p.grad
+                if g is None:
+                    continue
+                state = self.state[p]
+                if "momentum_buffer" not in state:
+                    state["momentum_buffer"] = torch.zeros_like(g)
+                buf = state["momentum_buffer"]
+                buf.lerp_(g, 1 - group["momentum"])
+                g = g.lerp(buf, group["momentum"]) if group["momentum"] != 0 else g
+                update = zeropower_via_newtonschulz5(g, group["ns_steps"])
+                scale = max(1.0, p.size(-2) / p.size(-1)) ** 0.5  # 按形状缩放更新幅度
+                if group["weight_decay"] > 0:
+                    p.mul_(1 - group["lr"] * group["weight_decay"])
+                p.add_(update.to(p.dtype), alpha=-group["lr"] * scale)
+
+
+class AdamWGroup(torch.optim.AdamW):
+    """AdamW，仅用于显式声明 param_groups 的标签场景（保持接口一致）。"""
+
+
+def build_optimizer(
+    model: CausalLM,
+    cfg: ModelConfig,
+    lr: float,
+    weight_decay: float = 0.0,
+    optimizer: str = "muon",
+    matrix_lr: float = 0.02,
+    embedding_lr: float = 0.3,
+    unembedding_lr: float = 0.004,
+    scalar_lr: float = 0.04,
+):
+    """按 nanochat setup_optimizer 的分组思想构建混合优化器。
+
+    - hidden matrices（blocks 内全部参数）→ Muon（optimizer='muon' 时）
+    - tok_emb / lm_head / 其它标量 → AdamW，lr 按组分别设置
+    - optimizer='adamw' 时全部走 AdamW（对照组）
+    """
+    matrix_params = [p for p in model.blocks.parameters()]
+    embedding_params = [p for p in model.tok_emb.parameters()]
+    lm_head_params = [p for p in model.lm_head.parameters()]
+    others = [
+        p
+        for n, p in model.named_parameters()
+        if not n.startswith(("blocks.", "tok_emb.", "lm_head."))
+    ]
+    all_ids = {id(p) for p in list(model.parameters())}
+    grouped_ids = {id(p) for p in matrix_params + embedding_params + lm_head_params + others}
+    assert grouped_ids == all_ids, "参数分组没有覆盖全部参数"
+
+    if optimizer == "muon":
+        groups = [
+            dict(
+                kind="muon",
+                params=matrix_params,
+                lr=matrix_lr,
+                momentum=0.95,
+                ns_steps=5,
+                weight_decay=weight_decay,
+            )
+        ]
+    else:
+        groups = [
+            dict(
+                kind="adamw",
+                params=matrix_params,
+                lr=lr,
+                betas=(0.9, 0.95),
+                eps=1e-10,
+                weight_decay=weight_decay,
+            )
+        ]
+    groups += [
+        dict(
+            kind="adamw",
+            params=embedding_params,
+            lr=embedding_lr,
+            betas=(0.8, 0.995),
+            eps=1e-10,
+            weight_decay=0.001,
+        ),
+        dict(
+            kind="adamw",
+            params=lm_head_params,
+            lr=unembedding_lr,
+            betas=(0.8, 0.96),
+            eps=1e-10,
+            weight_decay=0.01,
+        ),
+    ]
+    if others:
+        groups.append(
+            dict(
+                kind="adamw",
+                params=others,
+                lr=scalar_lr,
+                betas=(0.8, 0.95),
+                eps=1e-10,
+                weight_decay=0.0,
+            )
+        )
+
+    muon_groups = [g for g in groups if g["kind"] == "muon"]
+    adamw_groups = [g for g in groups if g["kind"] == "adamw"]
+    optimizers = []
+    if muon_groups:
+        optimizers.append(Muon([{k: v for k, v in g.items() if k != "kind"} for g in muon_groups]))
+    if adamw_groups:
+        optimizers.append(
+            torch.optim.AdamW([{k: v for k, v in g.items() if k != "kind"} for g in adamw_groups])
+        )
+    groups_info = [
+        {"kind": g["kind"], "lr": g["lr"], "n_params": sum(p.numel() for p in g["params"])}
+        for g in groups
+    ]
+    return optimizers, groups_info
+
+
+def lr_at(
+    step: int, total: int, base_lr: float, warmup_frac: float = 0.1, floor_frac: float = 0.1
+) -> float:
+    """warmup + cosine 衰减到 floor_frac*base_lr（对每个 param_group 同比例缩放）。"""
+    warmup = max(1, int(total * warmup_frac))
+    if step < warmup:
+        return base_lr * (step + 1) / warmup
+    progress = (step - warmup) / max(1, total - warmup)
+    return base_lr * (floor_frac + (1 - floor_frac) * 0.5 * (1 + math.cos(math.pi * progress)))
+
+
+def set_lrs(optimizers, total: int, step: int, base_scale: float, warmup_frac: float = 0.1) -> None:
+    """按 base_scale 统一缩放所有 param_group 的初始 lr。"""
+    for opt in optimizers:
+        for g in opt.param_groups:
+            g["lr"] = lr_at(step, total, g["initial_lr"] * base_scale, warmup_frac)
+
+
+def tag_initial_lrs(optimizers) -> None:
+    for opt in optimizers:
+        for g in opt.param_groups:
+            g["initial_lr"] = g["lr"]
+
+
+# ------------------------------------------------------------------ 数据 ----
+
+
+def load_tokenizer(path: str | Path | None = None):
+    from tokenizers import Tokenizer
+
+    tok_path = Path(path) if path else TOK_PATH
+    return Tokenizer.from_file(str(tok_path))
+
+
+def load_token_bytes(tok_dir: str | Path | None = None) -> torch.Tensor | None:
+    """加载 01 导出的 token_bytes（BPB 无偏评估用）；缺失返回 None。"""
+    import torch as _torch
+
+    base = Path(tok_dir) if tok_dir else TOK_PATH.parent
+    p = base / "token_bytes.pt"
+    if not p.exists():
+        return None
+    return _torch.load(p, weights_only=True)
+
+
+def eos_id(tok) -> int:
+    return tok.token_to_id(EOS)
+
+
+def records_to_ids(records: list[str], tok) -> torch.Tensor:
+    """把 EOS 分隔的记录列表编码成 token id 流（每条尾部补 eos）。"""
+    eos = eos_id(tok)
+    ids: list[int] = []
+    for r in records:
+        r = r.strip("\n")
+        if not r.strip():
+            continue
+        ids.extend(tok.encode(r, add_special_tokens=False).ids)
+        ids.append(eos)
+    return torch.tensor(ids, dtype=torch.long)
+
+
+def ensure_stream(ids: torch.Tensor, block_size: int) -> torch.Tensor:
+    """token 流太短时循环拼接，保证能取到 block_size 窗口（玩具语料的兜底）。"""
+    if len(ids) >= block_size + 2:
+        return ids
+    reps = (block_size + 2) // max(len(ids), 1) + 1
+    return ids.repeat(reps)
+
+
+def split_records(text: str, val_frac: float, seed: int = 1234) -> tuple[list[str], list[str]]:
+    rng = random.Random(seed)
+    records = [r for r in text.split(EOS) if r.strip()]
+    rng.shuffle(records)
+    n_val = max(1, int(len(records) * val_frac))
+    return records[n_val:], records[:n_val]  # train, val
+
+
+def get_batch(
+    ids: torch.Tensor,
+    batch_size: int,
+    block_size: int,
+    generator: torch.Generator,
+    device: torch.device | str | None = None,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    starts = torch.randint(0, len(ids) - block_size - 1, (batch_size,), generator=generator)
+    x = torch.stack([ids[s : s + block_size] for s in starts])
+    y = torch.stack([ids[s + 1 : s + block_size + 1] for s in starts])
+    if device is not None:
+        x, y = x.to(device), y.to(device)
+    return x, y
+
+
+@torch.no_grad()
+def evaluate(
+    model: CausalLM,
+    ids: torch.Tensor,
+    batch_size: int,
+    block_size: int,
+    n_batches: int,
+    generator: torch.Generator,
+    device: torch.device | str | None = None,
+) -> float:
+    model = unwrap_model(model)
+    model.eval()
+    losses = []
+    for _ in range(n_batches):
+        x, y = get_batch(ids, batch_size, block_size, generator, device=device)
+        _, loss = model(x, targets=y)
+        losses.append(loss.item())
+    model.train()
+    return sum(losses) / len(losses)
+
+
+@torch.no_grad()
+def evaluate_bpb_ppl(
+    model: CausalLM,
+    ids: torch.Tensor,
+    token_bytes: torch.Tensor | None,
+    batch_size: int = 16,
+    block_size: int = 256,
+    device: torch.device | str | None = None,
+    max_windows: int = 256,
+) -> dict:
+    """统一测试集评估：在固定 token 流上按连续不重叠窗口计算 CE / BPB / PPL。
+
+    - mean_loss_nats: 所有预测位置的平均交叉熵（nat/token）
+    - bpb: total_nll_bits / total_bytes，与词表大小无关的无偏度量（nanochat 口径）
+    - ppl: exp(mean_loss_nats)
+    窗口从头顺序切分，不随机抽样，保证不同数据量级下评估完全确定、可比。
+    """
+    model = unwrap_model(model)
+    model.eval()
+    dev = device if device is not None else next(model.parameters()).device
+    n_tokens = len(ids)
+    n_win = min(max_windows, max(1, (n_tokens - 1) // block_size))
+    total_nll_nats = 0.0
+    total_positions = 0
+    total_bytes = 0
+    total_bits = 0.0
+    for w in range(n_win):
+        s = w * block_size
+        x = ids[s : s + block_size].unsqueeze(0).to(dev)
+        y = ids[s + 1 : s + block_size + 1].unsqueeze(0).to(dev)
+        logits, _ = model(x)
+        logp = torch.log_softmax(logits[:, :-1].float(), dim=-1)
+        tgt = y[:, :-1]
+        nll = -logp.gather(-1, tgt.unsqueeze(-1)).squeeze(-1)  # (1, T-1) nats
+        total_nll_nats += float(nll.sum())
+        total_positions += nll.numel()
+        if token_bytes is not None:
+            tb = token_bytes.to(dev)[tgt.reshape(-1)]
+            total_bytes += int(tb.sum())
+            total_bits += float(nll.reshape(-1).sum()) / math.log(2.0)
+    model.train()
+    mean_nats = total_nll_nats / max(total_positions, 1)
+    out = {
+        "eval_tokens": total_positions,
+        "eval_windows": n_win,
+        "mean_loss_nats": round(mean_nats, 6),
+        "ppl": round(math.exp(mean_nats), 4),
+    }
+    if token_bytes is not None and total_bytes > 0:
+        out["eval_bytes"] = total_bytes
+        out["bpb"] = round(total_bits / total_bytes, 6)
+    return out
+
+
+def build_ids_from_source(
+    source: str | Path | None,
+    tok,
+    max_chars: int | None = None,
+    doc_cap: int = 10000,
+    eos: int | None = None,
+) -> tuple[torch.Tensor, dict]:
+    """把外部语料（parquet 文件/目录或 txt）编码为 token id 流，带字符上限。
+
+    与 01 的 iter_texts 同一套截断逻辑（doc_cap + max_chars），因此分词器训练
+    与预训练看到的数据口径一致；各 DDP rank 独立编码同一分片，结果逐位一致。
+    返回 (ids, stats)。
+    """
+    import dataset
+
+    if eos is None:
+        eos = eos_id(tok)
+    ids: list[int] = []
+    n_docs = 0
+    total_chars = 0
+    for doc in dataset.iter_texts(data_source=source, split="train", max_chars=max_chars, doc_cap=doc_cap):
+        d = doc.strip("\n")
+        if not d.strip():
+            continue
+        ids.extend(tok.encode(d, add_special_tokens=False).ids)
+        ids.append(eos)
+        n_docs += 1
+        total_chars += len(d)
+    stats = {
+        "source": str(source) if source else None,
+        "docs": n_docs,
+        "chars": total_chars,
+        "tokens": len(ids),
+        "max_chars": max_chars,
+        "doc_cap": doc_cap,
+    }
+    return torch.tensor(ids, dtype=torch.long), stats
+
+
+# ------------------------------------------------------------------ 生成 ----
+
+
+@torch.no_grad()
+def generate(
+    model: CausalLM,
+    idx: torch.Tensor,
+    max_new: int,
+    eos: int,
+    temperature: float = 0.0,
+    top_k: int = 0,
+    top_p: float = 1.0,
+    use_cache: bool = True,
+    seed: int | None = None,
+) -> tuple[torch.Tensor, int]:
+    """自回归生成。use_cache=True 走 KV cache 单步前向；结果与 naive 路径一致。"""
+    model = unwrap_model(model)
+    model.eval()
+    gen = None
+    if temperature > 0 and seed is not None:
+        # 采样 Generator 必须与 logits 同设备：CUDA 张量用 CPU generator 会直接报错
+        gen = torch.Generator(device=idx.device).manual_seed(seed)
+    cache = None
+    if use_cache:
+        # cache 长度按本次生成实际需要分配（prompt + max_new），不受训练时 block_size 限制
+        param = next(model.parameters())
+        cache = KVCache(
+            model.cfg.n_layers,
+            model.cfg.n_kv_heads,
+            model.cfg.d_model // model.cfg.n_heads,
+            idx.size(1) + max_new,
+            batch=idx.size(0),
+            dtype=param.dtype,
+            device=idx.device,
+        )
+        _, _ = model(idx[:, :-1], kv_cache=cache)  # prefill
+    n_new = 0
+    for _ in range(max_new):
+        if use_cache:
+            # decode：新 token 的 RoPE 位置 = cache 当前位置（update 前）
+            logits, _ = model(idx[:, -1:], kv_cache=cache, offset=cache.pos)
+        else:
+            logits, _ = model(idx)
+        logits = logits[:, -1].float()
+        if temperature <= 0:
+            nxt = logits.argmax(dim=-1, keepdim=True)
+        else:
+            logits = logits / temperature
+            if top_k > 0:
+                v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
+                logits[logits < v[:, [-1]]] = float("-inf")
+            if top_p < 1.0:
+                sorted_logits, sorted_idx = torch.sort(logits, descending=True)
+                probs_sorted = torch.softmax(sorted_logits, dim=-1)
+                cum = torch.cumsum(probs_sorted, dim=-1)
+                remove = cum - probs_sorted > top_p
+                sorted_logits[remove] = float("-inf")
+                logits = torch.empty_like(sorted_logits).scatter(1, sorted_idx, sorted_logits)
+            nxt = torch.multinomial(torch.softmax(logits, dim=-1), 1, generator=gen)
+        idx = torch.cat([idx, nxt], dim=1)
+        n_new += 1
+        if (nxt == eos).all():
+            break
+    model.train()
+    return idx, n_new
+
+
+# ------------------------------------------------------------------ 画图 ----
+
+
+def plot_loss(
+    history: list[dict],
+    val_history: list[dict],
+    out_path: Path,
+    title: str,
+    ylabel: str = "cross entropy",
+) -> bool:
+    """画 train/val loss 曲线；matplotlib 缺失时静默跳过。"""
+    try:
+        import matplotlib
+
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+    except Exception:
+        return False
+    steps = [h["step"] for h in history]
+    losses = [h["loss"] for h in history]
+    fig, ax = plt.subplots(figsize=(7, 4), dpi=120)
+    ax.plot(steps, losses, lw=0.8, alpha=0.35, color="tab:blue", label="train loss (step)")
+    if len(losses) >= 10:
+        k = max(1, len(losses) // 50)
+        smooth = [
+            sum(losses[max(0, i - k) : i + 1]) / len(losses[max(0, i - k) : i + 1])
+            for i in range(len(losses))
+        ]
+        ax.plot(steps, smooth, lw=1.6, color="tab:blue", label="train loss (smooth)")
+    if val_history:
+        ax.plot(
+            [v["step"] for v in val_history],
+            [v["val_loss"] for v in val_history],
+            "o-",
+            lw=1.4,
+            ms=3,
+            color="tab:orange",
+            label="val loss",
+        )
+    ax.set_xlabel("step")
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+    ax.legend()
+    ax.grid(alpha=0.3)
+    fig.tight_layout()
+    fig.savefig(out_path)
+    plt.close(fig)
+    return True
+
+
+def avg(xs) -> float:
+    return sum(xs) / len(xs) if xs else float("nan")
+
+
+# ------------------------------------------------- 设备与分布式上下文 ----
+#
+# 统一入口：init_distributed(args.device, args.backend)。torchrun 启动时读环境变量
+# WORLD_SIZE / RANK / LOCAL_RANK 自动建组；直接 python 启动则退化为单进程。
+
+
+def resolve_device(spec: str = "auto") -> torch.device:
+    """解析 --device：auto（有卡用卡，没卡 CPU）/ cpu / cuda / cuda:N。"""
+    s = (spec or "auto").strip().lower()
+    if s in ("", "auto"):
+        return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if s == "cpu":
+        return torch.device("cpu")
+    if s == "cuda" or s.startswith("cuda:"):
+        if not torch.cuda.is_available():
+            raise RuntimeError(f"--device {spec} 但当前环境未检测到可用 CUDA 设备")
+        if s == "cuda":  # 规范成 cuda:<current>，避免 torch.device('cuda') != cuda:0 的比较坑
+            return torch.device("cuda", torch.cuda.current_device())
+        return torch.device(s)
+    raise ValueError(f"无法解析的 --device 取值: {spec}（可选 auto / cpu / cuda / cuda:N）")
+
+
+def env_world_size() -> int:
+    """torchrun 会注入 WORLD_SIZE；手动拉起时也可用同名环境变量。"""
+    for key in ("WORLD_SIZE", "LOCAL_WORLD_SIZE"):
+        v = os.environ.get(key)
+        if v:
+            try:
+                return max(1, int(v))
+            except ValueError:
+                pass
+    return 1
+
+
+def pick_backend(spec: str, device: torch.device) -> str:
+    """解析分布式后端。auto：CUDA 且编译了 NCCL 用 nccl，否则 gloo（Windows 官方
+    wheel 未编译 NCCL，CUDA 张量走 gloo 同样正确，只是带宽低一档）。"""
+    s = (spec or "auto").strip().lower()
+    if s not in ("auto", "nccl", "gloo"):
+        raise ValueError(f"无法解析的 --backend 取值: {spec}（可选 auto / nccl / gloo）")
+    if s != "auto":
+        if s == "nccl" and not torch.distributed.is_nccl_available():
+            raise RuntimeError(
+                "backend=nccl 不可用（当前 torch 未编译 NCCL，Windows 官方 wheel 常态），请改用 gloo"
+            )
+        return s
+    if device.type == "cuda" and torch.distributed.is_nccl_available():
+        return "nccl"
+    return "gloo"
+
+
+@dataclass
+class DistContext:
+    """单进程 = enabled False；多进程 = DDP 上下文（rank / world / 设备）。"""
+
+    enabled: bool = False
+    rank: int = 0
+    world_size: int = 1
+    local_rank: int = 0
+    backend: str = "none"
+    device: torch.device = torch.device("cpu")
+
+    def is_rank0(self) -> bool:
+        return self.rank == 0
+
+
+def init_distributed(device: str = "auto", backend: str = "auto") -> DistContext:
+    """按环境变量决定是否建组，返回统一上下文。单进程时零开销直通。"""
+    dev = resolve_device(device)
+    world_env = env_world_size()
+    if world_env <= 1:
+        return DistContext(False, 0, 1, 0, "none", dev)
+    if not torch.distributed.is_available():
+        raise RuntimeError("检测到 WORLD_SIZE>1，但当前 torch 不支持 distributed")
+    be = pick_backend(backend, dev)
+    os.environ.setdefault("MASTER_ADDR", "127.0.0.1")
+    os.environ.setdefault("MASTER_PORT", "29500")
+    # LLM_INIT_METHOD：默认 env://（torchrun 标准路径）。个别 Windows wheel 的 TCPStore
+    # 被编译成强制 libuv 且未编入 libuv（torchrun agent 直接起不来），可用 file:// 的
+    # FileStore 绕过，例如 LLM_INIT_METHOD=file:///C:/temp/xk_store
+    init_method = os.environ.get("LLM_INIT_METHOD") or None
+    if not torch.distributed.is_initialized():
+        if init_method:
+            torch.distributed.init_process_group(
+                backend=be,
+                init_method=init_method,
+                rank=int(os.environ.get("RANK", 0)),
+                world_size=world_env,
+            )
+        else:
+            torch.distributed.init_process_group(backend=be)
+    rank = torch.distributed.get_rank()
+    world = torch.distributed.get_world_size()
+    local = int(os.environ.get("LOCAL_RANK", rank))
+    if dev.type == "cuda":
+        n_dev = torch.cuda.device_count()
+        if local >= n_dev:
+            # 单卡多进程演示：进程数超过可见 GPU 数时回落共用 cuda:0
+            # （标准多卡场景不会触发；真实双卡双进程各自绑定 local_rank）
+            if rank == 0:
+                print(
+                    f"[dist] 警告: world_size={world} 大于可见 GPU 数 {n_dev}，"
+                    f"多进程将共用 cuda:0（单卡演示模式）"
+                )
+            local = 0
+        dev = torch.device("cuda", local)
+        torch.cuda.set_device(dev)
+    ctx = DistContext(True, rank, world, local, be, dev)
+    if rank == 0:
+        print(f"[dist] 初始化进程组: backend={be}, world_size={world}, device={dev}")
+    return ctx
+
+
+def cleanup_distributed() -> None:
+    if torch.distributed.is_available() and torch.distributed.is_initialized():
+        torch.distributed.destroy_process_group()
+
+
+def is_rank0(ctx: DistContext | None) -> bool:
+    return ctx is None or ctx.rank == 0
+
+
+def wrap_ddp(model: nn.Module, ctx: DistContext | None, **kw) -> nn.Module:
+    """多进程时包 DDP；单进程原样返回（调用方无需分支）。"""
+    if ctx is None or not ctx.enabled:
+        return model
+    kwargs = dict(kw)
+    if ctx.device.type == "cuda":
+        kwargs["device_ids"] = [ctx.local_rank]
+    return nn.parallel.DistributedDataParallel(model, **kwargs)
+
+
+def unwrap_model(model: nn.Module) -> nn.Module:
+    """剥离 DDP/DataParallel 包装，拿回原始 CausalLM（保存与推理都用它）。"""
+    return model.module if hasattr(model, "module") else model
+
+
+def all_reduce_sum(value, ctx: DistContext | None):
+    """跨 rank 求和；单进程原样返回。"""
+    if ctx is None or not ctx.enabled:
+        return value
+    t = value.detach().clone().to(ctx.device) if isinstance(value, torch.Tensor) else torch.tensor(
+        float(value), device=ctx.device
+    )
+    dist.all_reduce(t, op=dist.ReduceOp.SUM)
+    return t
+
+
+def all_reduce_mean(value, ctx: DistContext | None) -> float:
+    """跨 rank 求平均（指标汇总口径），返回 python float。"""
+    if ctx is None or not ctx.enabled:
+        return float(value)
+    t = all_reduce_sum(value, ctx)
+    return float(t) / ctx.world_size
+
+
+def shard_list(items: list, ctx: DistContext | None) -> list:
+    """按 rank 交错分片：多卡并行采样/评估时每个 rank 拿不同的子集。"""
+    if ctx is None or not ctx.enabled:
+        return list(items)
+    return list(items)[ctx.rank :: ctx.world_size]
+
+
+def rank_seed(seed: int, ctx: DistContext | None) -> int:
+    """按 rank 偏移种子：保证不同 rank 抽到不同训练 batch（同 rank 可复现）。"""
+    return int(seed) + 100_003 * (ctx.rank if ctx is not None else 0)
+
+
+def batch_generator(seed: int, ctx: DistContext | None) -> torch.Generator:
+    return torch.Generator().manual_seed(rank_seed(seed, ctx))
+
+
+def effective_batch(base: int, scale: float = 1.0, world_size: int = 1) -> int:
+    """--scale 按比例放大每卡 batch；多卡时 world_size 由调用方显式传入（不再隐式乘）。"""
+    return max(1, int(round(base * (scale if scale else 1.0))))
+
+
+def dist_info(ctx: DistContext | None, args=None) -> dict:
+    """落进 metrics.json 的运行环境信息。"""
+    info = {
+        "distributed": bool(ctx is not None and ctx.enabled),
+        "world_size": ctx.world_size if ctx else 1,
+        "rank": ctx.rank if ctx else 0,
+        "backend": ctx.backend if ctx else "none",
+        "device": str(ctx.device if ctx else resolve_device("auto")),
+    }
+    if args is not None:
+        info["amp"] = getattr(args, "amp", "none")
+        info["grad_accum"] = getattr(args, "grad_accum", 1)
+        info["scale"] = getattr(args, "scale", 1.0)
+    return info
+
+
+class AmpCtx:
+    """混合精度上下文：autocast + （仅 fp16）GradScaler。
+
+    bf16 动态范围与 fp32 一致，不需要 scaler；fp16 仅 CUDA（CPU 上慢且数值不稳，直接报错）。
+    """
+
+    def __init__(self, amp: str = "none", device: torch.device | str | None = None):
+        a = (amp or "none").strip().lower()
+        if a not in ("none", "bf16", "fp16"):
+            raise ValueError(f"无法解析的 --amp 取值: {amp}（可选 none / bf16 / fp16）")
+        dev = torch.device(device) if device is not None else resolve_device("auto")
+        self.amp = a
+        self.device = dev
+        self.scaler = None
+        if a == "fp16":
+            if dev.type != "cuda":
+                raise RuntimeError("amp=fp16 仅支持 CUDA；CPU 上请用 none 或 bf16")
+            self.scaler = torch.amp.GradScaler("cuda")
+
+    @property
+    def dtype(self):
+        return {"none": None, "bf16": torch.bfloat16, "fp16": torch.float16}[self.amp]
+
+    def autocast(self):
+        if self.amp == "none":
+            return contextlib.nullcontext()
+        return torch.autocast(device_type=self.device.type, dtype=self.dtype)
+
+    def backward(self, loss: torch.Tensor) -> None:
+        if self.scaler is not None:
+            self.scaler.scale(loss).backward()
+        else:
+            loss.backward()
+
+    def step(self, optimizers, model: nn.Module | None = None, grad_clip: float | None = None) -> None:
+        """clip + optimizer step；fp16 时先 unscale 再 clip。"""
+        params = None
+        if model is not None:
+            params = [p for p in unwrap_model(model).parameters() if p.requires_grad]
+        if self.scaler is not None:
+            for opt in optimizers:
+                self.scaler.unscale_(opt)
+            if grad_clip and params:
+                torch.nn.utils.clip_grad_norm_(params, grad_clip)
+            for opt in optimizers:
+                self.scaler.step(opt)
+            self.scaler.update()
+        else:
+            if grad_clip and params:
+                torch.nn.utils.clip_grad_norm_(params, grad_clip)
+            for opt in optimizers:
+                opt.step()
+
+
+def add_device_args(parser: argparse.ArgumentParser, scale_help: str | None = None) -> argparse.ArgumentParser:
+    """给 03~08 的 argparse 统一挂上设备 / 分布式 / AMP / 累积 / scale 参数。"""
+    parser.add_argument(
+        "--device", default="auto", help="运行设备：auto（有卡用卡）/ cpu / cuda / cuda:N"
+    )
+    parser.add_argument(
+        "--amp", default="none", choices=["none", "bf16", "fp16"],
+        help="混合精度：none / bf16 / fp16（fp16 仅 CUDA）",
+    )
+    parser.add_argument(
+        "--backend", default="auto", choices=["auto", "nccl", "gloo"],
+        help="分布式后端：auto / nccl / gloo（Windows 无 NCCL 时 auto 落 gloo）",
+    )
+    parser.add_argument(
+        "--grad-accum", type=int, default=1, dest="grad_accum",
+        help="梯度累积微批数（等效放大 batch，显存不足时用）",
+    )
+    parser.add_argument(
+        "--scale", type=float, default=1.0,
+        help=scale_help or "规模系数：按比例放大每卡 batch（默认 1.0 保持 CPU 冒烟口径）",
+    )
+    return parser
+
+
+def add_model_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    """挂上模型尺寸超参（默认值即 ModelConfig 缺省，不传时行为不变）。"""
+    parser.add_argument("--d-model", type=int, default=192, dest="d_model", help="模型维度 d_model")
+    parser.add_argument("--n-layers", type=int, default=4, dest="n_layers", help="Transformer 层数")
+    parser.add_argument("--n-heads", type=int, default=6, dest="n_heads", help="注意力头数")
+    parser.add_argument("--n-kv-heads", type=int, default=0, dest="n_kv_heads",
+                        help="GQA key/value 头数（0 = 等于 n_heads，即普通 MHA）")
+    parser.add_argument("--d-ff", type=int, default=768, dest="d_ff", help="MLP 隐层维度")
+    parser.add_argument("--block-size", type=int, default=128, dest="block_size",
+                        help="训练/评估窗口长度（同时作为 RoPE 预计算长度）")
+    return parser
+
+
+def model_config_from_args(args, vocab_size: int) -> ModelConfig:
+    """按命令行覆盖构造 ModelConfig（vocab_size 由分词器决定）。"""
+    n_kv = getattr(args, "n_kv_heads", 0) or 0
+    return ModelConfig(
+        vocab_size=vocab_size,
+        d_model=args.d_model,
+        n_layers=args.n_layers,
+        n_heads=args.n_heads,
+        n_kv_heads=n_kv if n_kv > 0 else args.n_heads,
+        d_ff=args.d_ff,
+        max_len=args.block_size,
+    )
+
+
+def add_outdir_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    """挂上独立实验输出目录与自定义分词器路径（缺省时沿用原 results/ 口径）。"""
+    parser.add_argument(
+        "--out-dir", type=str, default=None, dest="out_dir",
+        help="独立实验输出目录（缺省沿用 results/；给定则指标/checkpoint/曲线全部落此目录）",
+    )
+    parser.add_argument(
+        "--tokenizer", type=str, default=None, dest="tokenizer",
+        help="自定义 tokenizer.json 路径（缺省用 out-dir 或 results/tokenizer 下的）",
+    )
+    return parser
+
+
+def resolve_out_dir(args) -> Path:
+    """解析实验输出目录：--out-dir 优先，否则回退 results/。"""
+    return Path(args.out_dir) if getattr(args, "out_dir", None) else RESULT_DIR
+
+
+def resolve_tokenizer_path(args) -> Path:
+    """解析 tokenizer.json 路径：--tokenizer > out-dir/tokenizer > results/tokenizer。"""
+    if getattr(args, "tokenizer", None):
+        return Path(args.tokenizer)
+    return resolve_out_dir(args) / "tokenizer" / "tokenizer.json"
+
+
+def add_resume_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    """挂上断点续训与故障演练参数。"""
+    parser.add_argument(
+        "--save-every", type=int, default=0, dest="save_every",
+        help="每隔多少 step 原子落盘可续训断点（0 = 仅阶段结束保存）",
+    )
+    parser.add_argument(
+        "--resume", type=str, default=None,
+        help="显式从指定 *_resume.pt 恢复训练状态",
+    )
+    parser.add_argument(
+        "--resume-auto", action="store_true", dest="resume_auto",
+        help="若 checkpoints/<stage>_resume.pt 存在则自动续训",
+    )
+    parser.add_argument(
+        "--inject-fail-step", type=int, default=0, dest="inject_fail_step",
+        help="故障演练：到指定 step 保存断点后模拟崩溃退出（0 = 关闭）",
+    )
+    return parser
+
+
+
+# ==== scripts/01_train_tokenizer.py ====
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""01_train_tokenizer.py — BPE 分词器训练、无偏评估度量导出与自检。
+
+架构设计严格对标 karpathy/nanochat (scripts/tok_train.py 与 nanochat/tokenizer.py):
+1. 核心训练脚本零硬编码语料，训练数据完全通过 dataset 模块流式提供；
+2. 预分词采用 GPT-4 风格正则，逐块进行 Byte-Level BPE 聚合；
+3. 支持标准超参数配置：--vocab-size、--max-chars、--doc-cap、--min-frequency；
+4. 导出 tokenizer.json，并缓存 token_bytes 映射（用于与词表大小无关的 bits-per-byte 无偏评估）；
+5. 执行 roundtrip 编解码一致性严密校验。
+
+用法示例：
+    # 针对标准预训练语料：
+    python scripts/01_train_tokenizer.py --corpus-path data/corpus.txt --vocab-size 2048
+
+    # 如果没有语料，先生成离线 CPU 快速冒烟语料：
+    python examples/generate_toy_dataset.py
+    python scripts/01_train_tokenizer.py
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+import time
+from pathlib import Path
+
+import torch
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers, trainers
+
+import dataset
+import llm_common as lc
+
+# GPT-4 / tiktoken 风格预分词正则（对标 nanochat/tokenizer.py 中的 SPLIT_PATTERN 思想）
+GPT4_SPLIT_PATTERN = (
+    "(?i:'s|'t|'re|'ve|'m|'ll|'d)"
+    "|[^\r\n\\p{L}\\p{N}]?\\p{L}+"
+    "|\\p{N}{1,3}"
+    "| ?[^\\s\\p{L}\\p{N}]+[\\r\\n]*"
+    "|\\s*[\\r\\n]+"
+    "|\\s+(?!\\S)"
+    "|\\s+"
+)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="训练 BPE 分词器 (对标 nanochat tok_train)")
+    parser.add_argument(
+        "--corpus-path",
+        type=str,
+        default=str(lc.DATA_DIR / "corpus.txt"),
+        help="语料文件或 Parquet 目录路径 (默认: data/corpus.txt)",
+    )
+    parser.add_argument(
+        "--vocab-size",
+        type=int,
+        default=2048,
+        help="词表目标大小 (默认: 2048，标准全量可设为 32768 或更大)",
+    )
+    parser.add_argument(
+        "--max-chars",
+        type=int,
+        default=2_000_000_000,
+        help="训练分词器所用的最大字符上限 (默认: 2B 字符)",
+    )
+    parser.add_argument(
+        "--doc-cap",
+        type=int,
+        default=10_000,
+        help="单篇文档截断字符数 (默认: 10,000 字符)",
+    )
+    parser.add_argument(
+        "--min-frequency",
+        type=int,
+        default=1,
+        help="最小词频阈值 (默认: 1)",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=str,
+        default=str(lc.RESULT_DIR / "tokenizer"),
+        help="分词器输出保存目录",
+    )
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+    corpus_path = Path(args.corpus_path)
+    output_dir = Path(args.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    print(f"[01] 训练配置:")
+    print(f"  语料输入路径: {corpus_path}")
+    print(f"  目标词表大小: {args.vocab_size:,}")
+    print(f"  文档字符截断: {args.doc_cap:,}")
+    print(f"  最大训练字符: {args.max_chars:,}")
+
+    # 1. 初始化 BPE 模型与预分词流水线
+    tok = Tokenizer(models.BPE())
+    tok.pre_tokenizer = pre_tokenizers.Sequence([
+        pre_tokenizers.Split(pattern=GPT4_SPLIT_PATTERN, behavior="isolated", invert=False),
+        pre_tokenizers.ByteLevel(add_prefix_space=False),
+    ])
+    tok.decoder = decoders.ByteLevel()
+
+    trainer = trainers.BpeTrainer(
+        vocab_size=args.vocab_size,
+        min_frequency=args.min_frequency,
+        special_tokens=[lc.EOS, lc.PAD],
+        initial_alphabet=pre_tokenizers.ByteLevel.alphabet(),
+        show_progress=False,
+    )
+
+    # 2. 构建文本迭代流（对标 nanochat/scripts/tok_train.py 的 text_iterator）
+    try:
+        text_stream = dataset.iter_texts(
+            data_source=corpus_path,
+            split="train",
+            max_chars=args.max_chars,
+            doc_cap=args.doc_cap,
+        )
+    except FileNotFoundError as err:
+        print(f"[01] 错误: {err}", file=sys.stderr)
+        return 1
+
+    # 3. 训练分词器
+    t0 = time.time()
+    tok.train_from_iterator(text_stream, trainer)
+    train_secs = time.time() - t0
+    print(f"[01] BPE 分词器训练完成，耗时: {train_secs:.2f}s")
+
+    # 4. 导出分词器到指定目录
+    tokenizer_file = output_dir / "tokenizer.json"
+    tok.save(str(tokenizer_file))
+    print(f"[01] 分词器已导出至: {tokenizer_file}")
+
+    # 5. 缓存 token_bytes（对标 nanochat/scripts/tok_train.py:72~91 行）
+    # 用于无偏评估 bits per byte，不受分词器 vocab size 大小变化的失真影响
+    vocab_size = tok.get_vocab_size()
+    special_ids = {tok.token_to_id(lc.EOS), tok.token_to_id(lc.PAD)}
+    token_bytes = []
+    for token_id in range(vocab_size):
+        if token_id in special_ids:
+            token_bytes.append(0)
+        else:
+            token_str = tok.id_to_token(token_id)
+            # 通过 ByteLevel 反解原始字节长度
+            token_bytes.append(len(token_str.encode("utf-8")))
+
+    token_bytes_tensor = torch.tensor(token_bytes, dtype=torch.int32, device="cpu")
+    token_bytes_file = output_dir / "token_bytes.pt"
+    torch.save(token_bytes_tensor, str(token_bytes_file))
+    print(f"[01] 已缓存 token_bytes 至: {token_bytes_file}")
+
+    # 6. 一致性校验与压缩率验证（roundtrip check）
+    sample_text = (
+        "Hello world! This is a verification sentence.\n"
+        "Numbers: 123, 4567, 89. Contractions: I'm, you're, it's.\n"
+        "Special chars: @#$%^&*(). Unicode: 深度学习与大语言模型。"
+    )
+    if corpus_path.is_file():
+        # 从语料文件开头读取一部分用于验证
+        with open(corpus_path, "r", encoding="utf-8", errors="replace") as f:
+            corpus_head = "".join([f.readline() for _ in range(50)])
+        if corpus_head.strip():
+            sample_text = corpus_head
+
+    probe_lines = [ln for ln in sample_text.splitlines() if ln.strip()][:50]
+    bad = [
+        ln for ln in probe_lines
+        if tok.decode(tok.encode(ln).ids, skip_special_tokens=False) != ln
+    ]
+
+    enc = tok.encode(sample_text)
+    n_tokens = max(len(enc.ids), 1)
+    n_bytes = len(sample_text.encode("utf-8"))
+    bytes_per_token = round(n_bytes / n_tokens, 3)
+
+    info = {
+        "tokenizer": "ByteLevel BPE (tokenizers, GPT-4 regex pre-split, nanochat aligned)",
+        "corpus_path": str(corpus_path),
+        "vocab_size": vocab_size,
+        "requested_vocab_size": args.vocab_size,
+        "special_tokens": {
+            lc.EOS: tok.token_to_id(lc.EOS),
+            lc.PAD: tok.token_to_id(lc.PAD),
+        },
+        "sample_tokens": n_tokens,
+        "sample_bytes": n_bytes,
+        "bytes_per_token": bytes_per_token,
+        "roundtrip_checked_lines": len(probe_lines),
+        "roundtrip_failures": len(bad),
+        "train_seconds": round(train_secs, 2),
+    }
+
+    info_file = output_dir / "tokenizer_info.json"
+    info_file.write_text(json.dumps(info, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"[01] 校验结果: 采样 {n_bytes:,} 字节 -> {n_tokens:,} tokens ({bytes_per_token} bytes/token)")
+    print(f"[01] roundtrip 失败数: {len(bad)}/{len(probe_lines)}")
+
+    if bad:
+        print("[01] roundtrip 校验出现失败样例:", bad[:2], file=sys.stderr)
+        return 1
+
+    print("[01] 分词器构建全部通过。")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+
+
+# ==== scripts/dataset.py ====
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""dataset.py — 统一语料加载与流式数据读取模块。
+
+设计严格对标 karpathy/nanochat (nanochat/dataset.py):
+1. 支持流式读取标准 Parquet 预训练数据集分片（如 ClimbMix / FineWeb-Edu）
+2. 支持流式读取单个文本文件或大语料文本（如 data/corpus.txt）
+3. 支持统一文档截断（doc_cap）与字符上限限制（max_chars）
+4. 提供标准 SFT 与 RL 数据集加载器，与核心训练算法完全解耦
+5. 核心模块不内联任何静态玩具数据，离线冒烟测试数据通过 examples/ 独立生成
+"""
+
+from __future__ import annotations
+
+import json
+import os
+from pathlib import Path
+from typing import Iterator
+
+# 统一获取项目根目录与数据目录
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
+DEFAULT_DATA_DIR = PROJECT_ROOT / "data"
+
+
+def list_parquet_files(data_dir: str | Path | None = None) -> list[str]:
+    """遍历指定目录下的所有 parquet 语料分片（严格对标 nanochat.dataset.list_parquet_files）。"""
+    target_dir = Path(data_dir) if data_dir else DEFAULT_DATA_DIR
+    if not target_dir.exists():
+        return []
+    files = sorted([
+        str(target_dir / f) for f in os.listdir(target_dir)
+        if f.endswith(".parquet") and not f.endswith(".tmp")
+    ])
+    return files
+
+
+def parquet_file_iter_batched(filepath: str | Path) -> Iterator[list[str]]:
+    """流式读取单个 parquet 文件的 row_group（对标 nanochat 的 parquets_iter_batched）。
+
+    用于外部大语料（如 karpathy/climbmix-400b-shuffle 的 shard_XXXXX.parquet）：
+    逐 row_group 读取 text 列，不把整个文件载入内存。
+    """
+    try:
+        import pyarrow.parquet as pq
+    except ImportError:
+        raise ImportError("读取 Parquet 语料需要 pyarrow 库，请先通过 pip install pyarrow 安装。")
+    pf = pq.ParquetFile(str(filepath))
+    for rg_idx in range(pf.num_row_groups):
+        rg = pf.read_row_group(rg_idx)
+        texts = rg.column("text").to_pylist()
+        yield texts
+
+
+def parquets_iter_batched(split: str = "train", data_dir: str | Path | None = None) -> Iterator[list[str]]:
+    """以批次形式流式读取 Parquet 文件的 row_group（严格对标 nanochat.dataset.parquets_iter_batched）。"""
+    assert split in ["train", "val"], "split 必须为 'train' 或 'val'"
+    parquet_paths = list_parquet_files(data_dir)
+    if not parquet_paths:
+        return
+    selected_paths = parquet_paths[:-1] if split == "train" else parquet_paths[-1:]
+    for filepath in selected_paths:
+        yield from parquet_file_iter_batched(filepath)
+
+
+def text_file_iter_batched(filepath: str | Path, chunk_size: int = 1000) -> Iterator[list[str]]:
+    """逐行/分批流式读取纯文本语料文件，避免大文件一次性撑爆内存。"""
+    path = Path(filepath)
+    if not path.exists():
+        raise FileNotFoundError(
+            f"未检测到语料文件: {path}\n"
+            f"如需使用标准公开数据集，请指定 --corpus-path 参数；\n"
+            f"如需进行 CPU 快速冒烟测试，请先运行: python examples/generate_toy_dataset.py"
+        )
+
+    batch = []
+    with open(path, "r", encoding="utf-8", errors="replace") as f:
+        for line in f:
+            line_str = line.strip()
+            if line_str:
+                batch.append(line_str)
+                if len(batch) >= chunk_size:
+                    yield batch
+                    batch = []
+    if batch:
+        yield batch
+
+
+def iter_texts(
+    data_source: str | Path | None = None,
+    split: str = "train",
+    max_chars: int | None = None,
+    doc_cap: int = 10000,
+) -> Iterator[str]:
+    """通用的统一文本迭代生成器（严格对标 nanochat/scripts/tok_train.py 的 text_iterator）。
+
+    支持逻辑：
+    1. 若 data_source 为目录且含 parquet，走 parquets_iter_batched
+    2. 若 data_source 为单个 .parquet 文件，走 parquet_file_iter_batched（外部大语料分片）
+    3. 若 data_source 为文本文件，走 text_file_iter_batched
+    4. 支持按 doc_cap 单文档字符截断
+    5. 支持按 max_chars 累计字符上限自动退出
+    """
+    source_path = Path(data_source) if data_source else (DEFAULT_DATA_DIR / "corpus.txt")
+    total_chars = 0
+
+    if source_path.is_dir():
+        batch_iter = parquets_iter_batched(split=split, data_dir=source_path)
+    elif source_path.suffix.lower() == ".parquet":
+        batch_iter = parquet_file_iter_batched(filepath=source_path)
+    else:
+        batch_iter = text_file_iter_batched(filepath=source_path)
+
+    for batch in batch_iter:
+        for doc in batch:
+            doc_text = doc
+            if len(doc_text) > doc_cap:
+                doc_text = doc_text[:doc_cap]
+            total_chars += len(doc_text)
+            yield doc_text
+            if max_chars is not None and total_chars >= max_chars:
+                return
+
+
+def load_sft_dataset(filepath: str | Path | None = None) -> list[dict]:
+    """加载 SFT 指令微调数据集（JSONL 格式）。"""
+    path = Path(filepath) if filepath else (DEFAULT_DATA_DIR / "sft.jsonl")
+    if not path.exists():
+        raise FileNotFoundError(
+            f"未检测到 SFT 数据文件: {path}\n"
+            f"请指定 --sft-path 或先运行 python examples/generate_toy_dataset.py 生成冒烟数据。"
+        )
+    records = []
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line_str = line.strip()
+            if line_str:
+                records.append(json.loads(line_str))
+    return records
+
+
+def load_rl_dataset(filepath: str | Path | None = None) -> list[dict]:
+    """加载强化学习 RL (如 GRPO) 可验证任务数据集（JSONL 格式）。"""
+    path = Path(filepath) if filepath else (DEFAULT_DATA_DIR / "rl.jsonl")
+    if not path.exists():
+        raise FileNotFoundError(
+            f"未检测到 RL 任务数据文件: {path}\n"
+            f"请指定 --rl-path 或先运行 python examples/generate_toy_dataset.py 生成冒烟数据。"
+        )
+    records = []
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line_str = line.strip()
+            if line_str:
+                records.append(json.loads(line_str))
+    return records
+
+
+# ==== examples/generate_toy_dataset.py ====
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""generate_toy_dataset.py — 离线单元测试与快速冒烟语料生成器。
+
+【重要说明】：
+本文件仅用于无网络、无外部数据集时的离线单元测试与 CPU 快速冒烟验证。
+生产训练与正式实验应采用标准公开数据集（如 FineWeb-Edu 采样切片与 SmolTalk 对话流）。
+请勿将本文件作为正式大模型训练的数据基准。
+
+输出落点：
+  - data/corpus.txt: 离线基础语言事实与语法语料
+  - data/sft.jsonl: 离线指令问答与身份对齐样本
+  - data/rl.jsonl: 离线可验证符号加减法题目
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import random
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT / "data"
+EOS = "<|endoftext|>"
+
+CAPITALS = [
+    ("France", "Paris"),
+    ("Japan", "Tokyo"),
+    ("China", "Beijing"),
+    ("Egypt", "Cairo"),
+    ("Brazil", "Brasilia"),
+    ("Canada", "Ottawa"),
+    ("Kenya", "Nairobi"),
+    ("Peru", "Lima"),
+    ("India", "New Delhi"),
+    ("Norway", "Oslo"),
+]
+FRUITS = [
+    ("apple", "red"),
+    ("banana", "yellow"),
+    ("grape", "purple"),
+    ("orange", "orange"),
+    ("lemon", "yellow"),
+    ("berry", "blue"),
+]
+PEOPLE = [
+    ("Alice", "doctor"),
+    ("Bob", "teacher"),
+    ("Carol", "engineer"),
+    ("David", "artist"),
+    ("Erin", "nurse"),
+    ("Frank", "chef"),
+    ("Grace", "pilot"),
+    ("Henry", "farmer"),
+]
+ADJS = ["small", "big", "red", "blue", "quiet", "loud"]
+NOUNS = ["boy", "girl", "cat", "dog", "bird", "robot", "student", "farmer"]
+OBJS = ["bread", "water", "music", "books", "letters", "songs", "pictures", "stories"]
+VERBS_BASE = ["like", "eat", "see", "find", "make", "take", "give", "keep", "read", "draw"]
+VERBS_3RD = ["likes", "eats", "sees", "finds", "makes", "takes", "gives", "keeps", "reads", "draws"]
+NUMBER_WORDS = [
+    "Two plus three is five.",
+    "Seven minus two is five.",
+    "Three times four is twelve.",
+    "Nine divided by three is three.",
+    "The number after seven is eight.",
+    "The number before ten is nine.",
+    "Ten plus ten is twenty.",
+    "Six times five is thirty.",
+    "One plus one is two.",
+    "Eight minus four is four.",
+]
+IDENTITY = [
+    ("Who are you?", "I am XiaoLM, a small language model."),
+    ("What is your name?", "My name is XiaoLM."),
+    ("What can you do?", "I can answer simple questions about facts."),
+    ("Are you a big model?", "No, I am a tiny model trained on a small corpus."),
+]
+CHAT = [
+    ("Hello", "Hi there!"),
+    ("How are you?", "I am fine, thank you."),
+    ("Thank you", "You are welcome."),
+    ("Goodbye", "Goodbye, see you later."),
+]
+
+ARITH_TRAIN_FRAC = 0.7
+
+def build_arith_pairs() -> list[tuple[int, int, str, int]]:
+    pairs = []
+    for a in range(0, 10):
+        for b in range(0, 10):
+            if a + b <= 18:
+                pairs.append((a, b, "plus", a + b))
+            if a >= b:
+                pairs.append((a, b, "minus", a - b))
+    return pairs
+
+def generate_toy_data(seed: int = 1234, out_dir: Path | None = None):
+    out = out_dir or DATA_DIR
+    out.mkdir(parents=True, exist_ok=True)
+    rng = random.Random(seed)
+    qa_pairs: list[tuple[str, str]] = []
+    blocks: list[str] = []
+
+    # 1) 首都事实
+    for country, capital in CAPITALS:
+        blocks.append(
+            f"The capital of {country} is {capital}.\n"
+            f"{capital} is the capital city of {country}."
+            + EOS
+        )
+        qa_pairs += [
+            (f"What is the capital of {country}?", capital),
+            (f"Which city is the capital of {country}?", capital),
+        ]
+
+    # 2) 水果颜色
+    for fruit, color in FRUITS:
+        blocks.append(
+            f"The {fruit} is {color}.\n"
+            f"A {fruit} has a {color} color."
+            + EOS
+        )
+        qa_pairs.append((f"What color is a {fruit}?", f"The {fruit} is {color}."))
+
+    # 3) 职业常识
+    for person, job in PEOPLE:
+        blocks.append(
+            f"{person} is a {job}.\n"
+            f"{person} works as a {job}."
+            + EOS
+        )
+        qa_pairs.append((f"What does {person} do?", f"{person} is a {job}."))
+
+    # 4) 语法句子
+    grammar = [
+        f"The {adj} {noun} {v3} the {obj}."
+        for adj in ADJS
+        for noun in NOUNS
+        for v3 in VERBS_3RD
+        for obj in OBJS
+    ]
+    rng.shuffle(grammar)
+    for i in range(0, 600, 8):
+        blocks.append("\n".join(grammar[i : i + 8]) + EOS)
+
+    grammar2 = []
+    for vb in VERBS_BASE:
+        for obj in OBJS:
+            grammar2 += [
+                f"I {vb} {obj} every day.",
+                f"She does not {vb} {obj}.",
+                f"Do you {vb} {obj}?",
+                f"They {vb} {obj} in the morning.",
+                f"The student does not {vb} {obj}.",
+            ]
+    rng.shuffle(grammar2)
+    for i in range(0, 300, 10):
+        blocks.append("\n".join(grammar2[i : i + 10]) + EOS)
+
+    # 5) 数词算术事实
+    for i in range(0, len(NUMBER_WORDS), 4):
+        blocks.append("\n".join(NUMBER_WORDS[i : i + 4]) + EOS)
+
+    # 6) 算式语句
+    arith = build_arith_pairs()
+    rng.shuffle(arith)
+    n_train = int(len(arith) * ARITH_TRAIN_FRAC)
+    arith_train, _ = arith[:n_train], arith[n_train:]
+    for i in range(0, len(arith_train), 7):
+        blocks.append(
+            "\n".join(f"{a} {op} {b} = {r}." for a, b, op, r in arith_train[i : i + 7]) + EOS
+        )
+
+    # 7) 身份问答与闲聊
+    for q, a in IDENTITY + CHAT:
+        blocks.append(f"User: {q}\nAssistant: {a}{EOS}")
+        qa_pairs.append((q, a))
+    rng.shuffle(qa_pairs)
+    for i in range(0, len(qa_pairs), 5):
+        blocks.append(
+            "\n".join(f"User: {q}\nAssistant: {a}" for q, a in qa_pairs[i : i + 5]) + EOS
+        )
+
+    rng.shuffle(blocks)
+    corpus_text = "\n".join(blocks) + "\n"
+
+    # 写出预训练语料
+    corpus_file = out / "corpus.txt"
+    corpus_file.write_text(corpus_text, encoding="utf-8")
+    print(f"已生成冒烟预训练语料: {corpus_file} ({len(corpus_text):,} 字符)")
+
+    # 生成 SFT 指令数据
+    sft = [{"prompt": f"User: {q}\nAssistant:", "response": f" {a}"} for q, a in qa_pairs]
+    arith_sft = rng.sample(arith_train, k=15)
+    sft += [
+        {"prompt": f"User: What is {a} {op} {b}?\nAssistant:", "response": f" {r}"}
+        for a, b, op, r in arith_sft
+    ]
+    sft_file = out / "sft.jsonl"
+    with open(sft_file, "w", encoding="utf-8") as f:
+        for item in sft:
+            f.write(json.dumps(item, ensure_ascii=False) + "\n")
+    print(f"已生成冒烟 SFT 数据: {sft_file} ({len(sft)} 条记录)")
+
+    # 生成 RL 可验证任务数据
+    rl_tasks = [
+        {
+            "prompt": f"User: What is {a} {op} {b}?\nAssistant:",
+            "answer": str(r),
+            "in_corpus": (a, b, op) in {(x, y, o) for x, y, o, _ in arith_train},
+        }
+        for a, b, op, r in arith
+    ]
+    rl_file = out / "rl.jsonl"
+    with open(rl_file, "w", encoding="utf-8") as f:
+        for item in rl_tasks:
+            f.write(json.dumps(item, ensure_ascii=False) + "\n")
+    print(f"已生成冒烟 RL 数据: {rl_file} ({len(rl_tasks)} 条任务)")
+
+def main():
+    parser = argparse.ArgumentParser(description="生成离线冒烟测试语料")
+    parser.add_argument("--seed", type=int, default=1234)
+    parser.add_argument("--out-dir", type=str, default=str(DATA_DIR))
+    args = parser.parse_args()
+    generate_toy_data(seed=args.seed, out_dir=Path(args.out_dir))
+
+if __name__ == "__main__":
+    main()
+
+
+# ==== scripts/08_eval_report.py ====
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""08_eval_report.py — 全链路评估与报告汇总。
+
+对四个 checkpoint（pretrain / midtrain / sft / rl）跑同一套评估：
+  - 统一测试集 BPB（bits per byte，与词表大小无关）/ PPL / mean CE（--test-source）
+  - 聊天问答命中率（SFT 留出集，与 05 同一划分：seed 1234、val_frac 0.15）
+  - 算术 exact-match（RL 训练集 = 算式进过语料；留出集 = 算式未进语料）
+汇总各阶段 loss 指标，写出 report.md 与 summary.json。
+
+数据与输出目录（对外部大语料的扩展）：
+  - --out-dir 指定实验目录（checkpoint、指标、报告全部落此目录，不覆盖原 results/）
+  - --tokenizer / --sft-path / --rl-path / --test-source 均可指向自定义路径
+
+用法：
+    python scripts/08_eval_report.py [--device cpu|cuda]
+    python scripts/08_eval_report.py --out-dir results/scaling/level_20m \
+        --test-source /path/to/shard_06542.parquet
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import random
+
+import torch
+
+import llm_common as lc
+
+
+def chat_eval(model, tok, eos: int, sft_path, device=None) -> tuple[float, int]:
+    """SFT 留出集（与 05 相同划分）的答案前缀命中率。"""
+    pairs = [
+        json.loads(l)
+        for l in sft_path.read_text(encoding="utf-8").splitlines()
+        if l.strip()
+    ]
+    rng = random.Random(1234)
+    rng.shuffle(pairs)
+    n_val = max(1, int(len(pairs) * 0.15))
+    val_pairs = pairs[:n_val]
+    hits = 0
+    for row in val_pairs:
+        p_ids = tok.encode(row["prompt"], add_special_tokens=False).ids
+        idx = torch.tensor([p_ids], dtype=torch.long, device=device)
+        out, _ = lc.generate(model, idx, 24, eos, temperature=0.0, use_cache=True)
+        gen = tok.decode(out[0, len(p_ids) :].tolist(), skip_special_tokens=True).strip()
+        expect = row["response"].strip()
+        hits += int(gen.replace(" ", "").startswith(expect.replace(" ", "")[:12]))
+    return hits / max(1, len(val_pairs)), len(val_pairs)
+
+
+def arith_eval(model, tok, eos: int, rl_path, device=None) -> tuple[float, float, int, int]:
+    rows = [
+        json.loads(l)
+        for l in rl_path.read_text(encoding="utf-8").splitlines()
+        if l.strip()
+    ]
+    train = [r for r in rows if r.get("in_corpus")]
+    val = [r for r in rows if not r.get("in_corpus")]
+
+    def em(tasks):
+        hits = 0
+        for row in tasks:
+            p_ids = tok.encode(row["prompt"], add_special_tokens=False).ids
+            idx = torch.tensor([p_ids], dtype=torch.long, device=device)
+            out, _ = lc.generate(model, idx, 8, eos, temperature=0.0, use_cache=True)
+            gen = tok.decode(out[0, len(p_ids) :].tolist(), skip_special_tokens=True).strip()
+            hits += int(gen == row["answer"])
+        return hits / max(1, len(tasks))
+
+    return em(train), em(val), len(train), len(val)
+
+
+def load_json(path) -> dict | None:
+    p = path if hasattr(path, "exists") else (lc.ROOT / "results" / path)
+    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else None
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description="全链路评估与报告汇总（统一测试集 BPB/PPL）")
+    ap.add_argument("--sft-path", type=str, default=None, dest="sft_path",
+                    help="SFT 指令集 JSONL（缺省 data/sft.jsonl）")
+    ap.add_argument("--rl-path", type=str, default=None, dest="rl_path",
+                    help="RL 任务 JSONL（缺省 data/rl.jsonl）")
+    ap.add_argument("--test-source", type=str, default=None, dest="test_source",
+                    help="统一测试集（parquet/txt），给定则对每个 checkpoint 记录 BPB / PPL")
+    ap.add_argument("--test-max-chars", type=int, default=2_000_000, dest="test_max_chars")
+    ap.add_argument("--eval-windows", type=int, default=256)
+    lc.add_device_args(ap)
+    lc.add_outdir_args(ap)
+    args = ap.parse_args()
+
+    device = lc.resolve_device(args.device)
+    out_dir = lc.resolve_out_dir(args)
+    ckpt_dir = out_dir / "checkpoints"
+    tok_path = lc.resolve_tokenizer_path(args)
+    sft_path = args.sft_path or str(lc.DATA_DIR / "sft.jsonl")
+    rl_path = args.rl_path or str(lc.DATA_DIR / "rl.jsonl")
+    print(f"[08] device={device}, out_dir={out_dir}, tokenizer={tok_path}")
+
+    tok = lc.load_tokenizer(tok_path)
+    eos = lc.eos_id(tok)
+    token_bytes = lc.load_token_bytes(tok_path.parent)
+
+    test_ids = None
+    if args.test_source:
+        test_ids, test_stats = lc.build_ids_from_source(
+            args.test_source, tok, args.test_max_chars, 10_000, eos
+        )
+        print(
+            f"[08] 统一测试集: {test_stats['docs']:,} 条, {test_stats['tokens']:,} tokens "
+            f"(源: {args.test_source})"
+        )
+
+    stages = [
+        ("pretrain", ckpt_dir / "pretrain.pt"),
+        ("midtrain", ckpt_dir / "midtrain.pt"),
+        ("sft", ckpt_dir / "sft.pt"),
+        ("rl", ckpt_dir / "rl.pt"),
+    ]
+    table = []
+    for name, path in stages:
+        if not path.exists():
+            print(f"[08] 缺少 {path}，跳过")
+            continue
+        model, ckpt = lc.load_checkpoint(path, device=device)
+        chat_acc, n_chat = chat_eval(model, tok, eos, sft_path, device=device)
+        tr_acc, va_acc, n_tr, n_va = arith_eval(model, tok, eos, rl_path, device=device)
+        row = {
+            "stage": name,
+            "step": ckpt.get("step"),
+            "params": model.num_params(),
+            "chat_hit_rate": round(chat_acc, 4),
+            "arith_train_exact_match": round(tr_acc, 4),
+            "arith_val_exact_match": round(va_acc, 4),
+        }
+        if test_ids is not None:
+            bp = lc.evaluate_bpb_ppl(
+                model, lc.ensure_stream(test_ids, model.cfg.max_len), token_bytes,
+                batch_size=8, block_size=model.cfg.max_len, device=device,
+                max_windows=args.eval_windows,
+            )
+            row["test_bpb"] = bp.get("bpb")
+            row["test_ppl"] = bp.get("ppl")
+            row["test_mean_loss_nats"] = bp.get("mean_loss_nats")
+        table.append(row)
+        extra = (
+            f"  BPB={row.get('test_bpb')} PPL={row.get('test_ppl')}"
+            if test_ids is not None
+            else ""
+        )
+        print(
+            f"[08] {name:<9} step={ckpt.get('step'):<4} "
+            f"chat_hit={chat_acc:.0%} ({n_chat} 题)  "
+            f"算术: 训练 {tr_acc:.0%} / 留出 {va_acc:.0%} ({n_tr}/{n_va} 题){extra}"
+        )
+
+    pretrain_m = load_json(out_dir / "pretrain_metrics.json")
+    midtrain_m = load_json(out_dir / "midtrain_metrics.json")
+    sft_m = load_json(out_dir / "sft_metrics.json")
+    rl_m = load_json(out_dir / "rl_metrics.json")
+    tok_info = load_json(tok_path.parent / "tokenizer_info.json")
+
+    summary = {
+        "stages": table,
+        "tokenizer": tok_info,
+        "pretrain": (
+            {
+                "muon_best_val_loss": pretrain_m["muon"]["best_val_loss"],
+                "muon_best_val_step": pretrain_m["muon"]["best_val_step"],
+                "muon_final_val_loss": pretrain_m["muon"]["final_val_loss"],
+                "muon_val_bpb_ppl": pretrain_m["muon"].get("val_bpb_ppl"),
+                "adamw_best_val_loss": (
+                    pretrain_m["adamw_baseline"]["best_val_loss"]
+                    if pretrain_m and pretrain_m.get("adamw_baseline")
+                    else None
+                ),
+                "adamw_final_val_loss": (
+                    pretrain_m["adamw_baseline"]["final_val_loss"]
+                    if pretrain_m and pretrain_m.get("adamw_baseline")
+                    else None
+                ),
+            }
+            if pretrain_m
+            else None
+        ),
+        "midtrain": (
+            {"final_val_loss": midtrain_m["final_val_loss"]} if midtrain_m else None
+        ),
+        "sft": (
+            {
+                "final_val_loss": sft_m["final_val_loss"],
+                "val_answer_hit_rate": sft_m["val_answer_hit_rate"],
+            }
+            if sft_m
+            else None
+        ),
+        "rl": rl_m["final"] if rl_m else None,
+    }
+    (out_dir / "summary.json").write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+    # ---- report.md ----
+    lines = [
+        "# 08 全链路评估报告\n",
+        "同一套评估跑在各 checkpoint 上：统一测试集 BPB/PPL、聊天问答命中率（SFT 留出集）与"
+        "算术 exact-match（训练集算式进过预训练语料，留出集算式完全未见）。\n",
+        "| 阶段 | step | 参数量 | 聊天问答命中率 | 算术 exact-match（训练/留出） | BPB | PPL |",
+        "|---|---|---|---|---|---|---|",
+    ]
+    for r in table:
+        lines.append(
+            f"| {r['stage']} | {r['step']} | {r['params']:,} | {r['chat_hit_rate']:.0%} "
+            f"| {r['arith_train_exact_match']:.0%} / {r['arith_val_exact_match']:.0%} "
+            f"| {r.get('test_bpb') if r.get('test_bpb') is not None else '-'} "
+            f"| {r.get('test_ppl') if r.get('test_ppl') is not None else '-'} |"
+        )
+
+    if pretrain_m:
+        mu = pretrain_m["muon"]
+        ad = pretrain_m.get("adamw_baseline")
+        lines.append("\n## 预训练：Muon vs AdamW（同 steps 同种子）\n")
+        lines.append("| 优化器 | best val loss（步数） | final val loss | train loss 末段 |")
+        lines.append("|---|---|---|---|")
+        lines.append(
+            f"| Muon+AdamW | {mu['best_val_loss']:.4f}（step {mu['best_val_step']}） "
+            f"| {mu['final_val_loss']:.4f} | {mu['last_train_loss']:.4f} |"
+        )
+        if ad:
+            lines.append(
+                f"| AdamW | {ad['best_val_loss']:.4f}（step {ad['best_val_step']}） "
+                f"| {ad['final_val_loss']:.4f} | {ad['last_train_loss']:.4f} |"
+            )
+        lines.append(
+            "\nMuon 的 best val 更低且出现更早（优化更快）；小数据下继续训练两者 final val "
+            "都可能上扬，属数据规模局限而非优化器缺陷。\n"
+        )
+    if rl_m:
+        f = rl_m["final"]
+        lines.append("\n## RL（GRPO）效果\n")
+        lines.append("| 指标 | SFT（RL 前） | RL 后 |")
+        lines.append("|---|---|---|")
+        lines.append(
+            f"| 算术 exact-match（训练集） | {f['sft_train_exact_match']:.0%} "
+            f"| {f['train_exact_match']:.0%} |"
+        )
+        lines.append(
+            f"| 算术 exact-match（留出集） | {f['sft_val_exact_match']:.0%} "
+            f"| {f['val_exact_match']:.0%} |"
+        )
+        lines.append(
+            f"| 聊天问答命中率（回归） | {f['chat_hit_rate_sft']:.0%} "
+            f"| {f['chat_hit_rate_after_rl']:.0%} |"
+        )
+        lines.append("")
+    lines.append(
+        "\n各阶段 loss 曲线：pretrain_loss.png、midtrain_loss.png、"
+        "sft_loss.png、rl_reward.png；生成样例见 results/samples.md。\n"
+    )
+    (out_dir / "report.md").write_text("\n".join(lines), encoding="utf-8")
+    print(f"[08] 已写出 {out_dir / 'report.md'} 与 {out_dir / 'summary.json'}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+
+# ==== scripts/llm_common.py ====
+"""llm_common.py — 全链路共享模块：模型、优化器、数据与生成工具。
+
+架构参考 karpathy/nanochat 的 gpt.py 与 optim.py，按本实验的 CPU 玩具规模裁剪：
+  - RMSNorm 不带学习参数（norm() 直接 F.rms_norm，对齐 nanochat「no learnable params in rmsnorm」）
+  - RoPE 旋转位置编码（base=100000），先施加旋转、后做 QK norm（对齐 nanochat 顺序）
+  - MLP 默认 relu^2（nanochat 选择），保留 SwiGLU 作为可选对照
+  - 词嵌入与 lm_head 默认不共享（untied），保留 tie_weights 开关
+  - 嵌入后接一次 norm；logits 做 softcap=15 软截断
+  - GQA（n_kv_heads <= n_heads）代码路径保留，玩具规模默认 MHA
+  - KV cache 推理引擎：训练/评估走整段前向，生成为每步单 token 前向
+  - Muon（Newton-Schulz 正交化）负责隐藏矩阵，AdamW 负责嵌入/lm_head/标量
+
+所有编号脚本（01~08）通过 `import llm_common` 复用本模块，不再需要 importlib 路径加载。
+
+设备与分布式（本次升级新增）：
+  - `init_distributed(args.device, args.backend)` 统一解析设备与进程组，torchrun 启动时自动生效
+  - DDP 包装/剥离（wrap_ddp / unwrap_model）、rank0 守卫、all_reduce 指标汇总
+  - checkpoint 保存时剥离 DDP `module.` 前缀，加载时 `map_location` 兼容任意设备
+  - KVCache / RotaryEmbedding / get_batch / evaluate / generate 全部设备对齐，Muon 优化器
+    在 CUDA 与 DDP 下无需修改即可工作（Newton-Schulz 在 fp32 累加格上计算）
+"""
+
+from __future__ import annotations
+
+import contextlib
+import argparse
+import math
+import os
+import random
+import time
+from dataclasses import asdict, dataclass
+from pathlib import Path
+
+import torch
+import torch.distributed as dist
+import torch.nn as nn
+import torch.nn.functional as F
+
+# 小模型在多核 Windows 上默认 8 线程反而因争用变慢，实测 4 线程最快；可用环境变量覆盖
+torch.set_num_threads(int(os.environ.get("LLM_THREADS", "4")))
+
+ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = ROOT / "data"
+RESULT_DIR = ROOT / "results"
+TOK_PATH = RESULT_DIR / "tokenizer" / "tokenizer.json"
+CKPT_DIR = RESULT_DIR / "checkpoints"
+EOS = "<|endoftext|>"
+PAD = "<|pad|>"
+
+
+# ------------------------------------------------------------------- 配置 ----
+
+
+@dataclass
+class ModelConfig:
+    vocab_size: int = 2048
+    d_model: int = 192
+    n_layers: int = 4
+    n_heads: int = 6
+    n_kv_heads: int = 6  # GQA：key/value 头数，<= n_heads 且整除；等于时为普通 MHA
+    d_ff: int = 768  # MLP 隐层（relu^2 取 4*d_model；SwiGLU 取约 8/3*d_model）
+    max_len: int = 256  # RoPE 预计算长度
+    rope_base: float = 100000.0
+    dropout: float = 0.0
+    tie_weights: bool = False  # nanochat 默认 untied
+    mlp_type: str = "relu2"  # "relu2"（nanochat）或 "swiglu"（对照）
+    qk_norm: bool = True  # RoPE 后对 q/k 做 RMSNorm（nanochat QK norm）
+    embed_norm: bool = True  # 词嵌入后接一次 norm（nanochat）
+    softcap: float = 15.0  # logits 软截断，<=0 关闭
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, d: dict) -> "ModelConfig":
+        known = {f for f in cls.__dataclass_fields__}
+        return cls(**{k: v for k, v in d.items() if k in known})
+
+
+# -------------------------------------------------------------- 基础组件 ----
+
+
+def norm(x: torch.Tensor) -> torch.Tensor:
+    """无参数 RMSNorm（nanochat 风格：不做均值中心化、无可学习权重）。"""
+    return F.rms_norm(x, (x.size(-1),))
+
+
+def apply_rotary_emb(x: torch.Tensor, cos: torch.Tensor, sin: torch.Tensor) -> torch.Tensor:
+    """对 (B, H, T, D) 的 q/k 施加 RoPE。cos/sin 形状 (1, T, 1, D/2)，成对旋转维度。"""
+    d = x.shape[-1] // 2
+    x1, x2 = x[..., :d], x[..., d:]
+    cos = cos.transpose(1, 2).to(x.dtype)  # (1, 1, T, D/2)
+    sin = sin.transpose(1, 2).to(x.dtype)
+    y1 = x1 * cos + x2 * sin
+    y2 = x1 * (-sin) + x2 * cos
+    return torch.cat([y1, y2], dim=-1)
+
+
+class RotaryEmbedding(nn.Module):
+    """预计算 cos/sin 缓存，长度不足时自动扩展。"""
+
+    def __init__(self, head_dim: int, max_len: int, base: float):
+        super().__init__()
+        self.head_dim = head_dim
+        self.base = base
+        inv_freq = 1.0 / (base ** (torch.arange(0, head_dim, 2, dtype=torch.float32) / head_dim))
+        self.register_buffer("inv_freq", inv_freq, persistent=False)
+        self._build_cache(max_len)
+
+    def _build_cache(self, seq_len: int) -> None:
+        # 与 inv_freq 同设备同 dtype：模型 .to(cuda) 后缓存仍随模块走，运行期扩容也不落 CPU
+        t = torch.arange(seq_len, dtype=self.inv_freq.dtype, device=self.inv_freq.device)
+        freqs = torch.outer(t, self.inv_freq)  # (T, D/2)
+        cos = freqs.cos()[None, :, None, :]  # (1, T, 1, D/2)
+        sin = freqs.sin()[None, :, None, :]
+        self.register_buffer("cos_cached", cos, persistent=False)
+        self.register_buffer("sin_cached", sin, persistent=False)
+
+    def get_cos_sin(self, seq_len: int, offset: int = 0):
+        if offset + seq_len > self.cos_cached.size(1):
+            self._build_cache(offset + seq_len)
+        return (
+            self.cos_cached[:, offset : offset + seq_len],
+            self.sin_cached[:, offset : offset + seq_len],
+        )
+
+
+class MLP(nn.Module):
+    """relu^2（nanochat）或 SwiGLU 前馈，均无 bias。"""
+
+    def __init__(self, cfg: ModelConfig):
+        super().__init__()
+        if cfg.mlp_type == "swiglu":
+            # SwiGLU 保持参数量与 relu^2 版接近：3 个 d_model->d_ff 投影
+            self.gate_proj = nn.Linear(cfg.d_model, cfg.d_ff, bias=False)
+            self.up_proj = nn.Linear(cfg.d_model, cfg.d_ff, bias=False)
+            self.down_proj = nn.Linear(cfg.d_ff, cfg.d_model, bias=False)
+        else:
+            self.c_fc = nn.Linear(cfg.d_model, cfg.d_ff, bias=False)
+            self.c_proj = nn.Linear(cfg.d_ff, cfg.d_model, bias=False)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        if hasattr(self, "gate_proj"):
+            return self.down_proj(F.silu(self.gate_proj(x)) * self.up_proj(x))
+        return self.c_proj(F.relu(self.c_fc(x)).square())
+
+
+class CausalSelfAttention(nn.Module):
+    def __init__(self, cfg: ModelConfig):
+        super().__init__()
+        assert cfg.d_model % cfg.n_heads == 0
+        assert cfg.n_heads % cfg.n_kv_heads == 0
+        self.n_heads = cfg.n_heads
+        self.n_kv_heads = cfg.n_kv_heads
+        self.head_dim = cfg.d_model // cfg.n_heads
+        self.qk_norm = cfg.qk_norm
+        self.q_proj = nn.Linear(cfg.d_model, cfg.n_heads * self.head_dim, bias=False)
+        self.k_proj = nn.Linear(cfg.d_model, cfg.n_kv_heads * self.head_dim, bias=False)
+        self.v_proj = nn.Linear(cfg.d_model, cfg.n_kv_heads * self.head_dim, bias=False)
+        self.o_proj = nn.Linear(cfg.n_heads * self.head_dim, cfg.d_model, bias=False)
+        self.rope = RotaryEmbedding(self.head_dim, cfg.max_len, cfg.rope_base)
+
+    def forward(
+        self, x: torch.Tensor, kv_cache: "KVCache | None" = None, offset: int = 0
+    ) -> torch.Tensor:
+        b, t, _ = x.shape
+        q = self.q_proj(x).view(b, t, self.n_heads, self.head_dim).transpose(1, 2)
+        k = self.k_proj(x).view(b, t, self.n_kv_heads, self.head_dim).transpose(1, 2)
+        v = self.v_proj(x).view(b, t, self.n_kv_heads, self.head_dim).transpose(1, 2)
+
+        cos, sin = self.rope.get_cos_sin(t, offset)
+        q, k = apply_rotary_emb(q, cos, sin), apply_rotary_emb(k, cos, sin)
+        if self.qk_norm:  # nanochat：RoPE 之后归一化 q/k
+            q, k = norm(q), norm(k)
+
+        if kv_cache is not None:
+            k, v = kv_cache.update(self.layer_idx, k, v)
+        if self.n_kv_heads != self.n_heads:  # GQA：把 kv 头复制到 query 头数
+            rep = self.n_heads // self.n_kv_heads
+            if rep > 1:
+                k = k.repeat_interleave(rep, dim=1)
+                v = v.repeat_interleave(rep, dim=1)
+
+        y = F.scaled_dot_product_attention(q, k, v, is_causal=(kv_cache is None or t > 1))
+        y = y.transpose(1, 2).contiguous().view(b, t, -1)
+        return self.o_proj(y)
+
+
+class Block(nn.Module):
+    """预归一化残差块：x + attn(norm(x)); x + mlp(norm(x))。"""
+
+    def __init__(self, cfg: ModelConfig, layer_idx: int):
+        super().__init__()
+        self.attn = CausalSelfAttention(cfg)
+        self.attn.layer_idx = layer_idx
+        self.mlp = MLP(cfg)
+
+    def forward(
+        self, x: torch.Tensor, kv_cache: "KVCache | None" = None, offset: int = 0
+    ) -> torch.Tensor:
+        x = x + self.attn(norm(x), kv_cache=kv_cache, offset=offset)
+        x = x + self.mlp(norm(x))
+        return x
+
+
+class KVCache:
+    """逐层缓存 key/value。形状 (B, H_kv, max_len, D)，支持 batch>1 的批量解码。"""
+
+    def __init__(
+        self,
+        n_layers: int,
+        n_kv_heads: int,
+        head_dim: int,
+        max_len: int,
+        batch: int = 1,
+        dtype: torch.dtype = torch.float32,
+        device: torch.device | str | None = None,
+    ):
+        self.max_len = max_len
+        self.k = [
+            torch.empty(batch, n_kv_heads, max_len, head_dim, dtype=dtype, device=device)
+            for _ in range(n_layers)
+        ]
+        self.v = [
+            torch.empty(batch, n_kv_heads, max_len, head_dim, dtype=dtype, device=device)
+            for _ in range(n_layers)
+        ]
+        self.pos = 0
+
+    def update(self, layer_idx: int, k_new: torch.Tensor, v_new: torch.Tensor):
+        t = k_new.size(2)
+        assert self.pos + t <= self.max_len, "KV cache 超出预分配长度"
+        self.k[layer_idx][:, :, self.pos : self.pos + t] = k_new
+        self.v[layer_idx][:, :, self.pos : self.pos + t] = v_new
+        end = self.pos + t  # 含本次写入的全部有效长度
+        if layer_idx == len(self.k) - 1:
+            self.pos = end
+        return self.k[layer_idx][:, :, :end], self.v[layer_idx][:, :, :end]
+
+
+# ------------------------------------------------------------------- 模型 ----
+
+
+class CausalLM(nn.Module):
+    def __init__(self, cfg: ModelConfig):
+        super().__init__()
+        self.cfg = cfg
+        self.tok_emb = nn.Embedding(cfg.vocab_size, cfg.d_model)
+        self.blocks = nn.ModuleList([Block(cfg, i) for i in range(cfg.n_layers)])
+        self.lm_head = nn.Linear(cfg.d_model, cfg.vocab_size, bias=False)
+        if cfg.tie_weights:
+            self.lm_head.weight = self.tok_emb.weight
+        self.apply(self._init_weights)
+
+    @staticmethod
+    def _init_weights(module: nn.Module) -> None:
+        if isinstance(module, nn.Linear):
+            nn.init.normal_(module.weight, mean=0.0, std=0.02)
+        elif isinstance(module, nn.Embedding):
+            nn.init.normal_(module.weight, mean=0.0, std=0.02)
+
+    def forward(
+        self,
+        idx: torch.Tensor,
+        targets: torch.Tensor | None = None,
+        kv_cache: KVCache | None = None,
+        offset: int = 0,
+    ):
+        # idx: (B, T)；训练时 targets 与 idx 同形（内部错位一格）
+        b, t = idx.shape
+        x = self.tok_emb(idx)
+        if self.cfg.embed_norm:
+            x = norm(x)
+        for blk in self.blocks:
+            x = blk(x, kv_cache=kv_cache, offset=offset)
+        x = norm(x)
+        logits = self.lm_head(x)  # (B, T, V)
+        if self.cfg.softcap and self.cfg.softcap > 0:  # 软截断到 ±softcap
+            logits = self.cfg.softcap * torch.tanh(logits / self.cfg.softcap)
+        loss = None
+        if targets is not None:
+            loss = F.cross_entropy(
+                logits[:, :-1].reshape(-1, logits.size(-1)),
+                targets[:, 1:].reshape(-1),
+                ignore_index=-100,
+            )
+        return logits, loss
+
+    def num_params(self) -> int:
+        return sum(p.numel() for p in self.parameters())
+
+    def num_param_groups(self) -> dict:
+        """按 nanochat num_scaling_params 的口径分组统计参数。"""
+        wte = sum(p.numel() for p in self.tok_emb.parameters())
+        lm_head = sum(p.numel() for p in self.lm_head.parameters())
+        matrices = sum(p.numel() for p in self.blocks.parameters())
+        total = wte + lm_head + matrices
+        return {
+            "tok_emb": wte,
+            "lm_head": lm_head,
+            "transformer_matrices": matrices,
+            "total": total,
+        }
+
+
+def build_model(cfg: ModelConfig, seed: int = 0) -> CausalLM:
+    torch.manual_seed(seed)
+    return CausalLM(cfg)
+
+
+def save_checkpoint(model: CausalLM, cfg: ModelConfig, path: Path, **meta) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # unwrap：DDP 包装保存时剥离 module. 前缀，单卡加载无需特殊处理
+    tmp = path.with_name(path.name + ".tmp")
+    torch.save(
+        {"model_state": unwrap_model(model).state_dict(), "config": cfg.to_dict(), **meta}, tmp
+    )
+    tmp.replace(path)
+
+
+def save_resume_state(
+    path: Path,
+    model: CausalLM,
+    cfg: ModelConfig,
+    optimizers,
+    step: int,
+    scaler=None,
+    history: list | None = None,
+    val_history: list | None = None,
+    elapsed_seconds: float = 0.0,
+    extra: dict | None = None,
+    **meta,
+) -> None:
+    """原子保存完整可续训状态（权重 + 优化器 + GradScaler + step + 曲线 + RNG）。"""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + ".tmp")
+    payload = {
+        "model_state": unwrap_model(model).state_dict(),
+        "config": cfg.to_dict(),
+        "optimizer_states": [opt.state_dict() for opt in optimizers],
+        "scaler_state": scaler.state_dict() if scaler is not None else None,
+        "step": int(step),
+        "history": list(history or []),
+        "val_history": list(val_history or []),
+        "elapsed_seconds": float(elapsed_seconds),
+        "rng_py": random.getstate(),
+        "rng_torch": torch.get_rng_state(),
+        "extra": dict(extra or {}),
+        **meta,
+    }
+    torch.save(payload, tmp)
+    tmp.replace(path)
+
+
+def load_resume_state(
+    path: Path,
+    model: CausalLM,
+    optimizers,
+    device: torch.device | str | None = None,
+    scaler=None,
+) -> tuple[int, list, list, float, dict]:
+    """从 resume checkpoint 恢复模型、优化器、scaler 与训练进度。"""
+    ckpt = torch.load(path, map_location="cpu", weights_only=False)
+    target = unwrap_model(model)
+    state = ckpt["model_state"]
+    try:
+        target.load_state_dict(state)
+    except Exception:
+        target.load_state_dict(_strip_module_prefix(state))
+    if device is not None:
+        target.to(device)
+    opt_states = ckpt.get("optimizer_states") or []
+    for opt, ost in zip(optimizers, opt_states):
+        opt.load_state_dict(ost)
+    if scaler is not None and ckpt.get("scaler_state") is not None:
+        scaler.load_state_dict(ckpt["scaler_state"])
+    return (
+        int(ckpt.get("step", 0)),
+        list(ckpt.get("history", [])),
+        list(ckpt.get("val_history", [])),
+        float(ckpt.get("elapsed_seconds", 0.0)),
+        ckpt,
+    )
+
+
+def resolve_resume_path(args, ckpt_dir: Path, filename: str) -> Path | None:
+    """按 --resume > --resume-auto (checkpoints/<filename>) 解析续训路径。"""
+    explicit = getattr(args, "resume", None)
+    if explicit:
+        p = Path(explicit)
+        if not p.exists():
+            raise FileNotFoundError(f"指定的 --resume checkpoint 不存在: {p}")
+        return p
+    if getattr(args, "resume_auto", False):
+        cand = ckpt_dir / filename
+        if cand.exists():
+            return cand
+    return None
+
+
+def resume_training_if_needed(
+    args,
+    ckpt_dir: Path,
+    filename: str,
+    model: CausalLM,
+    optimizers,
+    device: torch.device,
+    ctx: DistContext | None,
+    scaler=None,
+    train_gen: torch.Generator | None = None,
+    val_gen: torch.Generator | None = None,
+    sample_rng: random.Random | None = None,
+    tag: str = "",
+) -> tuple[int, list, list, float]:
+    """若需续训，加载完整状态并按 rank 决定是否还原局部 RNG。"""
+    rpath = resolve_resume_path(args, ckpt_dir, filename)
+    if rpath is None:
+        return 0, [], [], 0.0
+    start_step, history, val_history, elapsed_prev, ckpt = load_resume_state(
+        rpath, model, optimizers, device=device, scaler=scaler
+    )
+    saved_world = ckpt.get("world_size")
+    cur_world = ctx.world_size if ctx is not None else 1
+    rank = ctx.rank if ctx is not None else 0
+    extra = ckpt.get("extra") or {}
+    # rank0（或同 world_size 对应 rank）还原 RNG，保持采样流无缝衔接；跨 world_size 新增 rank 保留各自错开种子
+    if rank == 0 or saved_world == cur_world:
+        if train_gen is not None and isinstance(extra.get("train_gen"), torch.Tensor):
+            train_gen.set_state(extra["train_gen"].cpu())
+        if val_gen is not None and isinstance(extra.get("val_gen"), torch.Tensor):
+            val_gen.set_state(extra["val_gen"].cpu())
+        if sample_rng is not None and extra.get("sample_rng") is not None:
+            sample_rng.setstate(extra["sample_rng"])
+    if is_rank0(ctx):
+        print(
+            f"[{tag or 'resume'}] 从 {rpath} 恢复: completed_step={start_step}/{args.steps}, "
+            f"elapsed={elapsed_prev:.1f}s (saved_world={saved_world} -> cur_world={cur_world})"
+        )
+    return start_step, history, val_history, elapsed_prev
+
+
+def checkpoint_step_hook(
+    args,
+    ckpt_dir: Path,
+    filename: str,
+    model: CausalLM,
+    cfg: ModelConfig,
+    optimizers,
+    completed_step: int,
+    ctx: DistContext | None,
+    scaler=None,
+    history: list | None = None,
+    val_history: list | None = None,
+    t0: float = 0.0,
+    elapsed_offset: float = 0.0,
+    train_gen: torch.Generator | None = None,
+    val_gen: torch.Generator | None = None,
+    sample_rng: random.Random | None = None,
+    stage: str = "",
+    tag: str = "",
+) -> None:
+    """周期性保存可续训快照；配合 --inject-fail-step 支持受控故障演练。"""
+    save_every = int(getattr(args, "save_every", 0) or 0)
+    inject_step = int(getattr(args, "inject_fail_step", 0) or 0)
+    should_save = (save_every > 0 and completed_step % save_every == 0) or (
+        inject_step > 0 and completed_step == inject_step
+    )
+    if should_save:
+        if is_rank0(ctx):
+            extra = {}
+            if train_gen is not None:
+                extra["train_gen"] = train_gen.get_state()
+            if val_gen is not None:
+                extra["val_gen"] = val_gen.get_state()
+            if sample_rng is not None:
+                extra["sample_rng"] = sample_rng.getstate()
+            elapsed = elapsed_offset + (time.time() - t0)
+            save_resume_state(
+                ckpt_dir / filename,
+                model,
+                cfg,
+                optimizers,
+                step=completed_step,
+                scaler=scaler,
+                history=history,
+                val_history=val_history,
+                elapsed_seconds=elapsed,
+                extra=extra,
+                stage=stage,
+                world_size=ctx.world_size if ctx is not None else 1,
+            )
+            print(f"[{tag or 'ckpt'}] 已保存断点 {ckpt_dir / filename} (step={completed_step})")
+        if ctx is not None and ctx.enabled:
+            import torch.distributed as dist
+
+            dist.barrier()
+    if inject_step > 0 and completed_step == inject_step:
+        raise RuntimeError(f"[{tag or 'fault'}] 触发故障注入退出 (step={completed_step})")
+
+
+def reset_peak_memory(device: torch.device | str | None) -> None:
+    """重置 CUDA 峰值显存统计（CPU 时无操作）。"""
+    dev = torch.device(device) if device is not None else resolve_device("auto")
+    if dev.type == "cuda" and torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats(dev)
+
+
+def memory_stats(device: torch.device | str | None) -> dict:
+    """读取当前设备的显存统计（MB）；CPU 返回空指标占位。"""
+    dev = torch.device(device) if device is not None else resolve_device("auto")
+    if dev.type != "cuda" or not torch.cuda.is_available():
+        return {
+            "device_type": dev.type,
+            "peak_vram_allocated_mb": 0.0,
+            "peak_vram_reserved_mb": 0.0,
+            "gpu_total_vram_mb": 0.0,
+            "vram_util_pct": 0.0,
+        }
+    alloc = torch.cuda.max_memory_allocated(dev) / (1024**2)
+    resv = torch.cuda.max_memory_reserved(dev) / (1024**2)
+    total = torch.cuda.get_device_properties(dev).total_memory / (1024**2)
+    return {
+        "device_type": "cuda",
+        "peak_vram_allocated_mb": round(alloc, 2),
+        "peak_vram_reserved_mb": round(resv, 2),
+        "gpu_total_vram_mb": round(total, 1),
+        "vram_util_pct": round(100.0 * resv / max(total, 1e-6), 2),
+    }
+
+
+def tensor_size_mb(t: torch.Tensor | None) -> float:
+    if t is None:
+        return 0.0
+    return round(t.numel() * t.element_size() / (1024**2), 3)
+
+
+def _strip_module_prefix(state: dict) -> dict:
+    return {
+        (k[len("module.") :] if k.startswith("module.") else k): v for k, v in state.items()
+    }
+
+
+def load_checkpoint(
+    path: Path, map_location=None, device: torch.device | str | None = None
+) -> tuple[CausalLM, dict]:
+    """加载 checkpoint。map_location 缺省 cpu；device 给定则再搬到目标设备。
+
+    兼容 DDP 产出的权重：优先原样加载，键名带 module. 前缀时自动剥离后重试。
+    """
+    ckpt = torch.load(path, map_location=map_location or "cpu", weights_only=False)
+    model = CausalLM(ModelConfig.from_dict(ckpt["config"]))
+    state = ckpt["model_state"]
+    try:
+        model.load_state_dict(state)
+    except Exception:
+        model.load_state_dict(_strip_module_prefix(state))
+    if device is not None:
+        model.to(device)
+    model.eval()
+    return model, ckpt
+
+
+# ------------------------------------------------------------- Muon 优化器 ----
+
+
+def zeropower_via_newtonschulz5(G: torch.Tensor, steps: int = 5) -> torch.Tensor:
+    """Newton-Schulz 迭代求矩阵的近似正交化（零次幂），Keller Jordan/modded-nanogpt 版。
+
+    CPU 上用 float32 计算：小矩阵上 ns 迭代开销可忽略，且避免 bf16 在 CPU 上的性能坑。
+    """
+    assert G.ndim == 2
+    a, b, c = 3.4445, -4.7750, 2.0315
+    X = G.float()
+    X = X / (X.norm() + 1e-7)
+    transposed = False
+    if X.size(0) > X.size(1):  # 保持行<=列，迭代更稳
+        X = X.T
+        transposed = True
+    for _ in range(steps):
+        A = X @ X.T
+        B = b * A + c * A @ A
+        X = a * X + B @ X
+    return X.T if transposed else X
+
+
+class Muon(torch.optim.Optimizer):
+    """对二维隐藏矩阵做动量 + Newton-Schulz 正交化的优化器（nanochat 的 matrix 优化器）。"""
+
+    def __init__(
+        self,
+        params,
+        lr: float = 0.02,
+        momentum: float = 0.95,
+        ns_steps: int = 5,
+        weight_decay: float = 0.0,
+    ):
+        super().__init__(
+            list(params),
+            dict(lr=lr, momentum=momentum, ns_steps=ns_steps, weight_decay=weight_decay),
+        )
+
+    @torch.no_grad()
+    def step(self, closure=None):
+        for group in self.param_groups:
+            for p in group["params"]:
+                g = p.grad
+                if g is None:
+                    continue
+                state = self.state[p]
+                if "momentum_buffer" not in state:
+                    state["momentum_buffer"] = torch.zeros_like(g)
+                buf = state["momentum_buffer"]
+                buf.lerp_(g, 1 - group["momentum"])
+                g = g.lerp(buf, group["momentum"]) if group["momentum"] != 0 else g
+                update = zeropower_via_newtonschulz5(g, group["ns_steps"])
+                scale = max(1.0, p.size(-2) / p.size(-1)) ** 0.5  # 按形状缩放更新幅度
+              

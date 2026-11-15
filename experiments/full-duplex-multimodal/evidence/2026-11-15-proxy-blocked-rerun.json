@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-15",
+  "purpose": "fresh-venv validation of the realtime Python dependencies; rerun after the earlier proxy and FFmpeg-loader failures",
+  "platform": "Linux aarch64",
+  "hardware": "NVIDIA GB10",
+  "python": "3.12.3",
+  "result": "failed_at_torch_install",
+  "checks": {
+    "venv_creation": "passed",
+    "pip_24_0": "passed",
+    "pytorch_install": "failed",
+    "ffmpeg_library_discovery": "not_reached",
+    "torchcodec_decode": "not_reached"
+  },
+  "failure": {
+    "stage": "install_torch",
+    "error": "pip could not reach the PyTorch cu130 index: the configured proxy refused the connection and retries were exhausted, so torch==2.11.0 was not installed."
+  },
+  "limitations": [
+    "No PyTorch wheel was installed in this run.",
+    "The automatic PyAV library lookup and the TorchCodec decode check were not reached.",
+    "No model, media, inference service or GPU probe ran in this environment."
+  ]
+}

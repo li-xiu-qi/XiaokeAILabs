@@ -1,15 +1,19 @@
 #!/bin/bash
+echo "UNVALIDATED legacy phase timing disabled; use scripts/compare_engines.py" >&2
+exit 1
+MODEL_PATH="${MODEL_PATH:-$HOME/models/Qwen3.8-27B-BF16}"
+
 echo "=== 测试 1: Decode 吞吐（单次推理）==="
 echo "Prompt: '你好' | 生成: 128 tokens"
 
 START=$(date +%s.%N)
 RESULT=$(curl -s http://localhost:8000/v1/completions \
     -H "Content-Type: application/json" \
-    -d '{"model": "/home/ke/models/Qwen3.8-27B-BF16", "prompt": "你好", "max_tokens": 128, "temperature": 0.7}')
+    -d "{\"model\": \"${MODEL_PATH}\", \"prompt\": \"你好\", \"max_tokens\": 128, \"temperature\": 0.7}")
 END=$(date +%s.%N)
 ELAPSED=$(echo "$END - $START" | bc)
 
-echo "$RESULT" | /home/ke/vllm-env/bin/python -c "
+echo "$RESULT" | $HOME/vllm-env/bin/python -c "
 import sys, json
 r = json.load(sys.stdin)
 text = r['choices'][0]['text']
@@ -25,14 +29,16 @@ echo ""
 echo "=== 测试 2: Prefill 吞吐（批处理）==="
 echo "32 条 prompt，每条约 128 tokens，生成 1 token"
 
+PROMPT_BATCH=$(printf '"你好世界。这是一个测试。",%.0s' {1..32})
+PROMPT_BATCH="[${PROMPT_BATCH%,}]"
 START=$(date +%s.%N)
 RESULT2=$(curl -s http://localhost:8000/v1/completions \
     -H "Content-Type: application/json" \
-    -d '{"model": "/home/ke/models/Qwen3.8-27B-BF16", "prompt": ["你好世界。这是一个测试。"] * 32, "max_tokens": 1, "temperature": 0.7}')
+    -d "{\"model\": \"${MODEL_PATH}\", \"prompt\": ${PROMPT_BATCH}, \"max_tokens\": 1, \"temperature\": 0.7}")
 END=$(date +%s.%N)
 ELAPSED=$(echo "$END - $START" | bc)
 
-echo "$RESULT2" | /home/ke/vllm-env/bin/python -c "
+echo "$RESULT2" | $HOME/vllm-env/bin/python -c "
 import sys, json
 r = json.load(sys.stdin)
 usage = r['usage']

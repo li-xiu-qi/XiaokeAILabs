@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-15",
+  "experiment": "PP-OCRv5 clean-environment CUDA reproduction",
+  "device": "NVIDIA GB10",
+  "platform": {
+    "system": "Linux",
+    "architecture": "aarch64",
+    "python": "3.12.3"
+  },
+  "attempt": {
+    "isolated_venv_created": true,
+    "torch": "2.15.0+cu132 installed",
+    "torchvision": "0.29.1+cu130 installed",
+    "requirements_install": "stopped before completion",
+    "pip_check": "not reached",
+    "model_download": "not reached",
+    "gpu_inference": "not reached"
+  },
+  "failure": {
+    "package": "opencv-python",
+    "requested_version": "5.0.0",
+    "reason": "The PyPI distribution version is 5.0.0.93; 5.0.0 is the cv2 runtime version recorded by the earlier environment."
+  },
+  "correction": "requirements.txt now pins opencv-python==5.0.0.93. This correction was not rerun in this attempt.",
+  "scope": "No models or data were downloaded, and no inference ran. The existing successful GPU evidence is unchanged."
+}

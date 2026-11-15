@@ -1,0 +1,4 @@
+# 历史上游提交未知；该提交包含训练接口，但尚未端到端验证。
+datasets
+huggingface_hub
+laya @ git+https://github.com/NandhaKishorM/laya.git@3a38cbe83f6ef556f3125fb0065fdc5a55d05792

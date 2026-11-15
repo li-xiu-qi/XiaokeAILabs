@@ -3,11 +3,7 @@
 # 安装：pre-commit install
 # 手工全量检查：python scripts/check_large_files.py --all
 #
-# 注意：本文件里的 check-added-large-files 历史上**从未生效**——仓库里没有
-# .git/hooks/pre-commit，等于规则写了但没装。2026-10-19 实测确认，本地 .git
-# 因此涨到 608MB（411MB 原始训练图 + 33.6MB 数据集）。现在改用仓库自带脚本，
-# 把拦截逻辑放进版本库，不依赖各自机器的 pre-commit 环境，并给出可操作的
-# 处理建议，而不只是一句 "file is larger than"。
+# 文件大小也可通过仓库自带钩子检查；安装钩子会覆盖现有同名钩子。
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0

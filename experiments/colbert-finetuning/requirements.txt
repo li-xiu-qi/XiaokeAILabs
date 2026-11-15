@@ -1,0 +1,5 @@
+# Complete PyLate dependency declaration; install a compatible CUDA PyTorch first.
+# Some fast-plaid versions are unavailable on Linux ARM64 or incompatible with a given torch version.
+-r requirements-base.txt
+pylate==1.4.0
+fast-plaid>=1.2.4.260,<=1.3.0.290

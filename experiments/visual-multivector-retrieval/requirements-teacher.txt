@@ -1,0 +1,8 @@
+# Separate teacher environment; reference versions from a related Qwen reranker run.
+# This precise installation is not verified for this experiment. Install matching CUDA PyTorch and torchvision separately.
+transformers==5.16.1
+qwen-vl-utils==0.0.14
+numpy
+pillow
+scipy
+huggingface-hub

@@ -1,0 +1,8 @@
+原始运行输出摘录，行号对应原始日志；仅列测量条件、结果及相关范围。
+
+6: MemAvailable 基线: 102.9 GB
+7: {"tag": "A_Agent_subfolder", "zh": {"p50_ms": 8.15, "choice": "billing", "confidence": 1.0}, "en": {"p50_ms": 8.1, "choice": "billing", "confidence": 1.0}, "cuda_resident_gb": 1.25, "load_s": 19.04}
+8: {"tag": "C_Router_default_zh_max1", "zh": {"p50_ms": 8.55, "choice": "billing", "confidence": 1.0, "routed_to": "laya-rl-agent"}, "en": {"p50_ms": 16.72, "choice": "billing", "confidence": 0.8347, "routed_to": "laya-rl-agent"}, "cuda_resident_gb": 4.39, "load_s": 50.31}
+9: {"tag": "D_Router_auto_max3", "zh": {"p50_ms": 8.56, "choice": "billing", "confidence": 1.0, "routed_to": "laya-rl-agent"}, "en": {"p50_ms": 17.04, "choice": "billing", "confidence": 0.8347, "routed_to": "laya-rl-agent"}, "cuda_resident_gb": 4.39, "load_s": 49.18}
+11: [收尾] CUDA: 0.03 GB，MemAvailable: 100.5 GB
+12: 结果已写入 ~/laya-direct-result.json

@@ -7,8 +7,7 @@
 #   bash scripts/start-server.sh dflash  # + DFlash2 草稿模型
 #
 # 所有路径可用环境变量覆盖，默认值面向 GB10 统一内存设备的常见布局。
-# 关键约束：--parallel 必须为 1（-np 1）。投机解码要求 single-batch 模式，
-# 并发数大于 1 时引擎会强制 kv_unified 并分裂 KV，草稿接受率显著劣化。
+# 本脚本固定单槽（-np 1），用于复现单请求测量；并发能力应按具体引擎版本复测。
 
 set -euo pipefail
 

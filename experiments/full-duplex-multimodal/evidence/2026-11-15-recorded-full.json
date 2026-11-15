@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-15",
+  "model": "openbmb/MiniCPM-o-4_5",
+  "model_revision": "fb09628e98b1f55d8d5b863e0eccfcdd11bff499",
+  "input": "assets/omni_duplex1.mp4",
+  "reference_audio": "assets/HT_ref_audio.wav",
+  "mode": "recorded-chunks",
+  "hardware": "NVIDIA GB10",
+  "python": "3.12",
+  "torch": "2.11.0+cu130",
+  "transformers": "4.51.0",
+  "chunks_processed": 35,
+  "listening_chunks": 26,
+  "speaking_chunks": 9,
+  "completed_turns": 3,
+  "interpretation": "The model returned text and audio arrays while processing a recorded video. The arrays were not saved or assessed by listening in this run. Live interaction and interruption were not tested.",
+  "limitations": "The exploratory isolated environment did not pass pip check; PyTorch is outside the version range on the model card."
+}

@@ -6,6 +6,13 @@
 用法:
   ./.venv/Scripts/python.exe scripts/bench.py --scale 10k --dim 768
 """
+
+if __package__:
+    from .legacy_safety import require_isolated_instance
+else:
+    from legacy_safety import require_isolated_instance
+
+require_isolated_instance()
 import argparse
 import json
 import platform

@@ -1,0 +1,180 @@
+{
+  "dev": {
+    "human": {
+      "seeds": [
+        0.6225823264340948,
+        0.6226270344942504,
+        0.6227742847394784
+      ],
+      "mean": 0.6226612152226079,
+      "std": 0.00010044022797025283
+    },
+    "teacher_hard": {
+      "seeds": [
+        0.622456025520386,
+        0.6196271853642014,
+        0.6208785699909855
+      ],
+      "mean": 0.6209872602918576,
+      "std": 0.0014175487093706855
+    },
+    "teacher_soft": {
+      "seeds": [
+        0.6239579527740421,
+        0.6275735899122195,
+        0.6239075691029373
+      ],
+      "mean": 0.6251463705963997,
+      "std": 0.002102184538496839
+    },
+    "human_hard": {
+      "seeds": [
+        0.6224962489228741,
+        0.6228224685996661,
+        0.6213548990824245
+      ],
+      "mean": 0.6222245388683215,
+      "std": 0.0007705905769556883
+    },
+    "human_soft": {
+      "seeds": [
+        0.6233795648720094,
+        0.626587128550278,
+        0.6253786899295829
+      ],
+      "mean": 0.6251151277839567,
+      "std": 0.001619942882015366
+    },
+    "teacher_soft-minus-teacher_hard": {
+      "difference": 0.004159110304542026,
+      "per_seed_differences": [
+        0.0015019272536560546,
+        0.007946404548018093,
+        0.003028999111951869
+      ],
+      "seed_difference_std": 0.0033675934107460317,
+      "query_bootstrap_95": [
+        -0.0010180775061540462,
+        0.010674864603122789
+      ],
+      "note": "unadjusted query bootstrap on seed-mean differences; does not estimate uncertainty across training seeds or correct multiple comparisons"
+    },
+    "human_hard-minus-human": {
+      "difference": -0.00043667635428626926,
+      "per_seed_differences": [
+        -8.607751122069462e-05,
+        0.00019543410541567052,
+        -0.0014193856570539065
+      ],
+      "seed_difference_std": 0.0008626125305632804,
+      "query_bootstrap_95": [
+        -0.0025702616074374882,
+        0.0009963323591982095
+      ],
+      "note": "unadjusted query bootstrap on seed-mean differences; does not estimate uncertainty across training seeds or correct multiple comparisons"
+    },
+    "human_soft-minus-human": {
+      "difference": 0.002453912561348899,
+      "per_seed_differences": [
+        0.0007972384379145714,
+        0.0039600940560275966,
+        0.0026044051901045195
+      ],
+      "seed_difference_std": 0.001586789191650742,
+      "query_bootstrap_95": [
+        -0.003286037856326672,
+        0.00907075431943689
+      ],
+      "note": "unadjusted query bootstrap on seed-mean differences; does not estimate uncertainty across training seeds or correct multiple comparisons"
+    }
+  },
+  "test": {
+    "human": {
+      "seeds": [
+        0.6336479145340552,
+        0.6324136165779002,
+        0.6303728176152252
+      ],
+      "mean": 0.6321447829090602,
+      "std": 0.0016540159047176335
+    },
+    "teacher_hard": {
+      "seeds": [
+        0.6368602822884769,
+        0.631073805065763,
+        0.6303158974100092
+      ],
+      "mean": 0.6327499949214164,
+      "std": 0.003579728018093789
+    },
+    "teacher_soft": {
+      "seeds": [
+        0.6370874326429463,
+        0.6375720927365205,
+        0.6362990221321649
+      ],
+      "mean": 0.6369861825038773,
+      "std": 0.0006425464060398146
+    },
+    "human_hard": {
+      "seeds": [
+        0.6331989723456913,
+        0.6323856645273268,
+        0.632652649470341
+      ],
+      "mean": 0.6327457621144531,
+      "std": 0.00041457191803517585
+    },
+    "human_soft": {
+      "seeds": [
+        0.6355603748453158,
+        0.6365175501806533,
+        0.6334849000531834
+      ],
+      "mean": 0.6351876083597174,
+      "std": 0.0015503089493709911
+    },
+    "teacher_soft-minus-teacher_hard": {
+      "difference": 0.004236187582460884,
+      "per_seed_differences": [
+        0.00022715035446940757,
+        0.006498287670757441,
+        0.005983124722155786
+      ],
+      "seed_difference_std": 0.00348146992482617,
+      "query_bootstrap_95": [
+        0.0006027022669189124,
+        0.008772184013989649
+      ],
+      "note": "unadjusted query bootstrap on seed-mean differences; does not estimate uncertainty across training seeds or correct multiple comparisons"
+    },
+    "human_hard-minus-human": {
+      "difference": 0.0006009792053928304,
+      "per_seed_differences": [
+        -0.0004489421883638878,
+        -2.7952050573376575e-05,
+        0.0022798318551158214
+      ],
+      "seed_difference_std": 0.001469087416949922,
+      "query_bootstrap_95": [
+        -0.0009492975559404722,
+        0.0023038824773450478
+      ],
+      "note": "unadjusted query bootstrap on seed-mean differences; does not estimate uncertainty across training seeds or correct multiple comparisons"
+    },
+    "human_soft-minus-human": {
+      "difference": 0.003042825450657236,
+      "per_seed_differences": [
+        0.0019124603112605776,
+        0.004103933602753074,
+        0.0031120824379581302
+      ],
+      "seed_difference_std": 0.0010973769610068973,
+      "query_bootstrap_95": [
+        0.00023657370566076966,
+        0.006260185925933288
+      ],
+      "note": "unadjusted query bootstrap on seed-mean differences; does not estimate uncertainty across training seeds or correct multiple comparisons"
+    }
+  }
+}

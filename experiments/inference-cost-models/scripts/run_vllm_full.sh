@@ -1,12 +1,12 @@
 #!/bin/bash
-source /home/ke/xinfer-env/bin/activate
+source $HOME/xinfer-env/bin/activate
 
-export PATH="/home/ke/vllm-env/bin:$PATH"
+export PATH="$HOME/vllm-env/bin:$PATH"
 
 echo "启动 vLLM（完整 torch.compile 模式）..."
-cd /home/ke/vllm-env
+cd $HOME/vllm-env
 setsid ./bin/python -m vllm.entrypoints.openai.api_server \
-    --model /home/ke/models/Qwen3.8-27B-BF16 \
+    --model $HOME/models/Qwen3.8-27B-BF16 \
     --trust-remote-code \
     --dtype bfloat16 \
     --max-model-len 2048 \

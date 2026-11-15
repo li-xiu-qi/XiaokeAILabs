@@ -1,0 +1,57 @@
+{
+  "benchmark_timestamp": "2026-11-08T23:02:11",
+  "parser_comparison": {
+    "single_column": {
+      "file_size_bytes": 2256,
+      "fitz": {
+        "elapsed_ms": 29.236,
+        "char_count": 249,
+        "text_sample": "Artificial Intelligence & Document Engineering Report Paragraph 1: Document AI spans from low-level tokenization to layout semantics. Paragraph 2: Mod"
+      },
+      "pypdf": {
+        "elapsed_ms": 4.38,
+        "char_count": 248,
+        "text_sample": "Artificial Intelligence & Document Engineering Report Paragraph 1: Document AI spans from low-level tokenization to layout semantics. Paragraph 2: Mod"
+      }
+    },
+    "two_column": {
+      "file_size_bytes": 2194,
+      "fitz": {
+        "elapsed_ms": 11.264,
+        "char_count": 355,
+        "text_sample": "Academic Dual-Column Paper Sample Left Col Line 1: Introduction to neural encoders. Left Col Line 2: Methods and preliminary equations. Left Col Line "
+      },
+      "pypdf": {
+        "elapsed_ms": 3.228,
+        "char_count": 354,
+        "text_sample": "Academic Dual-Column Paper Sample Left Col Line 1: Introduction to neural encoders. Left Col Line 2: Methods and preliminary equations. Left Col Line "
+      }
+    },
+    "scanned": {
+      "file_size_bytes": 292197,
+      "fitz": {
+        "elapsed_ms": 9.607,
+        "char_count": 0,
+        "text_sample": ""
+      },
+      "pypdf": {
+        "elapsed_ms": 1.251,
+        "char_count": 0,
+        "text_sample": ""
+      }
+    }
+  },
+  "reading_order_experiment": {
+    "naive_text_interleaved": false,
+    "total_extracted_lines": 7,
+    "lines_preview": [
+      "Academic Dual-Column Paper Sample",
+      "Left Col Line 1: Introduction to neural encoders.",
+      "Left Col Line 2: Methods and preliminary equations.",
+      "Left Col Line 3: Detailed architecture of vision blocks.",
+      "Right Col Line 1: Experimental setups on DGX clusters.",
+      "Right Col Line 2: Hyperparameter grids and seeds."
+    ],
+    "layout_aware_available": true
+  }
+}

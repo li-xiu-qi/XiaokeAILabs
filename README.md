@@ -1,210 +1,68 @@
-# 筱可 AI 工程实验仓库 (XiaokeAILabs)
+# XiaokeAILabs：AI 工程实验
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Hardware-DGX%20Spark%20GB10%20(aarch64)-76B900?style=flat-square&logo=nvidia" alt="Hardware">
-  <img src="https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python" alt="Python">
-  <img src="https://img.shields.io/badge/PyTorch-2.14%2Bcu130-EE4C2C?style=flat-square&logo=pytorch" alt="PyTorch">
-  <img src="https://img.shields.io/badge/License-Apache%202.0-blue?style=flat-square" alt="License">
-  <a href="https://li-xiu-qi.github.io/XiaokeAILabs-website/"><img src="https://img.shields.io/badge/Website-XiaokeAILabs-purple?style=flat-square" alt="Website"></a>
-</p>
+[English](README.en.md) | [工程原理与实验系列](docs/zh/README.md) | [网站源码](index.html)
 
-> **李秀奇（筱可）的 AI 工程实证仓库。以「能跑、能复现、讲得清」为准则。**  
-> 专注沉淀 **大模型推理成本精算、新硬件极限落地（GB10/NPU）、文档解析（OCR）、向量数据库与检索全链路** 的第一手实测代码与基准数据。配套技术拆解同步发布于公众号 **「筱可AI」**。
+训练一个检索模型到底有没有改善搜索？单台设备能部署多大的模型，处理多人请求时又会怎样？一项推理优化能节省多少时间，其结果是否依赖特定硬件？
 
----
+XiaokeAILabs 围绕这些工程问题开展开放实验，覆盖**模型训练与微调、推理部署与性能、检索与重排序、文档解析和多模态**。这里既有实验代码和实测结果，也有帮助理解原理的教程与成本模型。希望它能帮助你选择实验方案、理解关键取舍，并在自己的数据和硬件上继续验证。
 
-## 📌 实验室原则与定位
+项目开源并会持续更新。每项工作使用的数据、设备和评测方式各不相同，请结合对应报告理解结论。
 
-- **工程实证展厅**：不放未收敛的半成品；所有训练、调优、试错在私有侧收敛后，仅将成型、可公开验证的实验代码与数据沉淀入仓。
-- **结论先行与数据锚点**：每个实验均提供真实测试数据锚点，拒绝无实测支撑的概念推导。
-- **环境版本锁定**：关键软件栈、CUDA 算子与依赖版本严格钉死，杜绝版本漂移导致的性能与精度失真。
-- **纯粹开源轻量**：大模型权重与原始数据集走标准下载脚本或官方 Release，仓库本体只保留复现必需的脚本、配置与轻量证据。
+**实验全景：**检索与排序 · 推理与部署 · 文档理解与信息抽取 · 视觉与多模态 · 数据结构与存储成本 · 模型训练。查看[实验地图](docs/zh/README.md)，了解各方向及其讲解、代码与复现入口。
 
----
+## 从你的问题出发
 
-## 🚀 核心实验全景看板
+| 你想解决的问题 | 可以从这里开始 |
+|---|---|
+| 单机上模型能不能装下、两套引擎和槽位差多少 | [2-bit 单卡](experiments/moe-2bit-fit) · [引擎与槽位](experiments/engine-slot-concurrency) · [NInfer 服务](experiments/ninfer-serving) · [Strata](experiments/strata-arm64) |
+| 投机解码换草稿配置之后，三个提示词的吞吐差多少 | [LLM 推理性能](experiments/llm-inference-perf) |
+| 两台电脑能否协同运行大模型 | [两台电脑一起运行大模型：跨机通信探索](experiments/pipeline-parallel) |
+| Intel NPU 上的图文嵌入能不能正确跑、吞吐差多少 | [Jina CLIP OpenVINO](experiments/jina-clip-openvino) |
+| 估算模型推理需要的内存与带宽，理解吞吐变化的原因 | [推理成本模型](experiments/inference-cost-models) · [LLM 机制](experiments/llm-mechanics) |
+| 用嵌入模型找候选，再用重排序模型挑出更相关的结果 | [嵌入与重排序](experiments/reranker-finetuning) · [ColBERT 微调](experiments/colbert-finetuning) |
+| 比较向量数据库的检索、索引和存储开销 | [六种向量检索方案：索引、召回与存储对比](experiments/vector-db-benchmark) |
+| 探索图像模型微调或文档识别 | [SDXL LoRA](experiments/image-finetune) · [MiniCPM-OCR](experiments/minicpm-ocr) |
+| 从零走通语言模型的训练全链路：分词、预训练、指令微调到强化学习 | [LLM 全链路](experiments/llm-lifecycle-fullchain) |
 
-| 领域方向 | 核心项目 / 系列 | 核心验证与实测结论摘要 | 硬件基准 | 源码入口 |
-| :--- | :--- | :--- | :--- | :---: |
-| **文档智能与 OCR** | **MiniCPM-OCR 1.0 + Jev 全链路** | 绕开 vLLM/Paddle 在 aarch64 跑通原生推理；DSpark 投机加速达 **2.36x**，端到端质检闭环 **2.5s** | GB10 (aarch64) | [直达 ➔](experiments/minicpm-ocr) |
-| **GB10 极限推理** | **单卡 299B MoE 与双引擎 A/B 系列** | 299B MoE 2-bit 单卡常驻 94.69G (**20.16 tok/s**)；NInfer 移植跑通百 TPS；Qwen3.6-35B 并发吞吐 **223.7 tok/s**；Strata 提速 **2.5x** | GB10 (121GB 统一内存) | [GB10 总组 ➔](experiments/gb10-inference) |
-| **向量存储与检索** | **Vector DB Benchmark (6 库评测)** | Milvus / Qdrant / LanceDB 等 6 库真实数据实测：索引矩阵、存储三段拆解、内存与 BM25 混合检索 | Linux / x86_64 | [直达 ➔](experiments/vector-db-benchmark) |
-| **检索增强全链路** | **Retrieval & Rerank** | FAISS 稠密 + BGE-M3 词项稀疏 + ColBERT 晚期交互 + BGE Reranker 逐层递进实操 | Linux / CUDA | [直达 ➔](experiments/retrieval-and-rerank) |
-| **理论成本模型** | **Inference & Structure Cost Models** | 12 个可计算推理成本模型（Roofline/KV Cache/吞吐）+ 37 个数据结构成本公式，GB10 锚点实测反推 | 通用 / GB10 | [推理成本](experiments/inference-cost-models) / [数据结构](experiments/data-structure-costs) |
-| **端侧算力与驱动** | **Jina CLIP OpenVINO** | Intel CPU/NPU 驱动 A/B 实测：定位 NaN 驱动陷阱，NPU 吞吐达 CPU 的 **12.57x** | Intel Core Ultra NPU | [直达 ➔](experiments/jina-clip-openvino) |
-| **基础微调与视觉** | **Image LoRA & Jev 判别式** | 人脸身份特征保真 LoRA 训练；Jev 判别式模型三大开源复刻（Laya/Nimble/metask）实测 | Linux / GB10 | [LoRA 微调](experiments/image-finetune) / [Jev 开源](experiments/jev-open-source) |
+## 从实测中能看到什么
 
----
+**微调不是效果提升的保证。** 在 [SciFact 重排序实验](experiments/reranker-finetuning)中，我们用 390 条查询训练小型重排序模型，并在固定 BM25 候选集的 300 条查询上评估。BM25 的 nDCG@10 为 0.6617，微调模型为 0.6375；差异的 95% 置信区间跨过零。这个结果说明，在这组数据与评估条件下，不能声称微调带来了改善。报告提供训练、评测与局限，帮助理解小样本微调应如何验证。
 
-## ⚠️ 经典工程陷阱与负向结论 (Post-mortems)
+**推理加速需要同时看速度与输出。** [MiniCPM-OCR 实验](experiments/minicpm-ocr)在 GB10 上比较普通生成和 DSpark 投机生成。四个样本的模型生成总耗时加速 2.36 倍，贪婪生成的 343 个 token 一致。计时包含输入的首次前向和后续生成，不包含图像读取与预处理；四个样本不足以代表所有文档。
 
-工程实测中最有价值的往往不是正向优化，而是**证伪与避坑**。本仓记录了多个在特定场景下被推翻的假设与实测陷阱：
+![MiniCPM-OCR 四个样本的模型生成耗时比较](experiments/minicpm-ocr/assets/dspark-generation-time.png)
 
-1. **vLLM 0.23 的 MTP 投机解码负收益陷阱（-33%）**：
-   - 在 DeepSeek-V4-Flash 2-bit (299B MoE) 实验中，非投机解码达 20.16 tok/s，启用官方 MTP (K=2) 后生成速度反而暴跌至 13.42 tok/s。
-   - **根因定位**：vLLM 0.23.0 拒绝了 drafter 的 FULL cudagraph 构建，导致降级（完整证据链见该实验报告）。
-2. **Intel NPU 的驱动 NaN 隐形变量**：
-   - 在 Core Ultra 7 155H NPU 上部署 Jina CLIP FP16 时，旧驱动（32.0.100.4023）文本输出全部为 NaN，视觉分支却完全正常。
-   - **避坑启示**：设备侧异常切忌盲目改动模型结构，升级驱动至 32.0.100.5540 后即恢复正常，NPU 吞吐达 CPU 的 12.57 倍。
-3. **LoRA 简化的“伪适配”陷阱**：
-   - 为规避端侧算子不支持而关闭 `retrieval.query` 对应的 LoRA 权重，启用与关闭 LoRA 的输出余弦仅为 0.9166~0.9384，两条路径不能视为等价输出，因此关闭 LoRA 只能用于排障对照，不能当作部署方案。
-4. **混合检索评测的双重数据错位**：
-   - 在多库 BM25 + 向量检索评测中，排查出传统基准常见的两大缺陷：“查询文本与向量索引错位”及“相关度阈值未校准”，由此确立了双 Ground Truth 验证标准。
+**硬件和部署配置会改变结论。** [Jina CLIP 实验](experiments/jina-clip-openvino)中，特定文本工作负载的 Intel NPU 吞吐达到 CPU 的 12.57 倍，旧驱动却出现 NaN。性能数字和故障都与测试设备、驱动及输入有关。[六种向量检索方案：索引、召回与存储对比](experiments/vector-db-benchmark)则在 Windows 11 x86-64 环境下，历史记录使用 20 Newsgroups 的 11,293 篇文档和 40 条查询比较六种方案；原始结果文件缺失，数字无法独立复核，它也不是 DGX Spark 上的测试。
 
----
+## 实验索引
 
-## 🔬 重点实验深度剖析
+实验报告提供具体测量与边界；教程和计算模型用于解释方法，不应当作性能基准。
 
-### 1. MiniCPM-OCR 双模型落地与 DSpark 投机加速
-> 完整报告见 [experiments/minicpm-ocr](experiments/minicpm-ocr)
+| 方向 | 实验与内容 |
+|---|---|
+| 单机部署、引擎与并发 | [2-bit 单卡](experiments/moe-2bit-fit)：299B 2-bit 能否在一台 GB10 上跑通；[引擎与槽位](experiments/engine-slot-concurrency)：35B 的两套引擎，以及 1 槽和 8 槽；[NInfer 服务](experiments/ninfer-serving)：27B 模型包的移植与并发；[Strata](experiments/strata-arm64)：ARM64 移植和 llama.cpp 的这次对照 |
+| 投机解码配置 | [LLM 推理性能](experiments/llm-inference-perf)：三个模型、三个提示词的草稿配置对照 |
+| 双机推理探索 | [两台电脑一起运行大模型：跨机通信探索](experiments/pipeline-parallel)：Gloo/NCCL 通信与小模型分层生成检查均通过；旧权重副本哈希差异的具体来源仍未查明 |
+| 端侧推理 | [Jina CLIP OpenVINO](experiments/jina-clip-openvino)：Intel CPU 与 NPU 上图文嵌入的正确性、驱动，以及这次文本负载的吞吐 |
+| 推理原理 | [LLM 机制](experiments/llm-mechanics)：量化、采样、KV Cache 示例；[Tokenizer 原理](experiments/tokenizer-mechanics)：字节级 BPE 与 token 计数；[推理成本模型](experiments/inference-cost-models)：内存算例与未验证的性能估算 |
+| 数据结构 | [数据结构成本](experiments/data-structure-costs)：索引和数据格式成本模型与验证脚本 |
+| 嵌入与重排序 | [文本嵌入微调](experiments/embedding-finetuning)：用查询和相关文档训练；[重排序微调](experiments/reranker-finetuning)：SciFact 上这次微调的 nDCG 差异跨过零；[ColBERT 微调](experiments/colbert-finetuning)；原理见 [ColBERT 系列](docs/zh/retrieval/colbert/) |
+| 对比学习训练 | [SimCSE 对比学习](experiments/contrastive-learning-simcse)：dropout 正例与 NLI 难负例两版训练脚本、STS 与 Recall@k 评测；干净 CUDA 环境的真实数据小样本流程已跑通，完整训练尚未复现 |
+| 检索与存储 | [六种向量检索方案：索引、召回与存储对比](experiments/vector-db-benchmark)：索引、召回、延迟、存储与混合检索 |
+| 检索模型蒸馏 | [Embedding 蒸馏](experiments/embedding-distillation)：固定候选上的提升未达到预设目标；[重排序蒸馏](experiments/reranker-distillation)：相对监督训练的优势不确定；[ColBERT 蒸馏](experiments/colbert-distillation)：未达到预设目标，公开的真实教师打分脚本尚未重跑验证；[图文 Embedding 蒸馏](experiments/multimodal-embedding-distillation)：100 条查询未优于监督组，公开脚本尚未从头重跑 |
+| 稀疏与图文检索 | [SPLADE 微调](experiments/sparse-retrieval)；[图文重排](experiments/multimodal-reranking)；[页面多向量检索](experiments/visual-multivector-retrieval)：100 页上 Recall@1 为 0.55；[图文嵌入](experiments/multimodal-embedding) |
+| 视觉微调 | [SDXL 人脸身份 LoRA](experiments/image-finetune)：单一身份的小样本训练与对照；[人物抠像](experiments/portrait-matting)：30 张照片的区域、发丝和前向耗时 |
+| 语音识别 | [Whisper 语音识别微调](experiments/asr-finetuning)：使用 LibriSpeech 训练并比较测试集词错误率 |
+| 实时多模态交互 | [全双工实时多模态交互](experiments/full-duplex-multimodal)：MiniCPM-o 4.5 在 GB10 上完成录制音视频推流和并发语音输出验证；单次插话探针收到倾听事件，但最后语音输出晚于预设停止门槛，未通过；真人麦克风/扬声器与真人插话仍未验证 |
+| 偏好对齐 | [DPO 直接偏好优化](experiments/dpo-preference-alignment)：Qwen3-0.6B 在 UltraFeedback 回答对上完成 GPU 微调；本次 128 对测试的偏好方向未改变 |
+| 文档解析 | [系列导航](docs/zh/document-understanding/README.md)；[规则解析](experiments/pdf-rule-parsers)；[文字检测与识别](experiments/paddle-ocr-detection-recognition)；[表格结构](experiments/table-structure-recognition)；[MiniCPM-OCR](experiments/minicpm-ocr)：aarch64 部署、质检与生成加速 |
+| 判别式决策 | [基准评测](experiments/decision-model-benchmark) 与 [微调训练](experiments/decision-model-finetuning)：Laya、Nimble、metask-jev、Jev-Omni 实测与 RLCD/软标签微调 |
+| 模型训练 | [LLM 全链路](experiments/llm-lifecycle-fullchain)：BPE 分词、Muon 预训练（附 AdamW 基线）、midtrain、SFT、GRPO 与 KV cache 生成 |
 
-- **工程绕障**：官方主线强依赖 vLLM 与 Paddle 布局检测，在 aarch64 GB10 架构下存在构建死锁。本实验验证了纯原生 `transformers` + `PP-DocLayoutV3` torch provider 的可行性，成功打通 A4 全页解析流水线。
-- **Jev 无参考质检打分**：传统 OCR 质量依赖人工抽查或带真值的 CER。Jev 采用「原图 + 识别文本 + 文本渲染图」三元组机制，无需 Ground Truth 即可输出 0~1 的置信一致性得分。实测与官方公布指标偏差 ≤ 0.0045，单块质检排序闭环耗时仅 **2.5 秒**（显存峰值仅 5.18 GiB）。
-- **DSpark 投机加速突破**：挂载 0.3B 5 层双向块草稿模型 + 低秩马尔可夫状态转移头（`block_size = 15`），通过严格的 18 层 GatedDeltaNet 线性注意力状态精确回滚，达成 **100% 逐 Token 贪婪一致**：
-  - **解码耗时降低 57.6%**（整体加速 **2.36x**，多行数学公式块最高达 **3.08x**）；
-  - **平均吞吐从 73.83 tok/s 跃升至 174.32 tok/s**（最高 236.22 tok/s）；
-  - **主模型前向步数缩减 87.2%**，单步平均接受长度 $\tau = 9.18$ tok/step。
+## 如何使用
 
----
+进入感兴趣的实验目录，先阅读其中的说明，了解问题、数据、设备、指标与结果，再按该实验提供的步骤运行。不同实验使用不同的软件环境和模型权重；部分需要特定 GPU、NPU 或数据集，不存在适用于所有目录的统一安装命令。性能结果适用于报告列出的条件，迁移到自己的业务前应重新测量。
 
-### 2. GB10 单机大模型极限部署与引擎对比系列
-> 完整报告见 [experiments/gb10-inference](experiments/gb10-inference)
+代码采用 [Apache License 2.0](LICENSE)。欢迎通过 Issue 或 Pull Request 参与，具体方式见[贡献指南](CONTRIBUTING.md)。
 
-在统一内存架构（NVIDIA GB10, aarch64, 121.6 GiB）上，系统化验证超大参数 MoE 单卡可行性、引擎底层移植及投机解码收益边界：
-- [**DeepSeek-V4-Flash 2-bit (299B MoE) 单卡落地**](experiments/gb10-inference/ds4-flash-2bit)：
-  - 成功跑通 101 GB 权重分片加载与推理，常驻内存 94.69 GiB，非投机解码达 **20.16 tok/s**（49.61 ms/tok）。
-- [**NInfer GB10 移植与百 TPS 复现**](experiments/gb10-inference/ninfer-27b)：
-  - 突破官方源码限定 `sm_120a` 导致在 GB10 (`sm_121a`) 上构建被拒的问题，完成 ARM64 与统一内存移植（898/898 构建目标全通）；
-  - 按截图复现配置，Qwen3.8-27B (W4A4 + DFlash2) 在 C8 下聚合 **132.1 tok/s**，同模型 SGLang 参考为 144.6 tok/s；在当前压测协议下 NVFP4 W4A4 比 FP8 更快。
-- [**Qwen3.6-35B-A3B 双引擎 A/B**](experiments/gb10-inference/qwen36-35b-ab)：
-  - 同机同模型压测，NInfer MTP3 单请求达 llama.cpp 的 **1.37 倍**；并发扩展性实测中，NInfer 在 C8 并发下聚合吞吐达 **223.7 tok/s**（对比 llama.cpp 以 `-np 1` 部署时的 54.8 tok/s；后者是部署约束，不是引擎缺陷）。
-- [**Strata 统一内存推理**](experiments/gb10-inference/strata-dgx)：
-  - Qwen3.8-Flash-Next IQ3_S 开启稀疏激活与专家缓存，相比基准 llama.cpp 提速 **2.5 倍**。
-
----
-
-### 3. 向量数据库真实基准：6 库 × 索引矩阵 × 存储三段拆分
-> 完整报告见 [experiments/vector-db-benchmark](experiments/vector-db-benchmark)
-
-- **评测对象与真实数据**：同一硬件下，基于 20 Newsgroups 全量 11,293 篇文本（all-MiniLM-L6-v2 真实 384 维向量），横向对比 Milvus 3.0、Qdrant 1.19、SurrealDB 3.2.4、LanceDB 0.38、ChromaDB 1.5.9、sqlite-vec 0.1.9。
-- **存储三段深度拆解**：严密剥离计量「向量自身 / 原始正文 / 索引开销」：
-  - **LanceDB 存储开销最小**：列式存储压缩优势显著；
-  - **Milvus IVF_SQ8 效率最高**：为兼顾延迟与召回的最优 ANN 索引形态；
-  - **SurrealDB 向量成本最高**：通用 RocksDB 文档模型在稠密向量场景产生较大存储膨胀；
-  - **Qdrant 预分配机制**：落盘主要受固定页预分配支配，单条正文增量难以测出。
-
----
-
-### 4. 理论成本模型与实测锚点反推
-> 完整报告见 [experiments/inference-cost-models](experiments/inference-cost-models) ｜ [experiments/data-structure-costs](experiments/data-structure-costs)
-
-- **12 个可计算推理成本模型**：输入硬件规格与模型配置，即可递推显存、带宽、吞吐上限（包括 Roofline 瓶颈边界、KV Cache 显存、注意力算力、吞吐规模化、量化影响与投机加速比）。
-- **实测锚点与有效带宽反推**：
-  - 在 GB10 上测试 Qwen3.8-27B，bf16 全量 (4.3 tok/s) 与 q4_k_xl 量化 (12.1 tok/s) 的速度差异，通过 `tok/s = 带宽 / 权重字节` 理论预测误差在 **7% 以内**；
-  - 反推得出统一内存有效显存带宽为 235 / 198 GB/s（达标称峰值的 86% / 73%），印证了 Decode 阶段纯带宽瓶颈本质；
-  - 修正了 48 层 linear-attention 导致传统 KV Cache 模型误算显存的缺陷。
-- **37 个底层数据结构成本模型**：覆盖 B+ 树、LSM-tree、列存、倒排索引、BM25 打分、Count-Min Sketch、HLL、Swiss Table 等，均包含纯数学公式计算器与自测验证脚本。
-
----
-
-## ⚡ 场景化复现卡片 (Recipes)
-
-克隆本仓库后，可通过以下指令快速体验三大经典实验：
-
-### 🍰 Recipe 1：运行 MiniCPM-OCR DSpark 投机加速基准
-```bash
-cd experiments/minicpm-ocr
-# 评测 4 组多样样本的非加速 vs DSpark 投机加速解码耗时与一致性
-python scripts/benchmark_acceleration.py
-```
-
-### 🍰 Recipe 2：验证 GB10 理论推理速度与有效带宽反推
-```bash
-cd experiments/inference-cost-models
-# 查看真实硬件锚点与理论公式预测误差
-python scripts/roofline_model.py
-python scripts/kv_cache_model.py
-```
-
-### 🍰 Recipe 3：生成 6 大向量数据库的存储与延迟全景对比图
-```bash
-cd experiments/vector-db-benchmark
-# 依据已有实测结果 JSON 重新渲染 7 张标准对比报告图表
-python figures/make_figures.py
-```
-
----
-
-## 📚 全量实验索引
-
-### 🔍 检索与向量
-- [**embedding-research**](experiments/embedding-research) — 评测基准 + 微调数据 + [相似度动力学 (similarity-dynamics，设计阶段，暂无结论)](experiments/embedding-research/similarity-dynamics) + 多模态（BGE-VL、CLIP） + [**理论文献判据 (REFERENCES)**](experiments/embedding-research/REFERENCES.md)
-- [**retrieval-and-rerank**](experiments/retrieval-and-rerank) — 检索链路四环节：FAISS 稠密、BGE-M3 稀疏、ColBERT 晚期交互、BGE Reranker
-- [**vector-db-benchmark**](experiments/vector-db-benchmark) — Milvus / Qdrant / SurrealDB / LanceDB / ChromaDB / sqlite-vec 六库吞吐、延迟、召回实测
-
-### ⚙️ 推理成本与模型机制
-- [**inference-cost-models**](experiments/inference-cost-models) — 12 个可计算的推理成本模型（Roofline、显存、KV Cache、吞吐、Scaling Laws、量化），GB10 实测锚点
-- [**data-structure-costs**](experiments/data-structure-costs) — 45 个数据结构与算法成本模型与实测复现脚本
-- [**llm-inference-perf**](experiments/llm-inference-perf) — 推理成本分阶段报告（MTP、DeepSeek 等）
-- [**llm-mechanics**](experiments/llm-mechanics) — 从模型加载到解码的全链路机制实操
-
-### ⚡ GB10 单机大模型极限推理
-- [**gb10-inference**](experiments/gb10-inference) — **GB10 系列实验总组**：
-  - [ds4-flash-2bit](experiments/gb10-inference/ds4-flash-2bit) — DeepSeek-V4-Flash 2-bit（299B MoE）单卡复现：20.16 tok/s、常驻 94.69 GiB
-  - [ninfer-27b](experiments/gb10-inference/ninfer-27b) — NInfer 在 GB10 上的 27B W4A4 + DFlash2 架构部署、百 TPS 复现与 SGLang 对照
-  - [qwen36-35b-ab](experiments/gb10-inference/qwen36-35b-ab) — Qwen3.6-35B-A3B 双引擎 A/B：llama.cpp 对 NInfer MTP3 / DFlash7
-  - [strata-dgx](experiments/gb10-inference/strata-dgx) — Strata 在 GB10 上的 Qwen3.8-Flash-Next IQ3_S 部署与 llama.cpp 对照
-
-### 🖼️ 多模态与微调
-- [**jina-clip-openvino**](experiments/jina-clip-openvino) — Jina CLIP 在 Intel CPU/NPU 上的正确性验证、驱动 A/B 与性能基准，NPU 达 CPU 的 12.57 倍
-- [**image-finetune**](experiments/image-finetune) — LoRA 微调（图片）：人脸身份保真 LoRA 训练与评估
-
-### 📄 文档理解与判别式模型
-- [**minicpm-ocr**](experiments/minicpm-ocr) — MiniCPM-OCR 1.0 解析 + Jev 一致性判别双模型部署，闭环 2.5 秒
-- [**jev-open-source**](experiments/jev-open-source) — Jev 判别式模型三个开源复刻（Laya / Nimble / metask-jev）在 GB10 上的延迟与准确率实测
-
----
-
-## 📂 目录结构约定
-
-每个实验独立自包含，遵循标准化布局：
-
-```text
-experiments/<experiment-name>/
-├── README.md       # 结论先行，包含实验对象、实测数据指标、复现指南
-├── scripts/        # 完整可复现脚本，按执行顺序编号或按功能命名
-├── docs/           # evidence/ 放原始数据、证据与结论图表
-└── assets/         # 结构图示与测试样张
-```
-
----
-
-## 🖥️ 统一运行环境
-
-- **主力评测机**：**DGX Spark**（NVIDIA GB10, aarch64, 121.6 GiB 统一内存，273 GB/s 带宽）
-- **辅助机型**：Intel Core Ultra 7 155H (CPU/NPU) 及标准 x86_64 Linux 节点
-- **基线软件栈**：Ubuntu 24.04, CUDA 13.0.88, PyTorch 2.14+, Python 3.12
-- **依赖声明**：渲染、量化与推理后端的版本漂移可能影响实测指标，关键实验均已锁定依赖版本（详见各实验目录说明）。
-
----
-
-## ⚠️ 免责声明
-
-- 本仓实验主要面向工程实证与技术探索，代码及基准数据仅供技术交流与学习参考。
-- 实际生产环境应用前，请结合具体业务场景、数据分布与硬件架构进行充分验证。
-
----
-
-## 📜 许可证
-
-本项目遵循 [Apache License 2.0](LICENSE)。
-
----
-
-## 🤝 联系与交流
-
-- **作者**：李秀奇（筱可）
-- **微信公众号**：**筱可AI**（分享硬核 AI 工程落地实践、架构复盘与评测）
-- **邮箱**：lixiuqixiaoke@qq.com
-- **实验室官网**：[https://li-xiu-qi.github.io/XiaokeAILabs-website/](https://li-xiu-qi.github.io/XiaokeAILabs-website/)
-- **GitHub 仓库**：[https://github.com/li-xiu-qi/XiaokeAILabs](https://github.com/li-xiu-qi/XiaokeAILabs)
+作者：李秀奇（筱可） · 公众号：筱可AI · 邮箱：lixiuqixiaoke@qq.com

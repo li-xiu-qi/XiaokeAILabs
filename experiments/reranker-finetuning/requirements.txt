@@ -1,0 +1,5 @@
+# Install the CUDA PyTorch build appropriate for your device first.
+# NumPy and Transformers match the recorded training environment; this is not a lock file.
+torch
+numpy==2.5.3
+transformers==5.17.0

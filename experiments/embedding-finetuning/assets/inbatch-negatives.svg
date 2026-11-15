@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 300" role="img" aria-labelledby="title desc">
+<title id="title">批内负例对比学习机制</title>
+<desc id="desc">同一批次内，每个查询仅与其配对文档构成正例，与批内其他文档自动构成负例。</desc>
+<defs>
+  <marker id="arr-pos" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+    <path d="M0 1L8 5L0 9Z" fill="#1b4d44"/>
+  </marker>
+  <marker id="arr-neg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+    <path d="M0 1L8 5L0 9Z" fill="#a4b8b3"/>
+  </marker>
+</defs>
+<rect width="860" height="300" rx="18" fill="#f6f9f8" stroke="#e0e8e5"/>
+
+<g font-family="Microsoft YaHei, PingFang SC, Noto Sans CJK SC, sans-serif">
+  <text x="35" y="40" font-size="18" font-weight="700" fill="#1b3a34">批内负例对比学习（In-batch Negatives）矩阵</text>
+  <text x="35" y="64" font-size="13" fill="#607b75">每个批次 N 对样本，对角线为真实配对正例，同批其余 N-1 个文档作为零额外显存负例</text>
+
+  <!-- Connectors -->
+  <g fill="none" stroke-width="2">
+    <!-- Positive line -->
+    <path d="M250 120 H 600" stroke="#1b4d44" stroke-width="2.5" marker-end="url(#arr-pos)"/>
+    <!-- Negative lines -->
+    <path d="M250 120 L 600 175" stroke="#a4b8b3" stroke-dasharray="4,4" marker-end="url(#arr-neg)"/>
+    <path d="M250 120 L 600 230" stroke="#a4b8b3" stroke-dasharray="4,4" marker-end="url(#arr-neg)"/>
+  </g>
+
+  <!-- Labels on line -->
+  <rect x="380" y="105" width="90" height="24" rx="6" fill="#dfeee8"/>
+  <text x="425" y="122" font-size="12" font-weight="700" fill="#1b4d44" text-anchor="middle">正例 (Label 1)</text>
+
+  <rect x="395" y="145" width="80" height="22" rx="6" fill="#f0f4f3"/>
+  <text x="435" y="161" font-size="11" fill="#708c85" text-anchor="middle">批内负例</text>
+
+  <rect x="395" y="195" width="80" height="22" rx="6" fill="#f0f4f3"/>
+  <text x="435" y="211" font-size="11" fill="#708c85" text-anchor="middle">批内负例</text>
+
+  <!-- Left: Queries -->
+  <rect x="60" y="95" width="190" height="50" rx="10" fill="#fff" stroke="#1b4d44" stroke-width="2"/>
+  <text x="155" y="125" font-size="14" font-weight="700" fill="#1b4d44" text-anchor="middle">查询 Query 1 (q_1)</text>
+
+  <rect x="60" y="155" width="190" height="42" rx="10" fill="#edf3f1" stroke="#cbdcd7"/>
+  <text x="155" y="181" font-size="13" fill="#617f78" text-anchor="middle">查询 Query 2 (q_2)</text>
+
+  <rect x="60" y="205" width="190" height="42" rx="10" fill="#edf3f1" stroke="#cbdcd7"/>
+  <text x="155" y="231" font-size="13" fill="#617f78" text-anchor="middle">查询 Query N (q_N)</text>
+
+  <!-- Right: Documents -->
+  <rect x="600" y="95" width="200" height="50" rx="10" fill="#dfeee8" stroke="#a4cfc3" stroke-width="2"/>
+  <text x="700" y="125" font-size="14" font-weight="700" fill="#144d41" text-anchor="middle">配对正例文档 Doc 1 (d_1)</text>
+
+  <rect x="600" y="155" width="200" height="42" rx="10" fill="#fff" stroke="#cbdcd7"/>
+  <text x="700" y="181" font-size="13" fill="#617f78" text-anchor="middle">其他样本候选 Doc 2 (d_2)</text>
+
+  <rect x="600" y="205" width="200" height="42" rx="10" fill="#fff" stroke="#cbdcd7"/>
+  <text x="700" y="231" font-size="13" fill="#617f78" text-anchor="middle">其他样本候选 Doc N (d_N)</text>
+</g>
+</svg>

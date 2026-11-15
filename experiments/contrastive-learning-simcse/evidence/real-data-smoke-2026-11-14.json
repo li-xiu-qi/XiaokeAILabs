@@ -1,0 +1,59 @@
+{
+  "date": "2026-11-14",
+  "purpose": "real-data pipeline smoke test; not a quality result or paper reproduction",
+  "hardware": "NVIDIA GB10",
+  "platform": "Linux aarch64",
+  "environment": {
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "transformers": "5.16.1",
+    "datasets": "5.2.0",
+    "environment_type": "isolated environment copied and adjusted from an existing environment",
+    "pip_check": "passed"
+  },
+  "model": {
+    "id": "google-bert/bert-base-uncased",
+    "revision": "86b5e0934494bd15c9632b12f734a8a67f723594"
+  },
+  "data": {
+    "unsupervised": "32 Wikipedia sentences; dataset revision not recorded",
+    "supervised": "32 SNLI triplets; dataset revision not recorded",
+    "evaluation": "100 examples from the GLUE STS-B validation split; dataset revision not recorded"
+  },
+  "training": {
+    "shared": {
+      "epochs": 1,
+      "batch_size": 8,
+      "learning_rate": 0.00003,
+      "temperature": 0.05,
+      "pooling": "cls",
+      "seed": 42,
+      "device": "CUDA",
+      "steps_per_variant": 4
+    },
+    "unsupervised": {
+      "max_length": 32,
+      "final_loss": 0.0771087855,
+      "elapsed_seconds": 0.99
+    },
+    "supervised": {
+      "max_length": 64,
+      "final_loss": 2.8992867469787598,
+      "final_batch_accuracy": 0.375,
+      "elapsed_seconds": 1.02
+    }
+  },
+  "evaluation": {
+    "metric": "Spearman correlation",
+    "n": 100,
+    "base_model": 0.0013,
+    "unsupervised_model": 0.0387,
+    "supervised_model": 0.3337
+  },
+  "limitations": [
+    "Only four optimizer steps per training variant; scores are not evidence of model quality.",
+    "Dataset revisions and dataset file hashes were not recorded.",
+    "The environment was not installed from an empty environment.",
+    "This is not a full reproduction of the SimCSE paper settings or results."
+  ]
+}

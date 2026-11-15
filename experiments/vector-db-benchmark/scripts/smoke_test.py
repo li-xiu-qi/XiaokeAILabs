@@ -2,6 +2,13 @@
 
 用法: ./.venv/Scripts/python.exe scripts/smoke_test.py
 """
+
+if __package__:
+    from .legacy_safety import require_isolated_instance
+else:
+    from legacy_safety import require_isolated_instance
+
+require_isolated_instance()
 import sys
 import time
 

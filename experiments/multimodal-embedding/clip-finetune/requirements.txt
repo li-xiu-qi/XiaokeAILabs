@@ -1,0 +1,7 @@
+# Install compatible CUDA torch separately.
+transformers
+datasets
+matplotlib
+tqdm
+pillow
+huggingface_hub

@@ -5,7 +5,7 @@
 OS 回收全部内存。父进程收集结果。
 
 - 嵌入式库（lance / sqlite / chroma）：测 Python 进程 RSS 增量
-- Docker 库（milvus / qdrant）：测容器内存增量，每轮前 drop 全部已有集合
+- Docker 库（milvus / qdrant）：测容器内存增量，只允许在无集合的专用实例运行
 
 用法:
   ./.venv/Scripts/python.exe scripts/memory_bench3.py
@@ -22,6 +22,35 @@ ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
 PYTHON = ROOT / ".venv" / "Scripts" / "python.exe"
 
+
+def require_empty_collections(db):
+    """拒绝非空实例；不删除任何已有集合。仅用于专用测试实例。"""
+    from index_bench import MILVUS_URI, QDRANT_URI
+
+    if db == "milvus":
+        from pymilvus import MilvusClient
+
+        client = MilvusClient(uri=MILVUS_URI)
+        try:
+            names = client.list_collections()
+        finally:
+            client.close()
+    elif db == "qdrant":
+        from qdrant_client import QdrantClient
+
+        client = QdrantClient(url=QDRANT_URI, timeout=120)
+        try:
+            names = [item.name for item in client.get_collections().collections]
+        finally:
+            client.close()
+    else:
+        raise ValueError("仅支持 milvus 和 qdrant")
+    if not isinstance(names, (list, tuple)):
+        raise RuntimeError("无法确认集合列表，请检查测试实例")
+    if names:
+        raise RuntimeError("测试实例含已有集合，拒绝运行；请使用专用空实例")
+
+
 CHILD_SCRIPT = r'''
 import sys, json, gc, time, subprocess
 sys.path.insert(0, "scripts")
@@ -33,6 +62,7 @@ db, spec, n, dim = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4])
 from index_bench import (MilvusAdapter, QdrantAdapter, LanceAdapter,
                          SqliteVecAdapter, ChromaAdapter, load_real)
 from gen_extra_vecs import gen
+from memory_bench3 import require_empty_collections
 
 # docker 库 -> 容器名列表（服务容器 + 依赖容器）
 DOCKER_CONTAINERS = {
@@ -61,15 +91,6 @@ def docker_mb(containers):
             return None
     return total
 
-def drop_all(adapter):
-    """drop 该库所有已存在的集合，等容器内存释放。"""
-    try:
-        if hasattr(adapter, "c"):
-            for c in adapter.c.list_collections():
-                adapter.c.drop_collection(c)
-    except Exception:
-        pass
-
 adapter_map = {
     "milvus": MilvusAdapter, "qdrant": QdrantAdapter,
     "lance": LanceAdapter, "sqlite": SqliteVecAdapter, "chroma": ChromaAdapter,
@@ -85,47 +106,54 @@ else:
 cls = adapter_map[db]
 is_docker = db in DOCKER_CONTAINERS
 
-if is_docker:
-    a = cls(dim=dim, ns="membench3")
-    containers = DOCKER_CONTAINERS[db]
-    drop_all(a)
-    time.sleep(5)
-    before = docker_mb(containers)
-    a.setup(spec)
-    time.sleep(2)
-    after_setup = docker_mb(containers)
-    a.write(vecs)
-    time.sleep(3)
-    after_write = docker_mb(containers)
-    a.build_index()
-    time.sleep(5)
-    after_index = docker_mb(containers)
-else:
-    a = cls(dim=dim, ns="membench3")
-    gc.collect()
-    before = psutil.Process().memory_info().rss / 1e6
-    a.setup(spec)
-    gc.collect()
-    after_setup = psutil.Process().memory_info().rss / 1e6
-    a.write(vecs)
-    gc.collect()
-    after_write = psutil.Process().memory_info().rss / 1e6
-    a.build_index()
-    gc.collect()
-    time.sleep(1)
-    after_index = psutil.Process().memory_info().rss / 1e6
+a = cls(dim=dim, ns="membench3")
+try:
+    if is_docker:
+        containers = DOCKER_CONTAINERS[db]
+        require_empty_collections(db)
+        time.sleep(5)
+        before = docker_mb(containers)
+        a.setup(spec)
+        time.sleep(2)
+        after_setup = docker_mb(containers)
+        a.write(vecs)
+        time.sleep(3)
+        after_write = docker_mb(containers)
+        a.build_index()
+        time.sleep(5)
+        after_index = docker_mb(containers)
+    else:
+        gc.collect()
+        before = psutil.Process().memory_info().rss / 1e6
+        a.setup(spec)
+        gc.collect()
+        after_setup = psutil.Process().memory_info().rss / 1e6
+        a.write(vecs)
+        gc.collect()
+        after_write = psutil.Process().memory_info().rss / 1e6
+        a.build_index()
+        gc.collect()
+        time.sleep(1)
+        after_index = psutil.Process().memory_info().rss / 1e6
 
-result = {
-    "db": db, "spec": spec, "n": n, "type": "docker" if is_docker else "embedded",
-    "before_mb": round(before, 1),
-    "after_setup_mb": round(after_setup, 1),
-    "after_write_mb": round(after_write, 1),
-    "after_index_mb": round(after_index, 1),
-    "setup_delta": round(after_setup - before, 1),
-    "write_delta": round(after_write - after_setup, 1),
-    "index_delta": round(after_index - after_write, 1),
-    "total_delta": round(after_index - before, 1),
-}
+    result = {
+        "db": db, "spec": spec, "n": n, "type": "docker" if is_docker else "embedded",
+        "before_mb": round(before, 1),
+        "after_setup_mb": round(after_setup, 1),
+        "after_write_mb": round(after_write, 1),
+        "after_index_mb": round(after_index, 1),
+        "setup_delta": round(after_setup - before, 1),
+        "write_delta": round(after_write - after_setup, 1),
+        "index_delta": round(after_index - after_write, 1),
+        "total_delta": round(after_index - before, 1),
+    }
+
+finally:
+    try:
+        a.teardown()
+    except Exception as exc:
+        print("cleanup failed: %s" % exc, file=sys.stderr)
+        raise
 print("RESULT:" + json.dumps(result))
 '''
 
@@ -183,7 +211,8 @@ def main():
 
     out = RESULTS / ("membench3-index-scale-%s.json" % time.strftime("%Y%m%d-%H%M%S"))
     out.parent.mkdir(exist_ok=True)
-    out.write_text(json.dumps(all_results, ensure_ascii=False, indent=2))
+    with out.open("x", encoding="utf-8") as f:
+        json.dump(all_results, f, ensure_ascii=False, indent=2)
     print("\nsaved:", out)
 
 

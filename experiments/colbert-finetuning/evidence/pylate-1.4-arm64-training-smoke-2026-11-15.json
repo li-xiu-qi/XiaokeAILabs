@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-15",
+  "experiment": "PyLate 1.4.0 ARM64 training and reranking dependency probe",
+  "environment": {
+    "device_class": "NVIDIA GB10",
+    "os": "Linux",
+    "architecture": "aarch64",
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "cuda": "13.2",
+    "gpu": "NVIDIA GB10",
+    "pylate": "1.4.0",
+    "sentence-transformers": "5.1.1",
+    "transformers": "4.56.2",
+    "datasets": "4.1.1",
+    "accelerate": "1.10.1",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "ujson": "5.10.0"
+  },
+  "checks": {
+    "cuda_available": true,
+    "training_and_reranking_imports": "passed",
+    "pip_check": "only pylate 1.4.0 requires fast-plaid, which is not installed",
+    "synthetic_gpu_training_steps": 2,
+    "synthetic_candidate_reranking": "completed before and after training"
+  },
+  "scope": "Fresh isolated Python environment. The smoke script used a randomly initialized tiny BERT and synthetic data. No original model, dataset, or PLAID index was loaded.",
+  "limitations": [
+    "The tested environment intentionally omitted fast-plaid because no supported Linux ARM64 distribution was available for the required version range.",
+    "This run did not build or query a PLAID index.",
+    "Synthetic metrics do not establish retrieval quality and do not reproduce the original SciFact experiment."
+  ]
+}

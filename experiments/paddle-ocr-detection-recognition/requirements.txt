@@ -1,0 +1,4 @@
+# Install matching device-appropriate torch and torchvision separately; this is not a lock file.
+transformers==5.17.0
+Pillow==13.0.0
+opencv-python==5.0.0.93

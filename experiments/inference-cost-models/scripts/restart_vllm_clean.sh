@@ -1,5 +1,5 @@
 #!/bin/bash
-source /home/ke/xinfer-env/bin/activate
+source $HOME/xinfer-env/bin/activate
 
 # 杀掉所有 vllm 相关进程
 echo "清理所有 vllm 进程..."
@@ -24,10 +24,10 @@ fi
 
 # 用更低的显存利用率重启
 echo "启动 vLLM（gpu-memory-utilization=0.5）..."
-export PATH="/home/ke/vllm-env/bin:$PATH"
-cd /home/ke/vllm-env
+export PATH="$HOME/vllm-env/bin:$PATH"
+cd $HOME/vllm-env
 setsid ./bin/python -m vllm.entrypoints.openai.api_server \
-    --model /home/ke/models/Qwen3.8-27B-BF16 \
+    --model $HOME/models/Qwen3.8-27B-BF16 \
     --trust-remote-code \
     --dtype bfloat16 \
     --max-model-len 1024 \

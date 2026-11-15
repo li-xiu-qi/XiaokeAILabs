@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="784.44pt" height="324.864pt" viewBox="0 0 784.44 324.864" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-15T16:19:26.400848</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 324.864 
+L 784.44 324.864 
+L 784.44 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 53.4024 243.15264 
+L 299.8152 243.15264 
+Q 315.216 243.15264 315.216 236.94336 
+L 315.216 131.3856 
+Q 315.216 125.17632 299.8152 125.17632 
+L 53.4024 125.17632 
+Q 38.0016 125.17632 38.0016 131.3856 
+L 38.0016 236.94336 
+Q 38.0016 243.15264 53.4024 243.15264 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #f8fafc; stroke: #cbd5e1; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 484.6248 243.15264 
+L 731.0376 243.15264 
+Q 746.4384 243.15264 746.4384 236.94336 
+L 746.4384 131.3856 
+Q 746.4384 125.17632 731.0376 125.17632 
+L 484.6248 125.17632 
+Q 469.224 125.17632 469.224 131.3856 
+L 469.224 236.94336 
+Q 469.224 243.15264 484.6248 243.15264 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #f0fdfa; stroke: #5eead4; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_1">
+    <path d="M 493.86528 172.428941 
+L 721.79712 172.428941 
+" clip-path="url(#p9cedd29f93)" style="fill: none; stroke-dasharray: 1,1.65; stroke-dashoffset: 0; stroke: #1e40af"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 11.8px; font-family: 'Microsoft YaHei', 'Noto Sans SC', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #0f172a" x="22.6008" y="29.499216" transform="rotate(-0 22.6008 29.499216)">按参数形态选择优化器与 Muon Newton-Schulz 正交化</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 8.6px; font-family: 'Microsoft YaHei', 'Noto Sans SC', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #475569" x="22.6008" y="43.887174" transform="rotate(-0 22.6008 43.887174)">二维隐藏权重矩阵采用 Muon 正交更新，词嵌入与输出头保留 AdamW</text>
+   </g>
+   <g id="patch_4">
+    <path d="M 38.0016 94.12992 
+L 644.894475 94.12992 
+L 644.894475 66.18816 
+L 38.0016 66.18816 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #0f766e; stroke: #ffffff; stroke-width: 1.2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 644.894475 94.12992 
+L 695.666437 94.12992 
+L 695.666437 66.18816 
+L 644.894475 66.18816 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #1e40af; stroke: #ffffff; stroke-width: 1.2; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 695.666437 94.12992 
+L 746.4384 94.12992 
+L 746.4384 66.18816 
+L 695.666437 66.18816 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #475569; stroke: #ffffff; stroke-width: 1.2; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_3">
+    <text style="font-weight: 700; font-size: 8.4px; font-family: 'Microsoft YaHei', 'Noto Sans SC', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: end; fill: #1e40af" x="746.4384" y="107.617854" transform="rotate(-0 746.4384 107.617854)">tok_emb 7.2% (lr=0.3) + lm_head 7.2% (lr=0.004) -&gt; AdamW</text>
+   </g>
+   <g id="text_4">
+    <text style="font-weight: 700; font-size: 8.5px; font-family: 'Microsoft YaHei', 'Noto Sans SC', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #0f172a" x="38.0016" y="59.357952" transform="rotate(-0 38.0016 59.357952)">本地 4 层 CausalLM 参数分组占比（总参数 2,065,536，pretrain_metrics.json）</text>
+   </g>
+   <g id="text_5">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'Microsoft YaHei', 'Noto Sans SC', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #991b1b" x="176.6088" y="140.861052" transform="rotate(-0 176.6088 140.861052)">原始动量奇异值分布（主方向高度集中）</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 8.1px; font-family: 'Microsoft YaHei', 'Noto Sans SC', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #475569" x="176.6088" y="233.740157" transform="rotate(-0 176.6088 233.740157)">最大奇异方向占主导，其余方向更新幅度偏小</text>
+   </g>
+   <g id="text_7">
+    <text style="font-weight: 700; font-size: 8.6px; font-family: 'Microsoft YaHei', 'Noto Sans SC', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #0f766e" x="392.22" y="164.140378" transform="rotate(-0 392.22 164.140378)">NS-5 五步矩阵乘正交化</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 7.9px; font-family: 'Microsoft YaHei', 'Noto Sans SC', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #475569" x="392.22" y="201.183277" transform="rotate(-0 392.22 201.183277)">可在 `bfloat16` 下运行，无需 SVD 分解</text>
+   </g>
+   <g id="text_9">
+    <text style="font-weight: 700; font-size: 9px; font-family: 'Microsoft YaHei', 'Noto Sans SC', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #0f766e" x="607.8312" y="140.839255" transform="rotate(-0 607.8312 140.839255)">Newton-Schulz 正交化后</text>
+   </g>
+   <g id="text_10">
+    <!-- 逼近 $U V^\top$：拉平各奇异方向更新幅度 -->
+    <g style="fill: #0f766e" transform="translate(540.1962 234.014165)">
+     <text>
+      <tspan x="0" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e">逼</tspan>
+      <tspan x="8.09375" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e">近</tspan>
+      <tspan x="16.1875" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e"> </tspan>
+      <tspan x="37.976158" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e">：</tspan>
+      <tspan x="46.069908" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e">拉</tspan>
+      <tspan x="54.163658" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e">平</tspan>
+      <tspan x="62.257408" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e">各</tspan>
+      <tspan x="70.351158" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e">奇</tspan>
+      <tspan x="78.444908" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e">异</tspan>
+      <tspan x="86.538658" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e">方</tspan>
+      <tspan x="94.632408" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e">向</tspan>
+      <tspan x="102.726158" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e">更</tspan>
+      <tspan x="110.819908" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e">新</tspan>
+      <tspan x="118.913658" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e">幅</tspan>
+      <tspan x="127.007408" y="-0.684387" style="font-size: 8.1px; font-family: 'Microsoft YaHei'; fill: #0f766e">度</tspan>
+      <tspan x="18.582428" y="-0.684387" style="font-style: oblique; font-size: 8.1px; font-family: 'DejaVu Sans'; fill: #0f766e">U</tspan>
+      <tspan x="24.506516" y="-0.684387" style="font-style: oblique; font-size: 8.1px; font-family: 'DejaVu Sans'; fill: #0f766e">V</tspan>
+      <tspan x="31.715582" y="-4.029687" style="font-size: 5.67px; font-family: 'DejaVu Sans'; fill: #0f766e">⊤</tspan>
+     </text>
+    </g>
+   </g>
+   <g id="patch_7">
+    <path d="M 49.5522 305.24544 
+L 734.8878 305.24544 
+Q 746.4384 305.24544 746.4384 300.58848 
+L 746.4384 267.98976 
+Q 746.4384 263.3328 734.8878 263.3328 
+L 49.5522 263.3328 
+Q 38.0016 263.3328 38.0016 267.98976 
+L 38.0016 300.58848 
+Q 38.0016 305.24544 49.5522 305.24544 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #fffbeb; stroke: #fcd34d; stroke-width: 1.1; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_11">
+    <text style="font-weight: 700; font-size: 8.8px; font-family: 'Microsoft YaHei', 'Noto Sans SC', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #ffffff" x="341.448037" y="82.733126" transform="rotate(-0 341.448037 82.733126)">blocks.* 二维隐藏矩阵  85.7% (1,769,472 参数) -&gt; Muon (NS-5, lr=0.02)</text>
+   </g>
+   <g id="patch_8">
+    <path d="M 70.34328 216.7632 
+L 93.44448 216.7632 
+L 93.44448 156.781555 
+L 70.34328 156.781555 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #991b1b"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 107.3052 216.7632 
+L 130.4064 216.7632 
+L 130.4064 193.292122 
+L 107.3052 193.292122 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #94a3b8"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 144.26712 216.7632 
+L 167.36832 216.7632 
+L 167.36832 206.33161 
+L 144.26712 206.33161 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #94a3b8"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 181.22904 216.7632 
+L 204.33024 216.7632 
+L 204.33024 211.547405 
+L 181.22904 211.547405 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #94a3b8"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 218.19096 216.7632 
+L 241.29216 216.7632 
+L 241.29216 214.155302 
+L 218.19096 214.155302 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #94a3b8"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 255.15288 216.7632 
+L 278.25408 216.7632 
+L 278.25408 215.459251 
+L 255.15288 215.459251 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #94a3b8"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 330.6168 181.804954 
+Q 392.22 181.804954 451.363525 181.804954 
+" clip-path="url(#p9cedd29f93)" style="fill: none; stroke: #0f766e; stroke-width: 2.2; stroke-linecap: round"/>
+    <path d="M 446.163525 179.204954 
+L 451.363525 181.804954 
+L 446.163525 184.404954 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #0f766e; stroke: #0f766e; stroke-width: 2.2; stroke-linecap: round"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 501.56568 216.7632 
+L 524.66688 216.7632 
+L 524.66688 172.428941 
+L 501.56568 172.428941 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #0f766e"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 538.5276 216.7632 
+L 561.6288 216.7632 
+L 561.6288 172.428941 
+L 538.5276 172.428941 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #0f766e"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 575.48952 216.7632 
+L 598.59072 216.7632 
+L 598.59072 173.080915 
+L 575.48952 173.080915 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #0f766e"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 612.45144 216.7632 
+L 635.55264 216.7632 
+L 635.55264 173.73289 
+L 612.45144 173.73289 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #0f766e"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 649.41336 216.7632 
+L 672.51456 216.7632 
+L 672.51456 174.384864 
+L 649.41336 174.384864 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #0f766e"/>
+   </g>
+   <g id="patch_20">
+    <path d="M 686.37528 216.7632 
+L 709.47648 216.7632 
+L 709.47648 176.992762 
+L 686.37528 176.992762 
+z
+" clip-path="url(#p9cedd29f93)" style="fill: #0f766e"/>
+   </g>
+   <g id="text_12">
+    <text style="font-weight: 700; font-size: 8.8px; font-family: 'Microsoft YaHei', 'Noto Sans SC', 'Arial', 'DejaVu Sans', sans-serif; text-anchor: middle; fill: #92400e" x="392.22" y="281.007811" transform="rotate(-0 392.22 281.007811)">更新尺度校准与权重衰减：本地实现与大规模版本差异</text>
+   </g>
+   <g id="text_13">
+    <!-- llm_common.py 使用 $\sqrt{\max(1, A/B)}$ 缩放；Liu et al. (2025) 改为 $0.2\sqrt{\max(A, B)}$ 并加入解耦权重衰减 -->
+    <g style="fill: #475569" transform="translate(212.0785 297.317027)">
+     <text>
+      <tspan x="0" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">l</tspan>
+      <tspan x="2.045746" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">l</tspan>
+      <tspan x="4.091492" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">m</tspan>
+      <tspan x="11.294769" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">_</tspan>
+      <tspan x="14.740631" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">c</tspan>
+      <tspan x="18.595642" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">o</tspan>
+      <tspan x="23.48291" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">m</tspan>
+      <tspan x="30.686188" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">m</tspan>
+      <tspan x="37.889465" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">o</tspan>
+      <tspan x="42.776733" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">n</tspan>
+      <tspan x="47.513855" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">.</tspan>
+      <tspan x="49.36441" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">p</tspan>
+      <tspan x="54.2742" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">y</tspan>
+      <tspan x="58.34317" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569"> </tspan>
+      <tspan x="60.617889" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">使</tspan>
+      <tspan x="68.305389" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">用</tspan>
+      <tspan x="75.992889" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569"> </tspan>
+      <tspan x="130.180096" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569"> </tspan>
+      <tspan x="132.454816" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">缩</tspan>
+      <tspan x="140.142316" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">放</tspan>
+      <tspan x="147.829816" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">；</tspan>
+      <tspan x="155.517316" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">L</tspan>
+      <tspan x="159.462415" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">i</tspan>
+      <tspan x="161.50816" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">u</tspan>
+      <tspan x="166.245282" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569"> </tspan>
+      <tspan x="168.520001" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">e</tspan>
+      <tspan x="172.881757" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">t</tspan>
+      <tspan x="175.745801" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569"> </tspan>
+      <tspan x="178.02052" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">a</tspan>
+      <tspan x="182.269666" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">l</tspan>
+      <tspan x="184.315411" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">.</tspan>
+      <tspan x="186.165967" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569"> </tspan>
+      <tspan x="188.440686" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">(</tspan>
+      <tspan x="191.008191" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">2</tspan>
+      <tspan x="195.516339" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">0</tspan>
+      <tspan x="200.024487" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">2</tspan>
+      <tspan x="204.532635" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">5</tspan>
+      <tspan x="209.040784" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">)</tspan>
+      <tspan x="211.608289" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569"> </tspan>
+      <tspan x="213.883008" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">改</tspan>
+      <tspan x="221.570508" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">为</tspan>
+      <tspan x="229.258008" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569"> </tspan>
+      <tspan x="288.189844" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569"> </tspan>
+      <tspan x="290.464563" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">并</tspan>
+      <tspan x="298.152063" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">加</tspan>
+      <tspan x="305.839563" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">入</tspan>
+      <tspan x="313.527063" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">解</tspan>
+      <tspan x="321.214563" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">耦</tspan>
+      <tspan x="328.902063" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">权</tspan>
+      <tspan x="336.589563" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">重</tspan>
+      <tspan x="344.277063" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">衰</tspan>
+      <tspan x="351.964563" y="-0.31925" style="font-size: 7.7px; font-family: 'Microsoft YaHei'; fill: #475569">减</tspan>
+      <tspan x="78.267609" y="-0.772375" style="font-size: 5.014741px; font-family: 'STIXSizeOneSym'; fill: #475569">√</tspan>
+      <tspan x="243.758405" y="-0.772375" style="font-size: 5.014741px; font-family: 'STIXSizeOneSym'; fill: #475569">√</tspan>
+      <tspan x="84.515234" y="-0.690625" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">m</tspan>
+      <tspan x="92.00379" y="-0.690625" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">a</tspan>
+      <tspan x="96.714636" y="-0.690625" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">x</tspan>
+      <tspan x="101.264075" y="-0.690625" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">(</tspan>
+      <tspan x="104.263251" y="-0.690625" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">1</tspan>
+      <tspan x="109.154272" y="-0.690625" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">,</tspan>
+      <tspan x="118.354498" y="-0.690625" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">/</tspan>
+      <tspan x="126.21842" y="-0.690625" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">)</tspan>
+      <tspan x="231.532727" y="-0.31925" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">0</tspan>
+      <tspan x="236.423749" y="-0.31925" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">.</tspan>
+      <tspan x="238.867383" y="-0.31925" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">2</tspan>
+      <tspan x="250.00603" y="-0.690625" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">m</tspan>
+      <tspan x="257.494586" y="-0.690625" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">a</tspan>
+      <tspan x="262.205432" y="-0.690625" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">x</tspan>
+      <tspan x="266.754871" y="-0.690625" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">(</tspan>
+      <tspan x="275.012927" y="-0.690625" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">,</tspan>
+      <tspan x="284.228168" y="-0.690625" style="font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">)</tspan>
+      <tspan x="113.095618" y="-0.690625" style="font-style: oblique; font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">A</tspan>
+      <tspan x="120.944525" y="-0.690625" style="font-style: oblique; font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">B</tspan>
+      <tspan x="269.754047" y="-0.690625" style="font-style: oblique; font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">A</tspan>
+      <tspan x="278.954272" y="-0.690625" style="font-style: oblique; font-size: 7.7px; font-family: 'DejaVu Sans'; fill: #475569">B</tspan>
+     </text>
+     <rect x="83.552734" y="-9.51875" width="46.627362" height="0.48125"/>
+     <rect x="249.04353" y="-9.51875" width="39.146313" height="0.48125"/>
+    </g>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p9cedd29f93">
+   <rect x="7.2" y="7.2" width="770.04" height="310.464"/>
+  </clipPath>
+ </defs>
+</svg>

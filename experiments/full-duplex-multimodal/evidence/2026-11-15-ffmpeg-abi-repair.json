@@ -1,0 +1,107 @@
+{
+  "date": "2026-11-15",
+  "experiment": "Bounded FFmpeg/TorchCodec ABI repair run: prefix preparation, empty-venv validation and one 60-second video GPU probe",
+  "device_class": "NVIDIA GB10",
+  "platform": {
+    "system": "Linux",
+    "architecture": "aarch64",
+    "python": "3.12.3",
+    "gpu": "NVIDIA GB10",
+    "cuda": "13.0"
+  },
+  "model": "openbmb/MiniCPM-o-4_5",
+  "model_revision": "fb09628e98b1f55d8d5b863e0eccfcdd11bff499",
+  "input": "35.3-second recorded video; fixed prerecorded material",
+  "root_cause": {
+    "torchcodec_backends": "torchcodec 0.15 ships one backend per FFmpeg major version (libtorchcodec_core4..core8); each backend dlopens the matching sonames libavutil.so.56 .. libavutil.so.60",
+    "pyav_bundled_libraries": "PyAV wheels bundle FFmpeg under hashed file names (for example libavutil-<hash>.so.60.8.100), so the dynamic linker never resolves the sonames from an av.libs directory; this explains the earlier failures when LD_LIBRARY_PATH pointed at PyAV's bundled libraries",
+    "repair": "unpack FFmpeg 6.1.1 Ubuntu arm64 runtime packages into a run-specific private prefix; libavutil.so.58 satisfies the core6 backend"
+  },
+  "stages": {
+    "ffmpeg_prefix": {
+      "result": "passed",
+      "method": "scripts/prepare_ffmpeg_prefix.sh: dpkg-deb -x of cached Ubuntu arm64 packages into a private prefix, soname verification, then a torchcodec import and AudioDecoder gate",
+      "packages_unpacked": 80,
+      "ffmpeg_core_packages": "libavutil58, libavcodec60, libavformat60, libavdevice60, libavfilter9, libswscale7, libswresample4, libpostproc57 (all 7:6.1.1-3ubuntu5, arm64)",
+      "transitive_dependencies_verified": [
+        "libzvbi0t64",
+        "libcjson1",
+        "libmbedcrypto7t64",
+        "libblas3",
+        "liblapack3"
+      ],
+      "blas_lapack_subdirs": "present under usr/lib/aarch64-linux-gnu and added to LD_LIBRARY_PATH",
+      "ld_library_path": "prefix usr/lib/aarch64-linux-gnu plus its blas/ and lapack/ subdirectories",
+      "torchcodec_gate": "passed: torchcodec imported its FFmpeg backend and AudioDecoder opened the recorded video",
+      "sources": "device package cache only; no package downloads"
+    },
+    "env_validation": {
+      "result": "passed",
+      "method": "scripts/validate_realtime_environment.sh with FFMPEG_LIB_DIR pointing at the prepared prefix",
+      "venv": "new empty venv created with python3.12",
+      "package_install": "passed",
+      "pip_check": "passed: No broken requirements found.",
+      "imports": {
+        "av": "16.0.1",
+        "torch": "2.11.0+cu130",
+        "torchaudio": "2.11.0+cu130",
+        "torchcodec": "0.15.0+cu130",
+        "transformers": "4.51.0",
+        "fastapi": "0.163.0",
+        "websockets": "17.4",
+        "stepaudio2_minicpmo": "imported as module stepaudio2 (0.1.1)"
+      },
+      "cuda": {
+        "available": true,
+        "torch_version": "2.11.0+cu130",
+        "cuda": "13.0",
+        "device_count": 1,
+        "device": "NVIDIA GB10"
+      },
+      "wav_decode": {
+        "ok": true,
+        "sample_rate": 44100,
+        "channels": 1,
+        "num_frames": 44100,
+        "duration_s": 1.0
+      }
+    },
+    "demo_probe": {
+      "result": "passed",
+      "method": "scripts/run_demo_verify.sh in the existing Demo environment specified by DEMO_PYTHON, video mode, the same FFmpeg prefix, session cap 60 s",
+      "session": "established successfully; ended at the 60-second cap",
+      "model_load": "UnifiedProcessor initialization complete in 19.1 s; attention sdpa (flash-attn not installed)",
+      "input_audio_chunks": 59,
+      "input_video_frames": 59,
+      "vision_metrics_deltas": 81,
+      "output_audio_chunks": 23,
+      "output_audio_ms": 23200,
+      "output_audio_rms": 0.0988,
+      "output_sample_rate_hz": 24000,
+      "first_text_ms": 7482,
+      "first_audio_ms": 7490,
+      "input_after_first_audio_ms": 52749,
+      "listen_events": 35,
+      "speak_then_listen_switches": 31,
+      "cleanup": "services stopped; gateway/worker/backend ports released",
+      "model_text_excerpt": "Chinese descriptions of the elevator scene, tracking the displayed floor from 21F to 24F"
+    }
+  },
+  "notes": [
+    "All three stages ran in one bounded remote run; the driver scripts/repair_ffmpeg_and_verify.sh stops at the first failing stage and never retries or adds a second probe.",
+    "The empty-venv loop is now closed: with an explicit FFMPEG_LIB_DIR pointing at a prepared FFmpeg 6.1.1 prefix, package installation, pip check, torchcodec import, CUDA and WAV decoding all pass in a new empty venv. The earlier PyAV-directory attempts could not work because of the hashed library names.",
+    "The full Demo GPU probe used the existing Demo environment via DEMO_PYTHON, not the new validation venv; it used the same prepared FFmpeg prefix. Thus the Demo stack itself was not tested end to end in the empty venv.",
+    "Wheels and .deb files came from caches already present on the device. The pip index metadata cache had expired, so the torch installation needed one index fetch; that fetch was performed with the task's proxy variables cleared (the same run-scoped mitigation used in an earlier recorded run). Package downloads over the network were not otherwise part of this verification.",
+    "Earlier attempts in this session stopped before the probe for mechanical reasons (launcher path convention, a missing output directory, and the proxy-blocked torch install); each attempt that reached the FFmpeg stage passed its gate. No fix was retried in a loop.",
+    "This run does not replace the earlier successful video, audio-only, 30-second and 160 ms runs; environments and session caps differ and metrics must not be merged."
+  ],
+  "not_verified": [
+    "cold-cache package downloads and online retrieval of the FFmpeg packages",
+    "reproducing this repair on other platforms, architectures or FFmpeg versions",
+    "live microphone and speaker interaction",
+    "human interruption during model speech",
+    "human listening assessment",
+    "human-perceived end-to-end latency (the 7.49 s first audio is not conversational latency)",
+    "Higgs Realtime Duplex weights, training, architecture or benchmark reproduction"
+  ]
+}

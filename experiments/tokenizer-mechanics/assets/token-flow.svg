@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-labelledby="title desc">
+<title id="title">From text to tokens and back</title><desc id="desc">Text is encoded to token IDs, processed by a language model, and decoded to text.</desc>
+<rect width="1200" height="300" rx="24" fill="#101b20"/>
+<text x="50" y="52" fill="#c2e5d7" font-family="sans-serif" font-size="20" letter-spacing="3">TOKENIZATION / GENERATION</text>
+<g font-family="sans-serif" text-anchor="middle"><g fill="#203b3b" stroke="#5fb99b"><rect x="50" y="90" width="205" height="120" rx="16"/><rect x="350" y="90" width="205" height="120" rx="16"/><rect x="650" y="90" width="205" height="120" rx="16"/><rect x="950" y="90" width="200" height="120" rx="16"/></g><g fill="#f0faf5" font-size="22"><text x="152" y="140">Input text</text><text x="452" y="140">Token IDs</text><text x="752" y="140">Language model</text><text x="1050" y="140">Output text</text></g><g fill="#a9c8bc" font-size="15"><text x="152" y="173">UTF-8 / normalization</text><text x="452" y="173">vocabulary mapping</text><text x="752" y="173">predict next IDs</text><text x="1050" y="173">decode bytes</text></g></g>
+<g stroke="#d4ad65" stroke-width="3" fill="none"><path d="M270 150h62m-9-7 9 7-9 7"/><path d="M570 150h62m-9-7 9 7-9 7"/><path d="M870 150h62m-9-7 9 7-9 7"/></g>
+<text x="50" y="258" fill="#98b4aa" font-family="sans-serif" font-size="16">One token is not necessarily one word or one character.</text></svg>

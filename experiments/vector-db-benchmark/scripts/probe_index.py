@@ -4,6 +4,13 @@
 
 用法: ./.venv/Scripts/python.exe scripts/probe_index.py
 """
+
+if __package__:
+    from .legacy_safety import require_isolated_instance
+else:
+    from legacy_safety import require_isolated_instance
+
+require_isolated_instance()
 import json
 import time
 import warnings

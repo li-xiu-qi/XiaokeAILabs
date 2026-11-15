@@ -1,4 +1,11 @@
 """LanceDB IVF_PQ 参数对照：定位 30000/768 召回 0.04 的根因。"""
+
+if __package__:
+    from .legacy_safety import require_isolated_instance
+else:
+    from legacy_safety import require_isolated_instance
+
+require_isolated_instance()
 import shutil
 import time
 import warnings

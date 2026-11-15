@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-13",
+  "experiment": "SLANet+ synthetic table structure CUDA smoke",
+  "run_scope": "single synthetic input; one recorded inference; not a clean-environment installation",
+  "system": {
+    "os": "Ubuntu 24.04",
+    "architecture": "aarch64",
+    "gpu": "NVIDIA GB10"
+  },
+  "model": {
+    "repository": "PaddlePaddle/SLANet_plus_safetensors",
+    "revision": "e44d12b3fe695792170dd46623075f63d8544461",
+    "file": "model.safetensors",
+    "sha256": "4455fa2a535b80738e0e0af2ca899f719efb8d6e1c7e7209cc5126f81607bf06"
+  },
+  "input": {
+    "description": "self-generated English table, 4 rows by 3 columns, 12 cells, no merged cells",
+    "image_size_px": [
+      911,
+      301
+    ],
+    "crop_table": true,
+    "sha256": "e41b53bf9d170a9071f1e02933a24a2ab7448c3e5e05a8ca28bae44d7988559f"
+  },
+  "environment": {
+    "torch": "2.15.0+cu132",
+    "torchvision": "0.29.1+cu130",
+    "transformers": "5.22.2",
+    "pillow": "12.0.0",
+    "cpu_threads": 2
+  },
+  "result": {
+    "device": "cuda",
+    "first_forward_seconds": 0.3876416730345227,
+    "structure_score": 0.9999627470970154,
+    "rows": 4,
+    "cells": 12
+  },
+  "limitations": [
+    "One synthetic table only; no real-table accuracy measurement or full evaluation.",
+    "Environment used layered dependencies; clean installation of the complete environment has not been verified.",
+    "This run verifies table-structure prediction only, not OCR recognition or text-to-structure assembly."
+  ]
+}

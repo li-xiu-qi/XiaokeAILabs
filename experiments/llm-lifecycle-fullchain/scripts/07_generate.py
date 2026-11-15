@@ -7,15 +7,16 @@
   - temperature：softmax(logits/T) 后多项式采样，可配 top_k / top_p
   - KV cache 与 naive 全前向的提速对比（同 prompt、同参数、逐 token 计时）
 默认同时用 midtrain / pretrain 模型对照同一批 prompt，展示各阶段行为变化。
-产物：results/samples.md、results/samples.json。
+产物：$XL_OUT_DIR/samples.md、samples.json、generate_metrics.json。
 
 用法：
-    python scripts/07_generate.py [--checkpoint results/checkpoints/rl.pt]
+    python scripts/07_generate.py [--checkpoint $XL_OUT_DIR/checkpoints/rl.pt]
 """
 
 from __future__ import annotations
 
 import argparse
+import contextlib
 import json
 import time
 from pathlib import Path
@@ -43,17 +44,19 @@ CONT_PROMPTS = [
 ]
 
 
-def run_prompts(model, tok, prompts, temperature, top_k, top_p, max_new, seed, use_cache=True):
+def run_prompts(model, tok, prompts, temperature, top_k, top_p, max_new, seed, device=None, amp=None):
     eos = lc.eos_id(tok)
+    ctx = amp.autocast() if amp is not None else contextlib.nullcontext()
     rows = []
     for i, p in enumerate(prompts):
         torch.manual_seed(seed + i)  # 每个 prompt 固定采样种子，结果可复现
         ids = tok.encode(p, add_special_tokens=False).ids
-        idx = torch.tensor([ids], dtype=torch.long)
+        idx = torch.tensor([ids], dtype=torch.long, device=device)
         t0 = time.time()
-        out, n_new = lc.generate(
-            model, idx, max_new, eos, temperature, top_k, top_p, use_cache=use_cache, seed=seed + i
-        )
+        with ctx:
+            out, n_new = lc.generate(
+                model, idx, max_new, eos, temperature, top_k, top_p, use_cache=True, seed=seed + i
+            )
         dt = time.time() - t0
         text = tok.decode(out[0, len(ids) :].tolist(), skip_special_tokens=True).strip()
         rows.append(
@@ -73,7 +76,7 @@ def run_prompts(model, tok, prompts, temperature, top_k, top_p, max_new, seed, u
     return rows
 
 
-def speed_benchmark(model, tok, max_new: int = 96) -> dict:
+def speed_benchmark(model, tok, max_new: int = 96, device=None, amp=None) -> dict:
     """同一 prompt 分别用 KV cache 与 naive 前向解码，对比 tokens/s。
 
     两个细节保证基准有效：
@@ -83,16 +86,18 @@ def speed_benchmark(model, tok, max_new: int = 96) -> dict:
     """
     prompt = "The capital of Peru is"
     ids = tok.encode(prompt, add_special_tokens=False).ids
+    ctx = amp.autocast() if amp is not None else contextlib.nullcontext()
     out = {}
     for batch in (1, 8):
-        idx = torch.tensor([ids] * batch, dtype=torch.long)
+        idx = torch.tensor([ids] * batch, dtype=torch.long, device=device)
         row = {}
         for use_cache in (True, False):
             torch.manual_seed(0)
             t0 = time.time()
-            _, n_new = lc.generate(
-                model, idx.clone(), max_new, -1, temperature=0.0, use_cache=use_cache
-            )
+            with ctx:
+                _, n_new = lc.generate(
+                    model, idx.clone(), max_new, -1, temperature=0.0, use_cache=use_cache
+                )
             dt = time.time() - t0
             total_new = n_new * batch
             row["kv_cache" if use_cache else "naive"] = {
@@ -109,36 +114,54 @@ def speed_benchmark(model, tok, max_new: int = 96) -> dict:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="贪心 + 温度采样生成")
-    ap.add_argument("--checkpoint", default=str(lc.CKPT_DIR / "rl.pt"))
+    ap.add_argument("--checkpoint", default=None,
+                    help="主 checkpoint（缺省 $XL_OUT_DIR/checkpoints/rl.pt）")
     ap.add_argument(
-        "--compare", default=str(lc.CKPT_DIR / "midtrain.pt"), help="对照模型，传空串跳过"
+        "--compare", default=None,
+        help="对照模型（缺省 $XL_OUT_DIR/checkpoints/midtrain.pt），传空串跳过",
     )
     ap.add_argument(
-        "--compare2", default=str(lc.CKPT_DIR / "pretrain.pt"), help="第二对照模型，传空串跳过"
+        "--compare2", default=None,
+        help="第二对照模型（缺省 $XL_OUT_DIR/checkpoints/pretrain.pt），传空串跳过",
     )
     ap.add_argument("--temperature", type=float, default=0.8)
     ap.add_argument("--top-k", type=int, default=20)
     ap.add_argument("--top-p", type=float, default=1.0)
     ap.add_argument("--max-new", type=int, default=24)
     ap.add_argument("--seed", type=int, default=1234)
+    lc.add_device_args(ap)
     args = ap.parse_args()
 
-    tok = lc.load_tokenizer()
-    model, ckpt = lc.load_checkpoint(Path(args.checkpoint))
+    device = lc.resolve_device(args.device)
+    amp = lc.AmpCtx(args.amp, device)
+    out = lc.out_dir()
+    ckpt_dir = out / "checkpoints"
+    if not args.checkpoint:
+        args.checkpoint = str(ckpt_dir / "rl.pt")
+    if args.compare is None:
+        args.compare = str(ckpt_dir / "midtrain.pt")
+    if args.compare2 is None:
+        args.compare2 = str(ckpt_dir / "pretrain.pt")
+    tok_path = out / "tokenizer" / "tokenizer.json"
+    tok = lc.load_tokenizer(tok_path)
+    # DDP 产出的权重（若曾带 module. 前缀）由 load_checkpoint 自动兼容
+    model, ckpt = lc.load_checkpoint(Path(args.checkpoint), device=device)
     print(
         f"[07] 载入 {args.checkpoint}（stage={ckpt.get('stage')}, "
-        f"step={ckpt.get('step')}, {model.num_params():,} 参数）"
+        f"step={ckpt.get('step')}, {model.num_params():,} 参数, device={device}, amp={args.amp}）"
     )
 
     result = {
-        "checkpoint": str(Path(args.checkpoint).relative_to(lc.ROOT)),
-        "tokenizer": str(lc.TOK_PATH.relative_to(lc.ROOT)),
+        "checkpoint": args.checkpoint,
+        "tokenizer": str(tok_path),
         "decode_params": {
             "temperature": args.temperature,
             "top_k": args.top_k,
             "top_p": args.top_p,
             "max_new": args.max_new,
             "seed": args.seed,
+            "device": str(device),
+            "amp": args.amp,
         },
         "greedy": [],
         "sampling": [],
@@ -148,29 +171,36 @@ def main() -> int:
         "speed": {},
     }
 
-    result["greedy"] = run_prompts(model, tok, PROMPTS, 0.0, 0, 1.0, args.max_new, args.seed)
+    result["greedy"] = run_prompts(
+        model, tok, PROMPTS, 0.0, 0, 1.0, args.max_new, args.seed, device=device, amp=amp
+    )
     result["sampling"] = run_prompts(
-        model, tok, PROMPTS, args.temperature, args.top_k, args.top_p, args.max_new, args.seed
+        model, tok, PROMPTS, args.temperature, args.top_k, args.top_p, args.max_new, args.seed,
+        device=device, amp=amp,
     )
 
     if args.compare and Path(args.compare).exists():
-        base, _ = lc.load_checkpoint(Path(args.compare))
+        base, _ = lc.load_checkpoint(Path(args.compare), device=device)
         result["compare_midtrain_greedy"] = run_prompts(
-            base, tok, PROMPTS, 0.0, 0, 1.0, args.max_new, args.seed
+            base, tok, PROMPTS, 0.0, 0, 1.0, args.max_new, args.seed, device=device, amp=amp
         )
         print(f"[07] 对照模型 {args.compare} 生成完成")
     if args.compare2 and Path(args.compare2).exists():
-        base2, _ = lc.load_checkpoint(Path(args.compare2))
+        base2, _ = lc.load_checkpoint(Path(args.compare2), device=device)
         result["compare_pretrain_greedy"] = run_prompts(
-            base2, tok, PROMPTS, 0.0, 0, 1.0, args.max_new, args.seed
+            base2, tok, PROMPTS, 0.0, 0, 1.0, args.max_new, args.seed, device=device, amp=amp
         )
         print(f"[07] 对照模型 {args.compare2} 生成完成")
 
-    cont_low = run_prompts(model, tok, CONT_PROMPTS, 0.8, 0, 1.0, 12, args.seed)
-    cont_high = run_prompts(model, tok, CONT_PROMPTS, 2.5, 0, 1.0, 12, args.seed)
+    cont_low = run_prompts(
+        model, tok, CONT_PROMPTS, 0.8, 0, 1.0, 12, args.seed, device=device, amp=amp
+    )
+    cont_high = run_prompts(
+        model, tok, CONT_PROMPTS, 2.5, 0, 1.0, 12, args.seed, device=device, amp=amp
+    )
     result["temperature_effect"] = {"low": cont_low, "high": cont_high}
 
-    result["speed"] = speed_benchmark(model, tok)
+    result["speed"] = speed_benchmark(model, tok, device=device, amp=amp)
     for b in ("batch1", "batch8"):
         s = result["speed"][b]
         print(
@@ -223,9 +253,25 @@ def main() -> int:
     lines.append("\n")
 
     md = "\n".join(lines) + "\n"
-    (lc.ROOT / "results" / "samples.md").write_text(md, encoding="utf-8")
-    (lc.ROOT / "results" / "samples.json").write_text(
+    (out / "samples.md").write_text(md, encoding="utf-8")
+    (out / "samples.json").write_text(
         json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    # 阶段指标（证据白名单可拉回）：解码参数、KV cache 提速与代表性样本
+    metrics = {
+        "stage": "generate",
+        "run_id": lc.run_id(),
+        "checkpoint": args.checkpoint,
+        "decode_params": result["decode_params"],
+        "speed": result["speed"],
+        "greedy": result["greedy"],
+        "sampling": result["sampling"],
+        "compare_midtrain_greedy": result["compare_midtrain_greedy"],
+        "compare_pretrain_greedy": result["compare_pretrain_greedy"],
+        "temperature_effect": result["temperature_effect"],
+    }
+    (out / "generate_metrics.json").write_text(
+        json.dumps(metrics, ensure_ascii=False, indent=2), encoding="utf-8"
     )
 
     print("\n[07] 贪心解码示例：")
@@ -245,7 +291,7 @@ def main() -> int:
     print("[07] 温度效应对照（T=0.8 vs T=2.5）：")
     for lo, hi in zip(cont_low, cont_high):
         print(f"  {lo['prompt']:<30} | {lo['generated'][:24]!r} | {hi['generated'][:24]!r}")
-    print("[07] 已写出 results/samples.md 与 results/samples.json")
+    print(f"[07] 已写出 {out / 'samples.md'}、{out / 'samples.json'} 与 {out / 'generate_metrics.json'}")
     return 0
 
 

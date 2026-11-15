@@ -1,0 +1,2 @@
+# Install a PyTorch build matching the operating system, architecture and GPU separately.
+transformers==5.16.1

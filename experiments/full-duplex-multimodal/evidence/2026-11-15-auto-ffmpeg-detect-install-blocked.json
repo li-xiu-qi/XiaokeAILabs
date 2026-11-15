@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-15",
+  "purpose": "fresh-venv validation of realtime Python dependencies and automatic PyAV FFmpeg library discovery",
+  "platform": "Linux aarch64",
+  "hardware": "NVIDIA GB10",
+  "python": "3.12.3",
+  "result": "blocked_before_ffmpeg_detection",
+  "checks": {
+    "venv_creation": "passed",
+    "pip_24_0": "passed",
+    "pytorch_install": "failed",
+    "ffmpeg_library_discovery": "not_reached",
+    "torchcodec_decode": "not_reached"
+  },
+  "failure": {
+    "stage": "install_torch",
+    "error": "Connection to the configured proxy was refused while pip accessed the PyTorch cu130 package index."
+  },
+  "limitations": [
+    "No PyTorch wheel was installed in this run.",
+    "The new automatic lookup of PyAV's bundled av.libs directory was not reached or verified.",
+    "No model, media, inference service or GPU probe was run in this environment."
+  ]
+}

@@ -1,0 +1,11 @@
+# Install compatible CUDA torch and ai-toolkit separately.
+pyarrow
+pillow
+numpy
+opencv-python
+diffusers
+transformers
+accelerate
+peft
+safetensors
+huggingface_hub

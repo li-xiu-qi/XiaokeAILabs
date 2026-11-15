@@ -1,0 +1,16 @@
+# CUDA torch and matching torchvision must be installed separately. Candidate set; not a lock file.
+transformers @ git+https://github.com/huggingface/transformers.git@549e5b410733fb50e8efbbe4aa585cb89f6478ea
+pillow
+accelerate
+safetensors
+pydantic>=2
+uvicorn
+fastapi
+starlette
+rich
+openai
+requests
+pymupdf
+beautifulsoup4
+pyyaml
+opencv-contrib-python==4.11.0.86

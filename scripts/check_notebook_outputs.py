@@ -18,21 +18,22 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 
 
 def staged_names() -> list[str]:
     out = subprocess.run(
-        ["git", "diff", "--cached", "--name-only", "--diff-filter=ACMR"],
-        capture_output=True, text=True, check=True,
+        ["git", "diff", "--cached", "--name-only", "-z", "--diff-filter=ACMR"],
+        capture_output=True, check=True,
     ).stdout
-    return [f for f in out.splitlines() if f.endswith(".ipynb")]
+    return [os.fsdecode(f) for f in out.split(b"\0") if f.endswith(b".ipynb")]
 
 
 def tracked_names() -> list[str]:
-    out = subprocess.run(["git", "ls-files"], capture_output=True, text=True, check=True).stdout
-    return [f for f in out.splitlines() if f.endswith(".ipynb")]
+    out = subprocess.run(["git", "ls-files", "-z"], capture_output=True, check=True).stdout
+    return [os.fsdecode(f) for f in out.split(b"\0") if f.endswith(b".ipynb")]
 
 
 def content_of(path: str) -> bytes | None:

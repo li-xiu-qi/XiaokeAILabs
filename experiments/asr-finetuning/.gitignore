@@ -1,0 +1,6 @@
+# 本地回退产物与缓存，不进 git
+.work/
+
+# Python
+__pycache__/
+*.py[cod]

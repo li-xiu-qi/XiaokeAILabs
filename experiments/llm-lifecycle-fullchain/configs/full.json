@@ -1,0 +1,18 @@
+{
+  "name": "full",
+  "description": "完整档：标准训练规模，tokenizer 8192 词表 + 全阶段标准步数",
+  "device": "auto",
+  "amp": "bf16",
+  "scale": 1.0,
+  "nproc": 1,
+  "tokenizer": {
+    "vocab_size": 8192,
+    "max_chars": 30000000
+  },
+  "stages": {
+    "pretrain": 250,
+    "midtrain": 120,
+    "sft": 250,
+    "rl": 80
+  }
+}

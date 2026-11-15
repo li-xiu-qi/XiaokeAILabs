@@ -1,0 +1,15 @@
+all_python_ast=ok
+all_shell_syntax=ok
+PASS attention_model
+PASS embedding_throughput_model
+PASS hybrid_architecture_model
+PASS kv_cache_model
+PASS kv_paging_model
+PASS memory_hierarchy_model
+PASS model_loading_model
+PASS roofline_model
+PASS scaling_law_model
+PASS speculative_model
+PASS throughput_model
+PASS weight_memory_model
+all_model_self_tests=ok

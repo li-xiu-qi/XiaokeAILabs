@@ -1,0 +1,5 @@
+# Direct dependencies for the documented GB10/Linux aarch64 environment.
+# Install a PyTorch build compatible with the target device before this file.
+transformers==5.16.1
+datasets==5.2.0
+numpy==2.5.4

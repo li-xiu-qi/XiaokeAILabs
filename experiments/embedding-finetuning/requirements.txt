@@ -1,0 +1,6 @@
+# Direct dependencies; install a compatible PyTorch build for the target device first.
+# Versions are not locked; validate the resulting environment before training.
+torch
+transformers
+sentence-transformers
+tqdm

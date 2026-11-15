@@ -1,0 +1,48 @@
+{
+  "experiment": "whisper-small-librispeech-clean",
+  "date": "2026-11-15",
+  "device": "NVIDIA GB10",
+  "environment": {
+    "platform": "Linux aarch64",
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "transformers": "5.16.1",
+    "datasets": "5.2.0",
+    "soundfile": "0.14.0",
+    "jiwer": "4.0.0",
+    "numpy": "2.5.4",
+    "tqdm": "4.70.1",
+    "clean_environment_install": "passed; install-only, no model or dataset download",
+    "pip_check": "passed",
+    "imports": "passed",
+    "cuda_available": true
+  },
+  "pipeline_smoke": {
+    "train_samples": 8,
+    "test_samples": 4,
+    "optimizer_steps": 4,
+    "baseline_wer_percent": 0.87,
+    "finetuned_wer_percent": 0.87,
+    "purpose": "end-to-end workflow smoke only; not a quality result"
+  },
+  "model": "openai/whisper-small",
+  "model_revision": "973afd24965f72e36ca33b3055d56a652f456b4d",
+  "dataset": "openslr/librispeech_asr",
+  "dataset_revision": "71cacbfb7e2354c4226d01e70d77d5fca3d04ba1",
+  "train_split": "train.100",
+  "test_split": "test",
+  "train_samples": 64,
+  "test_samples": 16,
+  "batch_size": 2,
+  "epochs": 1,
+  "optimizer_steps": 32,
+  "mean_training_loss": 0.4451,
+  "baseline_wer_percent": 3.79,
+  "finetuned_wer_percent": 3.79,
+  "precision": "bf16",
+  "limitations": [
+    "Small test sample; the base model may have encountered LibriSpeech during pretraining.",
+    "Evaluation emitted an attention-mask warning for batched generation.",
+    "An earlier implementation masked end tokens and produced 5.68% WER; the final result follows correction and rerun."
+  ]
+}

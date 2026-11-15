@@ -1,0 +1,2 @@
+# HTTP timing client; basic cost-model examples use only the Python standard library.
+requests==2.34.2

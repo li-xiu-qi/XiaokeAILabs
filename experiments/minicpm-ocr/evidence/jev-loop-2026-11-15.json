@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-15",
+  "device": "NVIDIA GB10",
+  "platform": "Linux ARM64",
+  "case": "text_putnam_2009",
+  "ocr_model": "openbmb/MiniCPM-OCR-1.0",
+  "ocr_weight_sha256": "83f4e433b044fd23f9ea7eb3acbc7d59e4fe11a1fdf3c3129b7021d0ab4f8fd4",
+  "jev_model": "openbmb/MiniCPM-OCR-Jev",
+  "jev_revision": "a0ed278eb6aa1f333a711665ab610055a4a816ab",
+  "max_tokens": 512,
+  "ocr_output_equals_reference": false,
+  "candidates": [
+    {"role": "upstream_reference", "score": 0.9950835704803467, "verdict": "scored"},
+    {"role": "new_ocr_output", "score": 0.9950276017189026, "verdict": "scored"},
+    {"role": "reference_last_line_removed", "score": 0.000004893442564934958, "verdict": "scored"}
+  ],
+  "best_index": 0,
+  "limitations": [
+    "Single example; no general accuracy or ranking stability estimate",
+    "Reference supplied by upstream example, not independently checked",
+    "Official example source commit not pinned",
+    "OCR and scoring environments copied; renderer environment installed separately"
+  ]
+}

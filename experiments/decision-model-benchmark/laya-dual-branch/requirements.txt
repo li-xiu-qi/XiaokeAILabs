@@ -1,0 +1,3 @@
+# Install a CUDA-compatible PyTorch build for your device before this file.
+# Only the direct experiment dependency is pinned; transitive dependencies are not locked.
+laya==0.3.5

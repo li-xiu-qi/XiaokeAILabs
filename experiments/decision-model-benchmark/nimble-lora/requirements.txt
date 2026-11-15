@@ -1,0 +1,6 @@
+# CUDA 版 torch 请先按设备安装，另需按 README 准备上游 Nimble 源码。
+torch
+transformers==5.16.1
+peft==0.20.0
+huggingface_hub
+accelerate

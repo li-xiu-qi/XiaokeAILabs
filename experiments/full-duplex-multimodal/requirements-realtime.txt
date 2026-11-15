@@ -1,0 +1,21 @@
+# Realtime Demo + probe Python dependencies, pinned from the validated runtime.
+# Install the CUDA-specific PyTorch stack separately (see README.md).
+transformers==4.51.0
+accelerate==1.12.0
+safetensors==0.8.0
+fastapi==0.163.0
+uvicorn==0.54.0
+httpx==0.28.1
+websockets==17.4
+python-multipart==0.0.33
+markdown==3.11.3
+Pygments==2.21.0
+PyYAML==6.0.3
+librosa==1.0.1
+soundfile==0.14.0
+pydantic==2.14.3
+numpy==2.5.4
+tqdm==4.70.1
+stepaudio2-minicpmo==0.1.1
+av==16.0.1
+Pillow==13.0.0

@@ -1,0 +1,18 @@
+{
+  "name": "gpu-smoke",
+  "description": "CUDA 冒烟档：使用玩具数据验证全链路训练和微调，不代表完整训练结果",
+  "device": "cuda",
+  "amp": "bf16",
+  "scale": 1.0,
+  "nproc": 1,
+  "tokenizer": {
+    "vocab_size": 2048,
+    "max_chars": 2000000
+  },
+  "stages": {
+    "pretrain": 60,
+    "midtrain": 40,
+    "sft": 80,
+    "rl": 20
+  }
+}

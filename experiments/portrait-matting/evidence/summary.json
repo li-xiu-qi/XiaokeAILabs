@@ -1,0 +1,818 @@
+{
+  "created_utc": "2026-11-06T19:39:31.351442+00:00",
+  "model": "RVM MobileNetV3",
+  "repo_commit": "53d74c6826735f01f4406b5ca9075eee27bec094",
+  "weights_sha256": "3c7c1d92033f7c38d6577c481d13a195d7d80a159b960f4f3119ac7b534cf4f8",
+  "manifest_sha256": "78150da334367aad69c315a41e66d7c587f89b9543a2866d8a402b1a13422125",
+  "device": "cuda",
+  "torch": "2.14.0+cu130",
+  "cuda_runtime": "13.0",
+  "device_name": "NVIDIA GB10",
+  "python": "3.12.3",
+  "numpy": "2.5.2",
+  "pillow": "12.3.0",
+  "preprocess": {
+    "rgb": "8-bit RGB / 255; no EXIF rotation; fit longest side to max_side with LANCZOS",
+    "target": "8-bit grayscale; same resize with BILINEAR",
+    "max_side": 1024,
+    "downsample_ratio": "min(1, 512 / resized longest side)",
+    "state": "four None values per forward"
+  },
+  "warmups_per_sample": 1,
+  "repetitions_per_sample": 3,
+  "timing": "synchronous model forward only; excludes image decode, host-to-device, alpha copy and save",
+  "metric": "alpha rounded to 8-bit PNG; threshold 0.5; boundary Chebyshev tolerance 3 resized pixels",
+  "scope": "30-pair PPM Paddle JPEG labels; exploratory only; CC BY-NC-SA annotations, portrait rights not verified",
+  "n": 30,
+  "macro_mean": {
+    "iou": 0.973014147470452,
+    "dice": 0.9862319050789479,
+    "boundary_f1": 0.891613818848816,
+    "mae": 0.008566687439911434,
+    "mse": 0.004174232132196192,
+    "sad_1000": 6.347710849673202,
+    "unknown_mae": 0.11011736757423388
+  },
+  "samples": [
+    {
+      "sample": 1,
+      "source_split": "val",
+      "inference_size_wh": [
+        1024,
+        768
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.007642501965165138,
+        0.0071449310053139925,
+        0.007366995792835951
+      ],
+      "metrics": {
+        "iou": 0.9523699709075427,
+        "dice": 0.9756039942212813,
+        "boundary_f1": 0.8866577311632334,
+        "mae": 0.003981441921657986,
+        "mse": 0.0024290786228866805,
+        "sad_1000": 3.131133333333333,
+        "unknown_mae": 0.18882261690460983,
+        "unknown_pixels": 7091,
+        "height": 768,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 2,
+      "source_split": "val",
+      "inference_size_wh": [
+        1024,
+        684
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006622977089136839,
+        0.006908192997798324,
+        0.006791089894250035
+      ],
+      "metrics": {
+        "iou": 0.9861247831997375,
+        "dice": 0.9930139249468964,
+        "boundary_f1": 0.9787188226642727,
+        "mae": 0.0018296409618306386,
+        "mse": 0.0006861361178350769,
+        "sad_1000": 1.2815098039215687,
+        "unknown_mae": 0.09075911350455675,
+        "unknown_pixels": 11360,
+        "height": 684,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 3,
+      "source_split": "val",
+      "inference_size_wh": [
+        1024,
+        683
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006563599919900298,
+        0.006411968031898141,
+        0.006430719047784805
+      ],
+      "metrics": {
+        "iou": 0.9706738891001093,
+        "dice": 0.9851187398066749,
+        "boundary_f1": 0.9197559170365291,
+        "mae": 0.010883307271481067,
+        "mse": 0.008259888336076111,
+        "sad_1000": 7.611698039215686,
+        "unknown_mae": 0.11471137864129105,
+        "unknown_pixels": 14805,
+        "height": 683,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 4,
+      "source_split": "val",
+      "inference_size_wh": [
+        685,
+        1024
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006417199969291687,
+        0.007384452037513256,
+        0.007616229122504592
+      ],
+      "metrics": {
+        "iou": 0.979134158892467,
+        "dice": 0.9894570860627206,
+        "boundary_f1": 0.9606531067001797,
+        "mae": 0.0022782488907971943,
+        "mse": 0.0006534173145786152,
+        "sad_1000": 1.5980549019607841,
+        "unknown_mae": 0.055977192063769124,
+        "unknown_pixels": 25275,
+        "height": 1024,
+        "width": 685
+      }
+    },
+    {
+      "sample": 5,
+      "source_split": "val",
+      "inference_size_wh": [
+        1024,
+        683
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006542880088090897,
+        0.0064108960796147585,
+        0.0064148311503231525
+      ],
+      "metrics": {
+        "iou": 0.9743158175402344,
+        "dice": 0.9869908440019667,
+        "boundary_f1": 0.7995682577809848,
+        "mae": 0.010556569695044928,
+        "mse": 0.0038736075322350397,
+        "sad_1000": 7.383180392156863,
+        "unknown_mae": 0.1609552349608261,
+        "unknown_pixels": 40358,
+        "height": 683,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 6,
+      "source_split": "val",
+      "inference_size_wh": [
+        1024,
+        768
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.0074315250385552645,
+        0.007292227121070027,
+        0.0072724358178675175
+      ],
+      "metrics": {
+        "iou": 0.9102577480955859,
+        "dice": 0.9530208674751448,
+        "boundary_f1": 0.8279217189400361,
+        "mae": 0.009285287296070774,
+        "mse": 0.007340993190688629,
+        "sad_1000": 7.30224705882353,
+        "unknown_mae": 0.2632475357135254,
+        "unknown_pixels": 6447,
+        "height": 768,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 7,
+      "source_split": "val",
+      "inference_size_wh": [
+        1024,
+        768
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.007339332019910216,
+        0.00793107901699841,
+        0.0074103400111198425
+      ],
+      "metrics": {
+        "iou": 0.9819313816399523,
+        "dice": 0.9908833279863116,
+        "boundary_f1": 0.8857874098808374,
+        "mae": 0.007863651849085988,
+        "mse": 0.004513078997811338,
+        "sad_1000": 6.184227450980392,
+        "unknown_mae": 0.08740797045003393,
+        "unknown_pixels": 37456,
+        "height": 768,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 8,
+      "source_split": "val",
+      "inference_size_wh": [
+        683,
+        1024
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006569263990968466,
+        0.006453968118876219,
+        0.006447630934417248
+      ],
+      "metrics": {
+        "iou": 0.9705844954011783,
+        "dice": 0.9850727006796868,
+        "boundary_f1": 0.9077402401353032,
+        "mae": 0.0034698541523124618,
+        "mse": 0.002034266163995096,
+        "sad_1000": 2.4267882352941172,
+        "unknown_mae": 0.13677064183660556,
+        "unknown_pixels": 13791,
+        "height": 1024,
+        "width": 683
+      }
+    },
+    {
+      "sample": 9,
+      "source_split": "val",
+      "inference_size_wh": [
+        1024,
+        683
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006539360154420137,
+        0.0064177589956671,
+        0.006427134852856398
+      ],
+      "metrics": {
+        "iou": 0.9694994059439914,
+        "dice": 0.9845135297000055,
+        "boundary_f1": 0.8588232505976992,
+        "mae": 0.011128904343582234,
+        "mse": 0.004559470128267481,
+        "sad_1000": 7.783466666666666,
+        "unknown_mae": 0.11830632889288027,
+        "unknown_pixels": 62880,
+        "height": 683,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 10,
+      "source_split": "val",
+      "inference_size_wh": [
+        683,
+        1024
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006540494970977306,
+        0.006423631915822625,
+        0.0064267669804394245
+      ],
+      "metrics": {
+        "iou": 0.9830261510641257,
+        "dice": 0.9914404311174788,
+        "boundary_f1": 0.9194158707329021,
+        "mae": 0.008063042544067407,
+        "mse": 0.0030811528091951902,
+        "sad_1000": 5.639227450980392,
+        "unknown_mae": 0.083356984755457,
+        "unknown_pixels": 49369,
+        "height": 1024,
+        "width": 683
+      }
+    },
+    {
+      "sample": 11,
+      "source_split": "train",
+      "inference_size_wh": [
+        1024,
+        1024
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.010216353926807642,
+        0.010057633044198155,
+        0.010137409903109074
+      ],
+      "metrics": {
+        "iou": 0.9690584919594278,
+        "dice": 0.9842861407282107,
+        "boundary_f1": 0.911755622570214,
+        "mae": 0.009565959257238053,
+        "mse": 0.006064475095074986,
+        "sad_1000": 10.030635294117648,
+        "unknown_mae": 0.1059107926086285,
+        "unknown_pixels": 23993,
+        "height": 1024,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 12,
+      "source_split": "train",
+      "inference_size_wh": [
+        682,
+        1024
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006482031894847751,
+        0.006941410014405847,
+        0.007009778171777725
+      ],
+      "metrics": {
+        "iou": 0.9772618368816539,
+        "dice": 0.9885001760038992,
+        "boundary_f1": 0.8880093242046572,
+        "mae": 0.014636948529411761,
+        "mse": 0.0075774629192499835,
+        "sad_1000": 10.221976470588233,
+        "unknown_mae": 0.0910564077513434,
+        "unknown_pixels": 82367,
+        "height": 1024,
+        "width": 682
+      }
+    },
+    {
+      "sample": 13,
+      "source_split": "train",
+      "inference_size_wh": [
+        1024,
+        683
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006512544117867947,
+        0.006403839914128184,
+        0.006409439025446773
+      ],
+      "metrics": {
+        "iou": 0.9596184703155642,
+        "dice": 0.9793931674475731,
+        "boundary_f1": 0.9126729149890558,
+        "mae": 0.004752716308888123,
+        "mse": 0.0022480001347817574,
+        "sad_1000": 3.324011764705882,
+        "unknown_mae": 0.1553541705806545,
+        "unknown_pixels": 11898,
+        "height": 683,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 14,
+      "source_split": "train",
+      "inference_size_wh": [
+        1024,
+        680
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006498623872175813,
+        0.00638235080987215,
+        0.0063593590166419744
+      ],
+      "metrics": {
+        "iou": 0.9809942634979322,
+        "dice": 0.990405960859014,
+        "boundary_f1": 0.9228746691837862,
+        "mae": 0.009218203710712226,
+        "mse": 0.0020393688504633397,
+        "sad_1000": 6.418819607843138,
+        "unknown_mae": 0.08812624953105484,
+        "unknown_pixels": 66064,
+        "height": 680,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 15,
+      "source_split": "train",
+      "inference_size_wh": [
+        1024,
+        851
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.008409640984609723,
+        0.00839522504247725,
+        0.00915361288934946
+      ],
+      "metrics": {
+        "iou": 0.9923168583409386,
+        "dice": 0.9961436145927816,
+        "boundary_f1": 0.9338294856841945,
+        "mae": 0.005294399358597729,
+        "mse": 0.001688965856512071,
+        "sad_1000": 4.613666666666667,
+        "unknown_mae": 0.09541722893248156,
+        "unknown_pixels": 35396,
+        "height": 851,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 16,
+      "source_split": "train",
+      "inference_size_wh": [
+        576,
+        1024
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.005576331866905093,
+        0.005529723130166531,
+        0.005532715003937483
+      ],
+      "metrics": {
+        "iou": 0.9847240958437721,
+        "dice": 0.9923032605951541,
+        "boundary_f1": 0.9511834529698522,
+        "mae": 0.002931030539385893,
+        "mse": 0.000976683219711836,
+        "sad_1000": 1.728792156862745,
+        "unknown_mae": 0.053228226431815656,
+        "unknown_pixels": 22125,
+        "height": 1024,
+        "width": 576
+      }
+    },
+    {
+      "sample": 17,
+      "source_split": "train",
+      "inference_size_wh": [
+        683,
+        1024
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006510478910058737,
+        0.006560032023116946,
+        0.006443551974371076
+      ],
+      "metrics": {
+        "iou": 0.9188151605254243,
+        "dice": 0.957690119848571,
+        "boundary_f1": 0.8291375909979295,
+        "mae": 0.02000851608029742,
+        "mse": 0.016841122186716673,
+        "sad_1000": 13.993796078431373,
+        "unknown_mae": 0.14347574233284208,
+        "unknown_pixels": 21833,
+        "height": 1024,
+        "width": 683
+      }
+    },
+    {
+      "sample": 18,
+      "source_split": "train",
+      "inference_size_wh": [
+        1024,
+        680
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006360302912071347,
+        0.006377470912411809,
+        0.0063775351736694574
+      ],
+      "metrics": {
+        "iou": 0.9845824893090255,
+        "dice": 0.9922313580946981,
+        "boundary_f1": 0.9196836453961492,
+        "mae": 0.0032812049452133796,
+        "mse": 0.0014146763052106655,
+        "sad_1000": 2.2847686274509806,
+        "unknown_mae": 0.12060843685447477,
+        "unknown_pixels": 10337,
+        "height": 680,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 19,
+      "source_split": "train",
+      "inference_size_wh": [
+        768,
+        1024
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.007331155939027667,
+        0.007282308069989085,
+        0.008139271987602115
+      ],
+      "metrics": {
+        "iou": 0.9638604142605406,
+        "dice": 0.9815976810383099,
+        "boundary_f1": 0.7476031014196358,
+        "mae": 0.02471743315653084,
+        "mse": 0.015688535736017497,
+        "sad_1000": 19.43858039215686,
+        "unknown_mae": 0.13544510390179487,
+        "unknown_pixels": 78932,
+        "height": 1024,
+        "width": 768
+      }
+    },
+    {
+      "sample": 20,
+      "source_split": "train",
+      "inference_size_wh": [
+        1024,
+        685
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006361359963193536,
+        0.006358591141179204,
+        0.006505278870463371
+      ],
+      "metrics": {
+        "iou": 0.9847267543625723,
+        "dice": 0.9923046103934177,
+        "boundary_f1": 0.8724207919886685,
+        "mae": 0.006166737109989981,
+        "mse": 0.0020098267449422877,
+        "sad_1000": 4.325596078431372,
+        "unknown_mae": 0.08584979693914677,
+        "unknown_pixels": 31957,
+        "height": 685,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 21,
+      "source_split": "train",
+      "inference_size_wh": [
+        683,
+        1024
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006558208027854562,
+        0.006441022967919707,
+        0.007301219971850514
+      ],
+      "metrics": {
+        "iou": 0.988592910386191,
+        "dice": 0.9942637381667051,
+        "boundary_f1": 0.942047294558958,
+        "mae": 0.004279005137010881,
+        "mse": 0.001327980688353055,
+        "sad_1000": 2.992701960784314,
+        "unknown_mae": 0.08318167859291323,
+        "unknown_pixels": 18644,
+        "height": 1024,
+        "width": 683
+      }
+    },
+    {
+      "sample": 22,
+      "source_split": "train",
+      "inference_size_wh": [
+        768,
+        1024
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.007357012014836073,
+        0.007271731039509177,
+        0.007277044001966715
+      ],
+      "metrics": {
+        "iou": 0.9877123941373624,
+        "dice": 0.993818217414713,
+        "boundary_f1": 0.9128556105459135,
+        "mae": 0.00826533199135774,
+        "mse": 0.004805750374486626,
+        "sad_1000": 6.50012156862745,
+        "unknown_mae": 0.06597606597249116,
+        "unknown_pixels": 59238,
+        "height": 1024,
+        "width": 768
+      }
+    },
+    {
+      "sample": 23,
+      "source_split": "train",
+      "inference_size_wh": [
+        683,
+        1024
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.007108691148459911,
+        0.006708304863423109,
+        0.007007362088188529
+      ],
+      "metrics": {
+        "iou": 0.9854744792916599,
+        "dice": 0.9926841060613771,
+        "boundary_f1": 0.9707468250047131,
+        "mae": 0.0027576445109522576,
+        "mse": 0.0009142933766464413,
+        "sad_1000": 1.9286745098039213,
+        "unknown_mae": 0.055772372626058955,
+        "unknown_pixels": 29524,
+        "height": 1024,
+        "width": 683
+      }
+    },
+    {
+      "sample": 24,
+      "source_split": "train",
+      "inference_size_wh": [
+        1024,
+        685
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006396352080628276,
+        0.006537823937833309,
+        0.006496062967926264
+      ],
+      "metrics": {
+        "iou": 0.985855342864066,
+        "dice": 0.992877297338519,
+        "boundary_f1": 0.9609499186057646,
+        "mae": 0.0017602053366967225,
+        "mse": 0.0006092145786502664,
+        "sad_1000": 1.2346784313725492,
+        "unknown_mae": 0.13061677917068468,
+        "unknown_pixels": 7625,
+        "height": 685,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 25,
+      "source_split": "train",
+      "inference_size_wh": [
+        1024,
+        731
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006878706160932779,
+        0.007629621075466275,
+        0.007011682027950883
+      ],
+      "metrics": {
+        "iou": 0.9721188199066956,
+        "dice": 0.9858623223855125,
+        "boundary_f1": 0.8570196741888831,
+        "mae": 0.008911899660685068,
+        "mse": 0.003860071740533343,
+        "sad_1000": 6.670949019607844,
+        "unknown_mae": 0.07866130441791601,
+        "unknown_pixels": 46220,
+        "height": 731,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 26,
+      "source_split": "train",
+      "inference_size_wh": [
+        577,
+        1024
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.005598107120022178,
+        0.005545339081436396,
+        0.005690427962690592
+      ],
+      "metrics": {
+        "iou": 0.9819194003247427,
+        "dice": 0.9908772275642013,
+        "boundary_f1": 0.9390352511322368,
+        "mae": 0.006325796674822443,
+        "mse": 0.0029794450328896305,
+        "sad_1000": 3.7375843137254905,
+        "unknown_mae": 0.11460923709655749,
+        "unknown_pixels": 25249,
+        "height": 1024,
+        "width": 577
+      }
+    },
+    {
+      "sample": 27,
+      "source_split": "train",
+      "inference_size_wh": [
+        1024,
+        796
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.007696933811530471,
+        0.008444857085123658,
+        0.00780898192897439
+      ],
+      "metrics": {
+        "iou": 0.9547532007408004,
+        "dice": 0.976852935070242,
+        "boundary_f1": 0.7390896584064022,
+        "mae": 0.02001555244820918,
+        "mse": 0.00651081044323767,
+        "sad_1000": 16.314756862745096,
+        "unknown_mae": 0.08361983107863853,
+        "unknown_pixels": 193096,
+        "height": 796,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 28,
+      "source_split": "train",
+      "inference_size_wh": [
+        1024,
+        683
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.00651268707588315,
+        0.006429312052205205,
+        0.006420030957087874
+      ],
+      "metrics": {
+        "iou": 0.9780615305510326,
+        "dice": 0.9889091066632008,
+        "boundary_f1": 0.8545569496057457,
+        "mae": 0.010510950239356357,
+        "mse": 0.0020730391391657003,
+        "sad_1000": 7.351274509803921,
+        "unknown_mae": 0.08964949038688522,
+        "unknown_pixels": 80155,
+        "height": 683,
+        "width": 1024
+      }
+    },
+    {
+      "sample": 29,
+      "source_split": "train",
+      "inference_size_wh": [
+        684,
+        1024
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006366335088387132,
+        0.006420815829187632,
+        0.006414767121896148
+      ],
+      "metrics": {
+        "iou": 0.9848560139460049,
+        "dice": 0.992370234441395,
+        "boundary_f1": 0.8609313871561394,
+        "mae": 0.010118283767271528,
+        "mse": 0.0034591232895341086,
+        "sad_1000": 7.087007843137255,
+        "unknown_mae": 0.08795438203010841,
+        "unknown_pixels": 72125,
+        "height": 1024,
+        "width": 684
+      }
+    },
+    {
+      "sample": 30,
+      "source_split": "train",
+      "inference_size_wh": [
+        1024,
+        683
+      ],
+      "downsample_ratio": 0.5,
+      "raw_forward_seconds": [
+        0.006486319936811924,
+        0.006519070826470852,
+        0.007264323998242617
+      ],
+      "metrics": {
+        "iou": 0.977203694883227,
+        "dice": 0.9884704316627735,
+        "boundary_f1": 0.876969071223602,
+        "mae": 0.014142855508784772,
+        "mse": 0.004707029040138577,
+        "sad_1000": 9.891399999999999,
+        "unknown_mae": 0.13869273226697068,
+        "unknown_pixels": 41795,
+        "height": 683,
+        "width": 1024
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-15",
+  "model": "openbmb/MiniCPM-o-4_5",
+  "model_revision": "fb09628e98b1f55d8d5b863e0eccfcdd11bff499",
+  "input": "assets/omni_duplex1.mp4",
+  "mode": "recorded-chunks",
+  "hardware": "NVIDIA GB10",
+  "chunks_processed": 35,
+  "listening_chunks": 24,
+  "speaking_chunks": 11,
+  "output_sample_rate": 24000,
+  "output_samples": 819840,
+  "output_peak": 0.542144775390625,
+  "output_rms": 0.037029753202099,
+  "verification": "An independent Whisper small model transcribed parts of the saved WAV consistently with the text emitted by the multimodal model. No human listening or live interruption test was performed.",
+  "execution_note": "The inference script wrote the WAV and JSON; a subsequent shell statistics command had a quoting error, causing the enclosing run to exit 2. A separate process verified the output files.",
+  "limitations": "The exploratory isolated environment did not pass pip check; PyTorch 2.11.0+cu130 is outside the version range on the model card."
+}

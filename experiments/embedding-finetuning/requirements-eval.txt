@@ -1,0 +1,4 @@
+# Optional dependencies for preparing the T2Retrieval subset.
+pandas
+pyarrow
+huggingface_hub[cli]

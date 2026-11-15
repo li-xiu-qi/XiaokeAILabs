@@ -1,0 +1,8 @@
+# Local run artifacts for this experiment; never committed.
+# Weights, fixture media, and run outputs stay out of version control.
+.work/
+models/
+fixtures/
+runs/
+*.wav
+*.jsonl.tmp

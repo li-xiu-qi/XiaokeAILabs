@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-15",
+  "device": "NVIDIA GB10",
+  "platform": "Linux ARM64",
+  "model_revision": "a0ed278eb6aa1f333a711665ab610055a4a816ab",
+  "health": "passed",
+  "case": "text_putnam_2009",
+  "locally_rendered_candidates": [
+    {"role": "ground_truth", "score": 0.99508, "reference_score": 0.99501},
+    {"role": "ocr_output", "score": 0.00723, "reference_score": 0.00702}
+  ],
+  "best_index": 0,
+  "renderer": {"playwright": "1.62.0", "pillow": "12.3.0", "markdown": "3.10.3", "pip_check": "passed", "chromium_startup": "passed", "environment": "fresh venv"},
+  "scoring_environment": "copied environment; pip check passed",
+  "limitations": ["One example; no accuracy estimate", "No OCR service invocation", "Official example source commit not pinned", "Rendering may vary with fonts and dependencies"]
+}

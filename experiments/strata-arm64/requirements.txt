@@ -1,0 +1,2 @@
+# Model download helper; Strata manages its own runtime dependencies.
+huggingface_hub==1.28.0

@@ -1,0 +1,8 @@
+# ASR 微调实验直接依赖（版本取自已验证的 GB10 环境）。
+# PyTorch CUDA wheel 按目标硬件单独安装，避免本清单覆盖平台匹配构建。
+transformers==5.16.1
+datasets==5.2.0
+soundfile==0.14.0
+jiwer==4.0.0
+numpy==2.5.4
+tqdm==4.70.1

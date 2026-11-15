@@ -1,0 +1,56 @@
+{
+  "date": "2026-11-15",
+  "experiment": "Controlled GPU rerun in a new isolated environment (FFmpeg runtime repair)",
+  "device_class": "NVIDIA GB10",
+  "model": "openbmb/MiniCPM-o-4_5",
+  "model_revision": "fb09628e98b1f55d8d5b863e0eccfcdd11bff499",
+  "demo": "OpenBMB/MiniCPM-o-Demo",
+  "input": "35.3-second recorded video; fixed prerecorded material",
+  "client_audio_chunk_ms": 1000,
+  "environment": {
+    "isolated_env": "new isolated environment created for this run; the previous environment was not modified",
+    "venv_source": "copy of the previously working environment (uv offline install could not complete: absl-py was missing from the uv cache)",
+    "python": "3.12.3",
+    "torch": "2.11.0+cu130",
+    "torchaudio": "2.11.0+cu130",
+    "torchcodec": "0.15.0+cu130",
+    "ffmpeg_runtime": "FFmpeg 6.1.1 (libavutil 58, libavcodec 60, libavformat 60, libavdevice 60, libavfilter 9, libswscale 7, libswresample 4) plus transitive dependencies (libzvbi, libcjson, libmbedcrypto, blas/lapack) unpacked from Ubuntu arm64 packages cached on the device into a private prefix",
+    "ffmpeg_ld_library_path": "prefix usr/lib/aarch64-linux-gnu plus its blas/ and lapack/ subdirectories",
+    "torchcodec_ffmpeg_backend_precheck": "loaded; AudioDecoder opened the recorded video",
+    "gpu_precheck": "CUDA available on NVIDIA GB10"
+  },
+  "runs": {
+    "video_probe_60s": {
+      "result": "success",
+      "probe_mode": "video",
+      "max_session_s": 60,
+      "end_reason": "max_session_reached",
+      "input_audio_chunks": 59,
+      "input_video_frames": 59,
+      "response_deltas_with_vision_metrics": 80,
+      "output_audio_chunks": 29,
+      "output_audio_ms": 28720,
+      "output_audio_rms": 0.135,
+      "output_sample_rate_hz": 24000,
+      "first_audio_ms": 7252,
+      "input_after_first_audio_ms": 52762,
+      "listen_events": 23,
+      "speak_then_listen_switches": 19,
+      "services_cleanup": "services stopped; ports released"
+    }
+  },
+  "notes": [
+    "This rerun used a new isolated environment and a freshly prepared FFmpeg 6.1.1 runtime; it does not replace the earlier successful video and audio runs, which used the previous environment.",
+    "The FFmpeg runtime was assembled from package artifacts already available in the execution cache; package downloads were not part of this verified run. A from-scratch clean installation is still not verified.",
+    "torchcodec 0.15 ships backends for FFmpeg 4-8; FFmpeg 6.1.1 (libavutil.so.58) satisfies its core6 backend. The earlier belief that libavutil.so.60 was required was incorrect; the actual blockers were missing libzvbi, libcjson, libmbedcrypto and the blas/lapack subdirectories."
+  ],
+  "not_verified": [
+    "160 ms client input chunks",
+    "live microphone and speaker interaction",
+    "human interruption during model speech",
+    "human listening assessment",
+    "human-perceived end-to-end latency",
+    "Higgs Realtime Duplex weights, training, architecture or benchmark reproduction",
+    "clean-room dependency installation from scratch"
+  ]
+}

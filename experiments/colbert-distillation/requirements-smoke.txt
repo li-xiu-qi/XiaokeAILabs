@@ -1,0 +1,19 @@
+# Synthetic-data GPU smoke check (scripts/gpu_synthetic_smoke.py) only.
+# Install a CUDA PyTorch build for the device first and constrain its version:
+#   python -m pip install 'torch==2.15.0' --index-url https://download.pytorch.org/whl/cu132
+#   python -c "import importlib.metadata as m; print('torch==' + m.version('torch'))" > torch-constraint.txt
+#   python -m pip install -c torch-constraint.txt -r requirements-smoke.txt
+# The pinned torch command above is the build verified on Linux ARM64 with CUDA 13;
+# on other devices install the matching CUDA build from https://pytorch.org/get-started/locally/
+# and constrain that version instead.
+# Verified from scratch on Linux ARM64 with PyTorch 2.15.0+cu132 (2026-11-15):
+# pip check reported no broken requirements and scripts/gpu_synthetic_smoke.py
+# completed two CUDA training steps. Transitive versions (sentence-transformers,
+# transformers, numpy, ...) follow pylate 1.2.0's constraints and are recorded in
+# evidence/env-validation-20261115.json. This check does not reproduce the
+# PyLate 1.4.0 experiment path or its results.
+pylate==1.2.0
+datasets==4.1.1
+accelerate==1.10.1
+attrs==26.1.0
+pillow==13.0.0

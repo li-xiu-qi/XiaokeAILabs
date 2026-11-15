@@ -1,0 +1,42 @@
+{
+  "groups": [
+    "human",
+    "teacher_hard",
+    "teacher_soft",
+    "human_hard",
+    "human_soft"
+  ],
+  "seeds": [
+    20261107,
+    20261108,
+    20261109
+  ],
+  "fixed_sampling_seed": 20261107,
+  "steps": 180,
+  "batch_queries": 8,
+  "temperature": 2.0,
+  "mix_weight": 0.5,
+  "student_max_length": 192,
+  "pools_sha256": "e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8",
+  "teacher_scores_sha256": "e55ca720a81856916ceb0fb62509d67a2f10e1f7573e597f9d4409b189fe58da",
+  "label_comparison": {
+    "sampled_pairs": 1434,
+    "same": 1402,
+    "reverse": 29,
+    "tie": 3,
+    "margin_quantiles": [
+      -3.5625,
+      3.0,
+      5.6875,
+      8.1875,
+      10.375,
+      12.336718750000001,
+      19.3515625
+    ],
+    "unique_pairs": 1189,
+    "unique_same": 1164,
+    "unique_reverse": 23,
+    "unique_tie": 2
+  },
+  "notes": "Unjudged documents are not guaranteed negative; seed changes training randomness, not pair sampling. Teacher hard ties choose the first candidate."
+}

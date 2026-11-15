@@ -1,0 +1,4 @@
+# CUDA 版 torch 请先按设备安装。依赖版本尚未完整验证或锁定。
+torch
+transformers
+accelerate

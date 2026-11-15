@@ -1,0 +1,8 @@
+# 数据、底座、训练产物不入库
+data/all/*.parquet
+models/
+prepared/
+prepared-clean-v1/
+runs/*/
+__pycache__/
+*.pyc

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc">
+<title id="title">SDXL 人物 LoRA：从训练数据到生成与评估</title>
+<desc id="desc">20 张训练照片和 caption 进入潜空间加噪与 U-Net 噪声预测，冻结底模并训练 LoRA。生成时加载 adapter 和触发标识，最后以留出照片和负对照进行人脸相似度评估。</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#89969e"/></marker></defs>
+<rect width="1200" height="660" rx="20" fill="#fbfbfa"/>
+<g font-family="Microsoft YaHei, PingFang SC, sans-serif" fill="#202d36">
+<text x="54" y="57" font-size="14" font-weight="700" letter-spacing="2" fill="#527686">IMAGE FINE-TUNING / SDXL + LoRA</text>
+<text x="54" y="100" font-size="30" font-weight="700">从照片到可评估的身份生成</text>
+<text x="54" y="130" font-size="16" fill="#667680">训练只更新 LoRA；生成后再用留出数据检验身份相似度。</text>
+<path d="M54 154H1146" stroke="#dce2e3"/>
+
+<text x="54" y="193" font-size="14" font-weight="700" fill="#567787">01 / 训练</text>
+<rect x="54" y="213" width="220" height="128" rx="12" fill="#fff" stroke="#ccd5d8"/>
+<text x="74" y="245" font-size="19" font-weight="700">训练样本</text><text x="74" y="273" font-size="15" fill="#52636d">同一身份 20 张照片</text><text x="74" y="298" font-size="15" fill="#52636d">+ 文字标识与描述</text><text x="74" y="323" font-size="13" fill="#7a8991">vkqzm, a photo of a person</text>
+<path d="M274 277H310" stroke="#89969e" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="316" y="213" width="228" height="128" rx="12" fill="#fff" stroke="#ccd5d8"/>
+<text x="336" y="245" font-size="19" font-weight="700">编码与加噪</text><text x="336" y="273" font-size="15" fill="#52636d">图像 → 潜变量 → 加噪</text><text x="336" y="298" font-size="15" fill="#52636d">caption → 文本条件</text><text x="336" y="323" font-size="13" fill="#7a8991">含噪潜变量 + 时间步 + 条件</text>
+<path d="M544 277H580" stroke="#89969e" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="586" y="213" width="306" height="128" rx="12" fill="#f0f2f3" stroke="#b7c1c6"/>
+<text x="606" y="245" font-size="19" font-weight="700">SDXL U-Net · 预测噪声</text><text x="606" y="272" font-size="15" fill="#52636d">底模权重冻结；文本编码器冻结</text><rect x="605" y="287" width="266" height="35" rx="7" fill="#e6f0fa" stroke="#8bb2d8"/><text x="619" y="310" font-size="14" font-weight="700" fill="#245e91">仅训练 U-Net LoRA · rank 32</text>
+<path d="M892 277H928" stroke="#89969e" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="934" y="213" width="212" height="128" rx="12" fill="#f3f8fc" stroke="#9dbdd6"/>
+<text x="954" y="245" font-size="19" font-weight="700">保存 adapter</text><text x="954" y="273" font-size="15" fill="#52636d">噪声预测误差驱动训练</text><text x="954" y="298" font-size="15" fill="#52636d">每 500 步保存</text><text x="954" y="323" font-size="13" fill="#7a8991">主配置 2000 步</text>
+
+<path d="M54 372H1146" stroke="#dce2e3"/>
+<text x="54" y="411" font-size="14" font-weight="700" fill="#567787">02 / 生成与评估</text>
+<rect x="54" y="431" width="300" height="125" rx="12" fill="#fff" stroke="#ccd5d8"/><text x="74" y="463" font-size="19" font-weight="700">提示词 + 随机种子</text><text x="74" y="491" font-size="15" fill="#52636d">提示词含训练时使用的标识</text><text x="74" y="518" font-size="15" fill="#52636d">加载 SDXL 底模与 LoRA</text><text x="74" y="541" font-size="13" fill="#7a8991">示例标识：vkqzm</text>
+<path d="M354 493H393" stroke="#89969e" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="399" y="431" width="275" height="125" rx="12" fill="#fff" stroke="#ccd5d8"/><text x="419" y="463" font-size="19" font-weight="700">去噪生成图片</text><text x="419" y="491" font-size="15" fill="#52636d">从随机潜变量迭代去噪</text><text x="419" y="518" font-size="15" fill="#52636d">解码得到生成图像</text><text x="419" y="541" font-size="13" fill="#7a8991">采样设置见实验记录</text>
+<path d="M674 493H713" stroke="#89969e" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="719" y="431" width="427" height="125" rx="12" fill="#f4f7f4" stroke="#b5c8ba"/><text x="739" y="463" font-size="19" font-weight="700">ArcFace 身份相似度评估</text><text x="739" y="491" font-size="15" fill="#52636d">生成图 ↔ 10 张留出的目标身份参考</text><text x="739" y="518" font-size="15" fill="#52636d">另与其他身份参考比较，记录检出数量</text><text x="739" y="541" font-size="13" fill="#7a8991">历史基线与 LoRA 尺寸不同，不能直接归因</text>
+<text x="54" y="614" font-size="14" fill="#76858c">流程示意，非生成样本；训练集不包含留出的评估照片。</text>
+</g></svg>

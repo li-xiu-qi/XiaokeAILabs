@@ -1,0 +1,11 @@
+{"query_id": "q01", "doc_id": "d01", "relevance": 1}
+{"query_id": "q01", "doc_id": "d09", "relevance": 1}
+{"query_id": "q02", "doc_id": "d02", "relevance": 1}
+{"query_id": "q02", "doc_id": "d05", "relevance": 1}
+{"query_id": "q03", "doc_id": "d03", "relevance": 1}
+{"query_id": "q03", "doc_id": "d09", "relevance": 1}
+{"query_id": "q04", "doc_id": "d02", "relevance": 1}
+{"query_id": "q04", "doc_id": "d03", "relevance": 1}
+{"query_id": "q04", "doc_id": "d09", "relevance": 1}
+{"query_id": "q05", "doc_id": "d07", "relevance": 1}
+{"query_id": "q05", "doc_id": "d10", "relevance": 1}

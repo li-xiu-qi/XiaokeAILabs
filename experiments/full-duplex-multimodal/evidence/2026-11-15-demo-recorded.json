@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-15",
+  "device": "NVIDIA GB10",
+  "source": "https://github.com/OpenBMB/MiniCPM-o-Demo",
+  "source_archive_sha256": "6a275991f042fd1823ecba19a63edda6f7753d29f3fcc33e7b5351c808d29aaa",
+  "model": "openbmb/MiniCPM-o-4_5",
+  "model_revision": "fb09628e98b1f55d8d5b863e0eccfcdd11bff499",
+  "test": "Official tests/e2e_realtime.py video, recorded media",
+  "inputs": 4,
+  "listen_responses": 4,
+  "vision_slices_per_input": 2,
+  "vision_tokens_per_input": 128,
+  "observed_wall_ms": [
+    978.6,
+    923.7,
+    931.1,
+    1020.4
+  ],
+  "exit_code": 0,
+  "limitations": [
+    "Exploratory native isolated environment; dependency check failed",
+    "No audio output over the interface observed",
+    "No live microphone, simultaneous input/output or interruption verified",
+    "These timings are not end-to-end real-time latency"
+  ]
+}

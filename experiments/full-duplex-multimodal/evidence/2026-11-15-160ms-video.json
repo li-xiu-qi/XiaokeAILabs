@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-15",
+  "experiment": "GPU video duplex probe with 160 ms client audio chunks",
+  "device": "NVIDIA GB10",
+  "platform": "Ubuntu 24.04, aarch64",
+  "model": "openbmb/MiniCPM-o-4_5",
+  "model_revision": "fb09628e98b1f55d8d5b863e0eccfcdd11bff499",
+  "demo_source_revision": "not independently verified; the cached source snapshot had no Git metadata",
+  "input": {
+    "type": "prerecorded audio/video",
+    "video_duration_s": 20.0,
+    "audio_duration_s": 20.013,
+    "video_source_frames": 20,
+    "video_sampling_fps": 1.0,
+    "client_audio_chunk_ms": 160,
+    "max_session_s": 20
+  },
+  "environment": {
+    "python": "3.12.3",
+    "torch": "2.11.0+cu130",
+    "cuda_available": true,
+    "torchcodec": "0.15.0+cu130",
+    "pyav": "16.0.1",
+    "ffmpeg_runtime": "FFmpeg 6.1.1 shared libraries from an isolated prefix; TorchCodec backend and video decoding precheck passed",
+    "weights": "reused from the existing device cache"
+  },
+  "run": {
+    "result": "success",
+    "end_reason": "max_session_reached",
+    "input_audio_chunks_sent": 112,
+    "input_video_frames_sent": 112,
+    "vision_metrics_deltas": 34,
+    "listen_events": 30,
+    "speak_then_listen_switches": 11,
+    "text_delta_chunks": 2,
+    "output_audio_chunks": 2,
+    "output_audio_ms": 2000.0,
+    "output_audio_rms": 0.0478753,
+    "first_text_ms": 13139.2,
+    "first_audio_ms": 13145.0,
+    "input_output_overlap_ms": 7013.6,
+    "audio_output_while_input_streaming": true,
+    "services_cleanup": "all service ports released"
+  },
+  "interpretation": "One bounded recorded-input GPU run confirms that the client can pace 160 ms audio chunks while MiniCPM-o 4.5 processes video and emits speech during continued input. It does not verify the model's internal 160 ms scheduling, human interruption, live microphone interaction, human-perceived latency, or Higgs Realtime Duplex. The Demo source commit was not independently verified for this run."
+}

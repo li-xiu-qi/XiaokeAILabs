@@ -1,0 +1,12 @@
+{
+  "sts/spearman": 0.8214675188064575,
+  "sts/pearson": 0.697503924369812,
+  "sts/n": 500.0,
+  "spearman_mean": 0.8214675188064575,
+  "hardware": {
+    "device_name": "NVIDIA GB10",
+    "cuda_version": "13.2",
+    "peak_memory_mb": 41.3,
+    "train_duration_sec": 6.059
+  }
+}

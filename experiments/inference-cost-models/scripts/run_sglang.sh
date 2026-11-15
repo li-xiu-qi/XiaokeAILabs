@@ -1,12 +1,12 @@
 #!/bin/bash
-source /home/ke/xinfer-env/bin/activate
+source $HOME/xinfer-env/bin/activate
 
-export PATH="/home/ke/sglang-env/bin:$PATH"
+export PATH="$HOME/sglang-env/bin:$PATH"
 
 echo "启动 SGLang 服务器..."
-cd /home/ke/sglang-env
+cd $HOME/sglang-env
 setsid ./bin/python -m sglang.launch_server \
-    --model-path /home/ke/models/Qwen3.8-27B-BF16 \
+    --model-path $HOME/models/Qwen3.8-27B-BF16 \
     --trust-remote-code \
     --dtype bfloat16 \
     --context-length 2048 \

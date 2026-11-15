@@ -1,0 +1,26 @@
+# 本实验自带脚本的 Python 依赖（按各脚本实际 import 列出）。
+#   scripts/offline_duplex.py      : librosa / numpy / soundfile / torch /
+#                                    minicpmo / transformers
+#   scripts/demo_realtime_probe.py : av / numpy / pillow / websockets
+#
+# torch / torchaudio / torchcodec 不在此文件中固定版本：必须先按 PyTorch
+# 官方说明安装与本机 CUDA 和设备架构匹配的构建，再安装本文件，步骤见
+# README.md「环境准备」。实时链路另需官方 MiniCPM-o-Demo 的服务栈及其依赖。
+#
+# 这不是经过全新环境端到端验证的一键复现清单：已记录的约束冲突、ARM64 上
+# decord 无 pip 可直接安装的发行包等问题，以及探针 import 在 Demo 环境中的
+# 补装要求，见 README.md「环境准备」与「已知限制」。不要把本文件装进 Demo
+# 的服务环境（minicpmo-utils 1.0.6 与 Demo 的 librosa>=0.10.2 有约束冲突）。
+
+# 模型加载与官方 duplex 接口（transformers 版本为模型卡要求）
+transformers==4.51.0
+accelerate>=1.12.0
+minicpmo-utils[all]>=1.0.5,<=1.0.6
+
+# 两个脚本直接 import 的音视频与网络库（websockets 下限与 Demo 依赖一致）
+librosa
+soundfile
+numpy
+av
+pillow
+websockets>=16.0

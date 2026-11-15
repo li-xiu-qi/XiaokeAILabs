@@ -1,0 +1,7 @@
+# Install the CUDA PyTorch build appropriate for your device first.
+# Transformers matches the Qwen teacher's recorded environment; other versions are not locked.
+torch
+numpy
+transformers==4.56.2
+accelerate
+huggingface_hub

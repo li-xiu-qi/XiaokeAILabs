@@ -1,0 +1,236 @@
+{
+  "timestamp": "2026-11-08T23:49:12",
+  "benchmark_description": "Combined evaluation: (1) RapidOCR image OCR engine on synthetic-table.png and testpage_cn.jpg; (2) unstructured partition_pdf element chunking on rapidocr_direct_and_image.pdf and pdfplumber_federal_register.pdf (rule-based 'fast' vs model-based 'hi_res')",
+  "part1_rapidocr_image_ocr": {
+    "engine": "RapidOCR",
+    "engine_package": "rapidocr-onnxruntime",
+    "engine_version": "1.2.3",
+    "runs_per_image": 3,
+    "images_evaluated": [
+      {
+        "filename": "synthetic-table.png",
+        "source_path": "<repo>/experiments/table-structure-recognition/figures/synthetic-table.png",
+        "size_kb": 16.64,
+        "warmup": {
+          "boxes": 11
+        },
+        "runs": [
+          {
+            "elapsed_ms": 371.76,
+            "engine_elapsed_ms": 317.75,
+            "det_ms": 169.91,
+            "cls_ms": 11.12,
+            "rec_ms": 136.72,
+            "boxes": 11,
+            "avg_confidence": 0.7344
+          },
+          {
+            "elapsed_ms": 379.6,
+            "engine_elapsed_ms": 323.33,
+            "det_ms": 197.78,
+            "cls_ms": 15.37,
+            "rec_ms": 110.17,
+            "boxes": 11,
+            "avg_confidence": 0.7344
+          },
+          {
+            "elapsed_ms": 340.85,
+            "engine_elapsed_ms": 296.17,
+            "det_ms": 155.22,
+            "cls_ms": 9.24,
+            "rec_ms": 131.71,
+            "boxes": 11,
+            "avg_confidence": 0.7344
+          }
+        ],
+        "boxes": 11,
+        "elapsed_ms_mean": 364.07,
+        "elapsed_ms_min": 340.85,
+        "elapsed_ms_max": 379.6,
+        "det_ms_mean": 174.3,
+        "cls_ms_mean": 11.91,
+        "rec_ms_mean": 126.2,
+        "avg_confidence": 0.7344,
+        "min_confidence": 0.5725,
+        "max_confidence": 0.8505,
+        "total_chars": 49,
+        "text_preview": "Units Item Price 12 Notebook 6.50 Marker 24 2.00 Paper 4.00"
+      },
+      {
+        "filename": "testpage_cn.jpg",
+        "source_path": "<repo>/experiments/minicpm-ocr/docs/evidence/testpage_cn.jpg",
+        "size_kb": 281.85,
+        "warmup": {
+          "boxes": 32
+        },
+        "runs": [
+          {
+            "elapsed_ms": 2716.03,
+            "engine_elapsed_ms": 2490.66,
+            "det_ms": 792.89,
+            "cls_ms": 33.2,
+            "rec_ms": 1664.57,
+            "boxes": 32,
+            "avg_confidence": 0.7899
+          },
+          {
+            "elapsed_ms": 2542.23,
+            "engine_elapsed_ms": 2295.47,
+            "det_ms": 813.91,
+            "cls_ms": 26.78,
+            "rec_ms": 1454.78,
+            "boxes": 32,
+            "avg_confidence": 0.7899
+          },
+          {
+            "elapsed_ms": 2790.05,
+            "engine_elapsed_ms": 2592.4,
+            "det_ms": 762.33,
+            "cls_ms": 38.54,
+            "rec_ms": 1791.53,
+            "boxes": 32,
+            "avg_confidence": 0.7899
+          }
+        ],
+        "boxes": 32,
+        "elapsed_ms_mean": 2682.77,
+        "elapsed_ms_min": 2542.23,
+        "elapsed_ms_max": 2790.05,
+        "det_ms_mean": 789.71,
+        "cls_ms_mean": 32.84,
+        "rec_ms_mean": 1636.96,
+        "avg_confidence": 0.7899,
+        "min_confidence": 0.594,
+        "max_confidence": 0.9375,
+        "total_chars": 511,
+        "text_preview": "000000·202600400 关于人工智能文档识别技术的测试报告 本文档用于验证文档解析模型在中文段落、英文段落、表格与数学公式四类典 型版式上的识别质量。测试页面由程序煊染生成，内容已知，可逐项核对。 1. Introduction This page exercises four layout element types: body text, an E nglish paragraph,"
+      }
+    ]
+  },
+  "part2_unstructured_partition_pdf": {
+    "timestamp": "2026-11-08T23:45:25",
+    "benchmark_description": "unstructured partition_pdf element-chunking evaluation: rule-based 'fast' (pdfminer vector stream) vs model-based 'hi_res' (yolox layout detection + tesseract OCR + table-transformer structure recognition); each run isolated in a fresh subprocess for cold-start timing",
+    "environment": {
+      "unstructured": "0.27.37",
+      "python": "3.13.0",
+      "unstructured-inference": "1.6.17",
+      "onnxruntime": "1.31.0",
+      "onnx": "1.20.1",
+      "opencv-python": "5.0.0.93",
+      "torch": "2.15.0+cpu",
+      "torchvision": "0.29.2",
+      "transformers": "5.22.2",
+      "timm": "1.0.31",
+      "pypdfium2": "5.15.1",
+      "pdfminer.six": "20260107",
+      "unstructured-pytesseract": "0.3.15",
+      "tesseract_binary_version": "5.5.0.20241111",
+      "ocr_agent": "unstructured.partition.utils.ocr_models.tesseract_ocr.OCRAgentTesseract",
+      "hf_endpoint": "https://hf-mirror.com"
+    },
+    "files_evaluated": [
+      {
+        "filename": "rapidocr_direct_and_image.pdf",
+        "size_kb": 703.71,
+        "runs": [
+          {
+            "strategy": "fast",
+            "success": true,
+            "error": null,
+            "elapsed_ms": 3394.13,
+            "total_elements": 25,
+            "element_counts": {
+              "Footer": 1,
+              "ListItem": 1,
+              "NarrativeText": 9,
+              "Title": 7,
+              "UncategorizedText": 7
+            },
+            "title_count": 7,
+            "narrative_text_count": 9,
+            "table_count": 0,
+            "image_count": 0,
+            "total_chars": 3724,
+            "page_count": 1,
+            "text_preview": "0 2 0 2 b e F 5 2 ] V C . s c [ 2 v 0 0 2 0 1 . 2 0 0 2 : v i X r a ABCNet: Real-time Scene Text Spotting with Adaptive Bezier-Curve Network∗ Yuliang Liu‡† , Hao Chen†, Chunhua Shen†, Tong He†, Lianwe"
+          },
+          {
+            "strategy": "hi_res",
+            "success": true,
+            "error": null,
+            "elapsed_ms": 35026.87,
+            "total_elements": 43,
+            "element_counts": {
+              "FigureCaption": 2,
+              "Footer": 2,
+              "Header": 3,
+              "Image": 4,
+              "NarrativeText": 19,
+              "Title": 6,
+              "UncategorizedText": 7
+            },
+            "title_count": 6,
+            "narrative_text_count": 19,
+            "table_count": 0,
+            "image_count": 4,
+            "total_chars": 6730,
+            "page_count": 2,
+            "text_preview": "0 2 0 2 b e F 5 2 ] V C . s c [ 2 v 0 0 2 0 1 . 2 0 0 2 : v arX1V i X r a ABCNet: Real-time Scene Text Spotting with Adaptive Bezier-Curve Network∗ Hao Chen’, Chunhua Shen’, Tong He’, *South China Uni"
+          }
+        ]
+      },
+      {
+        "filename": "pdfplumber_federal_register.pdf",
+        "size_kb": 697.26,
+        "runs": [
+          {
+            "strategy": "fast",
+            "success": true,
+            "error": null,
+            "elapsed_ms": 4717.57,
+            "total_elements": 446,
+            "element_counts": {
+              "Footer": 77,
+              "Header": 29,
+              "ListItem": 16,
+              "NarrativeText": 185,
+              "Title": 106,
+              "UncategorizedText": 33
+            },
+            "title_count": 106,
+            "narrative_text_count": 185,
+            "table_count": 0,
+            "image_count": 0,
+            "total_chars": 58552,
+            "page_count": 15,
+            "text_preview": "S L A S O P O R P h t i w D O R P 2 X 7 W S L J K S D n o l l e b j 47698 Proposed Rules Federal Register Vol. 85, No. 152 Thursday, August 6, 2020 This section of the FEDERAL REGISTER contains notice"
+          },
+          {
+            "strategy": "hi_res",
+            "success": true,
+            "error": null,
+            "elapsed_ms": 113164.91,
+            "total_elements": 1021,
+            "element_counts": {
+              "FigureCaption": 1,
+              "Header": 29,
+              "Image": 11,
+              "ListItem": 1,
+              "NarrativeText": 177,
+              "Table": 2,
+              "Title": 57,
+              "UncategorizedText": 743
+            },
+            "title_count": 57,
+            "narrative_text_count": 177,
+            "table_count": 2,
+            "image_count": 11,
+            "total_chars": 69509,
+            "page_count": 15,
+            "text_preview": "S L A S O P O R P h t i w D O R P 2 X 7 W S L J K S D n o l l e b j 47698 Proposed Rules Federal Register Vol. 85, No. 152 Thursday, August 6, 2020 This section of the FEDERAL REGISTER contains notice"
+          }
+        ]
+      }
+    ]
+  }
+}

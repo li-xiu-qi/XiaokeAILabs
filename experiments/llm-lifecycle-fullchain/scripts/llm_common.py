@@ -11,17 +11,37 @@
   - Muon（Newton-Schulz 正交化）负责隐藏矩阵，AdamW 负责嵌入/lm_head/标量
 
 所有编号脚本（01~08）通过 `import llm_common` 复用本模块，不再需要 importlib 路径加载。
+
+运行契约（源码与运行产物分离）：
+  - 输出写 `XL_OUT_DIR`（`out_dir()`），数据读 `XL_DATA_DIR`（`data_dir()`），
+    运行标识取 `XL_RUN_ID`（`run_id()`）。
+  - 默认可在本机开箱运行：未显式指定时回退到实验目录下被 `.gitignore` 忽略的
+    `.work/out/<run_id>`、`.work/data`（默认 `run_id="local"`）。
+  - 若需强制外部注入路径（如 CI 或受控环境），设置 `XL_REQUIRE_EXTERNAL_ENV=1`，
+    未提供上述环境变量时将直接报错退出，拒绝本地回退。
+
+设备与分布式（本次升级新增）：
+  - `init_distributed(args.device, args.backend)` 统一解析设备与进程组，torchrun 启动时自动生效
+  - DDP 包装/剥离（wrap_ddp / unwrap_model）、rank0 守卫、all_reduce 指标汇总
+  - checkpoint 保存时剥离 DDP `module.` 前缀，加载时 `map_location` 兼容任意设备
+  - KVCache / RotaryEmbedding / get_batch / evaluate / generate 全部设备对齐，Muon 优化器
+    在 CUDA 与 DDP 下无需修改即可工作（Newton-Schulz 在 fp32 累加格上计算）
 """
 
 from __future__ import annotations
 
+import contextlib
+import argparse
 import math
 import os
 import random
+import sys
+import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
 import torch
+import torch.distributed as dist
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -29,12 +49,94 @@ import torch.nn.functional as F
 torch.set_num_threads(int(os.environ.get("LLM_THREADS", "4")))
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA_DIR = ROOT / "data"
-RESULT_DIR = ROOT / "results"
-TOK_PATH = RESULT_DIR / "tokenizer" / "tokenizer.json"
-CKPT_DIR = RESULT_DIR / "checkpoints"
 EOS = "<|endoftext|>"
 PAD = "<|pad|>"
+
+
+# ------------------------------------------------------------ 运行契约 ----
+#
+# 默认将输出写至 XL_OUT_DIR（缺省 .work/out/<run_id>）、数据读自 XL_DATA_DIR
+# （缺省 .work/data）、运行标识取 XL_RUN_ID（缺省 local）。
+# 设置 XL_REQUIRE_EXTERNAL_ENV=1 时强制要求外部显式注入，禁止本地回退。
+
+
+def check_available_memory() -> None:
+    """仅在显式设置 XL_MIN_AVAILABLE_GIB 时检查 Linux 可用内存。"""
+    raw = os.environ.get("XL_MIN_AVAILABLE_GIB")
+    if raw is None:
+        return
+    try:
+        minimum = float(raw)
+    except ValueError as exc:
+        raise RuntimeError("XL_MIN_AVAILABLE_GIB 必须是大于零的有限数字") from exc
+    if not math.isfinite(minimum) or minimum <= 0:
+        raise RuntimeError("XL_MIN_AVAILABLE_GIB 必须是大于零的有限数字")
+    try:
+        world_size = int(os.environ.get("WORLD_SIZE", "1"))
+    except ValueError as exc:
+        raise RuntimeError("启用内存门槛时 WORLD_SIZE 必须为 1") from exc
+    if world_size != 1:
+        raise RuntimeError("启用内存门槛时仅支持单进程（WORLD_SIZE=1）")
+    try:
+        with open("/proc/meminfo", encoding="ascii") as f:
+            line = next((line for line in f if line.startswith("MemAvailable:")), None)
+        if line is None:
+            raise ValueError("缺少 MemAvailable")
+        fields = line.split()
+        if len(fields) != 3 or fields[2] != "kB":
+            raise ValueError("MemAvailable 格式无效")
+        available_kib = int(fields[1])
+        if available_kib < 0:
+            raise ValueError("MemAvailable 为负值")
+    except (OSError, UnicodeError, ValueError) as exc:
+        raise RuntimeError(f"无法读取可用内存，已停止训练: {exc}") from exc
+    available_gib = available_kib / (1024 * 1024)
+    if available_gib < minimum:
+        raise RuntimeError(
+            f"可用内存 {available_gib:.2f} GiB 低于门槛 {minimum:.2f} GiB，已停止训练"
+        )
+
+
+def _require_external_env() -> bool:
+    return os.environ.get("XL_REQUIRE_EXTERNAL_ENV", "").strip().lower() in {"1", "true", "yes"}
+
+
+def _resolve_env(name: str, default_factory, *, msg_hint: str) -> str:
+    v = os.environ.get(name, "").strip()
+    if v:
+        return v
+    if _require_external_env():
+        sys.exit(f"{name} 未设置（XL_REQUIRE_EXTERNAL_ENV=1 禁止本地回退）：{msg_hint}")
+    return default_factory()
+
+
+def run_id() -> str:
+    """本次运行的标识（XL_RUN_ID），写进每个阶段的指标与 manifest。"""
+    return _resolve_env("XL_RUN_ID", lambda: "local", msg_hint="请显式设置 XL_RUN_ID")
+
+
+def out_dir() -> Path:
+    """本次运行的输出目录（XL_OUT_DIR），不存在则创建。"""
+    v = _resolve_env(
+        "XL_OUT_DIR",
+        lambda: str(ROOT / ".work" / "out" / run_id()),
+        msg_hint="请显式设置 XL_OUT_DIR",
+    )
+    p = Path(v)
+    p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
+def data_dir() -> Path:
+    """训练数据目录（XL_DATA_DIR），不存在则创建。"""
+    v = _resolve_env(
+        "XL_DATA_DIR",
+        lambda: str(ROOT / ".work" / "data"),
+        msg_hint="请显式设置 XL_DATA_DIR",
+    )
+    p = Path(v)
+    p.mkdir(parents=True, exist_ok=True)
+    return p
 
 
 # ------------------------------------------------------------------- 配置 ----
@@ -97,7 +199,8 @@ class RotaryEmbedding(nn.Module):
         self._build_cache(max_len)
 
     def _build_cache(self, seq_len: int) -> None:
-        t = torch.arange(seq_len, dtype=torch.float32)
+        # 与 inv_freq 同设备同 dtype：模型 .to(cuda) 后缓存仍随模块走，运行期扩容也不落 CPU
+        t = torch.arange(seq_len, dtype=self.inv_freq.dtype, device=self.inv_freq.device)
         freqs = torch.outer(t, self.inv_freq)  # (T, D/2)
         cos = freqs.cos()[None, :, None, :]  # (1, T, 1, D/2)
         sin = freqs.sin()[None, :, None, :]
@@ -202,13 +305,16 @@ class KVCache:
         max_len: int,
         batch: int = 1,
         dtype: torch.dtype = torch.float32,
+        device: torch.device | str | None = None,
     ):
         self.max_len = max_len
         self.k = [
-            torch.empty(batch, n_kv_heads, max_len, head_dim, dtype=dtype) for _ in range(n_layers)
+            torch.empty(batch, n_kv_heads, max_len, head_dim, dtype=dtype, device=device)
+            for _ in range(n_layers)
         ]
         self.v = [
-            torch.empty(batch, n_kv_heads, max_len, head_dim, dtype=dtype) for _ in range(n_layers)
+            torch.empty(batch, n_kv_heads, max_len, head_dim, dtype=dtype, device=device)
+            for _ in range(n_layers)
         ]
         self.pos = 0
 
@@ -295,13 +401,252 @@ def build_model(cfg: ModelConfig, seed: int = 0) -> CausalLM:
 
 def save_checkpoint(model: CausalLM, cfg: ModelConfig, path: Path, **meta) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    torch.save({"model_state": model.state_dict(), "config": cfg.to_dict(), **meta}, path)
+    # unwrap：DDP 包装保存时剥离 module. 前缀，单卡加载无需特殊处理
+    tmp = path.with_name(path.name + ".tmp")
+    torch.save(
+        {"model_state": unwrap_model(model).state_dict(), "config": cfg.to_dict(), **meta}, tmp
+    )
+    tmp.replace(path)
 
 
-def load_checkpoint(path: Path) -> tuple[CausalLM, dict]:
+def save_resume_state(
+    path: Path,
+    model: CausalLM,
+    cfg: ModelConfig,
+    optimizers,
+    step: int,
+    scaler=None,
+    history: list | None = None,
+    val_history: list | None = None,
+    elapsed_seconds: float = 0.0,
+    extra: dict | None = None,
+    **meta,
+) -> None:
+    """原子保存完整可续训状态（权重 + 优化器 + GradScaler + step + 曲线 + RNG）。"""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + ".tmp")
+    payload = {
+        "model_state": unwrap_model(model).state_dict(),
+        "config": cfg.to_dict(),
+        "optimizer_states": [opt.state_dict() for opt in optimizers],
+        "scaler_state": scaler.state_dict() if scaler is not None else None,
+        "step": int(step),
+        "history": list(history or []),
+        "val_history": list(val_history or []),
+        "elapsed_seconds": float(elapsed_seconds),
+        "rng_py": random.getstate(),
+        "rng_torch": torch.get_rng_state(),
+        "extra": dict(extra or {}),
+        **meta,
+    }
+    torch.save(payload, tmp)
+    tmp.replace(path)
+
+
+def load_resume_state(
+    path: Path,
+    model: CausalLM,
+    optimizers,
+    device: torch.device | str | None = None,
+    scaler=None,
+) -> tuple[int, list, list, float, dict]:
+    """从 resume checkpoint 恢复模型、优化器、scaler 与训练进度。"""
     ckpt = torch.load(path, map_location="cpu", weights_only=False)
+    target = unwrap_model(model)
+    state = ckpt["model_state"]
+    try:
+        target.load_state_dict(state)
+    except Exception:
+        target.load_state_dict(_strip_module_prefix(state))
+    if device is not None:
+        target.to(device)
+    opt_states = ckpt.get("optimizer_states") or []
+    for opt, ost in zip(optimizers, opt_states):
+        opt.load_state_dict(ost)
+    if scaler is not None and ckpt.get("scaler_state") is not None:
+        scaler.load_state_dict(ckpt["scaler_state"])
+    return (
+        int(ckpt.get("step", 0)),
+        list(ckpt.get("history", [])),
+        list(ckpt.get("val_history", [])),
+        float(ckpt.get("elapsed_seconds", 0.0)),
+        ckpt,
+    )
+
+
+def resolve_resume_path(args, ckpt_dir: Path, filename: str) -> Path | None:
+    """按 --resume > --resume-auto (checkpoints/<filename>) 解析续训路径。"""
+    explicit = getattr(args, "resume", None)
+    if explicit:
+        p = Path(explicit)
+        if not p.exists():
+            raise FileNotFoundError(f"指定的 --resume checkpoint 不存在: {p}")
+        return p
+    if getattr(args, "resume_auto", False):
+        cand = ckpt_dir / filename
+        if cand.exists():
+            return cand
+    return None
+
+
+def resume_training_if_needed(
+    args,
+    ckpt_dir: Path,
+    filename: str,
+    model: CausalLM,
+    optimizers,
+    device: torch.device,
+    ctx: DistContext | None,
+    scaler=None,
+    train_gen: torch.Generator | None = None,
+    val_gen: torch.Generator | None = None,
+    sample_rng: random.Random | None = None,
+    tag: str = "",
+) -> tuple[int, list, list, float]:
+    """若需续训，加载完整状态并按 rank 决定是否还原局部 RNG。"""
+    rpath = resolve_resume_path(args, ckpt_dir, filename)
+    if rpath is None:
+        return 0, [], [], 0.0
+    start_step, history, val_history, elapsed_prev, ckpt = load_resume_state(
+        rpath, model, optimizers, device=device, scaler=scaler
+    )
+    saved_world = ckpt.get("world_size")
+    cur_world = ctx.world_size if ctx is not None else 1
+    rank = ctx.rank if ctx is not None else 0
+    extra = ckpt.get("extra") or {}
+    # rank0（或同 world_size 对应 rank）还原 RNG，保持采样流无缝衔接；跨 world_size 新增 rank 保留各自错开种子
+    if rank == 0 or saved_world == cur_world:
+        if train_gen is not None and isinstance(extra.get("train_gen"), torch.Tensor):
+            train_gen.set_state(extra["train_gen"].cpu())
+        if val_gen is not None and isinstance(extra.get("val_gen"), torch.Tensor):
+            val_gen.set_state(extra["val_gen"].cpu())
+        if sample_rng is not None and extra.get("sample_rng") is not None:
+            sample_rng.setstate(extra["sample_rng"])
+    if is_rank0(ctx):
+        print(
+            f"[{tag or 'resume'}] 从 {rpath} 恢复: completed_step={start_step}/{args.steps}, "
+            f"elapsed={elapsed_prev:.1f}s (saved_world={saved_world} -> cur_world={cur_world})"
+        )
+    return start_step, history, val_history, elapsed_prev
+
+
+def checkpoint_step_hook(
+    args,
+    ckpt_dir: Path,
+    filename: str,
+    model: CausalLM,
+    cfg: ModelConfig,
+    optimizers,
+    completed_step: int,
+    ctx: DistContext | None,
+    scaler=None,
+    history: list | None = None,
+    val_history: list | None = None,
+    t0: float = 0.0,
+    elapsed_offset: float = 0.0,
+    train_gen: torch.Generator | None = None,
+    val_gen: torch.Generator | None = None,
+    sample_rng: random.Random | None = None,
+    stage: str = "",
+    tag: str = "",
+) -> None:
+    """周期性保存可续训快照；配合 --inject-fail-step 支持受控故障演练。"""
+    save_every = int(getattr(args, "save_every", 0) or 0)
+    inject_step = int(getattr(args, "inject_fail_step", 0) or 0)
+    should_save = (save_every > 0 and completed_step % save_every == 0) or (
+        inject_step > 0 and completed_step == inject_step
+    )
+    if should_save:
+        if is_rank0(ctx):
+            extra = {}
+            if train_gen is not None:
+                extra["train_gen"] = train_gen.get_state()
+            if val_gen is not None:
+                extra["val_gen"] = val_gen.get_state()
+            if sample_rng is not None:
+                extra["sample_rng"] = sample_rng.getstate()
+            elapsed = elapsed_offset + (time.time() - t0)
+            save_resume_state(
+                ckpt_dir / filename,
+                model,
+                cfg,
+                optimizers,
+                step=completed_step,
+                scaler=scaler,
+                history=history,
+                val_history=val_history,
+                elapsed_seconds=elapsed,
+                extra=extra,
+                stage=stage,
+                world_size=ctx.world_size if ctx is not None else 1,
+            )
+            print(f"[{tag or 'ckpt'}] 已保存断点 {ckpt_dir / filename} (step={completed_step})")
+        if ctx is not None and ctx.enabled:
+            import torch.distributed as dist
+
+            dist.barrier()
+    if inject_step > 0 and completed_step == inject_step:
+        raise RuntimeError(f"[{tag or 'fault'}] 触发故障注入退出 (step={completed_step})")
+
+
+def reset_peak_memory(device: torch.device | str | None) -> None:
+    """重置 CUDA 峰值显存统计（CPU 时无操作）。"""
+    dev = torch.device(device) if device is not None else resolve_device("auto")
+    if dev.type == "cuda" and torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats(dev)
+
+
+def memory_stats(device: torch.device | str | None) -> dict:
+    """读取当前设备的显存统计（MB）；CPU 返回空指标占位。"""
+    dev = torch.device(device) if device is not None else resolve_device("auto")
+    if dev.type != "cuda" or not torch.cuda.is_available():
+        return {
+            "device_type": dev.type,
+            "peak_vram_allocated_mb": 0.0,
+            "peak_vram_reserved_mb": 0.0,
+            "gpu_total_vram_mb": 0.0,
+            "vram_util_pct": 0.0,
+        }
+    alloc = torch.cuda.max_memory_allocated(dev) / (1024**2)
+    resv = torch.cuda.max_memory_reserved(dev) / (1024**2)
+    total = torch.cuda.get_device_properties(dev).total_memory / (1024**2)
+    return {
+        "device_type": "cuda",
+        "peak_vram_allocated_mb": round(alloc, 2),
+        "peak_vram_reserved_mb": round(resv, 2),
+        "gpu_total_vram_mb": round(total, 1),
+        "vram_util_pct": round(100.0 * resv / max(total, 1e-6), 2),
+    }
+
+
+def tensor_size_mb(t: torch.Tensor | None) -> float:
+    if t is None:
+        return 0.0
+    return round(t.numel() * t.element_size() / (1024**2), 3)
+
+
+def _strip_module_prefix(state: dict) -> dict:
+    return {
+        (k[len("module.") :] if k.startswith("module.") else k): v for k, v in state.items()
+    }
+
+
+def load_checkpoint(
+    path: Path, map_location=None, device: torch.device | str | None = None
+) -> tuple[CausalLM, dict]:
+    """加载 checkpoint。map_location 缺省 cpu；device 给定则再搬到目标设备。
+
+    兼容 DDP 产出的权重：优先原样加载，键名带 module. 前缀时自动剥离后重试。
+    """
+    ckpt = torch.load(path, map_location=map_location or "cpu", weights_only=False)
     model = CausalLM(ModelConfig.from_dict(ckpt["config"]))
-    model.load_state_dict(ckpt["model_state"])
+    state = ckpt["model_state"]
+    try:
+        model.load_state_dict(state)
+    except Exception:
+        model.load_state_dict(_strip_module_prefix(state))
+    if device is not None:
+        model.to(device)
     model.eval()
     return model, ckpt
 
@@ -493,11 +838,42 @@ def tag_initial_lrs(optimizers) -> None:
 # ------------------------------------------------------------------ 数据 ----
 
 
-def load_tokenizer():
+def load_tokenizer(path: str | Path | None = None):
     from tokenizers import Tokenizer
 
-    return Tokenizer.from_file(str(TOK_PATH))
+    tok_path = Path(path) if path else (out_dir() / "tokenizer" / "tokenizer.json")
+    return Tokenizer.from_file(str(tok_path))
 
+
+def token_bytes_from_tokenizer(tok) -> torch.Tensor:
+    """ByteLevel 词表中每个字符对应一个原始字节，特殊标记不计字节。"""
+    from tokenizers import pre_tokenizers
+
+    alphabet = set(pre_tokenizers.ByteLevel.alphabet())
+    special_ids = {tok.token_to_id(EOS), tok.token_to_id(PAD)}
+    lengths = []
+    for token_id in range(tok.get_vocab_size()):
+        if token_id in special_ids:
+            lengths.append(0)
+            continue
+        token = tok.id_to_token(token_id)
+        if not token or any(char not in alphabet for char in token):
+            raise ValueError(f"token {token_id} 不是受支持的 ByteLevel 词表项")
+        lengths.append(len(token))
+    return torch.tensor(lengths, dtype=torch.int32)
+
+
+def load_token_bytes(tok_dir: str | Path | None = None, tok=None) -> torch.Tensor | None:
+    """加载字节长度；旧版错误缓存只在内存中校正，不改写原始文件。"""
+    base = Path(tok_dir) if tok_dir else (out_dir() / "tokenizer")
+    p = base / "token_bytes.pt"
+    if not p.exists():
+        return None
+    saved = torch.load(p, map_location="cpu", weights_only=True)
+    expected = token_bytes_from_tokenizer(tok or load_tokenizer(base / "tokenizer.json"))
+    if not torch.equal(saved, expected):
+        print("[BPB] token_bytes.pt 与 ByteLevel 词表不一致；本次在内存中校正，旧评估结果需重新计算。", file=sys.stderr)
+    return expected
 
 def eos_id(tok) -> int:
     return tok.token_to_id(EOS)
@@ -533,11 +909,17 @@ def split_records(text: str, val_frac: float, seed: int = 1234) -> tuple[list[st
 
 
 def get_batch(
-    ids: torch.Tensor, batch_size: int, block_size: int, generator: torch.Generator
+    ids: torch.Tensor,
+    batch_size: int,
+    block_size: int,
+    generator: torch.Generator,
+    device: torch.device | str | None = None,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     starts = torch.randint(0, len(ids) - block_size - 1, (batch_size,), generator=generator)
     x = torch.stack([ids[s : s + block_size] for s in starts])
     y = torch.stack([ids[s + 1 : s + block_size + 1] for s in starts])
+    if device is not None:
+        x, y = x.to(device), y.to(device)
     return x, y
 
 
@@ -549,15 +931,113 @@ def evaluate(
     block_size: int,
     n_batches: int,
     generator: torch.Generator,
+    device: torch.device | str | None = None,
 ) -> float:
+    model = unwrap_model(model)
     model.eval()
     losses = []
     for _ in range(n_batches):
-        x, y = get_batch(ids, batch_size, block_size, generator)
+        x, y = get_batch(ids, batch_size, block_size, generator, device=device)
         _, loss = model(x, targets=y)
         losses.append(loss.item())
     model.train()
     return sum(losses) / len(losses)
+
+
+@torch.no_grad()
+def evaluate_bpb_ppl(
+    model: CausalLM,
+    ids: torch.Tensor,
+    token_bytes: torch.Tensor | None,
+    batch_size: int = 16,
+    block_size: int = 256,
+    device: torch.device | str | None = None,
+    max_windows: int = 256,
+) -> dict:
+    """统一测试集评估：在固定 token 流上按连续不重叠窗口计算 CE / BPB / PPL。
+
+    - mean_loss_nats: 所有预测位置的平均交叉熵（nat/token）
+    - bpb: 文本预测位置的 total_nll_bits / total_bytes；跨词表比较须对齐原文和评测范围
+    - ppl: exp(mean_loss_nats)
+    窗口从头顺序切分；不同词表的固定 token 数窗口不一定对应相同原文。
+    """
+    model = unwrap_model(model)
+    model.eval()
+    dev = device if device is not None else next(model.parameters()).device
+    n_tokens = len(ids)
+    if n_tokens < 2 or block_size < 1 or max_windows < 1:
+        raise ValueError("BPB 评估至少需要两个 token，block_size 和 max_windows 必须大于零")
+    n_win = min(max_windows, max(1, (n_tokens - 1) // block_size))
+    total_nll_nats = 0.0
+    total_positions = 0
+    total_bytes = 0
+    total_bits = 0.0
+    for w in range(n_win):
+        s = w * block_size
+        x = ids[s : s + block_size].unsqueeze(0).to(dev)
+        y = ids[s + 1 : s + block_size + 1].unsqueeze(0).to(dev)
+        logits, _ = model(x)
+        logp = torch.log_softmax(logits[:, :y.size(1)].float(), dim=-1)
+        tgt = y
+        nll = -logp.gather(-1, tgt.unsqueeze(-1)).squeeze(-1)  # (1, T-1) nats
+        total_nll_nats += float(nll.sum())
+        total_positions += nll.numel()
+        if token_bytes is not None:
+            tb = token_bytes.to(dev)[tgt.reshape(-1)]
+            total_bytes += int(tb.sum())
+            # 与分母一致，只累计对应真实文本字节的预测位置。
+            total_bits += float(nll.reshape(-1)[tb > 0].sum()) / math.log(2.0)
+    model.train()
+    mean_nats = total_nll_nats / max(total_positions, 1)
+    out = {
+        "eval_tokens": total_positions,
+        "eval_windows": n_win,
+        "mean_loss_nats": round(mean_nats, 6),
+        "ppl": round(math.exp(mean_nats), 4),
+    }
+    if token_bytes is not None and total_bytes > 0:
+        out["eval_bytes"] = total_bytes
+        out["bpb"] = round(total_bits / total_bytes, 6)
+    return out
+
+
+def build_ids_from_source(
+    source: str | Path | None,
+    tok,
+    max_chars: int | None = None,
+    doc_cap: int = 10000,
+    eos: int | None = None,
+) -> tuple[torch.Tensor, dict]:
+    """把外部语料（parquet 文件/目录或 txt）编码为 token id 流，带字符上限。
+
+    与 01 的 iter_texts 同一套截断逻辑（doc_cap + max_chars），因此分词器训练
+    与预训练看到的数据口径一致；各 DDP rank 独立编码同一分片，结果逐位一致。
+    返回 (ids, stats)。
+    """
+    import dataset
+
+    if eos is None:
+        eos = eos_id(tok)
+    ids: list[int] = []
+    n_docs = 0
+    total_chars = 0
+    for doc in dataset.iter_texts(data_source=source, split="train", max_chars=max_chars, doc_cap=doc_cap):
+        d = doc.strip("\n")
+        if not d.strip():
+            continue
+        ids.extend(tok.encode(d, add_special_tokens=False).ids)
+        ids.append(eos)
+        n_docs += 1
+        total_chars += len(d)
+    stats = {
+        "source": str(source) if source else None,
+        "docs": n_docs,
+        "chars": total_chars,
+        "tokens": len(ids),
+        "max_chars": max_chars,
+        "doc_cap": doc_cap,
+    }
+    return torch.tensor(ids, dtype=torch.long), stats
 
 
 # ------------------------------------------------------------------ 生成 ----
@@ -576,19 +1056,24 @@ def generate(
     seed: int | None = None,
 ) -> tuple[torch.Tensor, int]:
     """自回归生成。use_cache=True 走 KV cache 单步前向；结果与 naive 路径一致。"""
+    model = unwrap_model(model)
     model.eval()
     gen = None
     if temperature > 0 and seed is not None:
-        gen = torch.Generator().manual_seed(seed)
+        # 采样 Generator 必须与 logits 同设备：CUDA 张量用 CPU generator 会直接报错
+        gen = torch.Generator(device=idx.device).manual_seed(seed)
     cache = None
     if use_cache:
         # cache 长度按本次生成实际需要分配（prompt + max_new），不受训练时 block_size 限制
+        param = next(model.parameters())
         cache = KVCache(
             model.cfg.n_layers,
             model.cfg.n_kv_heads,
             model.cfg.d_model // model.cfg.n_heads,
             idx.size(1) + max_new,
             batch=idx.size(0),
+            dtype=param.dtype,
+            device=idx.device,
         )
         _, _ = model(idx[:, :-1], kv_cache=cache)  # prefill
     n_new = 0
@@ -674,3 +1159,347 @@ def plot_loss(
 
 def avg(xs) -> float:
     return sum(xs) / len(xs) if xs else float("nan")
+
+
+# ------------------------------------------------- 设备与分布式上下文 ----
+#
+# 统一入口：init_distributed(args.device, args.backend)。torchrun 启动时读环境变量
+# WORLD_SIZE / RANK / LOCAL_RANK 自动建组；直接 python 启动则退化为单进程。
+
+
+def resolve_device(spec: str = "auto") -> torch.device:
+    """解析 --device：auto（有卡用卡，没卡 CPU）/ cpu / cuda / cuda:N。"""
+    s = (spec or "auto").strip().lower()
+    if s in ("", "auto"):
+        return torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if s == "cpu":
+        return torch.device("cpu")
+    if s == "cuda" or s.startswith("cuda:"):
+        if not torch.cuda.is_available():
+            raise RuntimeError(f"--device {spec} 但当前环境未检测到可用 CUDA 设备")
+        if s == "cuda":  # 规范成 cuda:<current>，避免 torch.device('cuda') != cuda:0 的比较坑
+            return torch.device("cuda", torch.cuda.current_device())
+        return torch.device(s)
+    raise ValueError(f"无法解析的 --device 取值: {spec}（可选 auto / cpu / cuda / cuda:N）")
+
+
+def env_world_size() -> int:
+    """torchrun 会注入 WORLD_SIZE；手动拉起时也可用同名环境变量。"""
+    for key in ("WORLD_SIZE", "LOCAL_WORLD_SIZE"):
+        v = os.environ.get(key)
+        if v:
+            try:
+                return max(1, int(v))
+            except ValueError:
+                pass
+    return 1
+
+
+def pick_backend(spec: str, device: torch.device) -> str:
+    """解析分布式后端。auto：CUDA 且编译了 NCCL 用 nccl，否则 gloo（Windows 官方
+    wheel 未编译 NCCL，CUDA 张量走 gloo 同样正确，只是带宽低一档）。"""
+    s = (spec or "auto").strip().lower()
+    if s not in ("auto", "nccl", "gloo"):
+        raise ValueError(f"无法解析的 --backend 取值: {spec}（可选 auto / nccl / gloo）")
+    if s != "auto":
+        if s == "nccl" and not torch.distributed.is_nccl_available():
+            raise RuntimeError(
+                "backend=nccl 不可用（当前 torch 未编译 NCCL，Windows 官方 wheel 常态），请改用 gloo"
+            )
+        return s
+    if device.type == "cuda" and torch.distributed.is_nccl_available():
+        return "nccl"
+    return "gloo"
+
+
+@dataclass
+class DistContext:
+    """单进程 = enabled False；多进程 = DDP 上下文（rank / world / 设备）。"""
+
+    enabled: bool = False
+    rank: int = 0
+    world_size: int = 1
+    local_rank: int = 0
+    backend: str = "none"
+    device: torch.device = torch.device("cpu")
+
+    def is_rank0(self) -> bool:
+        return self.rank == 0
+
+
+def init_distributed(device: str = "auto", backend: str = "auto") -> DistContext:
+    """按环境变量决定是否建组，返回统一上下文。单进程时零开销直通。"""
+    dev = resolve_device(device)
+    world_env = env_world_size()
+    if world_env <= 1:
+        return DistContext(False, 0, 1, 0, "none", dev)
+    if not torch.distributed.is_available():
+        raise RuntimeError("检测到 WORLD_SIZE>1，但当前 torch 不支持 distributed")
+    be = pick_backend(backend, dev)
+    os.environ.setdefault("MASTER_ADDR", "127.0.0.1")
+    os.environ.setdefault("MASTER_PORT", "29500")
+    # LLM_INIT_METHOD：默认 env://（torchrun 标准路径）。个别 Windows wheel 的 TCPStore
+    # 被编译成强制 libuv 且未编入 libuv（torchrun agent 直接起不来），可用 file:// 的
+    # FileStore 绕过，例如 LLM_INIT_METHOD=file:///C:/temp/xk_store
+    init_method = os.environ.get("LLM_INIT_METHOD") or None
+    if not torch.distributed.is_initialized():
+        if init_method:
+            torch.distributed.init_process_group(
+                backend=be,
+                init_method=init_method,
+                rank=int(os.environ.get("RANK", 0)),
+                world_size=world_env,
+            )
+        else:
+            torch.distributed.init_process_group(backend=be)
+    rank = torch.distributed.get_rank()
+    world = torch.distributed.get_world_size()
+    local = int(os.environ.get("LOCAL_RANK", rank))
+    if dev.type == "cuda":
+        n_dev = torch.cuda.device_count()
+        if local >= n_dev:
+            # 单卡多进程演示：进程数超过可见 GPU 数时回落共用 cuda:0
+            # （标准多卡场景不会触发；真实双卡双进程各自绑定 local_rank）
+            if rank == 0:
+                print(
+                    f"[dist] 警告: world_size={world} 大于可见 GPU 数 {n_dev}，"
+                    f"多进程将共用 cuda:0（单卡演示模式）"
+                )
+            local = 0
+        dev = torch.device("cuda", local)
+        torch.cuda.set_device(dev)
+    ctx = DistContext(True, rank, world, local, be, dev)
+    if rank == 0:
+        print(f"[dist] 初始化进程组: backend={be}, world_size={world}, device={dev}")
+    return ctx
+
+
+def cleanup_distributed() -> None:
+    if torch.distributed.is_available() and torch.distributed.is_initialized():
+        torch.distributed.destroy_process_group()
+
+
+def is_rank0(ctx: DistContext | None) -> bool:
+    return ctx is None or ctx.rank == 0
+
+
+def wrap_ddp(model: nn.Module, ctx: DistContext | None, **kw) -> nn.Module:
+    """多进程时包 DDP；单进程原样返回（调用方无需分支）。"""
+    if ctx is None or not ctx.enabled:
+        return model
+    kwargs = dict(kw)
+    if ctx.device.type == "cuda":
+        kwargs["device_ids"] = [ctx.local_rank]
+    return nn.parallel.DistributedDataParallel(model, **kwargs)
+
+
+def unwrap_model(model: nn.Module) -> nn.Module:
+    """剥离 DDP/DataParallel 包装，拿回原始 CausalLM（保存与推理都用它）。"""
+    return model.module if hasattr(model, "module") else model
+
+
+def all_reduce_sum(value, ctx: DistContext | None):
+    """跨 rank 求和；单进程原样返回。"""
+    if ctx is None or not ctx.enabled:
+        return value
+    t = value.detach().clone().to(ctx.device) if isinstance(value, torch.Tensor) else torch.tensor(
+        float(value), device=ctx.device
+    )
+    dist.all_reduce(t, op=dist.ReduceOp.SUM)
+    return t
+
+
+def all_reduce_mean(value, ctx: DistContext | None) -> float:
+    """跨 rank 求平均（指标汇总口径），返回 python float。"""
+    if ctx is None or not ctx.enabled:
+        return float(value)
+    t = all_reduce_sum(value, ctx)
+    return float(t) / ctx.world_size
+
+
+def shard_list(items: list, ctx: DistContext | None) -> list:
+    """按 rank 交错分片：多卡并行采样/评估时每个 rank 拿不同的子集。"""
+    if ctx is None or not ctx.enabled:
+        return list(items)
+    return list(items)[ctx.rank :: ctx.world_size]
+
+
+def rank_seed(seed: int, ctx: DistContext | None) -> int:
+    """按 rank 偏移种子：保证不同 rank 抽到不同训练 batch（同 rank 可复现）。"""
+    return int(seed) + 100_003 * (ctx.rank if ctx is not None else 0)
+
+
+def batch_generator(seed: int, ctx: DistContext | None) -> torch.Generator:
+    return torch.Generator().manual_seed(rank_seed(seed, ctx))
+
+
+def effective_batch(base: int, scale: float = 1.0, world_size: int = 1) -> int:
+    """--scale 按比例放大每卡 batch；多卡时 world_size 由调用方显式传入（不再隐式乘）。"""
+    return max(1, int(round(base * (scale if scale else 1.0))))
+
+
+def dist_info(ctx: DistContext | None, args=None) -> dict:
+    """落进 metrics.json 的运行环境信息。"""
+    info = {
+        "distributed": bool(ctx is not None and ctx.enabled),
+        "world_size": ctx.world_size if ctx else 1,
+        "rank": ctx.rank if ctx else 0,
+        "backend": ctx.backend if ctx else "none",
+        "device": str(ctx.device if ctx else resolve_device("auto")),
+    }
+    if args is not None:
+        info["amp"] = getattr(args, "amp", "none")
+        info["grad_accum"] = getattr(args, "grad_accum", 1)
+        info["scale"] = getattr(args, "scale", 1.0)
+    return info
+
+
+class AmpCtx:
+    """混合精度上下文：autocast + （仅 fp16）GradScaler。
+
+    bf16 动态范围与 fp32 一致，不需要 scaler；fp16 仅 CUDA（CPU 上慢且数值不稳，直接报错）。
+    """
+
+    def __init__(self, amp: str = "none", device: torch.device | str | None = None):
+        a = (amp or "none").strip().lower()
+        if a not in ("none", "bf16", "fp16"):
+            raise ValueError(f"无法解析的 --amp 取值: {amp}（可选 none / bf16 / fp16）")
+        dev = torch.device(device) if device is not None else resolve_device("auto")
+        self.amp = a
+        self.device = dev
+        self.scaler = None
+        if a == "fp16":
+            if dev.type != "cuda":
+                raise RuntimeError("amp=fp16 仅支持 CUDA；CPU 上请用 none 或 bf16")
+            self.scaler = torch.amp.GradScaler("cuda")
+
+    @property
+    def dtype(self):
+        return {"none": None, "bf16": torch.bfloat16, "fp16": torch.float16}[self.amp]
+
+    def autocast(self):
+        if self.amp == "none":
+            return contextlib.nullcontext()
+        return torch.autocast(device_type=self.device.type, dtype=self.dtype)
+
+    def backward(self, loss: torch.Tensor) -> None:
+        if self.scaler is not None:
+            self.scaler.scale(loss).backward()
+        else:
+            loss.backward()
+
+    def step(self, optimizers, model: nn.Module | None = None, grad_clip: float | None = None) -> None:
+        """clip + optimizer step；fp16 时先 unscale 再 clip。"""
+        params = None
+        if model is not None:
+            params = [p for p in unwrap_model(model).parameters() if p.requires_grad]
+        if self.scaler is not None:
+            for opt in optimizers:
+                self.scaler.unscale_(opt)
+            if grad_clip and params:
+                torch.nn.utils.clip_grad_norm_(params, grad_clip)
+            for opt in optimizers:
+                self.scaler.step(opt)
+            self.scaler.update()
+        else:
+            if grad_clip and params:
+                torch.nn.utils.clip_grad_norm_(params, grad_clip)
+            for opt in optimizers:
+                opt.step()
+
+
+def add_device_args(parser: argparse.ArgumentParser, scale_help: str | None = None) -> argparse.ArgumentParser:
+    """给 03~08 的 argparse 统一挂上设备 / 分布式 / AMP / 累积 / scale 参数。"""
+    parser.add_argument(
+        "--device", default="auto", help="运行设备：auto（有卡用卡）/ cpu / cuda / cuda:N"
+    )
+    parser.add_argument(
+        "--amp", default="none", choices=["none", "bf16", "fp16"],
+        help="混合精度：none / bf16 / fp16（fp16 仅 CUDA）",
+    )
+    parser.add_argument(
+        "--backend", default="auto", choices=["auto", "nccl", "gloo"],
+        help="分布式后端：auto / nccl / gloo（Windows 无 NCCL 时 auto 落 gloo）",
+    )
+    parser.add_argument(
+        "--grad-accum", type=int, default=1, dest="grad_accum",
+        help="梯度累积微批数（等效放大 batch，显存不足时用）",
+    )
+    parser.add_argument(
+        "--scale", type=float, default=1.0,
+        help=scale_help or "规模系数：按比例放大每卡 batch（默认 1.0 保持 CPU 冒烟口径）",
+    )
+    return parser
+
+
+def add_model_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    """挂上模型尺寸超参（默认值即 ModelConfig 缺省，不传时行为不变）。"""
+    parser.add_argument("--d-model", type=int, default=192, dest="d_model", help="模型维度 d_model")
+    parser.add_argument("--n-layers", type=int, default=4, dest="n_layers", help="Transformer 层数")
+    parser.add_argument("--n-heads", type=int, default=6, dest="n_heads", help="注意力头数")
+    parser.add_argument("--n-kv-heads", type=int, default=0, dest="n_kv_heads",
+                        help="GQA key/value 头数（0 = 等于 n_heads，即普通 MHA）")
+    parser.add_argument("--d-ff", type=int, default=768, dest="d_ff", help="MLP 隐层维度")
+    parser.add_argument("--block-size", type=int, default=128, dest="block_size",
+                        help="训练/评估窗口长度（同时作为 RoPE 预计算长度）")
+    return parser
+
+
+def model_config_from_args(args, vocab_size: int) -> ModelConfig:
+    """按命令行覆盖构造 ModelConfig（vocab_size 由分词器决定）。"""
+    n_kv = getattr(args, "n_kv_heads", 0) or 0
+    return ModelConfig(
+        vocab_size=vocab_size,
+        d_model=args.d_model,
+        n_layers=args.n_layers,
+        n_heads=args.n_heads,
+        n_kv_heads=n_kv if n_kv > 0 else args.n_heads,
+        d_ff=args.d_ff,
+        max_len=args.block_size,
+    )
+
+
+def add_outdir_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    """挂上独立实验输出目录与自定义分词器路径（缺省走运行契约的 XL_OUT_DIR）。"""
+    parser.add_argument(
+        "--out-dir", type=str, default=None, dest="out_dir",
+        help="独立实验输出目录（缺省用 XL_OUT_DIR；给定则指标/checkpoint/曲线全部落此目录）",
+    )
+    parser.add_argument(
+        "--tokenizer", type=str, default=None, dest="tokenizer",
+        help="自定义 tokenizer.json 路径（缺省用 out-dir/tokenizer 下的）",
+    )
+    return parser
+
+
+def resolve_out_dir(args) -> Path:
+    """解析实验输出目录：--out-dir 优先，否则回落 out_dir()（$XL_OUT_DIR 或 .work/out/<run_id>）。"""
+    return Path(args.out_dir) if getattr(args, "out_dir", None) else out_dir()
+
+
+def resolve_tokenizer_path(args) -> Path:
+    """解析 tokenizer.json 路径：--tokenizer > out-dir/tokenizer。"""
+    if getattr(args, "tokenizer", None):
+        return Path(args.tokenizer)
+    return resolve_out_dir(args) / "tokenizer" / "tokenizer.json"
+
+
+def add_resume_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
+    """挂上断点续训与故障演练参数。"""
+    parser.add_argument(
+        "--save-every", type=int, default=0, dest="save_every",
+        help="每隔多少 step 原子落盘可续训断点（0 = 仅阶段结束保存）",
+    )
+    parser.add_argument(
+        "--resume", type=str, default=None,
+        help="显式从指定 *_resume.pt 恢复训练状态",
+    )
+    parser.add_argument(
+        "--resume-auto", action="store_true", dest="resume_auto",
+        help="若 checkpoints/<stage>_resume.pt 存在则自动续训",
+    )
+    parser.add_argument(
+        "--inject-fail-step", type=int, default=0, dest="inject_fail_step",
+        help="故障演练：到指定 step 保存断点后模拟崩溃退出（0 = 关闭）",
+    )
+    return parser

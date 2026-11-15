@@ -2,14 +2,7 @@
 """提交前拦截超大文件，防止把不该进版本库的资产推到 GitHub。
 
 为什么需要这个：`.gitignore` 能忽略路径和扩展名，但**无法按文件大小匹配**。
-历史教训是具体的——本仓本地 .git 一度 608MB，其中
-  - 411MB：浮世绘实验的原始训练图（单张最大 24MB，路径是对的，
-    只是那个目录当时还没被 data/ 规则覆盖）
-  - 33.6MB：20news 的 pickle / npz 数据集（*.npz 早被规则覆盖但入库更早；
-    *.pkl.gz 从未被任何规则覆盖）
-根因不是规则没写，而是**写了规则的钩子从没装过**：`.pre-commit-config.yaml`
-里配着 check-added-large-files，但 `.git/hooks/pre-commit` 不存在，
-所以那条规则从未执行过一次。
+检查脚本可由仓库自带钩子调用，也可直接运行。
 
 本脚本是 pre-commit 的钩子入口，也可以手工跑：
     python scripts/check_large_files.py            # 查已暂存文件
@@ -19,6 +12,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -33,17 +27,17 @@ ALLOWLIST: dict[str, str] = {}
 def staged_files() -> list[str]:
     """已暂存的、非删除的文件。"""
     out = subprocess.run(
-        ["git", "diff", "--cached", "--name-only", "--diff-filter=ACMR"],
-        capture_output=True, text=True, check=True,
+        ["git", "diff", "--cached", "--name-only", "-z", "--diff-filter=ACMR"],
+        capture_output=True, check=True,
     ).stdout
-    return [f for f in out.splitlines() if f.strip()]
+    return [os.fsdecode(f) for f in out.split(b"\0") if f]
 
 
 def tracked_files() -> list[str]:
     out = subprocess.run(
-        ["git", "ls-files"], capture_output=True, text=True, check=True
+        ["git", "ls-files", "-z"], capture_output=True, check=True
     ).stdout
-    return [f for f in out.splitlines() if f.strip()]
+    return [os.fsdecode(f) for f in out.split(b"\0") if f]
 
 
 def sizes_of(paths: list[str]) -> dict[str, int]:
@@ -54,24 +48,39 @@ def sizes_of(paths: list[str]) -> dict[str, int]:
     """
     if not paths:
         return {}
-    payload = "\n".join(f":{p}" for p in paths)
-    proc = subprocess.run(
-        ["git", "cat-file", "--batch-check=%(objectsize)"],
-        input=payload, capture_output=True, text=True,
-    )
+    # 先按 NUL 分隔读取索引路径，再按对象 ID 查询大小；路径可含中文或换行。
+    index = subprocess.run(
+        ["git", "ls-files", "--stage", "-z"], capture_output=True, check=True
+    ).stdout
+    objects = {}
+    for entry in index.split(b"\0"):
+        if not entry:
+            continue
+        metadata, path = entry.split(b"\t", 1)
+        _, oid, stage = metadata.split()
+        if stage == b"0":
+            objects[os.fsdecode(path)] = oid
+    indexed_paths = [path for path in paths if path in objects]
+    lines = []
+    if indexed_paths:
+        payload = b"\n".join(objects[path] for path in indexed_paths) + b"\n"
+        proc = subprocess.run(
+            ["git", "cat-file", "--batch-check=%(objectsize)"],
+            input=payload, capture_output=True, check=True,
+        )
+        lines = proc.stdout.splitlines()
+    if len(lines) != len(indexed_paths):
+        raise RuntimeError("无法取得暂存区文件的大小")
     result: dict[str, int] = {}
-    lines = proc.stdout.splitlines()
-    for path, line in zip(paths, lines):
+    for path, line in zip(indexed_paths, lines):
         try:
             result[path] = int(line.strip())
-        except ValueError:
-            # 未入索引（新文件未 add 等）时退回读磁盘
-            try:
-                result[path] = Path(path).stat().st_size
-            except OSError:
-                result[path] = 0
-    # 行数对不上时（有文件取不到），剩下的逐个兜底
-    for path in paths[len(lines):]:
+        except ValueError as exc:
+            raise RuntimeError(f"无法取得暂存区文件的大小: {path}") from exc
+    # 未入索引（新文件未 add 等）时退回读磁盘。
+    for path in paths:
+        if path in result:
+            continue
         try:
             result[path] = Path(path).stat().st_size
         except OSError:

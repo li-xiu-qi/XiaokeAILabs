@@ -26,11 +26,16 @@ import os
 import platform
 import shutil
 import time
+import uuid
 import warnings
 from pathlib import Path
 
 warnings.filterwarnings("ignore")
 import numpy as np
+if __package__:
+    from .paired_texts import load_aligned_texts
+else:
+    from paired_texts import load_aligned_texts
 
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
@@ -145,7 +150,8 @@ class MilvusAdapter:
 
     def __init__(self, dim, ns="idxbench", with_text=False):
         self.dim = dim
-        self.ns = ns
+        self.ns = f"{ns}_{uuid.uuid4().hex}"
+        self._owned = False
         self.with_text = with_text
 
     def _coll(self, spec):
@@ -153,13 +159,12 @@ class MilvusAdapter:
 
     def setup(self, spec):
         from pymilvus import MilvusClient, CollectionSchema, FieldSchema, DataType
+        self._owned = False
         self.spec = spec
         self.coll = self._coll(spec)
         self.c = MilvusClient(uri=MILVUS_URI)
         if self.c.has_collection(self.coll):
-            self.c.drop_collection(self.coll)
-        while self.c.has_collection(self.coll):
-            time.sleep(0.2)
+            raise FileExistsError(f"collection already exists: {self.coll}")
         # 走 schema 路径：MilvusClient 的快捷建表会默认挂 AUTOINDEX，
         # 之后再 create_index 会撞 "at most one distinct index is allowed per field"
         schema_fields = [
@@ -171,6 +176,7 @@ class MilvusAdapter:
             schema_fields.append(FieldSchema(name="text", dtype=DataType.VARCHAR, max_length=2048))
         schema = CollectionSchema(fields=schema_fields)
         self.c.create_collection(collection_name=self.coll, schema=schema)
+        self._owned = True
         self.cid = self.c.describe_collection(self.coll).get("collection_id")
 
     def write(self, vecs, texts=None):
@@ -247,7 +253,7 @@ class MilvusAdapter:
 
     def teardown(self):
         try:
-            if self.c.has_collection(self.coll):
+            if self._owned and self.c.has_collection(self.coll):
                 self.c.drop_collection(self.coll)
         except Exception:
             pass
@@ -276,7 +282,8 @@ class QdrantAdapter:
 
     def __init__(self, dim, ns="idxbench", with_text=False):
         self.dim = dim
-        self.ns = ns
+        self.ns = f"{ns}_{uuid.uuid4().hex}"
+        self._owned = False
         self.with_text = with_text
 
     def setup(self, spec):
@@ -286,12 +293,13 @@ class QdrantAdapter:
                                           ScalarType, ProductQuantization,
                                           ProductQuantizationConfig, BinaryQuantization,
                                           BinaryQuantizationConfig, CompressionRatio)
+        self._owned = False
         self.spec = spec
         self.coll = "%s_%s" % (self.ns, spec.lower())
         sp = self.SPECS[spec]
         self.c = QdrantClient(url=QDRANT_URI, timeout=120)
         if self.c.collection_exists(self.coll):
-            self.c.delete_collection(self.coll)
+            raise FileExistsError(f"collection already exists: {self.coll}")
         vp = VectorParams(size=self.dim, distance=Distance.EUCLID,
                           hnsw_config=HnswConfigDiff(**sp["hnsw"]))
         kw = dict(collection_name=self.coll, vectors_config=vp)
@@ -305,7 +313,9 @@ class QdrantAdapter:
         elif q == "binary":
             kw["quantization_config"] = BinaryQuantization(binary=BinaryQuantizationConfig(
                 always_ram=True))
-        self.c.create_collection(**kw)
+        if not self.c.create_collection(**kw):
+            raise RuntimeError(f"collection creation was not confirmed: {self.coll}")
+        self._owned = True
 
     def write(self, vecs, texts=None):
         from qdrant_client.models import PointStruct
@@ -347,6 +357,8 @@ class QdrantAdapter:
         """delete_collection 的空间释放是异步的，不等就进下一轮会让下一轮的
         empty_bytes 带上上一轮残留（实测残留可达数百 MB）。"""
         try:
+            if not self._owned:
+                return
             if self.c.collection_exists(self.coll):
                 self.c.delete_collection(self.coll)
             d = QDRANT_DATA / self.coll
@@ -371,7 +383,7 @@ class SurrealAdapter:
 
     def __init__(self, dim, ns="idxbench", with_text=False):
         self.dim = dim
-        self.ns = ns
+        self.ns = f"{ns}_{uuid.uuid4().hex}"
         self.with_text = with_text
 
     # 端口按 spec 顺序分配，保证两种规格不撞端口
@@ -381,7 +393,7 @@ class SurrealAdapter:
         """起一个专属 SurrealDB 进程。rocksdb 路径是启动参数决定的，
         连接时改不了；同实例 drop table 也不回收空间，所以每轮必须独立实例。"""
         import subprocess
-        import socket
+        import psutil
         from surrealdb import Surreal
         self.spec = spec
         if not SurrealAdapter._PORT_SEQ:
@@ -390,21 +402,26 @@ class SurrealAdapter:
         SurrealAdapter._PORT_SEQ.append(self.port + len(self.SPECS))
         self.uri = "ws://127.0.0.1:%d/rpc" % self.port
         self.dbpath = SURREAL_DATA / ("%s_%s" % (self.ns, spec.lower()))
-        if self.dbpath.exists():
-            shutil.rmtree(self.dbpath, ignore_errors=True)
-        self.dbpath.mkdir(parents=True, exist_ok=True)
+        self.dbpath.mkdir(parents=True, exist_ok=False)
         self.proc = subprocess.Popen(
             [str(SURREAL_BIN), "start", "--user", "root", "--pass", "root",
              "--bind", "127.0.0.1:%d" % self.port,
              "rocksdb:%s" % self.dbpath],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        # 等端口起来
+        # 仅连接本次启动进程拥有的监听端口，避免误连已有服务。
         for _ in range(100):
+            if self.proc.poll() is not None:
+                raise RuntimeError("SurrealDB process exited before listening")
             try:
-                with socket.create_connection(("127.0.0.1", self.port), timeout=0.5):
-                    break
-            except OSError:
-                time.sleep(0.2)
+                connections = psutil.Process(self.proc.pid).net_connections(kind="inet")
+            except (psutil.Error, OSError) as e:
+                raise RuntimeError("cannot verify SurrealDB listener ownership") from e
+            if any(c.status == psutil.CONN_LISTEN and c.laddr.port == self.port
+                   for c in connections):
+                break
+            time.sleep(0.2)
+        else:
+            raise TimeoutError("SurrealDB process did not open its expected listener")
         self.db = Surreal(self.uri)
         self.db.signin({"username": "root", "password": "root"})
         self.db.use(self.ns, "main")
@@ -491,17 +508,20 @@ class LanceAdapter:
 
     def __init__(self, dim, ns="idxbench", with_text=False):
         self.dim = dim
-        self.ns = ns
+        self.ns = f"{ns}_{uuid.uuid4().hex}"
         self.with_text = with_text
+        self._owned = False
 
     def setup(self, spec):
         import lancedb
+        self._owned = False
         self.spec = spec
         self.uri = str(LANCE_DATA / ("%s_%s" % (self.ns, spec.lower())))
+        Path(self.uri).mkdir(parents=True, exist_ok=False)
         self.db = lancedb.connect(self.uri)
         self.tbl_name = "vec"
         if self.tbl_name in self.db.table_names():
-            self.db.drop_table(self.tbl_name)
+            raise FileExistsError(f"table already exists: {self.tbl_name}")
 
     def write(self, vecs, texts=None):
         import pandas as pd
@@ -512,6 +532,7 @@ class LanceAdapter:
         else:
             data = [{"pk": int(i), "vector": vecs[i].tolist()} for i in range(len(vecs))]
         self.tbl = self.db.create_table(self.tbl_name, data=data)
+        self._owned = True
         return time.perf_counter() - t0
 
     def build_index(self):
@@ -536,7 +557,7 @@ class LanceAdapter:
 
     def teardown(self):
         try:
-            if self.tbl_name in self.db.table_names():
+            if self._owned and self.tbl_name in self.db.table_names():
                 self.db.drop_table(self.tbl_name)
         except Exception:
             pass
@@ -554,15 +575,20 @@ class SqliteVecAdapter:
 
     def __init__(self, dim, ns="idxbench", with_text=False):
         self.dim = dim
-        self.ns = ns
+        self.ns = f"{ns}_{uuid.uuid4().hex}"
         self.with_text = with_text
-        self.path = SQLITE_DATA / ("sqlite_vec_%s.db" % ns)
+        self.path = SQLITE_DATA / ("sqlite_vec_%s.db" % self.ns)
+        self._owned = False
 
     def setup(self, spec):
         import sqlite3
         import sqlite_vec
+        self._owned = False
         self.spec = spec
-        Path(self.path).unlink(missing_ok=True)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        with self.path.open("xb"):
+            pass
+        self._owned = True
         self.conn = sqlite3.connect(self.path)
         self.conn.enable_load_extension(True)
         sqlite_vec.load(self.conn)
@@ -606,8 +632,10 @@ class SqliteVecAdapter:
 
     def teardown(self):
         try:
-            self.conn.close()
-            Path(self.path).unlink(missing_ok=True)
+            if hasattr(self, "conn"):
+                self.conn.close()
+            if self._owned:
+                Path(self.path).unlink(missing_ok=True)
         except Exception:
             pass
 
@@ -622,14 +650,17 @@ class ChromaAdapter:
 
     def __init__(self, dim, ns="idxbench", with_text=False):
         self.dim = dim
-        self.ns = ns
+        self.ns = f"{ns}_{uuid.uuid4().hex}"
         self.with_text = with_text
-        self.path = CHROMA_DATA / ("chroma_%s" % ns)
+        self.path = CHROMA_DATA / ("chroma_%s" % self.ns)
+        self._owned = False
 
     def setup(self, spec):
         import chromadb
+        self._owned = False
         self.spec = spec
-        shutil.rmtree(self.path, ignore_errors=True)
+        self.path.mkdir(parents=True, exist_ok=False)
+        self._owned = True
         self.client = chromadb.PersistentClient(path=str(self.path))
         self.collection = self.client.create_collection(
             name="vec",
@@ -660,7 +691,8 @@ class ChromaAdapter:
         return dir_bytes(self.path)
 
     def teardown(self):
-        shutil.rmtree(self.path, ignore_errors=True)
+        if self._owned:
+            shutil.rmtree(self.path, ignore_errors=True)
 
 
 REGISTRY = {
@@ -742,7 +774,9 @@ def run_one(cls, spec, vecs, queries, gt, dim, efs, rounds):
 
         res = {
             "db": a.name,
-            "version": a.version,
+            # Adapter labels are historical constants, not detected service versions.
+            "version": None,
+            "adapter_version_hint": a.version,
             "index": spec,
             "n": len(vecs),
             "dim": dim,
@@ -761,7 +795,7 @@ def run_one(cls, spec, vecs, queries, gt, dim, efs, rounds):
                 # 落盘 / 原始向量 的比值，>1 说明索引膨胀，<1 说明有压缩。
                 # 注意 Qdrant 的空 collection 就预分配了 HNSW 图结构（实测 11293 条
                 # 384 维时 empty=352MB），total_net 会把预分配算进去而失真，
-                # 跨库对比应以 index_net 为准。
+                # index_net 也受预分配、异步落盘和统计路径影响，不宜直接跨库比较。
                 "amplification": (after_index - base) / max(1, len(vecs) * dim * 4),
             },
         }
@@ -813,6 +847,14 @@ def main():
     ap.add_argument("--text-storage", action="store_true",
                     help="测文本存储成本：每库跑 向量+pk 与 向量+pk+文本 的 A/B，只报存储")
     args = ap.parse_args()
+    if args.rounds < 2:
+        ap.error("--rounds must be >= 2: the first round is warmup")
+    if not args.efs or any(ef <= 0 for ef in args.efs):
+        ap.error("--efs requires one or more positive values")
+    if args.only is not None and not args.only:
+        ap.error("--only requires at least one database")
+    if args.index is not None and not args.index:
+        ap.error("--index requires at least one index")
 
     keys = args.only or list(REGISTRY.keys())
     for k in keys:
@@ -823,9 +865,11 @@ def main():
         vecs, queries, dim = load_real()
         tp = ROOT / "data" / "20news_texts.npz"
         if not tp.exists():
-            raise SystemExit("缺 data/20news_texts.npz，先从 20news-bydate 提取正文后保存")
-        zt = np.load(tp, allow_pickle=True)
-        texts = zt["train_texts"]
+            raise SystemExit("缺 data/20news_texts.npz，请按 README 同时生成文本和向量")
+        try:
+            texts, _ = load_aligned_texts(ROOT / "data" / "20news_emb.npz", tp)
+        except (ValueError, KeyError) as exc:
+            raise SystemExit(f"文本与向量未通过一致性检查：{exc}") from exc
         print("text-storage A/B: %d docs, text raw %.1f MB"
               % (len(texts), sum(len(t.encode()) for t in texts) / 1e6), flush=True)
         tresults = []
@@ -836,8 +880,9 @@ def main():
                                "os": platform.platform()}
         RESULTS.mkdir(exist_ok=True)
         stamp = time.strftime("%Y%m%d-%H%M%S")
-        out = RESULTS / ("textbench-%s-%s.json" % ("real-20news", stamp))
-        out.write_text(json.dumps(tresults, indent=2, ensure_ascii=False), encoding="utf-8")
+        out = RESULTS / ("textbench-%s-%s-%s.json" % ("real-20news", stamp, uuid.uuid4().hex))
+        with out.open("x", encoding="utf-8") as f:
+            json.dump(tresults, f, indent=2, ensure_ascii=False)
         print("\nsaved: %s" % out)
         return
 
@@ -850,6 +895,7 @@ def main():
         vecs, queries, dim = load_real()
         tag = "real-20news"
     gt = ground_truth(vecs, queries, 10)
+    print("NOTE: adapter version labels are not detected versions; record actual client/server versions separately.")
     print("dataset: %d x %d, queries: %d, k=10, mode=%s"
           % (len(vecs), dim, len(queries), tag), flush=True)
     print("raw vector bytes: %.1f MB" % (len(vecs) * dim * 4 / 1e6), flush=True)
@@ -881,7 +927,8 @@ def main():
     RESULTS.mkdir(exist_ok=True)
     stamp = time.strftime("%Y%m%d-%H%M%S")
     out = RESULTS / ("indexbench-%s-%s.json" % (tag, stamp))
-    out.write_text(json.dumps(results, indent=2, ensure_ascii=False), encoding="utf-8")
+    with out.open("x", encoding="utf-8") as f:
+        json.dump(results, f, indent=2, ensure_ascii=False)
     print("\nsaved: %s" % out)
 
 

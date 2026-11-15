@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-13",
+  "experiment": "SLANet+ fixed-revision model snapshot download",
+  "stage": "model snapshot preparation",
+  "revision": "e44d12b3fe695792170dd46623075f63d8544461",
+  "result": "failed before inference",
+  "observed_errors": [
+    "Read timeouts while retrieving snapshot files.",
+    "HTTP 503 Service Unavailable from the configured model mirror."
+  ],
+  "snapshot_complete": false,
+  "inference_started": false,
+  "recovery": {
+    "date": "2026-11-13",
+    "result": "separate CUDA smoke succeeded using an already available snapshot",
+    "model_file_sha256": "4455fa2a535b80738e0e0af2ca899f719efb8d6e1c7e7209cc5126f81607bf06"
+  },
+  "interpretation": "The failed download attempt and later cached-model inference are separate runs. The inference result does not prove that a clean model download succeeds."
+}

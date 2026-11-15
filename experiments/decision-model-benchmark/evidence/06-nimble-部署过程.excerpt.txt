@@ -1,0 +1,35 @@
+原始运行输出摘录，行号对应原始日志；仅列测量条件、结果及相关范围。
+
+4: [17:09:24] torch 2.14.0+cu130  transformers 5.16.1  peft 0.20.0
+5: [17:09:24] 下载适配器仓库 bespokelabs/Bespoke-Nimble-9B ...
+7: Fetching 17 files:   0%|          | 0/17 [00:00<?, ?it/s]
+8: Fetching 17 files:  47%|████▋     | 8/17 [00:01<00:02,  4.20it/s]
+9: Fetching 17 files:  94%|█████████▍| 16/17 [00:04<00:00,  3.36it/s]
+10: Fetching 17 files: 100%|██████████| 17/17 [00:09<00:00,  1.72it/s]
+11: [17:09:35] 适配器就绪 10.8 s -> ~/.cache/huggingface/hub/models--bespokelabs--Bespoke-Nimble-9B/snapshots/594dfdcfb6f94e3d0c0db7535180d3c71689169a
+12: [17:09:35] 契约 task='schema_candidate_classification_v1'  prompt_code_sha256=a0a0f94d0f65e972bc20d088678ad3d595ff1c42b9c0d78f96034526303f63fc
+13: [17:09:35] prompt 契约校验通过
+14: [17:09:35] pinned 基座: Qwen/Qwen3.5-9B  revision=c202236235762e1c871ad0ccb60c8ee5ba337b9a
+15: [17:09:35] 下载基座权重（约 18 GB，走 hf-mirror）...
+17: Fetching 16 files:   0%|          | 0/16 [00:00<?, ?it/s]
+18: Fetching 16 files:  50%|█████     | 8/16 [00:03<00:03,  2.27it/s]
+19: Fetching 16 files:  69%|██████▉   | 11/16 [00:19<00:08,  1.78s/it]
+20: Fetching 16 files:  75%|███████▌  | 12/16 [01:13<00:24,  6.15s/it]
+21: Fetching 16 files:  81%|████████▏ | 13/16 [04:59<01:09, 23.04s/it]
+22: Fetching 16 files:  88%|████████▊ | 14/16 [05:13<00:44, 22.40s/it]
+23: Fetching 16 files:  94%|█████████▍| 15/16 [06:45<00:27, 27.05s/it]
+24: Fetching 16 files: 100%|██████████| 16/16 [08:08<00:00, 30.51s/it]
+25: Fetching 16 files: 100%|██████████| 16/16 [08:08<00:00, 30.51s/it]
+26: [17:17:44] 基座下载完成 488.7 s
+27: [17:17:44] 加载基座到 CPU（bf16）...
+29: Fetching 4 files:   0%|          | 0/4 [00:00<?, ?it/s]
+30: Fetching 4 files: 100%|██████████| 4/4 [00:00<00:00, 1155.46it/s]
+34: [17:17:46] 基座加载 1.8 s
+35: [17:17:46] 挂适配器并 merge ...
+38: [17:17:51] merge 完成 5.2 s
+39: [17:17:51] 保存合并后权重到 ~/.cache/models/nimble-9b-594dfdcfb6f94e3d0c0db7535180d3c71689169a ...
+41: Writing model shards:   0%|          | 0/1 [00:00<?, ?it/s]
+42: Writing model shards: 100%|██████████| 1/1 [00:03<00:00,  3.33s/it]
+43: Writing model shards: 100%|██████████| 1/1 [00:03<00:00,  3.33s/it]
+44: [17:17:55] 保存完成
+45: [17:17:55] 全部完成。model_path=~/.cache/models/nimble-9b-594dfdcfb6f94e3d0c0db7535180d3c71689169a

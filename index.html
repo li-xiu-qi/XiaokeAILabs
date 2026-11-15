@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>筱可 AI 工程实验仓库 · XiaokeAILabs</title>
+<link rel="icon" type="image/svg+xml" href="assets/lab-mark.svg">
+<meta name="description" content="AI 工程开放实验：模型训练与微调、推理部署与性能、检索重排序、文档解析与多模态。">
+<style>
+  :root{
+    --bg:#f7f8fa; --surface:#ffffff; --ink:#1a1f2b; --muted:#5b6472;
+    --line:#e6e9ef; --accent:#356552; --accent-2:#4f8069; --chip:#eaf2ed;
+    --shadow:0 1px 3px rgba(20,30,60,.06),0 8px 24px rgba(20,30,60,.06);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    line-height:1.65;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px}
+
+  header{position:sticky;top:0;z-index:10;background:rgba(247,248,250,.85);
+    backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{font-weight:700;letter-spacing:.2px;display:flex;align-items:center;gap:10px}
+  .logo{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:grid;place-items:center;color:#fff;font-weight:800;font-size:14px}
+  .nav-links{display:flex;gap:20px;font-size:14px;color:var(--muted)}
+  .nav-links a{color:var(--muted)}
+  .nav-links a:hover{color:var(--accent)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;
+    font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+  .btn:hover{text-decoration:none;border-color:var(--accent-2)}
+  .btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-2);border-color:var(--accent-2)}
+
+  .hero{padding:72px 0 48px;text-align:center}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:600;color:var(--accent);
+    background:var(--chip);padding:6px 12px;border-radius:999px;margin-bottom:20px}
+  .hero h1{font-size:40px;line-height:1.15;margin:0 0 16px;letter-spacing:-.5px}
+  .hero p{max-width:640px;margin:0 auto 28px;color:var(--muted);font-size:17px}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:8px 0 64px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center;box-shadow:var(--shadow)}
+  .stat b{display:block;font-size:24px;color:var(--accent)}
+  .stat span{font-size:13px;color:var(--muted)}
+
+  section{margin:0 0 56px}
+  h2{font-size:22px;margin:0 0 6px;letter-spacing:-.2px}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 20px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 6px;font-size:16px}
+
+  .group{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:8px 20px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .group > h3{padding:14px 0 6px;margin:0;font-size:16px;border-bottom:1px solid var(--line)}
+  .exp{padding:11px 0;border-bottom:1px dashed var(--line)}
+  .exp:last-child{border-bottom:none}
+  .exp .name{font-weight:600}
+  .exp .desc{color:var(--muted);font-size:13.5px}
+  .exp a.name:hover{color:var(--accent)}
+
+  footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--muted);font-size:13.5px}
+  footer .cols{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
+
+  @media (max-width:680px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .cards{grid-template-columns:1fr}
+    .hero h1{font-size:30px}
+    .nav-links{display:none}
+  }
+/* Editorial landing page: a clear entry into the experiments, with a diagram rather than decorative metrics. */
+:root{--bg:#fbfaf8;--surface:#fff;--ink:#171718;--muted:#666967;--line:#e6e5e1;--accent:#356552;--accent-2:#264c3d;--chip:#eaf2ed;--shadow:0 5px 24px rgba(23,23,24,.04)}
+.wrap{max-width:1320px;padding:0 32px}
+header{background:rgba(251,250,248,.94)}
+.nav{height:76px}.brand{font-size:19px;letter-spacing:-.5px}.logo{display:block;width:34px;height:34px;background:none;border-radius:0}
+.nav-links{gap:30px}.btn{border-radius:8px;padding:12px 19px}.btn-primary{background:#171718;border-color:#171718}.btn-primary:hover{background:#294638;border-color:#294638}
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:8%;align-items:center;min-height:650px;text-align:left;padding:88px 0 100px}
+.hero h1{font-size:clamp(46px,5.5vw,78px);line-height:1.12;letter-spacing:-.055em;max-width:650px;margin-bottom:26px}
+.hero p{margin:0 0 30px;font-size:18px;line-height:1.8;max-width:540px}.eyebrow{padding:0;background:none;letter-spacing:.12em;font-size:12px;margin-bottom:22px}.cta{justify-content:flex-start}
+.hero-art{width:100%;max-width:580px;justify-self:end;margin:0;min-width:0}.hero-art svg{display:block;width:100%;height:auto}.hero-art figcaption{color:var(--muted);font-size:12px;margin-top:12px;letter-spacing:.04em}
+section{padding-top:40px;margin-bottom:80px;border-top:1px solid var(--line)}
+h2{font-size:clamp(28px,3vw,40px);letter-spacing:-.04em}.sub{font-size:16px;margin:8px 0 30px}.cards{gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.card{box-shadow:none;border:0;border-radius:0;padding:28px;min-height:156px}.card h3{font-size:18px;margin-bottom:10px}.card p{color:var(--muted)}
+.group{box-shadow:none;border-radius:10px;padding:10px 24px}.group>h3{padding:18px 0 12px}.exp{padding:16px 0;display:grid;grid-template-columns:1fr 2fr;gap:20px}.exp .desc{font-size:14px}.exp .name:after{content:' ↗';font-weight:400}
+a:focus-visible{outline:3px solid #4f8069;outline-offset:4px}
+@media(max-width:760px){.wrap{padding:0 22px}.nav{height:66px}.hero{grid-template-columns:1fr;gap:28px;min-height:0;padding:66px 0}.hero h1{font-size:clamp(40px,10vw,60px)}.hero p{font-size:16px}.hero-art{justify-self:stretch}.exp{grid-template-columns:1fr;gap:3px}.cards{grid-template-columns:1fr}section{margin-bottom:56px}.nav-links{display:none}}
+.group{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:0;background:transparent;border:0;overflow:visible;margin-bottom:34px}
+.group>h3{grid-column:1/-1;border:0;font-size:14px;letter-spacing:.08em;color:var(--muted);padding:10px 0}
+.exp{display:flex;flex-direction:column;gap:0;padding:0;border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.exp:last-child{border-bottom:1px solid var(--line)}.exp:hover,.exp:focus-within{transform:translateY(-4px);border-color:#bccfc2;box-shadow:0 14px 34px rgba(25,44,35,.09)}
+.exp img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;background:#edf3ef;border-bottom:1px solid var(--line)}
+.exp .name{display:block;color:var(--ink);font-size:17px;padding:21px 22px 0}.exp .desc{padding:10px 22px 24px;font-size:14px;line-height:1.7;color:#62635f}
+.exp .name:after{float:right;color:#688073}.exp .name:hover{text-decoration:none}
+.eyebrow{color:#356552}.nav-links a,.sub,.hero p{color:#5b5e5c}
+section{scroll-margin-top:90px}.js-motion .reveal{opacity:0;transform:translateY(18px)}.js-motion .reveal.visible{opacity:1;transform:none;transition:opacity .55s ease,transform .55s ease}
+@media(max-width:900px){.group{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.group{grid-template-columns:1fr}.exp .name{font-size:17px}.exp .desc{font-size:15px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.exp,.js-motion .reveal,.js-motion .reveal.visible{transition:none;transform:none;opacity:1}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav"><div class="brand"><img class="logo" src="assets/lab-mark.svg" alt="" width="34" height="34"> XiaokeAILabs</div><nav class="nav-links" aria-label="主导航"><a href="#about">研究方向</a><a href="#results">实验结果</a><a href="#index">实验索引</a></nav><a class="btn btn-primary" href="https://github.com/li-xiu-qi/XiaokeAILabs">GitHub 仓库</a></div></header>
+<main class="wrap">
+<div class="hero"><div><span class="eyebrow">OPEN EXPERIMENTS · 持续更新</span><h1>用实验理解<br>AI 工程的取舍。</h1><p>从模型训练、检索到推理部署，我们用代码和测量回答实际问题：哪些方法有效，效果在什么条件下成立，又如何在自己的数据和设备上验证？</p><div class="cta"><a class="btn btn-primary" href="#index">探索实验 ↓</a><a class="btn" href="https://github.com/li-xiu-qi/XiaokeAILabs">查看 GitHub ↗</a></div></div><figure class="hero-art"><svg viewBox="0 0 600 460" role="img" aria-labelledby="art-title art-desc" xmlns="http://www.w3.org/2000/svg"><title id="art-title">从问题到可复核结果</title><desc id="art-desc">实验过程示意：提出问题、设计对照、运行测试、理解结果。</desc><rect x="1" y="1" width="598" height="458" rx="14" fill="#fff" stroke="#e5e3df"/><path d="M1 48H599" stroke="#e5e3df"/><circle cx="24" cy="24" r="4" fill="#d6d2cc"/><circle cx="39" cy="24" r="4" fill="#d6d2cc"/><circle cx="54" cy="24" r="4" fill="#d6d2cc"/><text x="88" y="29" font-family="sans-serif" font-size="12" fill="#777">XIAOKE AI LABS / EXPERIMENT NOTES</text><text x="38" y="98" font-family="sans-serif" font-size="13" fill="#356552">FROM QUESTION TO EVIDENCE</text><text x="38" y="137" font-family="sans-serif" font-size="28" font-weight="700" fill="#202024">让每个结论都有来处</text><path d="M68 196H533 M68 272H533 M68 348H533" stroke="#ece9e5"/><circle cx="68" cy="196" r="17" fill="#e3efe7"/><circle cx="68" cy="272" r="17" fill="#e3efe7"/><circle cx="68" cy="348" r="17" fill="#e3efe7"/><text x="63" y="201" font-family="sans-serif" font-size="12" fill="#2f5e4a">1</text><text x="63" y="277" font-family="sans-serif" font-size="12" fill="#2f5e4a">2</text><text x="63" y="353" font-family="sans-serif" font-size="12" fill="#2f5e4a">3</text><text x="105" y="191" font-family="sans-serif" font-size="16" font-weight="700" fill="#202024">提出问题</text><text x="105" y="213" font-family="sans-serif" font-size="12" fill="#777">明确目标与适用场景</text><text x="105" y="267" font-family="sans-serif" font-size="16" font-weight="700" fill="#202024">设计并运行对照</text><text x="105" y="289" font-family="sans-serif" font-size="12" fill="#777">记录数据、配置与测量方式</text><text x="105" y="343" font-family="sans-serif" font-size="16" font-weight="700" fill="#202024">理解结果与边界</text><text x="105" y="365" font-family="sans-serif" font-size="12" fill="#777">开放代码，保留证据</text><path d="M470 171v26h10v-26zm15-17v43h10v-43zm15 11v32h10v-32zm15-31v63h10v-63z" fill="#81a996"/></svg><figcaption>从问题出发，让方法、数据和结论可以被检查。</figcaption></figure></div>
+<section id="about"><h2>从问题出发</h2><p class="sub">找到适合的问题和方法，再查看具体数据、配置与结果。</p><div class="cards"><div class="card"><h3>训练与微调</h3>了解如何准备数据、调整嵌入与重排序模型，并用检索指标判断是否有帮助。</div><div class="card"><h3>推理与性能</h3>比较量化、部署引擎、并发和端侧 NPU，估算内存和带宽，为单机部署提供参考。</div><div class="card"><h3>检索与存储</h3>探索多阶段检索，比较向量数据库的召回、延迟与存储成本。</div><div class="card"><h3>文档与多模态</h3>从 OCR 到图像模型微调，看识别和生成在具体设备上的效果。</div></div></section>
+<section id="results"><h2>实测能告诉我们什么</h2><p class="sub">从具体数据出发，找到有效的方法，也看清结论的边界。</p><div class="cards"><div class="card"><h3>微调需要经过检验</h3><p>在 SciFact 的 300 条留出查询上，BM25 原排序的 nDCG@10 为 0.6617，微调重排模型为 0.6375。两者差异的置信区间跨过零，这次结果不足以支持用它替换 BM25。</p><a href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/reranker-finetuning">查看重排序微调 →</a></div><div class="card"><h3>加速也要检查输出</h3><p>GB10 上四个 OCR 样本的模型生成总耗时加速 2.36 倍，贪婪输出一致。计时不含图像读取和预处理，结果不能代表所有文档。</p><a href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/minicpm-ocr">查看 OCR 加速 →</a></div></div></section>
+<section id="index"><h2>实验索引</h2><p class="sub">选择感兴趣的方向，进入仓库查看方法、代码、结果与适用边界。<a href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/docs/zh/README.md">查看工程原理与系列指南 →</a></p>
+<div class="group"><h3>训练、微调与检索</h3>
+<div class="exp"><img src="assets/experiment-covers/embedding-research.svg" alt="SciFact 300 条查询的 nDCG@10：BM25 为 0.6617，微调重排为 0.6375" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/reranker-finetuning">重排序微调</a><div class="desc">SciFact 上 390 条查询训练、300 条留出评测。这次 nDCG 差异的置信区间跨过零。</div></div>
+<div class="exp"><img src="experiments/colbert-finetuning/assets/maxsim.svg" alt="ColBERT 查询与文档 token 的最大相似度匹配" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/colbert-finetuning">ColBERT 微调</a><div class="desc">理解逐 token 匹配，并对照微调前后的文献候选排序。</div></div>
+<div class="exp"><img src="experiments/embedding-distillation/assets/distillation-flow.svg" alt="向量教师将候选分数分布传给小型嵌入学生" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/embedding-distillation">Embedding 蒸馏</a><div class="desc">固定候选上的提升未达到预设目标；查询抽样区间跨零。</div></div>
+<div class="exp"><img src="experiments/reranker-distillation/assets/distillation.svg" alt="教师分数指导小型重排序模型" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/reranker-distillation">重排序蒸馏</a><div class="desc">相对监督训练的优势尚不确定；测试使用固定候选集。</div></div>
+<div class="exp"><img src="experiments/colbert-distillation/assets/distillation-flow.svg" alt="单向量教师指导 ColBERT 词元级排序" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/colbert-distillation">ColBERT 蒸馏</a><div class="desc">未达到预设目标；公开教师打分脚本的真实模型路径尚未重跑验证。</div></div>
+<div class="exp"><img src="experiments/multimodal-embedding-distillation/assets/distillation.svg" alt="图文教师与学生学习配对排序分布" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/multimodal-embedding-distillation">图文 Embedding 蒸馏</a><div class="desc">100 条测试查询未优于监督组，公开脚本尚未从头重跑。</div></div>
+<div class="exp"><img src="experiments/gui-grounding-finetuning/figures/gui-grounding.svg" alt="从界面截图与指令预测目标坐标" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/gui-grounding-finetuning">GUI 定位微调</a><div class="desc">30 条非随机样本只验证流程，不能证明泛化提升。</div></div>
+<div class="exp"><img src="assets/experiment-covers/vector-db-benchmark.svg" alt="向量检索方案比较：建立索引、近邻搜索、比较速度与召回" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/vector-db-benchmark">六种向量检索方案：索引、召回与存储对比</a><div class="desc">了解六种向量检索方案的测试方法；历史记录缺少原始结果，不用于产品排名。</div></div>
+<div class="exp"><img src="experiments/vector-index-costs/assets/search-paths.svg" alt="向量检索的四种路径" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/vector-index-costs">Faiss 向量索引对比：Flat、IVF、HNSW 与量化</a><div class="desc">理解索引原理，在合成向量和文本向量上比较召回与查询耗时。</div></div>
+<div class="exp"><img src="assets/experiment-covers/data-structure-costs.svg" alt="索引流程：组织数据、缩小搜索范围、核对结果" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/data-structure-costs">数据结构成本</a><div class="desc">使用成本模型与验证脚本分析索引和数据格式的取舍。</div></div>
+<div class="exp"><img src="assets/experiment-covers/image-finetune.svg" alt="图像微调流程：底模对照、训练适配器、比较生成图片" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/image-finetune">图像模型 LoRA 微调</a><div class="desc">查看单一人脸身份的小样本训练与对照。</div></div>
+</div>
+<div class="group"><h3>推理、部署与成本</h3>
+<div class="exp"><img src="assets/experiment-covers/gb10-inference.svg" alt="DGX Spark 处理 8 个短请求的单槽与多槽吞吐对照" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/engine-slot-concurrency">引擎与槽位</a><div class="desc">同一台 DGX Spark 上比较两套 35B 引擎，以及 1 槽和 8 槽。三提示词的投机矩阵在 LLM 推理性能。</div></div>
+<div class="exp"><img src="assets/experiment-covers/llm-inference-perf.svg" alt="投机解码流程：提出候选、批量验证、接受或回退" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/llm-inference-perf">LLM 推理性能</a><div class="desc">对照模型、任务和投机解码配置，理解速度变化。</div></div>
+<div class="exp"><img src="assets/experiment-covers/llm-mechanics.svg" alt="文本生成流程：文本分词、预测下个词元、采样并追加" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/llm-mechanics">LLM 机制</a><div class="desc">通过分词、量化、采样与 KV Cache 示例理解推理过程。</div></div>
+<div class="exp"><img src="experiments/tokenizer-mechanics/assets/token-flow.svg" alt="从文本编码到 token ID，再由模型生成并解码" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/tokenizer-mechanics">Tokenizer：从字节到 token</a><div class="desc">动手实现字节级 BPE，对比真实编码器，理解上下文和计费中的 token 数。</div></div>
+<div class="exp"><img src="experiments/llm-mechanics/kv_cache/figures/kv-cache-flow.svg" alt="预填充缓存与增量解码示意" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/llm-mechanics/kv_cache">KV Cache：理解增量解码</a><div class="desc">跟踪输入与缓存，比较重算和复用缓存的输出，理解内存成本。</div></div>
+<div class="exp"><img src="assets/experiment-covers/inference-cost-models.svg" alt="推理开销由模型权重、KV 缓存和带宽共同影响" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/inference-cost-models">推理成本模型</a><div class="desc">通过内存算例和理论模型理解成本；性能估算尚未经独立验证。</div></div>
+<div class="exp"><img src="assets/experiment-covers/jina-clip-openvino.svg" alt="跨设备部署流程：导出模型、运行 CPU 和 NPU、校验输出" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/jina-clip-openvino">Jina CLIP OpenVINO</a><div class="desc">比较 Intel CPU 与 NPU 的正确性、驱动和特定负载性能。</div></div>
+<div class="exp"><img src="assets/experiment-covers/jev-open-source.svg" alt="决策模型流程：输入任务、判别模型输出概率与决策" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/decision-model-benchmark">判别式决策评测</a><div class="desc">比较社区方案的本地部署与小样本决策表现，了解延迟和准确率的边界。</div></div>
+</div>
+<div class="group"><h3>文档解析与多模态</h3>
+<div class="exp"><img src="assets/experiment-covers/document-ocr.svg" alt="文档解析示意：页面布局分析后处理文字、表格与公式" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/docs/zh/document-understanding/document-ocr">文档 OCR 与解析</a><div class="desc">理解文字检测、表格结构与结果检查；现有实验尚未组成端到端管线。</div></div>
+<div class="exp"><img src="assets/experiment-covers/minicpm-ocr.svg" alt="四个 OCR 样本中，普通生成总耗时是投机生成的 2.36 倍，不含预处理" loading="lazy"><a class="name" href="https://github.com/li-xiu-qi/XiaokeAILabs/tree/main/experiments/minicpm-ocr">MiniCPM-OCR</a><div class="desc">了解文档识别在 GB10 上的部署、质量评估与生成加速。</div></div>
+</div>
+</section></main><footer><div class="wrap cols"><div><b style="color:var(--ink)">筱可 AI（XiaokeAILabs）</b><br>公众号「筱可AI」 · lixiuqixiaoke@qq.com</div><div><a href="https://github.com/li-xiu-qi/XiaokeAILabs">GitHub</a> · Apache 2.0</div></div></footer><script>
+if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const items = document.querySelectorAll('section, .exp');
+  const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+  }), { threshold: 0.06 });
+  document.documentElement.classList.add('js-motion');
+  items.forEach(item => { item.classList.add('reveal'); observer.observe(item); });
+}
+</script></body></html>

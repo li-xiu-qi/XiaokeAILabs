@@ -7,6 +7,13 @@ SurrealDB 是独立进程，无法用 psutil 测 Python 子进程。
 用法:
   ./.venv/Scripts/python.exe scripts/memory_surreal.py --sizes 50000 100000
 """
+
+if __package__:
+    from .legacy_safety import require_isolated_instance
+else:
+    from legacy_safety import require_isolated_instance
+
+require_isolated_instance()
 import argparse
 import ctypes
 import json

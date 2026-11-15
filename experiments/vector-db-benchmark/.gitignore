@@ -1,9 +1,5 @@
-# 本实验的输入数据与全局 *.npz 规则冲突：20news_emb.npz 是实验输入，
-# 不是构建生成的中间产物，重新生成要跑 7 分钟 embedding，值得入库。
-!data/20news_emb.npz
-# 20news_texts.npz 同理：20news 正文（与 train_emb 逐条对齐），文本存储 A/B 的输入。
-# 源是 data/20news.pkl.gz（误命名的 20news-bydate tar.gz），可从它重新提取。
-!data/20news_texts.npz
+# 语料、生成的向量和数据库运行文件均不入库；获取与重建方式见 README。
+data/
 
 # 本实验的运行产物（不入库）
 .venv/

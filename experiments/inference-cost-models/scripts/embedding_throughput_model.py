@@ -1,29 +1,6 @@
+"""UNVALIDATED historical fit. Results and bottleneck attribution cannot be verified.
+No throughput prediction is available until raw data and hold-out tests exist.
 """
-embedding_throughput_model.py
-
-Embedding 模型的批处理吞吐理论外推模型（第三种形态）。
-
-与向量索引和 LLM 推理都不同构：
-- 向量索引：无神经网络，纯数据检索
-- LLM 推理：自递归，有 KV Cache，有 prefill/decode 两阶段
-- Embedding：encoder-only，无 KV Cache，无自回归，单次前向传播
-
-核心观察（从实测数据）：
-1. 小模型（22-28M）：峰值吞吐都卡在 ~3000 sent/s，与参数量无关
-   → 受限于 Python 层开销（sentence-transformers 的 encode/tokenization/pooling）
-2. 大模型（108M-558M）：吞吐与参数量成幂律关系
-   → 受限于 GPU 计算能力（考虑 Flash Attention 优化和 kernel 效率）
-
-两阶段模型：
-- 小模型：throughput = python_limit（常数，约 3000 sent/s）
-- 大模型：throughput = a / n_params^b（幂律拟合）
-
-实测标定的常数（Spark GB10, BF16）：
-- peak_FLOPS = 89.3 TFLOPS（实测）
-- python_limit ≈ 3000 sent/s（从小模型数据拟合）
-- 幂律参数：a ≈ 1912, b ≈ 0.241（从大模型数据拟合）
-"""
-
 import json
 import glob
 import math
@@ -48,10 +25,7 @@ def predict_throughput(n_params_m, batch_size=128, seq_len=128):
     注意：这个模型假设 batch_size 和 seq_len 固定为 128。
     对于其他 batch_size 和 seq_len，需要额外的修正（见文档）。
     """
-    if n_params_m < 100:
-        return PYTHON_LIMIT
-    else:
-        return POWER_LAW_A / (n_params_m ** POWER_LAW_B)
+    raise NotImplementedError("unverified fit; batch and sequence effects are not modeled")
 
 def fit_power_law(model_data):
     """
@@ -188,4 +162,4 @@ def main():
                 print(f"  {k}: {br[k]['throughput_sps']:.0f} sent/s")
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit("UNVALIDATED: original benchmark data missing; prediction disabled")

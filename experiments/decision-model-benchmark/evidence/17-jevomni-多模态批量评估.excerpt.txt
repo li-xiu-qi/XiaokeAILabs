@@ -1,0 +1,19 @@
+原始运行输出摘录，行号对应原始日志；仅列测量条件、结果及相关范围。
+
+1: # 17 Jev-Omni 多模态批量评估
+2: # 环境：dgx-spark / GB10 统一内存 / CUDA / Python 3.12 / PyTorch 2.14 / transformers 5.17.0
+3: # 内容：10 类图像分类 + 3 类音频分类 + 1 个视频动作理解
+4: # 结果：图像 9/10（car.jpg 主体实为人，金标设置问题）、音频 2/3（环境声误判为音乐）、视频正确
+5: # 说明：进度条已过滤。结果 JSON 见 jevomni/results/multimodal_eval.json。
+7: 加载模型...
+9: 加载完成，用时 448 秒
+11: 图像分类 10 张
+12: {"n": 10, "correct": 9, "accuracy": "9/10", "confidence_mean": 0.9896, "confidence_min": 0.9335, "confidence_max": 0.9993}
+13:   错误： {"file": "car.jpg", "gold": "汽车", "prediction": "人物", "correct": false, "confidence": 0.999}
+15: 音频分类 3 段
+16: {"n": 3, "correct": 2, "accuracy": "2/3", "confidence_mean": 0.6456, "confidence_min": 0.4641, "confidence_max": 0.9869}
+17:    {"file": "speech.mp3", "gold": "人声对话", "prediction": "人声对话", "correct": true, "confidence": 0.9869}
+18:    {"file": "music.mp3", "gold": "音乐", "prediction": "音乐", "correct": true, "confidence": 0.4641}
+19:    {"file": "ambient.mp3", "gold": "环境声", "prediction": "音乐", "correct": false, "confidence": 0.4857}
+21: 视频动作理解 1 个
+22: {"gold": "按太阳穴表现疲惫", "prediction": "按太阳穴表现疲惫", "correct": true, "confidence": 0.9984}

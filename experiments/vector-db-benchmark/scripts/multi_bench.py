@@ -11,6 +11,13 @@ Qdrant / LanceDB / sqlite-vec。
   ./.venv/Scripts/python.exe scripts/multi_bench.py --n 30000 --dim 768
   ./.venv/Scripts/python.exe scripts/multi_bench.py --only qdrant lancedb
 """
+
+if __package__:
+    from .legacy_safety import require_isolated_instance
+else:
+    from legacy_safety import require_isolated_instance
+
+require_isolated_instance()
 import argparse
 import importlib
 import json

@@ -1,0 +1,47 @@
+{
+  "description": "Exploratory controlled comparison using the same pre-scored candidate pairs as the previous run; test set previously inspected and is not a fresh blind test.",
+  "groups": [
+    "human",
+    "teacher_hard",
+    "teacher_soft",
+    "human_hard",
+    "human_soft"
+  ],
+  "seeds": [
+    20261107,
+    20261108,
+    20261109
+  ],
+  "fixed_sampling_seed": 20261107,
+  "steps": 180,
+  "batch_queries": 8,
+  "temperature": 2.0,
+  "mix_weight": 0.5,
+  "student_max_length": 192,
+  "teacher_max_length": 512,
+  "teacher": "Qwen3-Reranker-8B",
+  "student": "ms-marco-TinyBERT-L2-v2",
+  "teacher_score": "Qwen yes-minus-no raw logits",
+  "data_sha256": "e7cac48e7083bdd948e2773136c1df9672b4ca8f787ee5b774697b32d689c5f8",
+  "training_candidate_definition": "one labelled relevant plus one unjudged candidate; unjudged is not guaranteed irrelevant",
+  "training_label_teacher_conflict": {
+    "sampled_pairs": 1434,
+    "teacher_prefers_labelled": 1402,
+    "teacher_prefers_unjudged": 29,
+    "ties": 3,
+    "margin_quantiles": [
+      -3.5625,
+      3.0,
+      5.6875,
+      8.1875,
+      10.375,
+      12.336718750000001,
+      19.3515625
+    ],
+    "unique_pairs": 1189,
+    "unique_teacher_prefers_labelled": 1164,
+    "unique_teacher_prefers_unjudged": 23,
+    "unique_ties": 2
+  },
+  "notes": "Frozen previous teacher checkpoint scores and candidate schedule; three seeds change training randomness but not pair sampling. Soft objective scale differs from hard loss; mixing does not establish equal gradient magnitudes. Query bootstrap excludes variability across trained seeds. No teacher-generated queries."
+}

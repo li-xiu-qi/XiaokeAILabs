@@ -1,0 +1,27 @@
+{
+  "date": "2026-11-15",
+  "purpose": "clean isolated environment install and import check; no data/model download or training",
+  "platform": "Linux aarch64",
+  "hardware": "NVIDIA GB10",
+  "python": "3.12.3",
+  "pytorch": {
+    "version": "2.15.0+cu132",
+    "cuda_runtime": "13.2",
+    "cuda_available": true,
+    "bf16_supported": true
+  },
+  "direct_dependencies": {
+    "transformers": "5.16.1",
+    "datasets": "5.2.0",
+    "numpy": "2.5.4"
+  },
+  "checks": {
+    "pip_check": "passed",
+    "imports": "passed"
+  },
+  "limitations": [
+    "Transitive dependencies were not exported as a complete lockfile.",
+    "No model or dataset was downloaded and no training or evaluation was run in this environment.",
+    "The separately recorded real-data smoke used an isolated environment copied and adjusted from an existing environment."
+  ]
+}

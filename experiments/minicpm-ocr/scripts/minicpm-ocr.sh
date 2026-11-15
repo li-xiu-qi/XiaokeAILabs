@@ -11,7 +11,7 @@ ACTION="${1:-status}"
 case "$ACTION" in
   start)
     if curl -fsS -m 5 "http://127.0.0.1:$PORT/health" >/dev/null 2>&1; then
-        echo "already running on $PORT"; exit 0
+        echo "Port $PORT responds, but service ownership cannot be verified; inspect it before starting." >&2; exit 1
     fi
     mkdir -p "$BASE/logs"
     cd "$BASE"
@@ -24,10 +24,9 @@ case "$ACTION" in
     echo "launched pid $!, log: $BASE/logs/serve.log"
     ;;
   stop)
-    for pid in $(pgrep -f 'transformers serve' || true); do
-        [ "$pid" = "$$" ] && continue
-        kill "$pid" 2>/dev/null && echo "killed $pid"
-    done
+    echo "Automatic stop is unavailable: this script cannot verify service ownership." >&2
+    echo "Inspect the service process and stop the intended process manually." >&2
+    exit 1
     ;;
   status)
     curl -fsS -m 5 "http://127.0.0.1:$PORT/health" && echo || echo "not running"

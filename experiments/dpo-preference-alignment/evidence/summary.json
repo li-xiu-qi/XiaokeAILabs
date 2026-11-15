@@ -1,0 +1,75 @@
+{
+  "model": "Qwen/Qwen3-0.6B",
+  "model_revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+  "dataset": "HuggingFaceH4/ultrafeedback_binarized",
+  "dataset_revision": "3949bf5f8c17c394422ccfab0c31ea9c20bdeb85",
+  "download_source": "https://hf-mirror.com",
+  "verified_sha256": {
+    "model.safetensors": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b",
+    "train_prefs-00000-of-00001.parquet": "0f951ca4502001d31f3e4c70716ae51d20e4ce4f847d12b6a6695a40d4d353a8",
+    "test_prefs-00000-of-00001.parquet": "e9dab2789f419d4204d73ec2c860af6d88d466b906e0109e69b96075467eb389"
+  },
+  "train_split": "train_prefs",
+  "test_split": "test_prefs",
+  "train_size": 256,
+  "test_size": 128,
+  "truncation": {
+    "train": {
+      "sampled": 256,
+      "prompt_truncated": 69,
+      "chosen_truncated": 128,
+      "rejected_truncated": 116,
+      "identical_after_truncation": 0,
+      "valid_after_truncation": 256
+    },
+    "test": {
+      "sampled": 128,
+      "prompt_truncated": 21,
+      "chosen_truncated": 69,
+      "rejected_truncated": 66,
+      "identical_after_truncation": 0,
+      "valid_after_truncation": 128
+    }
+  },
+  "exact_prompt_overlap": 0,
+  "parameters": {
+    "train_size": 256,
+    "test_size": 128,
+    "steps": 64,
+    "seed": 42,
+    "beta": 0.1,
+    "learning_rate": 5e-06,
+    "accumulation": 4,
+    "max_prompt": 192,
+    "max_completion": 192
+  },
+  "train_loss_first": 0.6931471824645996,
+  "train_loss_last": 0.6743887066841125,
+  "base_pair_accuracy": 0.5546875,
+  "trained_pair_accuracy": 0.5546875,
+  "pair_accuracy_change_bootstrap_95pct": [
+    0.0,
+    0.0
+  ],
+  "mean_change_in_reference_relative_margin": 0.13607823848724365,
+  "peak_cuda_allocated_bytes": 3865204736,
+  "torch_version": "2.15.0+cu132",
+  "environment_setup": {
+    "platform": "Linux aarch64",
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "transformers": "5.16.1",
+    "datasets": "5.2.0",
+    "peft": "0.21.3",
+    "accelerate": "1.15.0",
+    "clean_install": "passed; no model or dataset download",
+    "pip_check": "passed",
+    "imports": "passed",
+    "cuda_available": true,
+    "bf16_supported": true
+  },
+  "torch_cuda": "13.2",
+  "gpu": "NVIDIA GB10",
+  "prediction_flips": 0,
+  "initial_adapter_reference_check": "A separate follow-up initialized a new adapter with the same model and LoRA configuration; enabled versus disabled logits had maximum absolute difference 0.0 across all 256 responses from 128 test pairs. This was not recorded during the original training initialization."
+}

@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-15",
+  "experiment": "pointwise-bge clean-environment GPU training",
+  "status": "completed",
+  "platform": "Linux-6.17.0-1032-nvidia-aarch64-with-glibc2.39",
+  "architecture": "aarch64",
+  "python": "3.12.3",
+  "gpu": "NVIDIA GB10",
+  "cuda_build": "13.2",
+  "bf16_supported": true,
+  "packages": {
+    "torch": "2.15.0+cu132",
+    "transformers": "5.23.0",
+    "accelerate": "1.15.0",
+    "numpy": "2.5.4",
+    "tqdm": "4.70.1",
+    "matplotlib": "3.11.2"
+  },
+  "model": {
+    "id": "cross-encoder/ms-marco-TinyBERT-L2-v2",
+    "revision": "81d1926f67cb8eee2c2be17ca9f793c7c3bd20cc"
+  },
+  "data": {
+    "path": "default_train_data.jsonl",
+    "examples": 198,
+    "sha256": "3c670690002ec2f05d3b730fdcbb3ecda43aff851358373a2398e7d0a0687baf",
+    "labels": "repository example data; not a held-out evaluation set"
+  },
+  "training": {
+    "epochs": 1,
+    "batch_size": 4,
+    "gradient_accumulation_steps": 2,
+    "optimizer_updates": 25,
+    "max_length": 128,
+    "precision": "bf16",
+    "learning_rate": 1e-05,
+    "seed": 42,
+    "wall_seconds": 4
+  },
+  "artifacts": {
+    "model_saved": true,
+    "loss_curve_saved": true
+  },
+  "pip_check": "passed",
+  "limitations": [
+    "Training flow check only; no held-out reranking quality evaluation.",
+    "Repository example data and one epoch do not reproduce the historical default BGE run."
+  ]
+}

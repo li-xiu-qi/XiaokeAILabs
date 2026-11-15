@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 380" role="img" aria-labelledby="title desc">
+<title id="title">MiniCPM-OCR 识别与 Jev 一致性判别流水线</title>
+<desc id="desc">原图经 1.0 识别输出文本，文本再经渲染器生成渲染图；Jev 判别器结合原图、文本与渲染图综合输出 0 到 1 一致性置信度。</desc>
+<defs>
+  <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+    <path d="M0 1L8 5L0 9Z" fill="#5c7a74"/>
+  </marker>
+</defs>
+<rect width="920" height="380" rx="20" fill="#f6f9f8" stroke="#e0e8e5"/>
+
+<g font-family="Microsoft YaHei, PingFang SC, Noto Sans CJK SC, sans-serif">
+  <!-- Title -->
+  <text x="40" y="48" font-size="22" font-weight="700" fill="#1b3a34">MiniCPM-OCR 与 Jev 一致性质检闭环</text>
+  <text x="40" y="76" font-size="14" fill="#607b75">生成式解析与判别式评分分工协作，无需参考答案即可进行无监督质量筛查</text>
+
+  <!-- Connectors -->
+  <g fill="none" stroke="#7e9c96" stroke-width="2.5" marker-end="url(#arrow)">
+    <!-- 原图 -> 1.0 -->
+    <path d="M190 145 H 250"/>
+    <!-- 1.0 -> 文本 -->
+    <path d="M410 145 H 460"/>
+    <!-- 文本 -> 渲染器 -->
+    <path d="M600 145 H 650"/>
+    <!-- 渲染器 -> 渲染图 -->
+    <path d="M790 145 H 830 V 215"/>
+    <!-- 原图 -> 下方 Jev 汇总 -->
+    <path d="M120 185 V 275 H 280"/>
+    <!-- 文本 -> 下方 Jev 汇总 -->
+    <path d="M530 185 V 250 H 380 V 275"/>
+    <!-- 渲染图 -> 下方 Jev 汇总 -->
+    <path d="M830 305 H 680"/>
+    <!-- Jev -> 输出结果 -->
+    <path d="M480 305 H 520"/>
+  </g>
+
+  <!-- Node: 原图 -->
+  <rect x="50" y="105" width="140" height="80" rx="12" fill="#fff" stroke="#c8d9d4" stroke-width="1.5"/>
+  <text x="120" y="142" font-size="16" font-weight="700" fill="#1c3d36" text-anchor="middle">文档原图</text>
+  <text x="120" y="165" font-size="12" fill="#758f89" text-anchor="middle">图片或扫描件</text>
+
+  <!-- Node: 1.0 识别模型 -->
+  <rect x="250" y="105" width="160" height="80" rx="12" fill="#e2efe9" stroke="#b4cfc6" stroke-width="1.5"/>
+  <text x="330" y="140" font-size="15" font-weight="700" fill="#16433a" text-anchor="middle">MiniCPM-OCR-1.0</text>
+  <text x="330" y="163" font-size="12" fill="#4d6f67" text-anchor="middle">1.3B 生成式解析</text>
+
+  <!-- Node: 识别文本 -->
+  <rect x="460" y="105" width="140" height="80" rx="12" fill="#fff" stroke="#c8d9d4" stroke-width="1.5"/>
+  <text x="530" y="142" font-size="16" font-weight="700" fill="#1c3d36" text-anchor="middle">Markdown 文本</text>
+  <text x="530" y="165" font-size="12" fill="#758f89" text-anchor="middle">正文/表格/公式</text>
+
+  <!-- Node: 文本渲染器 -->
+  <rect x="650" y="105" width="140" height="80" rx="12" fill="#edf3f1" stroke="#cbd9d5" stroke-width="1.5"/>
+  <text x="720" y="142" font-size="15" font-weight="700" fill="#2d4f48" text-anchor="middle">文本渲染器</text>
+  <text x="720" y="165" font-size="12" fill="#758f89" text-anchor="middle">字体与排版重绘</text>
+
+  <!-- Node: 渲染图 -->
+  <rect x="760" y="225" width="130" height="80" rx="12" fill="#fff" stroke="#c8d9d4" stroke-width="1.5"/>
+  <text x="825" y="262" font-size="15" font-weight="700" fill="#1c3d36" text-anchor="middle">文本渲染图</text>
+  <text x="825" y="285" font-size="12" fill="#758f89" text-anchor="middle">合成对比图块</text>
+
+  <!-- Node: Jev 判别器 -->
+  <rect x="280" y="265" width="200" height="80" rx="12" fill="#1b4d44" stroke="#163f37"/>
+  <text x="380" y="302" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">Jev 一致性判别器</text>
+  <text x="380" y="325" font-size="12" fill="#c3ded8" text-anchor="middle">2B 判别头 [原图+文本+渲染图]</text>
+
+  <!-- Node: 输出评分 -->
+  <rect x="520" y="265" width="160" height="80" rx="12" fill="#dfeee8" stroke="#a9cac1" stroke-width="1.5"/>
+  <text x="600" y="302" font-size="15" font-weight="700" fill="#16433a" text-anchor="middle">一致性置信分</text>
+  <text x="600" y="325" font-size="13" font-weight="700" fill="#0d6152" text-anchor="middle">0.0 ~ 1.0 质检打分</text>
+</g>
+</svg>

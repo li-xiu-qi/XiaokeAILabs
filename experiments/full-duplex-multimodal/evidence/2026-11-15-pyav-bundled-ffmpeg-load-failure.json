@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-15",
+  "experiment": "Empty-venv realtime dependency validation with automatic PyAV FFmpeg library discovery",
+  "device": "NVIDIA GB10",
+  "platform": {
+    "system": "Linux",
+    "architecture": "aarch64",
+    "python": "3.12.3"
+  },
+  "environment": {
+    "type": "new empty virtual environment",
+    "package_cache": "Existing device package cache was used; this was not a cold-cache download.",
+    "torch": "2.11.0+cu130",
+    "torchaudio": "2.11.0+cu130",
+    "torchcodec": "0.15.0",
+    "av": "16.0.1",
+    "requirements": "requirements-realtime.txt"
+  },
+  "result": {
+    "package_install": "passed",
+    "pip_check": "passed: No broken requirements found.",
+    "imports_before_failure": "av 16.0.1, torch 2.11.0+cu130 and torchaudio 2.11.0+cu130 imported successfully; torchcodec was the first import failure",
+    "pyav_ffmpeg_library_discovery": "passed; the validation script exposed the FFmpeg libraries bundled with the PyAV wheel to TorchCodec",
+    "torchcodec_import": "failed",
+    "failure": "TorchCodec still could not load an FFmpeg backend from that library directory; its backend attempts reported missing FFmpeg 4/5-era libavutil shared-library ABIs (libavutil.so.56).",
+    "cuda_check": "not reached",
+    "audio_decode_check": "not reached",
+    "model_inference": "not run"
+  },
+  "interpretation": "Installing the Python packages into an empty environment, passing pip check, and exposing PyAV's bundled FFmpeg libraries are still not sufficient for TorchCodec to load a backend. The empty-venv validation remains incomplete at the import stage; earlier GPU streaming evidence used separately prepared environments and is unaffected."
+}
