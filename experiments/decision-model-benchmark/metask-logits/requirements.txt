@@ -1,5 +1,4 @@
-# PyTorch is installed separately by metask-install.sh for the selected platform.
-# The remaining direct dependencies retain the installer's historical constraints.
-transformers>=4.53
-accelerate
-huggingface_hub
+# PyTorch is installed separately for the target CUDA platform.
+transformers==5.22.2
+accelerate==1.15.0
+huggingface_hub==1.33.0

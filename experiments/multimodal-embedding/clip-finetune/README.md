@@ -111,6 +111,18 @@ python finetune_clip_with_freeze.py
 
 历史数据 revision 与依赖版本未固定，且尚未验证完整数据训练，不能保证复现历史效果。小规模评估时若候选数少于 K，Recall@K 使用全部现有候选，这种指标不应与完整候选集直接比较。
 
+如需在 Linux aarch64 NVIDIA GPU 上重建上方干净环境烟雾检查，可从本目录执行以下命令。它会新建独立 venv 和外部数据/输出目录；PyTorch 与 torchvision 固定为已验证的 CUDA 13.2 配对版本，其余依赖按 `requirements.txt` 安装。每次运行使用新的 `XL_RUN_ID`：
+
+```bash
+export XL_RUN_ID="clip-clean-smoke-$(date +%Y%m%d-%H%M%S)"
+export XL_DATA_DIR=/path/to/external/clip-data
+export XL_OUT_DIR=/path/to/external/clip-output
+export XL_REQUIRE_EXTERNAL_ENV=1
+bash scripts/clean_env_cuda_smoke.sh
+```
+
+此入口只验证环境和合成数据训练链路，不下载预训练权重或 Flickr30k；它不替代真实数据小样本运行。
+
 安装 PyTorch、Transformers、Datasets 和 Matplotlib 后，可在本目录执行下列 CPU 检查。测试用合成字段及随机初始化的小模型，覆盖划分、跨集合 ID 冲突、批次内不重复和一次前向反向；它不下载 Flickr30k，也不评价检索效果。
 
 ```bash
@@ -128,5 +140,7 @@ python tests/smoke_cuda_train.py
 ```
 
 输出在 `$XL_OUT_DIR/synthetic-clip-training/`，包括训练配置、检查点、曲线和最终模型；模拟处理器只写入占位文件，最终模型目录不是可直接用于实际推理的完整模型包。2026-11-13 在 Linux ARM64、NVIDIA GB10 上完成上述两步 CUDA 检查及 10 项 CPU 测试；使用 Python 3.12.3、PyTorch 2.15.0+cu132、Transformers 5.22.2、Datasets 5.2.0、Matplotlib 3.11.2、Pillow 13.0.0 和 torchvision 0.29.1+cu130，依赖来自已有环境及额外依赖目录，不代表全新环境安装已验证。该检查替换了数据加载、处理器和模型加载，使用随机模型、合成数据及 FP32，不能证明真实数据处理、预训练权重加载、BF16 或历史效果可复现；输出指标也没有模型效果意义。
+
+2026-11-15 在 Linux aarch64、NVIDIA GB10 上，使用 [全新环境 CUDA 检查脚本](scripts/clean_env_cuda_smoke.sh)从空虚拟环境安装并通过 `pip check`。环境为 Python 3.12.3、PyTorch 2.15.0+cu132、torchvision 0.29.1+cu132、Transformers 5.23.0、Datasets 5.2.0、Matplotlib 3.11.2 和 Pillow 13.0.0；CUDA 13.2 可用并支持 BF16。两步 CUDA 训练、验证、测试和保存均通过，且模型投影权重发生变化。测试替换了处理器、模型加载和数据准备，只用随机初始化模型、合成数据及 FP32；它验证干净环境中的训练代码链路，不验证 Flickr30k、预训练权重、BF16 或检索效果。摘要见 [干净环境 CUDA 检查记录](evidence/clean-env-smoke-2026-11-15.json)。
 
 脚本会将微调模型和原模型放在同一测试候选集上，分别计算双向 Recall。该指标受候选集合、划分和标注覆盖影响；只有实际执行并保存配置、结果与逐项证据，才能判断微调是否改变检索效果。本次小样本记录保留了运行配置和汇总日志，未保存逐查询证据。

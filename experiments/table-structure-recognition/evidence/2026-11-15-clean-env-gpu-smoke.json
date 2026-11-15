@@ -1,0 +1,35 @@
+{
+  "date": "2026-11-15",
+  "result": "passed",
+  "environment": {
+    "platform": "Linux",
+    "architecture": "aarch64",
+    "python": "3.12.3",
+    "gpu": "NVIDIA GB10",
+    "torch": "2.15.0+cu132",
+    "torchvision": "0.29.1+cu132",
+    "transformers": "5.22.2",
+    "pillow": "12.0.0",
+    "pip_check": "passed"
+  },
+  "model": {
+    "repository": "PaddlePaddle/SLANet_plus_safetensors",
+    "revision": "e44d12b3fe695792170dd46623075f63d8544461",
+    "model_safetensors_sha256": "4455fa2a535b80738e0e0af2ca899f719efb8d6e1c7e7209cc5126f81607bf06"
+  },
+  "input": {
+    "description": "Self-generated English table, 4 rows x 3 columns, no merged cells",
+    "sha256": "e41b53bf9d170a9071f1e02933a24a2ab7448c3e5e05a8ca28bae44d7988559f"
+  },
+  "inference": {
+    "device": "cuda",
+    "first_forward_seconds": 0.42967719299485907,
+    "structure_score": 0.9999627470970154,
+    "rows": 4,
+    "cells": 12
+  },
+  "limitations": [
+    "One synthetic table only; no real-table accuracy measurement or full evaluation.",
+    "This checks table structure prediction only, not OCR recognition or text-to-structure assembly."
+  ]
+}

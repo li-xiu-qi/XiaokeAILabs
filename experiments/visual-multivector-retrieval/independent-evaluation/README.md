@@ -26,7 +26,7 @@ python independent-evaluation/recompute.py
 
 脚本检查 192 条排名及汇总指标，输出两组相对变化；它不能重新验证模型打分或图片标签。
 
-## 准备独立复测
+## 环境准备与独立复测
 
 原始旧数据、旧图片和训练后 adapter 均未随仓库分发，**仅凭本仓库不能复现本次模型推理**。需要原始 `synthetic/records.json` 与其同级子目录中的旧图片，以及与原实验对应的三份 adapter 和底模：初始 ColSmol adapter、监督训练后的 adapter、监督加蒸馏后的 adapter。初始模型和底模的来源、固定 revision 与历史软件版本见[主实验环境准备](../README.md#环境准备)；另外两份必须来自原运行的保存产物。主实验的蒸馏训练入口目前直接停止，无法用当前代码重新生成缺失的蒸馏 adapter。新生成的训练产物不应冒充原模型。
 

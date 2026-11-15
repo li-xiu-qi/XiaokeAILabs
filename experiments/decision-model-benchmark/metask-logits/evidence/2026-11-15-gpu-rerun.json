@@ -1,0 +1,69 @@
+{
+  "experiment": "metask-logits",
+  "run_date": "2026-11-15",
+  "status": "completed",
+  "environment": {
+    "hardware": "NVIDIA GB10",
+    "architecture": "Linux aarch64",
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "transformers": "5.22.2",
+    "accelerate": "1.15.0",
+    "huggingface_hub": "1.33.0",
+    "fresh_virtual_environment": true
+  },
+  "model": {
+    "repo_id": "wayfind/metask-jev-4b-policy-mix",
+    "revision": "ea20fe85b28733b1522721dec119bec50947a869",
+    "base_model": "Qwen3.5-4B"
+  },
+  "setup_checks": {
+    "cuda_device": "NVIDIA GB10",
+    "cuda_available": true,
+    "qwen3_5_model_class_imported": true,
+    "a_to_z_single_token_contract": true,
+    "self_test_prediction": true,
+    "self_test_probabilities": {
+      "true": 0.957,
+      "false": 0.043
+    },
+    "pip_check_note": "pip reported only the NVIDIA cuSPARSELt 0.8.1 manylinux2014_sbsa wheel tag as unsupported on aarch64; the library loaded and CUDA initialized successfully"
+  },
+  "measurements": {
+    "model_load_seconds": 56.19,
+    "english_four_choice_repeated": {
+      "n": 120,
+      "median_ms": 98.2,
+      "p90_ms": 99.33,
+      "p99_ms": 100.19
+    },
+    "english_four_choice_uncalibrated_t1": {
+      "n": 40,
+      "median_ms": 98.69
+    },
+    "parallel_classification": {
+      "english": {
+        "n": 20,
+        "correct": 19,
+        "accuracy": 0.95,
+        "median_latency_ms": 98.9
+      },
+      "chinese": {
+        "n": 20,
+        "correct": 20,
+        "accuracy": 1.0,
+        "median_latency_ms": 97.7
+      }
+    },
+    "cuda_memory_allocated_gb": 8.55,
+    "cuda_memory_peak_gb": 8.65,
+    "host_available_memory_gb_before_load": 117.4,
+    "host_available_memory_gb_after_test": 107.3
+  },
+  "limitations": [
+    "Only 20 fixed classification examples per language; accuracy is not a generalization estimate.",
+    "causal_conv1d and flash-linear-attention were absent, so Transformers used slower reference PyTorch implementations.",
+    "The temperature section compares confidence and entropy for four examples; upstream ECE was not recomputed.",
+    "Minimum host memory requirement was not measured."
+  ]
+}

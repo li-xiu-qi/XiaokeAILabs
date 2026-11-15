@@ -6,9 +6,11 @@ This directory contains experiment code, configuration, and result evidence. See
 
 [scripts](scripts/) · [config](config/) · [figures](figures/) · [Environment setup](环境搭建.md)
 
-## Rerun the experiment from one configuration
+## Environment setup and reproduction from one configuration
 
 The example below uses Windows, PowerShell, and sqlite-vec to avoid starting every service at once. Run commands from this experiment directory. You can also begin with the [synthetic-data installation check](环境搭建.md#1-安装与冒烟检查).
+
+The directory's `requirements.txt` aggregates dependencies for the Python database adapters; it does not mean that every database service and client has been verified together in one environment. Install selectively for the adapter you plan to use, following the steps below. Docker services, the SurrealDB executable, and historical probes have additional setup requirements; see the [environment setup guide](环境搭建.md).
 
 On 2026-11-14, a new isolated Linux ARM64 environment with Python 3.12.3, NumPy 2.5.2, sqlite-vec 0.1.9, and SQLite 3.45.1 passed `pip check`. The commands below completed a sqlite-vec benchmark on 30,000 synthetic 768-dimensional vectors and 50 queries, and its result JSON contained no configuration errors. This CPU synthetic check does not reproduce the real corpus or other databases; the original corpus download timed out during this attempt.
 

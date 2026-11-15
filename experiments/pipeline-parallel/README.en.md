@@ -29,7 +29,7 @@ Passing the communication test proves only that the tensor transfer is correct; 
 
 The model prototypes load the full model on each device before trimming layers. They therefore do not show that a model too large for one device can run. A single comparison with a small model does not establish compatibility with all models.
 
-## Run the communication test
+## Environment setup and communication tests
 
 First run the CPU/Gloo communication check that has passed. The two devices must be able to connect to each other and have PyTorch with Gloo support and NumPy installed. The launcher uses Bash. Windows users can run it in a Linux environment. Model tests additionally require a usable GPU and local model files on each device.
 

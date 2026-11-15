@@ -6,9 +6,11 @@
 
 [scripts](scripts/) · [config](config/) · [figures](figures/) · [环境搭建](环境搭建.md)
 
-## 自己重跑：从一组配置开始
+## 环境准备与复现：从一组配置开始
 
 下面以 Windows、PowerShell 和 sqlite-vec 为例，避免一次启动所有服务。命令从本实验目录运行；也可以先用[合成数据做安装检查](环境搭建.md#1-安装与冒烟检查)。
+
+本目录的 `requirements.txt` 汇总了各 Python 数据库适配器的依赖，并不代表所有数据库服务和客户端已在同一环境中验证兼容。建议按目标适配器和下方步骤选择性安装；Docker 服务、SurrealDB 可执行文件及历史探针各有额外准备要求，详见[环境搭建说明](环境搭建.md)。
 
 2026-11-14 在 Linux ARM64、Python 3.12.3 的新隔离环境中安装 NumPy 2.5.2 和 sqlite-vec 0.1.9，SQLite 版本为 3.45.1，`pip check` 通过。下列命令对 30,000 条 768 维合成向量及 50 条查询完成 sqlite-vec 基准，结果 JSON 的配置项没有 `error`。这是 CPU 合成数据检查，不代表真实语料或其他数据库已复现；本次原始语料下载地址连接超时。
 

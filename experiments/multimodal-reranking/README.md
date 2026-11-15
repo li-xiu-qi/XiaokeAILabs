@@ -6,7 +6,7 @@
 
 [scripts](scripts/) · [evidence](evidence/) · [figures](figures/)
 
-## 复算与复现
+## 环境准备与复现
 
 无需图片即可复算公开汇总：
 

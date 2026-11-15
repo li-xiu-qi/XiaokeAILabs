@@ -16,7 +16,7 @@ On the same DGX Spark (GB10, unified memory), this experiment compares two ways 
 
 | Item | Configuration |
 |---|---|
-| Strata source | PR #3622, `gb10-022` branch of `ferstar/Strata` |
+| Strata source | [Niko1221/Strata PR #3622](https://github.com/Niko1221/Strata/pull/3622), fetched from the pinned `refs/pull/3622/head` reference |
 | Pinned commit | `d891f006aaec64024513a1e55856afd992baaa94` |
 | Model | `ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF`, IQ3_S (83.62 GB, two GGUF shards) |
 | Hardware | DGX Spark, GB10, 20 ARM64 cores, 121 GiB unified memory, sm_121 |
@@ -51,7 +51,7 @@ DGX Spark (GB10, 121 GiB unified memory, 273 GB/s), Strata built from source (aa
 
 - [x] Engine build (2026-10-26): aarch64 + CUDA 13.0 + sm_121, Strata 0.1.47.
 - [x] Model deployment: IQ3_S, 83.62 GB; SHA-256 checks passed.
-- [ ] Semantic correctness: several outputs in the available benchmark record are truncated. The original result for 17×23 has not been found, so the engines cannot be declared to have passed a semantic test.
+- [x] Single-request semantic smoke (2026-11-15): Strata answered `17×23=391` on the GPU. The older benchmark outputs have not been individually rechecked for answer quality.
 - [x] Strata benchmark: generation 20.5–47.3 tok/s, prompt 49.1–166.3 tok/s, MTP acceptance 50–70%.
 - [x] llama.cpp comparison: generation 11.0–16.0 tok/s, prompt 21.3–83.2 tok/s.
 - [ ] Memory safety: an existing record reports a minimum of 61 GiB available and no mem-guard events, but time-series sampling evidence still needs verification.
@@ -60,6 +60,12 @@ DGX Spark (GB10, 121 GiB unified memory, 273 GB/s), Strata built from source (aa
 - [x] Qwen3.6 cross-engine supplementary test (2026-10-26 22:28): llama.cpp + MTP reached 65.5–87.0 tok/s; this configuration differs from Strata's speculative configuration.
 
 Raw data is in [evidence/](evidence/) (per-request JSON with timings and draft statistics; Qwen3.6 results are in `qwen36-results.jsonl` and `llama-qwen36-results.jsonl`).
+
+### GPU semantic smoke on 2026-11-15
+
+Strata 0.1.47 was restarted on DGX Spark (Ubuntu 24.04, CUDA 13.0, NVIDIA driver 580.173.02). `nvidia-smi` recorded GPU utilization changing from 0% before the request to 88% afterward. The model returned `391` and passed the semantic check. This run used `--expert-cache 4096`, removed `--ple-io ram` so the PLE table was read from SSD, and set context 8192, temperature 0 and `max_tokens=128`. Startup logs reported 46.84 GiB of main-model experts loaded and a 10.16 GiB GPU expert cache. GB10 uses unified memory; these figures are not discrete-GPU VRAM requirements.
+
+The request generated 74 tokens. The server reported 60.8 tok/s generation speed, 78.7 tok/s prompt processing speed, and 53 accepted out of 62 draft tokens. This was one short request with a memory-conscious configuration. These values document the smoke run; they are not a benchmark and should not be compared directly with the historical benchmark above. See the reproduction steps and startup configuration below.
 
 ## Key findings
 
@@ -114,6 +120,15 @@ cd "$STRATA_WORK_ROOT/upstream"
 ```bash
 bash scripts/run_benchmark.sh
 ```
+
+To check GPU inference and a basic arithmetic answer without running a benchmark, use this short smoke command. It starts Strata, waits for the API, sends one `17×23` request, saves the response summary and GPU state, then stops the server. NVIDIA's `nvidia-smi` utility is required. The launch configuration uses `--expert-cache 4096` and omits `--ple-io ram`:
+
+```bash
+export STRATA_WORK_ROOT="/path/to/strata-work"
+bash scripts/smoke_gpu.sh
+```
+
+The summary is written to `$XL_OUT_DIR/summary.json` for managed runs or `$STRATA_WORK_ROOT/artifacts/gpu-smoke/summary.json` for local runs.
 
 For the llama.cpp comparison, check out the historical source version and build `llama-server` with CUDA. The following commands follow the [upstream build instructions for the corresponding commit](https://github.com/ggml-org/llama.cpp/blob/ccc3646c63127e32ab8e2773290a1aded6dfb69c/docs/build.md), and pin the source and example options only. The full historical build options were not retained, and these commands have not been rerun:
 

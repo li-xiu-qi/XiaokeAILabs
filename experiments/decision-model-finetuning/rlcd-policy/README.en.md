@@ -30,32 +30,52 @@ RLCD stands for Reinforcement Learning for Calibrated Decisions, the official tr
 | Hardware | NVIDIA DGX Spark (GB10 Grace Blackwell, 121 GB unified memory, aarch64) |
 | OS | Ubuntu 24.04 LTS |
 | Python | 3.12 |
-| torch | 2.14.0+cu130 (aarch64 CUDA 13 wheel) |
-| laya | 0.4.1 (historically recorded; exact commit unverified) |
+| torch | 2.15.0+cu132 (verified in the fresh environment) |
+| datasets / huggingface_hub | 5.2.0 / 1.33.0 |
+| laya | source commit `3a38cbe83f6ef556f3125fb0065fdc5a55d05792`, installed version 0.4.31 |
 
 ## Prepare data and run
 
-Create an isolated Linux Python environment in this directory. First install a CUDA-compatible PyTorch build for the device, then install the data dependencies and upstream Laya source. The pinned commit below is a public source revision that contains `laya.train`; **it has not been confirmed as the revision used in the historical run**. These installation commands have not been verified end to end. Check the imports and training interface before running:
+The following combination was installed in a fresh isolated environment on a DGX Spark (Linux ARM64, Ubuntu 24.04, Python 3.12.3), passed dependency checks, and completed a full GPU A/B run. For other devices, select a PyTorch build compatible with their architecture and CUDA version; do not reuse the GB10 wheel blindly. Laya, the dataset, and the model are pinned to public Hugging Face or source commits:
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-# Choose and install a CUDA-enabled PyTorch build at https://pytorch.org/get-started/locally/
+# Verified on DGX Spark / Linux ARM64; choose a compatible wheel for other devices
+python -m pip install --index-url https://download.pytorch.org/whl/cu132 "torch==2.15.0+cu132"
 python -m pip install -r requirements.txt
-python -c "import torch, datasets; from laya.agent import _fix_tokenizer_config; from laya.train import TrainConfig, finetune; print('torch:', torch.__version__, 'CUDA:', torch.cuda.is_available()); assert torch.cuda.is_available()"
+python -m pip check
+python -c "import torch, datasets, huggingface_hub; from laya.agent import _fix_tokenizer_config; from laya.train import TrainConfig, finetune; print(torch.__version__, torch.cuda.is_available(), torch.cuda.get_device_name(0), datasets.__version__, huggingface_hub.__version__); assert torch.cuda.is_available()"
 ```
 
-Installation requires Git and network access. Confirm that the check reports CUDA as available. `laya` and its transitive dependencies are not fully pinned, and the exact Laya commit used in the historical run has not been verified. If the interface or dependencies are incompatible, investigate before running. After preparing the data, point the script to this environment's interpreter:
+`requirements.txt` pins direct dependencies and the Laya source commit, but does not lock every transitive dependency; indirect versions may change across installation dates. The CUDA wheel, data, and model require network downloads.
 
 ```bash
-python scripts/prepare_data.py --out-dir data
-export PYTHON="$(command -v python)"
+export DATASET_REVISION=cc1a2e795f5160d417d4d7131a71d1ab60ea33ca
+export MODEL_REVISION=85cc74ddae6109077ebe2853a9b3077fb6606a78
+export XL_DATA_DIR="$PWD/data/typed-decisions-$DATASET_REVISION"
+export XL_OUT_DIR="$PWD/runs/rlcd-ab-$DATASET_REVISION"
+export MODEL_DIR="$PWD/models/laya-$MODEL_REVISION"
+mkdir -p models
+test ! -e "$MODEL_DIR"
+MODEL_DIR="$MODEL_DIR" MODEL_REVISION="$MODEL_REVISION" python - <<'PY'
+import os
+from huggingface_hub import snapshot_download
+snapshot_download(
+    "convaiinnovations/laya",
+    revision=os.environ["MODEL_REVISION"],
+    local_dir=os.environ["MODEL_DIR"],
+    allow_patterns=["rl_agent_config.json", "model.safetensors", "tokenizer/*", "encoder/*"],
+)
+PY
+python scripts/prepare_data.py --revision "$DATASET_REVISION" --out-dir "$XL_DATA_DIR"
+export PYTHON="$PWD/.venv/bin/python"
 bash scripts/run_ab_compare.sh
 ```
 
-Neither data downloads nor the default model download pin a revision. Record upstream versions and file hashes before rerunning. The upstream tokenizer fix may change `tokenizer/tokenizer_config.json` in the model directory, which defaults to the shared Hugging Face cache. To protect shared caches, prepare a separate model copy and run `MODEL_DIR=/path/to/model bash scripts/run_ab_compare.sh`, or use `--model-dir` with the training entry directly. The script defaults to `python` in the active environment; set `PYTHON` to select another interpreter. On Linux it checks available memory using `/proc/meminfo`, requiring at least 50 GiB by default; adjust this with `MIN_AVAILABLE_GIB`. This check runs only before startup and does not monitor memory continuously during training. To prevent overwrites, the script exits if `runs/rlcd`, `runs/soft-ce`, or their corresponding logs already exist. The exact upstream revision used by the historical run has not been verified, so this is a reproduction path and does not guarantee identical numbers.
+The model is downloaded into a private directory because the upstream tokenizer fix may change `tokenizer/tokenizer_config.json`. Data and run outputs also use separate directories; set new `XL_DATA_DIR` and `XL_OUT_DIR` values for each run because the script will not overwrite existing arm outputs. Before starting, Linux checks available memory and requires at least 50 GiB by default; adjust with `MIN_AVAILABLE_GIB`. This is a startup gate, not continuous monitoring. The full run took about 26 minutes per arm and about 52 minutes total; actual time depends on the device and system load.
 
-Data preparation ran on Linux aarch64 with Python 3.12 and datasets 5.2.0, producing 1,200 training cases and 400 test cases; this did not verify RLCD training. Data preparation checks for and exclusively creates two JSONL files before downloading; it will not overwrite either target if it already exists. If downloading or conversion is interrupted, outputs may be empty or incomplete. Keep any files you need and prepare data in a new directory. `run_ab_compare.sh` reads `data/typed_decisions_train.jsonl` and `data/typed_decisions_test.jsonl` from this directory. To use another output directory, first verify the data, then place it at those paths in a new experiment working copy.
+Data preparation checks for and exclusively creates both JSONL files; it stops if either target exists. An interrupted download or conversion may leave incomplete files; keep anything you need and retry in a new directory. `run_ab_compare.sh` uses the directories set by `XL_DATA_DIR` and `XL_OUT_DIR`. For this pinned revision, the train and test JSONL SHA-256 values were `6c84f9a369e25a14c5ae47fc567cc86553f56bac128efb48127a94971d77dcc2` and `0c6712fc6657dca6371ab96863b3c8f1306a67631141623ea98d066fabbd58c4`; verify them with `sha256sum` after preparing the data.
 
 ## Files
 
@@ -66,13 +86,28 @@ rlcd-policy/
 │   ├── run_finetune.py        # Single-GPU training entry point (--loss rlcd / soft-ce comparison arms)
 │   └── run_ab_compare.sh      # One-command A/B comparison (runs both arms serially and compares them side by side)
 ├── data/                      # JSONL dataset prepared at runtime
-├── evidence/                  # Three saved experiment records
+├── evidence/                  # Saved run records and clean-environment GPU A/B evidence
 └── runs/                      # Checkpoints and train_report.json generated at runtime
 ```
 
-## Results (seed 0, 2,000 held-out questions)
+## November 15, 2026: full GPU A/B run in a clean environment
 
-The top-1 agreement with the reference label was 0.7510 and 0.7700 for two RLCD runs, and 0.7855 for the single `soft-ce` run. The cases are synthetic, and the labels are soft distributions generated by a teacher model rather than real-world outcomes. ECE and Brier scores are also measured against the reference distributions; they do not establish real-world probability calibration. The current upstream implementation splits training and calibration data after expanding cases into questions, so questions from the same case may appear in both splits. The two RLCD runs record the same configuration and seed, but the cause of their difference has not been identified. There are too few repeats to determine the general advantage of either loss or to establish that they are equivalent. ECE against the reference labels was lower in both RLCD runs than in the `soft-ce` run, but more repeats are needed to assess stability.
+In a fresh isolated environment, RLCD and soft-ce each trained for four epochs and were evaluated on the same 2,000 held-out questions. Both arms used the same seed, model, data, and training settings; the intended difference was the loss. Each arm completed 352 optimizer updates.
+
+| Metric after fine-tuning | RLCD | soft-ce | Lower value |
+|---|---:|---:|---|
+| Top-1 agreement with teacher reference labels | 0.7220 | 0.7815 | — |
+| ECE | 0.1071 | 0.1464 | RLCD |
+| Multiclass Brier | 0.0753 | 0.0508 | soft-ce |
+| Top-1 Brier | 0.1792 | 0.1685 | soft-ce |
+| Mean confidence | 0.6151 | 0.6351 | — |
+| Final evaluation loss | 0.9019 | 0.8581 | soft-ce |
+
+In this single comparison, soft-ce had higher accuracy and lower Brier scores, while RLCD had lower ECE. There is only one new run per method, so these results do not establish a stable advantage. The dataset contains synthetic cases with teacher-generated soft labels; the metrics measure fit to reference distributions and do not establish real-world calibration. The upstream trainer also warned of conflicting schemas for `action`, `urgency`, and `disposition`, keeping the first definition encountered. The RLCD arm warned that the learning-rate scheduler is stepped before the optimizer, which may skip the first scheduled learning rate. Both arms emitted a Transformers deprecation warning for the gradient-checkpointing API. See the [clean-environment full GPU A/B record](evidence/clean-gpu-ab-2026-11-15.json).
+
+## Earlier run results (seed 0, 2,000 held-out questions)
+
+In earlier records, top-1 agreement with the reference label was 0.7510 and 0.7700 for two RLCD runs, and 0.7855 for one `soft-ce` run. Those records did not pin the dataset and model revisions used in the new clean-environment run above, so they remain separate and should not be pooled as directly comparable results. The cases are synthetic, and the labels are soft distributions generated by a teacher model rather than real-world outcomes. ECE and Brier scores are also measured against the reference distributions; they do not establish real-world probability calibration. The current upstream implementation splits training and calibration data after expanding cases into questions, so questions from the same case may appear in both splits. The two earlier RLCD runs record the same configuration and seed, but the cause of their difference has not been identified. Taken together, the earlier records and this new comparison are still too few to determine the general advantage or stability of either loss, or to establish that they are equivalent.
 
 Comparisons with external results are limited by differences in evaluation protocol and the traceability of evidence. Annotator agreement cannot be treated directly as an upper bound on model capability. See the [RLCD fine-tuning report](../../../docs/zh/decision-models/RLCD微调报告.md) for details. The historical comparison took about 54 minutes; rerun time depends on the environment.
 

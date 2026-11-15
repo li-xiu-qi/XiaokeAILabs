@@ -111,6 +111,18 @@ python finetune_clip_with_freeze.py
 
 The historical dataset revision and dependency versions are not pinned, and full training on the dataset has not been verified; reproducing historical effects is not guaranteed. In small evaluations, if there are fewer than K candidates, Recall@K uses all available candidates and should not be directly compared with the same metric over a full candidate set.
 
+To recreate the clean-environment smoke check above on Linux aarch64 with an NVIDIA GPU, run this from the experiment directory. It creates a new isolated venv and external data/output directories. PyTorch and torchvision use the verified CUDA 13.2 pair; remaining dependencies are installed from `requirements.txt`. Use a new `XL_RUN_ID` for every run:
+
+```bash
+export XL_RUN_ID="clip-clean-smoke-$(date +%Y%m%d-%H%M%S)"
+export XL_DATA_DIR=/path/to/external/clip-data
+export XL_OUT_DIR=/path/to/external/clip-output
+export XL_REQUIRE_EXTERNAL_ENV=1
+bash scripts/clean_env_cuda_smoke.sh
+```
+
+This entry point checks only the environment and synthetic-data training path; it downloads neither pretrained weights nor Flickr30k, and does not replace the real-data small-sample run.
+
 After installing PyTorch, Transformers, Datasets, and Matplotlib, run this CPU check from the experiment directory. It uses synthetic fields and a randomly initialized small model to cover split handling, cross-set ID conflicts, unique images within batches, and one forward/backward pass. It does not download Flickr30k or evaluate retrieval quality.
 
 ```bash
@@ -128,5 +140,7 @@ python tests/smoke_cuda_train.py
 ```
 
 Outputs, including configuration, checkpoint, plots, and final model, go to `$XL_OUT_DIR/synthetic-clip-training/`. The synthetic processor writes only a placeholder, so the final model directory is not a complete package for real inference. On 2026-11-13, this two-step CUDA check and 10 CPU tests passed on Linux ARM64 with an NVIDIA GB10 using Python 3.12.3, PyTorch 2.15.0+cu132, Transformers 5.22.2, Datasets 5.2.0, Matplotlib 3.11.2, Pillow 13.0.0, and torchvision 0.29.1+cu130. Dependencies came from an existing environment and additional dependency directories; a clean installation has not been verified. This check substitutes the data loader, processor, and model loading, and uses a random model, synthetic data, and FP32. It does not establish that real data processing, pretrained weight loading, BF16, or historical results are reproducible; its metrics do not measure model quality.
+
+On 2026-11-15, the [clean-environment CUDA check script](scripts/clean_env_cuda_smoke.sh) installed from an empty virtual environment and passed `pip check` on Linux aarch64 with an NVIDIA GB10. The environment used Python 3.12.3, PyTorch 2.15.0+cu132, torchvision 0.29.1+cu132, Transformers 5.23.0, Datasets 5.2.0, Matplotlib 3.11.2, and Pillow 13.0.0; CUDA 13.2 was available and BF16 was supported. Two CUDA training steps, validation, testing, and saving passed, and the model projection weights changed. The harness substitutes processor, model loading, and data preparation, using only a randomly initialized model, synthetic data, and FP32. This verifies the training-code path in a clean environment; it does not verify Flickr30k, pretrained weights, BF16, or retrieval quality. See the [clean-environment CUDA check record](evidence/clean-env-smoke-2026-11-15.json).
 
 The script evaluates the fine-tuned and original models on the same test candidate set and computes Recall in both directions. This metric depends on the candidate set, split, and annotation coverage. Only an actual run with saved configuration, results, and per-item evidence can establish whether fine-tuning changes retrieval. This small-sample run retained its configuration and summary log, but did not save per-query evidence.

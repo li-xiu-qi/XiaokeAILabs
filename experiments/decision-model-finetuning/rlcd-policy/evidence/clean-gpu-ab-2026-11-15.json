@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-15",
+  "hardware": "NVIDIA GB10, aarch64",
+  "environment": {
+    "os": "Ubuntu 24.04 LTS",
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "cuda_build": "13.2",
+    "cuda_available": true,
+    "bf16": true,
+    "datasets": "5.2.0",
+    "huggingface_hub": "1.33.0",
+    "laya_commit": "3a38cbe83f6ef556f3125fb0065fdc5a55d05792",
+    "laya_version": "0.4.31"
+  },
+  "inputs": {
+    "dataset": "LocalLLaMA/typed-decisions",
+    "dataset_revision": "cc1a2e795f5160d417d4d7131a71d1ab60ea33ca",
+    "train_cases": 1200,
+    "test_cases": 400,
+    "train_jsonl_sha256": "6c84f9a369e25a14c5ae47fc567cc86553f56bac128efb48127a94971d77dcc2",
+    "test_jsonl_sha256": "0c6712fc6657dca6371ab96863b3c8f1306a67631141623ea98d066fabbd58c4",
+    "model": "convaiinnovations/laya",
+    "model_revision": "85cc74ddae6109077ebe2853a9b3077fb6606a78"
+  },
+  "run": {
+    "arms": ["rlcd", "soft-ce"],
+    "seed": 0,
+    "epochs": 4,
+    "micro_batch": 8,
+    "gradient_accumulation": 8,
+    "optimizer_updates_per_arm": 352,
+    "evaluation": "2000 held-out questions; same inputs and initialization for both arms"
+  },
+  "results": {
+    "rlcd": {
+      "accuracy": 0.722,
+      "ece": 0.1071,
+      "brier": 0.0753,
+      "brier_top1": 0.1792,
+      "mean_confidence": 0.6151,
+      "final_loss": 0.9019
+    },
+    "soft_ce": {
+      "accuracy": 0.7815,
+      "ece": 0.1464,
+      "brier": 0.0508,
+      "brier_top1": 0.1685,
+      "mean_confidence": 0.6351,
+      "final_loss": 0.8581
+    }
+  },
+  "observations": [
+    "This is one run per loss with seed 0, not enough to infer general superiority.",
+    "The dataset is synthetic and its soft labels are teacher-generated; these metrics do not establish real-world calibration.",
+    "Upstream emitted conflicting-schema warnings for action, urgency, and disposition; it kept the first definition encountered.",
+    "The RLCD arm emitted a warning that lr_scheduler.step() runs before optimizer.step(); the first scheduled learning-rate value may be skipped.",
+    "Both arms emitted a Transformers deprecation warning for gradient_checkpointing_enable."
+  ]
+}

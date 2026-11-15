@@ -301,7 +301,8 @@ def line(tag, r):
     if not r:
         return f"- {tag}: no result (probe failed)"
     if not r.get("success"):
-        return f"- {tag}: failed — {r.get('error')}"
+        reason = r.get("failure_reason") or r.get("error") or "acceptance criteria not met"
+        return f"- {tag}: failed — {reason}"
     return (
         f"- {tag}: session={r.get('session_id')} end={r.get('end_reason')} "
         f"input_chunks={r.get('input_chunks_sent')} frames={r.get('input_frames_sent')} "

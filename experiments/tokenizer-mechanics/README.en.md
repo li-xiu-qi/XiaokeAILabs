@@ -4,7 +4,7 @@
 
 This directory contains experiment code, configuration and result evidence. See the [full experiment document](../../docs/zh/inference/分词机制与生成成本.md) for the purpose, method, data, results and limitations.
 
-## Examples
+## Toy examples
 
 Run Python 3 from this experiment directory. The following scripts use only the standard library; they need no GPU, extra dependencies or model downloads. Input examples are built into the scripts:
 
@@ -12,6 +12,8 @@ Run Python 3 from this experiment directory. The following scripts use only the 
 python scripts/toy_bpe.py
 python scripts/ngrams.py
 ```
+
+## Environment setup and real-tokenizer comparison
 
 For a comparison with real tokenizers, install `tiktoken`. The first run may need network access to download vocabularies. Create a separate environment to avoid changing other experiments' dependencies; the activation command below is for Linux and macOS:
 

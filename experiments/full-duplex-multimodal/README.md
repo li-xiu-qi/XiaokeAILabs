@@ -100,9 +100,15 @@ FFMPEG_LIB_DIR=/path/to/ffmpeg-libs/aarch64-linux-gnu \
 
 ### 首次 GPU 结果（2026-11-15）
 
-在 NVIDIA GB10 上使用新建隔离 Python 环境完成一次探针。空环境依赖检查、`pip check`、TorchCodec/FFmpeg 解码预检和 CUDA 检查均通过（Python 3.12.3、PyTorch 2.11.0+cu130、CUDA 13.0）；安装使用设备已有缓存，冷缓存安装未验证。会话发送了 25 个初始块和 25 个插话块，客户端分块为 160 毫秒；插话前收到一段模型语音，插话后也记录到 `listen` 事件。但最后一段服务端语音 delta 在插话开始后 8.42 秒才出现，超过预先设定的 2 秒门槛，因此**本次未通过插话停止判据**。会话与依赖流程正常结束，不等于插话行为通过；没有为改变结果而重跑。
+在 NVIDIA GB10 上使用新建隔离 Python 环境完成一次探针。空环境依赖检查、`pip check`、TorchCodec/FFmpeg 解码预检和 CUDA 检查均通过（Python 3.12.3、PyTorch 2.11.0+cu130、CUDA 13.0）；安装使用设备已有缓存，冷缓存安装未验证。会话发送了 25 个初始块和 25 个插话块，客户端分块为 160 毫秒；插话前收到一段模型语音，插话后也记录到 `listen` 事件。但最后一段服务端语音 delta 在插话开始后 8.42 秒才出现，超过预先设定的 2 秒门槛，因此**本次未通过插话停止判据**。会话与依赖流程正常结束，不等于插话行为通过。后续因环境修复进行了另一次复跑，结果及判定脚本缺陷见下一节。
 
 语音 delta 只表示服务端发出音频数据，不能证明这些数据何时播放给听者，也不能直接换算成人的感知延迟。结果只适用于这次固定录制材料、MiniCPM-o 4.5 与 Demo 协议；不代表真人实时插话表现，也不构成 Higgs Realtime Duplex 的复现。脱敏指标见 [`evidence/2026-11-15-barge-in-probe.json`](evidence/2026-11-15-barge-in-probe.json)。
+
+### 隔离环境复跑与判定脚本修正（2026-11-15）
+
+随后一次隔离环境复跑再次通过 `pip check`、CUDA 检查和视频解码，模型服务也能启动。但插话后的最后一段语音 delta 仍在 8.42 秒后到达，2 秒停止门槛再次未通过。原始运行摘要把整次流程记为 `ok`，原因是探针只检查会话和输出是否存在，外层摘要也只检查脚本退出码；二者都没有应用预先规定的 2 秒行为判据。该摘要状态不代表插话测试通过。复跑指标和原始摘要差异见 [`evidence/2026-11-15-barge-in-rerun.json`](evidence/2026-11-15-barge-in-rerun.json)。
+
+现已将探针成功条件改为同时满足输入与会话完整、插话后出现倾听事件、最后语音 delta 不晚于 2 秒；未满足时脚本会以失败退出，并在 JSON 和报告中写出原因。修正后的代码已在同一设备上完成 GPU 复跑，见[修正判据后的复跑记录](evidence/2026-11-15-barge-in-corrected-rerun.json)：新建环境的 `pip check`、CUDA、FFmpeg 解码和服务启动均通过；插话后的倾听事件也出现，但最后一段服务端语音 delta 在 4.664 秒后才到达，超过 2 秒门槛，探针按修正后的判据以失败退出。软件包和模型使用设备已有缓存；冷缓存下载仍未验证。
 
 ### 后续复跑检查（2026-11-15）
 
@@ -329,6 +335,7 @@ python scripts/demo_realtime_probe.py --url http://127.0.0.1:8006 --mode video \
 - 常规探针默认按 1 秒块发送；另有一次 160 毫秒客户端分块试跑，尚未验证真人交互或模型内部调度。视频 run 的单块 wall clock 中位数为 868 ms，它不是人感受到的端到端延迟。
 - 文章还介绍了数字人视频输出、异步工具调用和前后台模型协同；本实验使用 MiniCPM-o 4.5，只验证录制音视频持续输入时模型能处理画面并输出语音，不覆盖这些架构能力，也不据此推断 Higgs 的延迟或成本。
 - 插话探针虽在插话后收到 `listen` 事件，但最后一段服务端语音 delta 出现在插话后 8.42 秒，未达到 2 秒停止门槛；这不是通过的插话停止测试。录制输入与协议事件不等同于真人插话、听到停止或模型已停止播放。
+- 后续隔离环境复跑得到相同的 8.42 秒结果。旧版脚本错误地把会话与输出存在当作探针成功；该判定已修正，但修正后的退出状态尚未在 GPU 运行中验证。
 - 依赖安装需要适配设备 CUDA 的 torch 栈和 TorchCodec 可加载的 FFmpeg 动态库；实时 Python 包固定在 [`requirements-realtime.txt`](requirements-realtime.txt)。2026-11-15 修复运行已闭合空 venv 缺口：显式 `FFMPEG_LIB_DIR` 指向解包的 FFmpeg 6.1.1 前缀时，安装、`pip check`、导入、CUDA 与解码全部通过；PyAV wheel 的 `av.libs` 只有哈希改名的库文件，动态链接器按 soname 无法匹配，不能作为修复路径。该运行仍只使用设备已有缓存：冷缓存下载、在线获取 FFmpeg 包与其他平台未验证。较早探索环境里的 `minicpmo-utils`、`librosa` 与 `decord` 问题不应套用到这套新环境。
 - 较早的视频和音频运行使用设备上已有、`pip check` 有未解决项的隔离环境。后续 30 秒探针使用另一套隔离环境，版本和 `pip check` 通过状态见 [`evidence/2026-11-15-clean-env-video.json`](evidence/2026-11-15-clean-env-video.json)。torch 2.11 高于模型卡注明的 2.8.0 上限。
 - 2026-11-15 受控复跑使用为该运行新建的隔离环境（由既有可用环境复制，uv 离线安装因缓存缺 `absl-py` 未完成；旧环境未改动）与按上文步骤准备的 FFmpeg 6.1.1 前缀，因此共享库依赖已能重新准备并验证；从零安装整套环境及在线获取 FFmpeg 软件包仍未验证，本次使用了已有的 `.deb` 缓存。同日修复运行同样只用设备缓存（pip 索引元数据缓存过期后的一次索引获取按运行范围清除了代理变量），并使用新的空 venv 与新前缀。
@@ -349,6 +356,8 @@ python scripts/demo_realtime_probe.py --url http://127.0.0.1:8006 --mode video \
 | `evidence/2026-11-15-pyav-bundled-ffmpeg-load-failure.json` | 2026-11-15 后续空 venv 复跑：依赖安装与 `pip check` 通过，脚本使用 PyAV wheel 自带 FFmpeg 运行库，但 TorchCodec 仍无法加载后端；CUDA 与解码检查未到达 |
 | `evidence/2026-11-15-160ms-video.json` | 160 毫秒客户端音频分块视频探针：输入/输出重叠和视觉响应指标；不代表模型内部调度 |
 | `evidence/2026-11-15-barge-in-probe.json` | 单次 GB10 插话探针：新隔离环境与 CUDA/解码预检通过；记录到倾听事件，但最后语音 delta 晚于预设门槛，结论为未通过 |
+| `evidence/2026-11-15-barge-in-rerun.json` | 后续隔离环境复跑：环境与服务流程通过，插话行为仍超过 2 秒门槛；记录旧摘要误报原因及修正后的未通过判定 |
+| `evidence/2026-11-15-barge-in-corrected-rerun.json` | 修正判据后的 GPU 复跑：新环境、解码和服务通过；最后语音 delta 为 4.664 秒，超过 2 秒门槛，探针正确退出为失败 |
 | `evidence/2026-11-15-auto-ffmpeg-detect-install-blocked.json` | 空 venv 自检在 PyTorch 安装阶段被代理阻断，尚未运行 FFmpeg 自动发现 |
 | `evidence/2026-11-15-demo-verify-032901.json` | 较早的探索记录；其中 audio 模式也发送了视频帧，不用于上方纯音频结果 |
 | `evidence/2026-11-15-recorded-smoke.json`、`evidence/2026-11-15-recorded-full.json`、`evidence/2026-11-15-recorded-audio.json` | 历史记录：离线按块运行（4 块冒烟、35 块全文、35 块含音频） |

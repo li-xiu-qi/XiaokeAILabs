@@ -15,7 +15,7 @@ Laya uses a purpose-built discriminative architecture with two built-in model br
 - `laya-pin.py`: Compares model modes on the same Chinese input: automatic routing, per-request `model=` overrides (multilingual / forced English / typed-decisions), and `Router(default=)`; it compares decisions, confidence, and routing rationale.
 - `laya-common.py`: Local reproduction of the model architecture, token-sequence construction, and confidence algorithm for source-level comparison.
 
-## Running and reproducing
+## Environment setup and reproduction
 
 The historical run used Laya 0.3.5 and CUDA PyTorch. First create an isolated Python environment, install a CUDA build of PyTorch compatible with your device, and allow network and disk space for model downloads. The following installs the recorded Laya version; other dependencies are not fully pinned, so reruns depend on the environment actually used.
 
@@ -26,6 +26,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 # Select and install a CUDA build of PyTorch compatible with your device first
 python -m pip install -r requirements.txt
+python -m pip check
 python -c "import torch; print('torch:', torch.__version__, 'CUDA:', torch.cuda.is_available()); assert torch.cuda.is_available()"
 
 python test_laya.py
@@ -37,7 +38,7 @@ python laya-pin.py
 python laya-zh-en.py
 ```
 
-All seven scripts were previously run on an aarch64 GB10 (20 CPU cores, 121 GB unified memory, torch 2.14.0+cu130); result excerpts are in `../evidence/`. `test_laya.py` is the best first script and downloads model weights on its first run. The new-environment commands above have not been verified end to end; transitive dependencies and model revisions are not locked.
+All seven scripts were previously run on an aarch64 GB10 (20 CPU cores, 121 GB unified memory, torch 2.14.0+cu130); result excerpts are in `../evidence/`. On 2026-11-15, Laya 0.3.5 was also installed in a fresh Python 3.12.3 virtual environment on an NVIDIA GB10. `pip check` passed, CUDA was available, and `test_laya.py` loaded the model, routed to the English branch, and returned `billing`. This verifies the clean installation and minimal real-model inference only; the other six scripts were not rerun in that environment. Transitive dependencies and model revisions are not fully locked. See the [clean-environment smoke record](evidence/clean-env-smoke-2026-11-15.json).
 
 **Notes:**
 

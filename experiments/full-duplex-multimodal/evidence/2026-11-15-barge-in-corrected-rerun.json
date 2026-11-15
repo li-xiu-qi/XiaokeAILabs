@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-15",
+  "experiment": "recorded-media full-duplex interruption probe with corrected acceptance criteria",
+  "model": "MiniCPM-o 4.5",
+  "device": "NVIDIA GB10, single device",
+  "environment": {
+    "python": "3.12.3",
+    "torch": "2.11.0+cu130",
+    "torchaudio": "2.11.0+cu130",
+    "torchcodec": "0.15.0+cu130",
+    "transformers": "4.51.0",
+    "fastapi": "0.163.0",
+    "websockets": "17.4",
+    "stepaudio2-minicpmo": "0.1.1",
+    "cuda": "13.0",
+    "pip_check": "passed",
+    "ffmpeg_decode": "passed",
+    "cuda_available": true
+  },
+  "protocol": {
+    "client_chunk_ms": 160,
+    "initial_input_chunks": 25,
+    "interruption_input_chunks": 25,
+    "assistant_audio_chunks_before_interruption": 1,
+    "assistant_audio_chunks_after_interruption_started": 1,
+    "listen_events_after_interruption": 11,
+    "first_assistant_audio_ms_from_session_start": 15706.9,
+    "interruption_started_ms_from_session_start": 15709.5,
+    "last_assistant_audio_delta_ms_after_interruption": 4664.0,
+    "stop_threshold_ms": 2000,
+    "output_audio_duration_ms": 2000,
+    "output_audio_rms": 0.04594
+  },
+  "result": {
+    "session_complete": true,
+    "listen_after_interruption": true,
+    "stop_latency_passed": false,
+    "probe_passed": false,
+    "reason": "The final server audio delta arrived 4664 ms after interruption began, exceeding the 2000 ms threshold.",
+    "services_cleaned_up": true
+  },
+  "limits": [
+    "The probe used fixed recorded media and server protocol events, not a live microphone, speaker, or human listener.",
+    "An audio delta marks server output and does not prove playback stop time or human-perceived latency.",
+    "This does not reproduce the Higgs Realtime Duplex system."
+  ]
+}

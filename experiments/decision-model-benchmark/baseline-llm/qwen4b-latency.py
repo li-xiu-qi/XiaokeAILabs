@@ -25,11 +25,12 @@ token，那会让 prefill 时间随虚拟图像膨胀，不代表纯文本任务
 import json, os, statistics, time
 
 MODEL = os.environ.get("QWEN_MODEL", "Qwen/Qwen3-VL-4B-Instruct")
+MODEL_REVISION = os.environ.get("QWEN_MODEL_REVISION")
 N = int(os.environ.get("BENCH_N", "30"))
 WARMUP = 3
 
 print("host:", os.uname().nodename)
-print("model:", MODEL, "| N =", N, "| warmup =", WARMUP)
+print("model:", MODEL, "| revision:", MODEL_REVISION or "latest", "| N =", N, "| warmup =", WARMUP)
 
 import torch
 
@@ -82,7 +83,8 @@ def load():
     candidates = ["AutoModelForImageTextToText", "AutoModelForVision2Seq",
                   "AutoModelForCausalLM", "AutoModelForTextToTextGeneration"]
     import transformers
-    tok = AutoTokenizer.from_pretrained(MODEL)
+    revision = {"revision": MODEL_REVISION} if MODEL_REVISION else {}
+    tok = AutoTokenizer.from_pretrained(MODEL, **revision)
     last = None
     for name in candidates:
         cls = getattr(transformers, name, None)
@@ -90,7 +92,8 @@ def load():
             continue
         try:
             t0 = time.time()
-            model = cls.from_pretrained(MODEL, dtype=torch.bfloat16, device_map="cuda")
+            model = cls.from_pretrained(
+                MODEL, dtype=torch.bfloat16, device_map="cuda", **revision)
             model.eval()
             print("[load] 使用 %s，耗时 %.2f s" % (name, time.time() - t0))
             return tok, model, time.time() - t0
@@ -219,7 +222,9 @@ def main():
             r["prefill_p50"], r["full_p50"], r["decode_p50"]))
     print("\n[收尾] 常驻 %.2f GB 峰值 %.2f GB" % vram())
     with open(os.environ.get("BENCH_OUT", "qwen4b-result.json"), "w") as f:
-        json.dump({"model": MODEL, "load_s": load_s, "results": results}, f,
+        json.dump({"model": MODEL, "model_revision": getattr(model.config, "_commit_hash", None),
+                  "load_s": load_s, "torch": torch.__version__,
+                  "torch_cuda": torch.version.cuda, "results": results}, f,
                   ensure_ascii=False, indent=2)
 
 

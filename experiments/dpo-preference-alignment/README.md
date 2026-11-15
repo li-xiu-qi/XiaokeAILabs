@@ -20,7 +20,17 @@ python -m pip check
 python -c "import torch; print(torch.__version__, torch.version.cuda); assert torch.cuda.is_available() and torch.cuda.is_bf16_supported()"
 ```
 
-约束文件用于防止安装其他依赖时替换已安装的 PyTorch。2026-11-15 在 NVIDIA GB10（Linux aarch64）新建虚拟环境，按上述命令安装后，`pip check`、依赖导入和 CUDA/BF16 检查均通过；本次没有下载模型或数据，也没有训练。该验证只覆盖这组平台和版本，requirements 不是完整锁文件，传递依赖仍由 pip 解析。
+约束文件用于防止安装其他依赖时替换已安装的 PyTorch。2026-11-15 在 NVIDIA GB10（Linux aarch64）新建虚拟环境，按上述命令安装后，`pip check`、依赖导入和 CUDA/BF16 检查均通过。随后又从新的空缓存开始下载固定模型和数据，并在同一新环境完成 64 步训练及 128 对评估。可用下方脚本命令重跑；每次都要使用新的外部目录。该验证覆盖 Linux aarch64 / Python 3.12.3 / CUDA 13.2 这组组合，requirements 不是完整锁文件，传递依赖仍由 pip 解析。
+
+```bash
+export XL_DATA_DIR=/path/to/dpo-clean-data/run-001
+export XL_OUT_DIR=/path/to/dpo-clean-output/run-001
+export XL_RUN_ID=run-001
+export XL_REQUIRE_EXTERNAL_ENV=1
+bash scripts/clean_env_gpu_smoke.sh
+```
+
+脚本会在 `XL_DATA_DIR` 下创建新的虚拟环境、Hugging Face 缓存和数据文件，在 `XL_OUT_DIR` 下保存模型适配器与报告；发现已有目标时拒绝覆盖。
 
 ## 模型和数据
 
@@ -56,11 +66,11 @@ sha256sum "$HF_HOME/hub/datasets--HuggingFaceH4--ultrafeedback_binarized/snapsho
 
 执行完成后查看 `$XL_OUT_DIR/report.json`。输入提示词保留末尾最多 192 个 token，回答保留开头最多 191 个 token 并附加结束符；截断可能丢掉影响偏好的信息。截断后两回答完全相同的样本被剔除，报告记录各类截断与有效样本数，但截断也可能改变剩余样本的偏好含义。评估按回答 token 的对数概率之和比较给定回答对，受长度影响，不测实际生成质量、用户满意度或安全性。短训练、单种子和小测试集不能证明一般对齐能力改善。运行前请检查模型和数据的使用许可及资源需求。
 
-`HF_HOME` 将 Hugging Face 的通用缓存定向到数据目录，避免默认用户缓存散落文件；增加此变量后的完整空缓存下载尚未重测。
+`HF_HOME` 将 Hugging Face 的通用缓存定向到数据目录，避免默认用户缓存散落文件。2026-11-15 的全新环境复跑验证了空缓存中的模型和数据下载，以及后续完整训练评估。
 
 ## 运行状态
 
-2026-11-15 在 Linux aarch64、NVIDIA GB10 上，使用 Python 3.12、PyTorch 2.15.0+cu132、Transformers 5.16.1、datasets 5.2.0、PEFT 0.21.3 和 Accelerate 1.15.0，完成固定模型与数据的 64 次 CUDA LoRA 更新及 128 对测试。训练运行使用从已有环境复制的独立环境；另有一套新环境按上方命令从零安装并通过检查。PyTorch 报告的峰值 CUDA 张量分配约 3.60 GiB，不是整机内存或通用硬件下限。
+2026-11-15 在 Linux aarch64、NVIDIA GB10 上，使用 Python 3.12、PyTorch 2.15.0+cu132、Transformers 5.16.1、datasets 5.2.0、PEFT 0.21.3 和 Accelerate 1.15.0，完成固定模型与数据的 64 次 CUDA LoRA 更新及 128 对测试。较早的训练使用从已有环境复制的独立环境；本次额外复跑则从新的虚拟环境和空缓存开始，下载数据、模型并完成全流程。初始训练报告中准确率仍为 71/128 → 71/128，准确率变化 bootstrap 95% 区间为 [0, 0]；平均参考相对分差变化为 +0.174。此前一轮同种子运行记录为 +0.136，显示该数值在当前实现和硬件下并未实现逐次完全一致，因此不声称确定性复现。PyTorch 报告的峰值 CUDA 张量分配约 3.60 GiB，不是整机内存或通用硬件下限。干净环境运行的脱敏细节见[证据记录](evidence/clean-env-gpu-smoke-2026-11-15.json)。
 
 测试集按两份固定回答的总对数概率比较，微调前后均有 71/128 对与数据偏好方向一致，逐对预测方向没有变化。配对 bootstrap 的准确率差值 95% 区间为 [0, 0]；这表示本次样本中没有预测翻转，不表示未来数据上的差值必为零。训练后的参考相对平均分差改变 +0.136，但不足以据此认定生成质量改善。训练集提示词截断 69/256，偏好与非偏好回答分别截断 128/256 和 116/256；测试集分别为 21/128、69/128 和 66/128。没有样本因截断后两回答完全相同而被剔除，截断仍可能改变其他样本的偏好含义。输入数据的评分来自模型，小样本、单种子、长度偏差、近重复和预训练重叠限制结论。首步平均 DPO 损失为 0.693147，符合初始参考相对分差接近零的预期；另一次使用同一模型与 LoRA 配置新建初始适配器，对这 128 个测试对的 256 个回答逐一比较启用和禁用适配器时的 logits，最大绝对差为 0；这是训练后的独立初始化检查，并非训练开始时逐项留存的输出。
 

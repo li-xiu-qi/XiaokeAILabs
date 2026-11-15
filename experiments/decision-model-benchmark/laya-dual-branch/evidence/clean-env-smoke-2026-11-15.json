@@ -1,0 +1,20 @@
+{
+  "date": "2026-11-15",
+  "purpose": "Validate fresh installation of the pinned Laya package and run the minimal Router example on CUDA.",
+  "hardware": "NVIDIA GB10 (DGX Spark)",
+  "environment": {
+    "platform": "Linux aarch64",
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "laya": "0.3.5",
+    "pip_check": "Passed",
+    "cuda_available": true
+  },
+  "run": {
+    "script": "test_laya.py",
+    "result": "Passed",
+    "selected_branch": "english",
+    "selected_label": "billing"
+  },
+  "scope": "Fresh virtual environment and the minimal real-model inference example only; the other six benchmark scripts were not rerun in this environment."
+}

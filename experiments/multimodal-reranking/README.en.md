@@ -6,7 +6,7 @@ This directory contains experiment code, configuration, run instructions, and re
 
 [`scripts`](scripts/) · [`evidence`](evidence/) · [`figures`](figures/)
 
-## Recompute and reproduce
+## Environment setup and reproduction
 
 Recompute the public aggregate without images:
 

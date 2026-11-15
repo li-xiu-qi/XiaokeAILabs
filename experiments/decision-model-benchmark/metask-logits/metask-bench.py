@@ -18,7 +18,8 @@ os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
 print("host:", os.uname().nodename)
 
 import sys
-sys.path.insert(0, os.path.expanduser("~/metask-jev"))
+METASK_DIR = Path(os.environ.get("METASK_DIR", "~/metask-jev")).expanduser()
+sys.path.insert(0, str(METASK_DIR))
 
 import torch
 from jev_scorer import load_model, score, apply_temperature
@@ -108,7 +109,14 @@ EN_CASES = [
                "祝贺你们上周的产品发布。"),
 ]
 
-MODEL = "wayfind/metask-jev-4b-policy-mix"
+MODEL = os.environ.get("METASK_MODEL_PATH")
+if not MODEL:
+    model_path_file = METASK_DIR / "model_path.txt"
+    MODEL = (
+        model_path_file.read_text(encoding="utf-8").strip()
+        if model_path_file.is_file()
+        else "wayfind/metask-jev-4b-policy-mix"
+    )
 
 # ============ A. 契约 ============
 print("\n" + "=" * 96)

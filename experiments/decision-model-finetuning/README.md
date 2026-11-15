@@ -7,12 +7,12 @@
 
 | 子目录 | 训练目标与底座 | 数据集与方法 | 关键结论与状态 |
 |---|---|---|---|
-| [agent-jev-text/](agent-jev-text/) | 纯文本判别决策模型（Qwen3-0.6B 底座） | `LocalLLaMA/typed-decisions`，全参数微调分类头 | 完成训练、验证集校准、测试集评测与轻量推理服务封装 |
-| [rlcd-policy/](rlcd-policy/) | RLCD 策略梯度 vs 软交叉熵损失对照 | 在 DGX Spark 单卡上微调 Laya，对比带规则奖励与纯蒸馏拟合 | 软标签监督与策略梯度的概率校准差异实测 |
+| [agent-jev-text/](agent-jev-text/) | 纯文本判别决策模型（Qwen3-0.6B 底座） | `LocalLLaMA/typed-decisions`，全参数微调分类头 | 完成训练、验证集校准、测试集评测与轻量推理服务封装；新隔离环境 GPU 冒烟及依赖检查通过 |
+| [rlcd-policy/](rlcd-policy/) | RLCD 策略梯度 vs 软交叉熵损失对照 | DGX Spark 单卡、固定数据与模型 revision，隔离环境下各训练 4 epoch | 完整 GPU A/B 已通过；soft-ce 准确率与 Brier 较好，RLCD 的 ECE 较低；各仅一组新运行 |
 | [vision-decision/](vision-decision/) | 视觉判别决策模型（多模态底座 + Scalar Score 头） | 图文多候选决策打分 | **重要边界提示**：历史数据包含参考答案 `solution`，修正后的数据准备尚未完成重新训练和评测 |
 
 ## 复现前提
 
 - 各项目分别准备独立的 Python 环境和 CUDA 版 PyTorch；具体依赖、下载与运行步骤见各子目录 README。依赖清单不等同于完整锁定的历史环境。
 - `agent-jev-text` 与 `rlcd-policy` 使用合成数据集 `typed-decisions`；`vision-decision` 使用 ScienceQA。下载数据和权重需要网络、磁盘空间，以及遵守各上游许可。
-- 历史 `rlcd-policy` 运行使用 DGX Spark（GB10 统一内存）；其他设备的训练内存需求与可复现性需要自行验证。`vision-decision` 依赖 Linux 的内存检查，历史数据存在答案泄漏，历史结果不能用来证明视觉答题效果。
+- `rlcd-policy` 的一组完整 GPU A/B 已在 DGX Spark（GB10 统一内存）隔离环境验证；尚未证明在其他设备或多 seed 下可复现。`vision-decision` 依赖 Linux 的内存检查，历史数据存在答案泄漏，历史结果不能用来证明视觉答题效果。

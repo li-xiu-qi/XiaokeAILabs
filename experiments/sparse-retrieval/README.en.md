@@ -87,7 +87,7 @@ Run commands from this experiment directory. Training data is not included; prep
 
 ### Environment
 
-Training is recommended on an NVIDIA GPU with CUDA and a PyTorch build matching its driver. If CUDA is not detected, the script falls back to CPU; check `[Device]` in the startup log to confirm the actual device. The 16 GB in the experiment card is a planning budget, not a verified minimum VRAM requirement. Memory needs depend on batch size and sequence length. Reserve disk space for the model, training data and output. This directory does not record a dependency combination validated by a complete training run on real data.
+Training is recommended on an NVIDIA GPU with CUDA and a PyTorch build matching its driver. If CUDA is not detected, the script falls back to CPU; check `[Device]` in the startup log to confirm the actual device. The 16 GB in the experiment card is a planning budget, not a verified minimum VRAM requirement. Memory needs depend on batch size and sequence length. Reserve disk space for the model, training data and output. Full training on real data has not been validated from a clean installation.
 
 Use an isolated Python environment. Linux example:
 

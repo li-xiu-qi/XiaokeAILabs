@@ -8,7 +8,9 @@ Starting from a small set of photos, this experiment adds the ability to generat
 
 The [assets](assets/) directory contains an SDXL LoRA workflow diagram.
 
-Before running, enter the specific sub-experiment and follow its environment setup instructions to install dependencies and prepare the model and data. See the [Chinese README](README.md).
+## Environment setup
+
+This directory has no shared Python dependency manifest: image training, inference and face evaluation use different packages. The current [face identity LoRA sub-experiment](face-identity-lora/README.en.md#environment-setup) provides commands for an isolated environment, CUDA PyTorch, remaining dependencies, model and data preparation. Follow that sub-experiment's README instead of assembling an environment at this parent directory. See the [Chinese README](README.md).
 
 ## Notes
 

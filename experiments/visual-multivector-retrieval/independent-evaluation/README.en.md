@@ -26,7 +26,7 @@ python independent-evaluation/recompute.py
 
 The script checks the 192 ranks and aggregate metrics, then prints the relative changes between groups. It cannot revalidate model scores or image labels.
 
-## Prepare an independent retest
+## Environment setup and independent retest
 
 The old source data, old images, and trained adapters are not distributed in this repository. **The model inference in this evaluation cannot be reproduced from this repository alone.** You need the original `synthetic/records.json` and old images in its sibling directory, plus the three adapters and base model used by the parent experiment: the initial ColSmol adapter, the supervised-trained adapter, and the supervised-plus-distillation adapter. Sources, pinned revisions, and historical software versions for the initial model and base model are described in [the parent experiment's environment setup](../README.en.md#environment-setup); the other two adapters must come from the original run's saved outputs. The current distillation entry point in the parent experiment stops immediately and cannot regenerate the missing distillation adapter. Newly generated training artifacts must not be presented as the original models.
 

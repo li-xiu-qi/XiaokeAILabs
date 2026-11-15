@@ -15,17 +15,22 @@ cd "$HERE"
 export HF_HUB_DISABLE_XET=1
 
 PY="${PYTHON:-python}"
-DATA=data/typed_decisions_train.jsonl
-EVAL=data/typed_decisions_test.jsonl
+DATA_DIR="${XL_DATA_DIR:-data}"
+OUT_DIR="${XL_OUT_DIR:-runs}"
+DATA="$DATA_DIR/typed_decisions_train.jsonl"
+EVAL="$DATA_DIR/typed_decisions_test.jsonl"
 MODEL_ARGS=()
 if [ -n "${MODEL_DIR:-}" ]; then
   MODEL_ARGS=(--model-dir "$MODEL_DIR")
 fi
+if [ -n "${MODEL_REVISION:-}" ]; then
+  MODEL_ARGS+=(--model-revision "$MODEL_REVISION")
+fi
 
-mkdir -p runs
+mkdir -p "$OUT_DIR"
 for ARM in rlcd soft-ce; do
-  if [ -e "runs/$ARM" ] || [ -e "runs/${ARM}.log" ]; then
-    echo "runs/$ARM or its log already exists; use a fresh experiment directory" >&2
+  if [ -e "$OUT_DIR/$ARM" ] || [ -e "$OUT_DIR/${ARM}.log" ]; then
+    echo "$OUT_DIR/$ARM or its log already exists; use a fresh experiment directory" >&2
     exit 1
   fi
 done
@@ -41,9 +46,9 @@ for ARM in rlcd soft-ce; do
   echo "=== arm: $ARM (loss=$LOSS) ==="
   "$PY" scripts/run_finetune.py \
     --data "$DATA" --eval-data "$EVAL" "${MODEL_ARGS[@]}" \
-    --output-dir "runs/$ARM" \
+    --output-dir "$OUT_DIR/$ARM" \
     --loss "$LOSS" --epochs 4 --seed 0 --device cuda \
-    > "runs/${ARM}.log" 2>&1 || { echo "arm $ARM FAILED, see runs/${ARM}.log"; exit 1; }
+    > "$OUT_DIR/${ARM}.log" 2>&1 || { echo "arm $ARM FAILED, see $OUT_DIR/${ARM}.log"; exit 1; }
 done
 
 echo
@@ -53,7 +58,8 @@ import json
 
 def report(arm):
     # train_report.json 是扁平结构：eval_mode/before/after 在顶层，无 train_report 外层键
-    with open(f"runs/{arm}/train_report.json") as f:
+    import os
+    with open(os.path.join(os.environ.get("XL_OUT_DIR", "runs"), arm, "train_report.json")) as f:
         return json.load(f)
 
 r, s = report("rlcd"), report("soft-ce")

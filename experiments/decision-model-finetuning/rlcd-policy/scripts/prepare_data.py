@@ -15,8 +15,8 @@ from datasets import load_dataset
 DATASET_ID = "LocalLLaMA/typed-decisions"
 
 
-def dump_split(split: str, out_path: str, f) -> str:
-    ds = load_dataset(DATASET_ID, "all", split=split)
+def dump_split(split: str, out_path: str, f, revision: str | None) -> str:
+    ds = load_dataset(DATASET_ID, "all", split=split, revision=revision)
     n = 0
     for row in ds:
         rec = {
@@ -33,6 +33,8 @@ def dump_split(split: str, out_path: str, f) -> str:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out-dir", default="data")
+    ap.add_argument("--revision", default=None,
+                    help="Hugging Face dataset commit SHA; omit only for the current revision")
     args = ap.parse_args()
     os.makedirs(args.out_dir, exist_ok=True)
     paths = {split: os.path.join(args.out_dir, f"typed_decisions_{split}.jsonl")
@@ -44,8 +46,8 @@ def main():
     with ExitStack() as stack:
         files = {split: stack.enter_context(open(path, "x", encoding="utf-8"))
                  for split, path in paths.items()}
-        train_path = dump_split("train", paths["train"], files["train"])
-        test_path = dump_split("test", paths["test"], files["test"])
+        train_path = dump_split("train", paths["train"], files["train"], args.revision)
+        test_path = dump_split("test", paths["test"], files["test"], args.revision)
     print("done:", train_path, test_path)
 
 

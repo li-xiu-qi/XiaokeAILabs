@@ -37,32 +37,52 @@ Kaggle 免费 2xT4 DDP）。本实验把它改成单卡 CUDA 路径（无 DDP）
 | 硬件 | NVIDIA DGX Spark（GB10 Grace Blackwell，121 GB 统一内存，aarch64） |
 | 系统 | Ubuntu 24.04 LTS |
 | Python | 3.12 |
-| torch | 2.14.0+cu130（aarch64 CUDA 13 wheel） |
-| laya | 0.4.1（历史记录，精确提交未核实） |
+| torch | 2.15.0+cu132（本次新环境实测） |
+| datasets / huggingface_hub | 5.2.0 / 1.33.0 |
+| laya | 源码提交 `3a38cbe83f6ef556f3125fb0065fdc5a55d05792`，安装后版本 0.4.31 |
 
 ## 数据准备与运行
 
-在本目录准备独立的 Linux Python 环境，先按设备安装兼容 CUDA 的 PyTorch，再安装数据依赖和上游 Laya 源码。下面固定的提交是公开源码中包含 `laya.train` 的一个版本，**并非已确认的历史运行版本**；这组安装命令尚未端到端验证，运行前需检查导入与训练接口：
+下面的组合已在 DGX Spark（Linux ARM64、Ubuntu 24.04、Python 3.12.3）新建的独立环境中完成安装、依赖检查和完整 GPU A/B 训练。其他设备应先按其架构与 CUDA 版本选择 PyTorch；不能直接照搬 GB10 的 wheel。Laya 固定到公开源码提交，数据集和模型也固定到 Hugging Face commit：
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-# 按 https://pytorch.org/get-started/locally/ 选择并安装 CUDA 版 PyTorch
+# 已实测的 DGX Spark / Linux ARM64 组合；其他设备按 PyTorch 官方说明换用兼容 wheel
+python -m pip install --index-url https://download.pytorch.org/whl/cu132 "torch==2.15.0+cu132"
 python -m pip install -r requirements.txt
-python -c "import torch, datasets; from laya.agent import _fix_tokenizer_config; from laya.train import TrainConfig, finetune; print('torch:', torch.__version__, 'CUDA:', torch.cuda.is_available()); assert torch.cuda.is_available()"
+python -m pip check
+python -c "import torch, datasets, huggingface_hub; from laya.agent import _fix_tokenizer_config; from laya.train import TrainConfig, finetune; print(torch.__version__, torch.cuda.is_available(), torch.cuda.get_device_name(0), datasets.__version__, huggingface_hub.__version__); assert torch.cuda.is_available()"
 ```
 
-安装需要 Git 和网络；先确保测试命令显示 CUDA 可用。`laya` 及其传递依赖没有完整锁定，历史运行使用的 Laya 精确提交尚未核实；若接口或依赖不兼容，需要排查后再运行。准备数据后将脚本中的解释器指向该环境：
+`requirements.txt` 固定了直接依赖和 Laya 源码提交，但没有锁定全部传递依赖；其他安装时间可能得到不同的间接依赖版本。PyTorch CUDA wheel、数据集和模型需要网络下载。
 
 ```bash
-python scripts/prepare_data.py --out-dir data
-export PYTHON="$(command -v python)"
+export DATASET_REVISION=cc1a2e795f5160d417d4d7131a71d1ab60ea33ca
+export MODEL_REVISION=85cc74ddae6109077ebe2853a9b3077fb6606a78
+export XL_DATA_DIR="$PWD/data/typed-decisions-$DATASET_REVISION"
+export XL_OUT_DIR="$PWD/runs/rlcd-ab-$DATASET_REVISION"
+export MODEL_DIR="$PWD/models/laya-$MODEL_REVISION"
+mkdir -p models
+test ! -e "$MODEL_DIR"
+MODEL_DIR="$MODEL_DIR" MODEL_REVISION="$MODEL_REVISION" python - <<'PY'
+import os
+from huggingface_hub import snapshot_download
+snapshot_download(
+    "convaiinnovations/laya",
+    revision=os.environ["MODEL_REVISION"],
+    local_dir=os.environ["MODEL_DIR"],
+    allow_patterns=["rl_agent_config.json", "model.safetensors", "tokenizer/*", "encoder/*"],
+)
+PY
+python scripts/prepare_data.py --revision "$DATASET_REVISION" --out-dir "$XL_DATA_DIR"
+export PYTHON="$PWD/.venv/bin/python"
 bash scripts/run_ab_compare.sh
 ```
 
-数据下载和默认模型下载均未锁定 revision；重跑前应记录上游版本与文件哈希。训练入口会调用上游的 tokenizer 配置修复函数，该函数可能修改模型目录中的 `tokenizer/tokenizer_config.json`；默认下载目录是 Hugging Face 共享缓存。若需保护共享缓存，先准备一份独立模型副本，再运行 `MODEL_DIR=/path/to/model bash scripts/run_ab_compare.sh`；直接运行训练入口时使用 `--model-dir`。脚本默认使用当前环境中的 `python`，也可设置 `PYTHON` 指定解释器；在 Linux 上按 `/proc/meminfo` 检查可用内存，默认至少 50 GiB，可通过 `MIN_AVAILABLE_GIB` 调整。该检查只在启动前执行，不是训练期间的持续内存监控。为避免覆盖，已有 `runs/rlcd`、`runs/soft-ce` 或对应日志时脚本会退出。上游当前源码和历史运行的精确提交未核实，上述命令是复现路径，不保证数值完全一致。
+模型下载到独立目录，因为上游 tokenizer 修复函数可能改写 `tokenizer/tokenizer_config.json`。数据和运行结果也用独立目录；请为每次运行更改 `XL_DATA_DIR` / `XL_OUT_DIR`，脚本不会覆盖已有的 arm 输出。Linux 启动前检查可用内存，默认至少 50 GiB，可通过 `MIN_AVAILABLE_GIB` 调整；这是启动门槛，不是训练期间的持续监控。完整训练每臂约需 26 分钟，两臂串行运行约 52 分钟，实测时间受设备和系统负载影响。
 
-数据准备已在 Linux aarch64、Python 3.12 和 datasets 5.2.0 下运行，生成 1200 条训练案例及 400 条测试案例；此次没有验证 RLCD 训练。数据准备会在下载前检查并排他创建两份 JSONL；任一目标已存在时不会覆盖。若下载或转换中断，输出可能为空或不完整，保留需要的文件后选择新目录重新准备。`run_ab_compare.sh` 固定读取本目录的 `data/typed_decisions_train.jsonl` 和 `data/typed_decisions_test.jsonl`；改用其他输出目录时，须先确认数据完整，再在一个新的实验工作副本中放到这两个路径。
+数据准备会先检查并排他创建两份 JSONL；任一目标已存在就停止。如果下载或转换中断，可能留下不完整文件，保留需用内容并换一个新目录重试。`run_ab_compare.sh` 通过 `XL_DATA_DIR` 和 `XL_OUT_DIR` 使用指定数据与结果目录。此次固定修订生成的训练集和测试集 SHA-256 分别为 `6c84f9a369e25a14c5ae47fc567cc86553f56bac128efb48127a94971d77dcc2` 与 `0c6712fc6657dca6371ab96863b3c8f1306a67631141623ea98d066fabbd58c4`；复现后可用 `sha256sum` 核对。
 
 ## 文件
 
@@ -73,15 +93,28 @@ rlcd-policy/
 │   ├── run_finetune.py        # 单卡训练入口（--loss rlcd / soft-ce 对照臂）
 │   └── run_ab_compare.sh      # 一键 A/B 对照（两臂串行 + 并排对比）
 ├── data/                      # 运行时准备的 JSONL 数据集
-├── evidence/                  # 已保存的三组实验记录
+├── evidence/                  # 已保存的运行记录及干净环境 GPU A/B 证据
 └── runs/                      # 运行时生成的 checkpoint 与 train_report.json
 ```
 
-## 已跑出的结果（seed 0，held-out 2000 题）
+## 2026-11-15：新环境完整 GPU A/B 结果
 
-RLCD 两次运行的 top-1 参考标签一致率为 0.7510 和 0.7700；soft-ce 单次为 0.7855。数据来自合成案例，标签是教师模型生成的软分布，并非真实事件结果；ECE 和 brier 也针对参考分布，不能证明现实概率校准。现存上游实现按展开后的题目划分训练与校准，同案例可能跨越两者。两次 RLCD 运行
-记录的配置和 seed 相同，但差异原因尚未定位。现有重复次数不足以判断两种损失的普遍优劣，
-也不足以证明它们等价。RLCD 两次相对于参考标签的 ECE 数值低于 soft-ce，仍需多次重复才能判断稳定性。
+在新建的隔离环境中，RLCD 和 soft-ce 各训练 4 个 epoch，并在同一组 2,000 道 held-out 问题上评估。两臂使用相同 seed、模型、数据和训练超参，唯一预期差异是 loss。每臂完成 352 次优化器更新。
+
+| 指标（微调后） | RLCD | soft-ce | 更低者 |
+|---|---:|---:|---|
+| 与教师参考标签 top-1 一致率 | 0.7220 | 0.7815 | — |
+| ECE | 0.1071 | 0.1464 | RLCD |
+| 多分类 Brier | 0.0753 | 0.0508 | soft-ce |
+| top-1 Brier | 0.1792 | 0.1685 | soft-ce |
+| 平均置信度 | 0.6151 | 0.6351 | — |
+| 最终评估 loss | 0.9019 | 0.8581 | soft-ce |
+
+这次单次对照中，soft-ce 的准确率和 Brier 更好，RLCD 的 ECE 更低；每种方法只有一个新增运行，不能据此判断稳定优势。数据为合成案例，软标签由教师模型生成，指标反映对参考分布的拟合，不能证明真实场景的概率校准。上游训练代码还报告 `action`、`urgency` 和 `disposition` 的 schema 冲突，并保留首次遇到的定义；RLCD 代码报告学习率调度器先于优化器更新的警告，可能跳过首个学习率值。两臂还出现 Transformers 梯度检查点 API 弃用警告。证据见[干净环境完整 GPU A/B 记录](evidence/clean-gpu-ab-2026-11-15.json)。
+
+## 既有运行结果（seed 0，held-out 2000 题）
+
+早期记录中两次 RLCD 运行的 top-1 参考标签一致率为 0.7510 和 0.7700；一次 soft-ce 运行是 0.7855。这些早期记录没有锁定本次使用的数据集和模型 revision，故与上面的固定 revision 新环境对照分开保留，不直接合并比较。数据来自合成案例，标签是教师模型生成的软分布，并非真实事件结果；ECE 和 Brier 也针对参考分布，不能证明现实概率校准。现存上游实现按展开后的题目划分训练与校准，同案例可能跨越两者。两次早期 RLCD 运行记录的配置和 seed 相同，但差异原因尚未定位。把早期记录与本次结果合起来看，运行次数仍不足以判断两种损失的普遍优劣或稳定性，也不足以证明它们等价。
 与外部结果的比较受评测口径及可追溯证据限制，不能将标注者一致性直接视为能力上限。
 详见 [RLCD 微调报告](../../../docs/zh/decision-models/RLCD微调报告.md)；历史对照约 54 分钟，重跑耗时取决于环境。
 

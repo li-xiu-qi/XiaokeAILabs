@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-15",
+  "experiment": "recorded-media full-duplex interruption probe, follow-up run",
+  "model": "MiniCPM-o 4.5",
+  "device": "NVIDIA GB10, single device",
+  "environment": {
+    "python": "3.12.3",
+    "torch": "2.11.0+cu130",
+    "torchaudio": "2.11.0+cu130",
+    "torchcodec": "0.15.0+cu130",
+    "transformers": "4.51.0",
+    "fastapi": "0.163.0",
+    "websockets": "17.4",
+    "stepaudio2-minicpmo": "0.1.1",
+    "cuda": "13.0",
+    "pip_check": "passed",
+    "torchcodec_ffmpeg_decode": "passed",
+    "cuda_available": true
+  },
+  "preparation": {
+    "python_environment": "new isolated virtual environment for this run",
+    "ffmpeg_runtime": "FFmpeg 6.1.1 arm64 libraries unpacked to an experiment-local prefix",
+    "cached_packages_used": true,
+    "cold_cache_install_verified": false,
+    "model_weights_downloaded": false
+  },
+  "protocol": {
+    "client_chunk_ms": 160,
+    "initial_input_chunks": 25,
+    "interruption_input_chunks": 25,
+    "assistant_audio_chunks_before_interruption": 1,
+    "assistant_audio_chunks_after_interruption_started": 2,
+    "listen_events_after_interruption": 11,
+    "first_assistant_audio_ms_from_session_start": 15300.5,
+    "interruption_started_ms_from_session_start": 15302.8,
+    "last_assistant_audio_delta_ms_after_interruption": 8422.5,
+    "predeclared_stop_threshold_ms": 2000,
+    "audio_output_duration_ms": 3000.0,
+    "audio_output_rms": 0.0751
+  },
+  "run_completion": {
+    "environment_setup": "passed",
+    "cuda_decode_precheck": "passed",
+    "services_cleanup": "passed",
+    "original_wrapper_summary": "reported ok; it checked process exit codes and a transport-level probe flag, not the predeclared stop threshold",
+    "corrected_acceptance_verdict": "not_passed"
+  },
+  "reason": "Listen events followed interruption input, but the last server audio delta arrived 8422.5 ms after interruption began, beyond the 2000 ms threshold.",
+  "scope": "A follow-up run using fixed prerecorded audio/video through the MiniCPM-o-Demo protocol. Audio deltas are server events and do not establish playback stop time or human-perceived latency. No live microphone, speaker or human interruption was tested. This is not a Higgs Realtime Duplex reproduction."
+}

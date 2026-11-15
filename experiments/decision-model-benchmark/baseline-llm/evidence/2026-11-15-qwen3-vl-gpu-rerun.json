@@ -1,0 +1,74 @@
+{
+  "experiment": "decision-model-benchmark/baseline-llm",
+  "run_date": "2026-11-15",
+  "status": "passed",
+  "entry_point": "qwen4b-latency.py",
+  "environment": {
+    "machine_class": "DGX Spark",
+    "hardware": "NVIDIA GB10",
+    "architecture": "Linux aarch64",
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "cuda": "13.2",
+    "transformers": "5.22.2",
+    "accelerate": "1.15.0",
+    "environment": "previously created isolated baseline-clean-install environment"
+  },
+  "model": {
+    "repo_id": "Qwen/Qwen3-VL-4B-Instruct",
+    "revision": "ebb281ec70b05090aa6165b016eac8ec08e71b17",
+    "dtype": "bfloat16",
+    "device": "cuda"
+  },
+  "run": {
+    "benchmark_samples_per_case": 30,
+    "warmup_runs": 3,
+    "model_load_seconds": 442.23,
+    "model_resident_gib": 8.27,
+    "cuda_peak_allocated_gib": 8.34,
+    "note": "First run downloaded approximately 8.3 GB of weights; the logged load duration includes download and model load."
+  },
+  "results_p50_ms": [
+    {
+      "language": "en",
+      "format": "minimal",
+      "prompt_tokens": 78,
+      "generated_tokens_average": 2,
+      "prefill": 47.84,
+      "full": 98.78,
+      "decode": 51.23,
+      "empty_outputs": 0
+    },
+    {
+      "language": "en",
+      "format": "json",
+      "prompt_tokens": 95,
+      "generated_tokens_average": 29,
+      "prefill": 49.06,
+      "full": 1410.73,
+      "decode": 1361.46,
+      "empty_outputs": 0
+    },
+    {
+      "language": "zh",
+      "format": "minimal",
+      "prompt_tokens": 91,
+      "generated_tokens_average": 2,
+      "prefill": 48.95,
+      "full": 100,
+      "decode": 51.18,
+      "empty_outputs": 0
+    },
+    {
+      "language": "zh",
+      "format": "json",
+      "prompt_tokens": 111,
+      "generated_tokens_average": 23,
+      "prefill": 50.41,
+      "full": 1123.87,
+      "decode": 1073.09,
+      "empty_outputs": 0
+    }
+  ],
+  "scope": "Full four-case latency benchmark, 30 measured calls per case after 3 warmups. This run does not by itself establish a paired comparison with Laya because the comparison was not rerun under the same run conditions."
+}

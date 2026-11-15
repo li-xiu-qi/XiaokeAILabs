@@ -8,9 +8,11 @@ On 2026-11-15, an NVIDIA GB10 run with Python 3.12, PyTorch 2.15.0+cu132, Transf
 
 After that correction, word error rate on the same test samples was **3.79% → 3.79%**, so no improvement was observed. The earlier implementation mistakenly masked the end token and produced 5.68%; that is not the final result. The test is small, and Whisper pretraining may have included LibriSpeech; it is not a new blind test and does not establish a general effect. Evaluation used batch size 2 and produced an attention-mask warning; interpret these numbers accordingly. The workflow and parameters below support reproduction, but identical numerical results are not guaranteed.
 
-The training run used a dedicated virtual environment, but its original creation method was not recorded. A separate clean virtual environment was later installed and checked on an NVIDIA GB10 (Linux aarch64) system using the setup below: Python 3.12.3, PyTorch 2.15.0+cu132, Transformers 5.16.1, Datasets 5.2.0, SoundFile 0.14.0, jiwer 4.0.0, NumPy 2.5.4 and tqdm 4.70.1. `pip check` found no conflicts, imports succeeded and CUDA detected the NVIDIA GB10. This setup check did not download the model or dataset and did not run training.
+The original full run used a dedicated virtual environment, but its creation process was not recorded. A dependency-only clean-install check followed; the end-to-end clean-environment rerun above then added the pinned model and data downloads, training and evaluation. The validated direct dependencies were Python 3.12.3, PyTorch 2.15.0+cu132, Transformers 5.16.1, Datasets 5.2.0, SoundFile 0.14.0, jiwer 4.0.0, NumPy 2.5.4 and tqdm 4.70.1. `pip check`, imports and CUDA checks passed.
 
 A separate one-shot smoke run used 8 training and 4 test samples, completed 4 GPU updates, and reported WER of 0.87% both before and after fine-tuning. It checks the end-to-end entry point only; it is too small to assess model quality.
+
+A further end-to-end rerun started from a newly created virtual environment: dependency installation and `pip check` passed, CUDA and BF16 were available, and the workflow completed with 64 training samples, 16 test samples, 32 bf16 GPU updates, and final training loss 0.4448. Baseline and fine-tuned WER were both 3.79%, with no observed improvement. The environment, model and dataset revisions match the run described above. See the sanitized [run evidence](evidence/clean-env-gpu-smoke-2026-11-15.json). This verifies training and evaluation after a clean install; the small sample does not establish the effect of larger-scale training.
 
 Fine-tune a public `openai/whisper-small` (or `whisper-tiny`) model on clean train/test shards of `openslr/librispeech_asr`, and compare word error rate (WER) before and after fine-tuning on the same test set. All scripts live in this directory and only touch this directory plus paths given via environment variables; nothing else in the repository is required.
 
@@ -57,7 +59,17 @@ python -c "import torch; print(torch.__version__, torch.cuda.is_available(), tor
 python -c "import transformers, datasets, soundfile, jiwer; print('imports ok')"
 ```
 
-- Clean-install check: On 2026-11-15, a new isolated virtual environment on an NVIDIA GB10 (Linux aarch64) system was installed using the PyTorch index and this `requirements.txt`; `pip check`, imports and the CUDA check passed. This validation did not download the model or dataset or run training.
+- Clean-install and end-to-end check: On 2026-11-15, a new isolated virtual environment on an NVIDIA GB10 (Linux aarch64) system was installed using the PyTorch index and this `requirements.txt`; `pip check`, imports and CUDA/BF16 checks passed. The pinned model and dataset were then downloaded and the full preparation, 32-update GPU fine-tuning, baseline and post-fine-tuning evaluation completed. Rerun with fresh external data and output directories:
+
+```bash
+export XL_DATA_DIR=/path/to/asr-clean-data/run-001
+export XL_OUT_DIR=/path/to/asr-clean-output/run-001
+export XL_RUN_ID=run-001
+export XL_REQUIRE_EXTERNAL_ENV=1
+bash scripts/clean_env_gpu_smoke.sh
+```
+
+The script creates its virtual environment and model/data cache under `XL_DATA_DIR`, saves results under `XL_OUT_DIR`, and refuses to overwrite an existing environment or output directory.
 - Direct dependencies are pinned to the validated versions; transitive dependencies do not have a complete lock file yet. Whisper's generate arguments differ across transformers 4.x and 5.x; recheck output if upgrading.
 
 ## Model and data sources

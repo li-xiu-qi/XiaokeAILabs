@@ -10,7 +10,9 @@
 
 同日还在独立环境使用 `run.sh all` 完成了一次端到端冒烟：8 条训练、4 条测试，4 次 GPU 更新，基线与微调后 WER 均为 0.87%。该次仅验证一键流程，样本太少，不用于判断微调效果。
 
-训练运行使用独立虚拟环境；其最初创建方式没有留档。后来在 NVIDIA GB10（Linux aarch64）上另建全新虚拟环境，按下方命令安装并验证：Python 3.12.3、PyTorch 2.15.0+cu132、Transformers 5.16.1、Datasets 5.2.0、SoundFile 0.14.0、jiwer 4.0.0、NumPy 2.5.4、tqdm 4.70.1；`pip check` 无依赖冲突，导入正常，CUDA 可见 NVIDIA GB10。干净安装验证没有下载模型或数据，也没有运行训练。
+随后又在新建的独立虚拟环境中，从安装依赖开始重新跑完整流程：`pip check` 通过，CUDA/BF16 可用；64 条训练、16 条测试，GPU bf16 微调 32 步，最终 loss 为 0.4448。基线和微调后 WER 均为 3.79%，没有观察到改善。环境、模型和数据版本与本节开头一致。脱敏结果见 [`evidence/clean-env-gpu-smoke-2026-11-15.json`](evidence/clean-env-gpu-smoke-2026-11-15.json)。这补齐了“全新环境安装后实际完成训练和评估”的验证；小样本结果仍不能说明更大数据训练的效果。
+
+最初的完整训练使用独立虚拟环境，但其创建过程没有留档。后来先单独验证了依赖安装；随后上方所述全新环境复跑又补上固定模型和数据的下载、训练及评估。验证过的直接依赖版本为 Python 3.12.3、PyTorch 2.15.0+cu132、Transformers 5.16.1、Datasets 5.2.0、SoundFile 0.14.0、jiwer 4.0.0、NumPy 2.5.4 和 tqdm 4.70.1；`pip check` 无冲突，导入与 CUDA 检查通过。
 
 用公开的 `openai/whisper-small`（或 `whisper-tiny`）与 `openslr/librispeech_asr` 的 clean 训练/测试分片，做一次可复现的英文 ASR 微调，并在同一测试集上比较微调前后的词错误率（WER）。全部脚本位于本目录，只读写本目录与通过环境变量指定的目录，不依赖仓库其他部分。
 
@@ -56,7 +58,17 @@ python -c "import torch; print(torch.__version__, torch.cuda.is_available(), tor
 python -c "import transformers, datasets, soundfile, jiwer; print('imports ok')"
 ```
 
-- 从零安装核对：2026-11-15 在 NVIDIA GB10（Linux aarch64）上新建独立虚拟环境，使用本节 PyTorch 索引与 `requirements.txt` 完成依赖安装；`pip check` 通过，导入和 CUDA 检查通过。该验证未下载模型或数据，也未运行训练。
+- 从零安装与端到端复核：2026-11-15 在 NVIDIA GB10（Linux aarch64）上新建独立虚拟环境，使用本节 PyTorch 索引与 `requirements.txt` 安装后，`pip check`、导入和 CUDA/BF16 检查通过；随后固定模型和数据版本，完成下载、数据准备、32 步 GPU 微调、基线和微调后评估。可用下面命令重新执行；请为每次运行提供全新的外部数据和输出目录：
+
+```bash
+export XL_DATA_DIR=/path/to/asr-clean-data/run-001
+export XL_OUT_DIR=/path/to/asr-clean-output/run-001
+export XL_RUN_ID=run-001
+export XL_REQUIRE_EXTERNAL_ENV=1
+bash scripts/clean_env_gpu_smoke.sh
+```
+
+脚本会在 `XL_DATA_DIR` 下创建虚拟环境和模型/数据缓存，在 `XL_OUT_DIR` 下保存结果；会拒绝覆盖已存在的虚拟环境或输出目录。
 - Transformers 的 Whisper generate 参数（language/task 与 forced_decoder_ids）在 4.x 与 5.x 之间有差异；本清单固定到已验证版本，升级时应重新检查生成结果。
 
 ## 模型与数据来源

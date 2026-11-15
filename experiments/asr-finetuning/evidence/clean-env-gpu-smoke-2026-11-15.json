@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-15",
+  "result": "passed",
+  "hardware": "NVIDIA GB10",
+  "environment": {
+    "platform": "Linux",
+    "architecture": "aarch64",
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "cuda": "13.2",
+    "cuda_available": true,
+    "bfloat16_supported": true,
+    "transformers": "5.16.1",
+    "datasets": "5.2.0",
+    "soundfile": "0.14.0",
+    "jiwer": "4.0.0",
+    "pip_check": "passed"
+  },
+  "model": {
+    "id": "openai/whisper-small",
+    "revision": "973afd24965f72e36ca33b3055d56a652f456b4d"
+  },
+  "dataset": {
+    "id": "openslr/librispeech_asr",
+    "revision": "71cacbfb7e2354c4226d01e70d77d5fca3d04ba1",
+    "train_samples": 64,
+    "test_samples": 16
+  },
+  "training": {
+    "epochs": 1,
+    "batch_size": 2,
+    "optimizer_updates": 32,
+    "precision": "bf16",
+    "device": "cuda",
+    "final_average_loss": 0.4448
+  },
+  "wer_percent": {
+    "baseline": 3.7855,
+    "finetuned": 3.7855,
+    "delta_percentage_points": 0.0,
+    "improved": false,
+    "same_test_manifest": true
+  },
+  "limits": [
+    "Small smoke run; it does not establish general ASR quality or reproduce the full-data experiment.",
+    "Whisper pretraining overlap with LibriSpeech was not excluded.",
+    "Evaluation emitted an attention-mask warning; interpret the small-sample score accordingly."
+  ]
+}

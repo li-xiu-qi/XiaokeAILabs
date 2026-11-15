@@ -30,6 +30,8 @@ def main():
     ap.add_argument("--eval-data", default=None)
     ap.add_argument("--model-dir", default=None,
                     help="本地 checkpoint 目录；缺省从 HF 拉 convaiinnovations/laya 根目录")
+    ap.add_argument("--model-revision", default=os.environ.get("MODEL_REVISION"),
+                    help="Hugging Face checkpoint commit SHA; defaults to the current revision")
     ap.add_argument("--output-dir", required=True)
     ap.add_argument("--epochs", type=int, default=4)
     ap.add_argument("--loss", default="rlcd", choices=["rlcd", "soft-ce"],
@@ -49,6 +51,7 @@ def main():
     if model_dir is None:
         model_dir = snapshot_download(
             "convaiinnovations/laya",
+            revision=args.model_revision,
             allow_patterns=["rl_agent_config.json", "model.safetensors", "tokenizer/*", "encoder/*"],
         )
     _fix_tokenizer_config(model_dir)

@@ -4,8 +4,9 @@ import os, traceback
 os.environ["HF_HUB_OFFLINE"] = "1"
 from transformers import AutoTokenizer
 
-M = "Qwen/Qwen3-VL-4B-Instruct"
-tok = AutoTokenizer.from_pretrained(M)
+M = os.environ.get("QWEN_MODEL", "Qwen/Qwen3-VL-4B-Instruct")
+REVISION = os.environ.get("QWEN_MODEL_REVISION")
+tok = AutoTokenizer.from_pretrained(M, revision=REVISION)
 print("tokenizer class:", type(tok).__name__)
 print("has apply_chat_template:", hasattr(tok, "apply_chat_template"))
 print("chat_template 存在:", getattr(tok, "chat_template", None) is not None)

@@ -193,6 +193,11 @@ summary = {
         "interruption_started_ms": probe.get("interruption_started_ms"),
         "last_assistant_audio_delta_after_interrupt_ms": probe.get("last_assistant_audio_delta_after_interrupt_ms"),
         "listen_events_after_interrupt_ms": probe.get("listen_events_after_interrupt_ms"),
+        "session_ok": probe.get("session_ok"),
+        "listen_after_interruption_ok": probe.get("listen_after_interruption_ok"),
+        "stop_latency_ok": probe.get("stop_latency_ok"),
+        "stop_threshold_ms": probe.get("stop_threshold_ms"),
+        "failure_reason": probe.get("failure_reason"),
         "error": probe.get("error"),
     },
     "boundaries": {

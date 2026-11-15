@@ -1,4 +1,4 @@
-# CUDA 版 torch 请先按设备安装。依赖版本尚未完整验证或锁定。
+# CUDA 版 torch 请先按设备安装；这里保留无版本约束，避免替换平台对应的 CUDA 构建。
 torch
-transformers
-accelerate
+transformers==5.22.2
+accelerate==1.15.0

@@ -13,8 +13,13 @@ The direction can also be reversed: use an image to search text. Models that sup
 | Entry | Contents | Current scope |
 |---|---|---|
 | [BGE-VL image-text encoding example](bge-vl-demo/) | Score candidate similarity for image queries and composed image-text queries | API example with two candidate images; no retrieval benchmark or accuracy claim |
-| [Partial-layer CLIP fine-tuning code](clip-finetune/) | Flickr30k image-text pairs, bidirectional contrastive loss, and partial parameter freezing | Real-data small-sample GPU training and baseline comparison; full training not verified |
+| [Partial-layer CLIP fine-tuning code](clip-finetune/) | Flickr30k image-text pairs, bidirectional contrastive loss, and partial parameter freezing | Real-data small-sample GPU training and baseline comparison; clean-environment synthetic CUDA smoke check passed; full training not verified |
 
-Before running, enter the relevant sub-experiment and follow its environment instructions to install dependencies and prepare models and data.
+## Environment setup
+
+The two sub-experiments use different dependencies, so this parent directory has no shared Python environment manifest. Enter the relevant directory and follow its README and dependency file:
+
+- [BGE-VL example environment](bge-vl-demo/README.en.md#environment-setup): install [requirements.txt](bge-vl-demo/requirements.txt); install a device-compatible CUDA build of PyTorch separately.
+- [CLIP fine-tuning environment](clip-finetune/README.en.md#environment-setup): install [requirements.txt](clip-finetune/requirements.txt) and a device-compatible CUDA build of PyTorch separately. `requirements-historical.txt` is retained only as a record of the old environment.
 
 Embeddings retrieve candidates from a large collection. A reranker can then examine difficult top candidates individually for query relevance; reranking cannot recover images omitted by the first-stage retriever.

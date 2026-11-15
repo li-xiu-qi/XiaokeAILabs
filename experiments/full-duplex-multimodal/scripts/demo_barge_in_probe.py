@@ -22,10 +22,40 @@ from typing import Any
 
 INPUT_SAMPLE_RATE = 16000
 OUTPUT_SAMPLE_RATE = 24000
+INTERRUPTION_STOP_THRESHOLD_MS = 2000
 
 
 def now() -> float:
     return time.perf_counter()
+
+
+def evaluate_acceptance(
+    session_ok: bool,
+    listen_ok: bool,
+    last_audio_after_ms: float | None,
+) -> dict[str, Any]:
+    stop_latency_ok = bool(
+        last_audio_after_ms is not None
+        and last_audio_after_ms <= INTERRUPTION_STOP_THRESHOLD_MS
+    )
+    failures = []
+    if not session_ok:
+        failures.append("session did not provide all required input and pre-interruption audio")
+    if not listen_ok:
+        failures.append("no listen event was observed after interruption input began")
+    if not stop_latency_ok:
+        failures.append(
+            "last audio delta was absent or later than the "
+            f"{INTERRUPTION_STOP_THRESHOLD_MS} ms stop threshold"
+        )
+    return {
+        "success": session_ok and listen_ok and stop_latency_ok,
+        "session_ok": session_ok,
+        "listen_after_interruption_ok": listen_ok,
+        "stop_latency_ok": stop_latency_ok,
+        "stop_threshold_ms": INTERRUPTION_STOP_THRESHOLD_MS,
+        "failure_reason": "; ".join(failures) or None,
+    }
 
 
 def b64_float32(samples: np.ndarray) -> str:
@@ -336,14 +366,20 @@ async def run(args: argparse.Namespace) -> dict[str, Any]:
         interruption_ms = round((state.interruption_at - state.started) * 1000, 1)
         if state.last_audio_at is not None and state.last_audio_at >= state.interruption_at:
             last_audio_after_ms = round((state.last_audio_at - state.interruption_at) * 1000, 1)
+    session_ok = bool(
+        state.session_id
+        and state.input_initial
+        and state.input_interrupt
+        and state.first_audio_at
+    )
+    acceptance = evaluate_acceptance(
+        session_ok=session_ok,
+        listen_ok=bool(state.listen_after_interruption),
+        last_audio_after_ms=last_audio_after_ms,
+    )
     return {
         "probe": "demo_barge_in_probe",
-        "success": bool(
-            state.session_id
-            and state.input_initial
-            and state.input_interrupt
-            and state.first_audio_at
-        ),
+        **acceptance,
         "result_scope": "recorded-media protocol events; not live playback or human-perceived latency",
         "mode": "video",
         "client_chunk_ms": args.chunk_ms,

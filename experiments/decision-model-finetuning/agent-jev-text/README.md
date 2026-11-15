@@ -34,10 +34,12 @@ python3 -m venv .venv
 source .venv/bin/activate
 # 先按设备选择并安装兼容的 CUDA 版 PyTorch
 python -m pip install -r requirements.txt
+# 本次新环境验证使用该兼容版本
+python -m pip install "transformers==5.16.1"
 python -c "import torch, transformers, pyarrow; from transformers import Qwen3Model; print('torch:', torch.__version__, 'CUDA:', torch.cuda.is_available(), 'transformers:', transformers.__version__); assert torch.cuda.is_available() and torch.cuda.is_bf16_supported()"
 ```
 
-`requirements.txt` 含 PyTorch 和其他依赖的版本下限，并非完整锁定的环境；检查命令要求 CUDA 和 bfloat16 可用，但不代表显存足以完成全参训练。当前安装步骤尚未在新建环境中端到端验证。下载需预留模型、数据及训练产物的磁盘空间。下面的下载命令使用 `--mirror` 走 hf-mirror；不需要镜像时可去掉该参数。
+`requirements.txt` 含版本下限，并非完整锁定文件。2026-11-15 在新建隔离环境中验证了安装与 GPU 冒烟链路：Python 3.12.3、PyTorch 2.15.0+cu132、Transformers 5.16.1、PyArrow 26.0.1；`pip check` 通过，NVIDIA GB10 上 CUDA 与 bfloat16 均可用。由于 Transformers 最新版本与脚本依赖需显式选定兼容版本，这次验证在安装 requirements 后将 Transformers 固定到 5.16.1。检查仅用合成数据训练一步并确认参数改变，完成初始模型选优、校准和报告；不代表真实底座训练或 600 步训练在此干净环境中复现。该设备本次运行的摘要见 [环境与 GPU 冒烟记录](evidence/clean-env-gpu-smoke-2026-11-15.json)。CUDA/bfloat16 可用也不代表其他显卡有足够显存。下载需预留模型、数据及训练产物的磁盘空间。下面的下载命令使用 `--mirror` 走 hf-mirror；不需要镜像时可去掉该参数。
 
 一次 GPU 冒烟检查在 NVIDIA GB10、Python 3.12、PyTorch 2.15.0+cu132 和 Transformers 5.22.2 的现有环境中通过。检查用随机初始化的微型 Qwen3 和合成数据，实际训练一步并断言 GPU 参数变化，再执行初始模型选优、校准和报告；它不验证真实底座或历史指标。该环境的 `pip check` 对 `nvidia-cusparselt-cu13` 仍报平台兼容问题，不能视为全新环境安装通过。
 

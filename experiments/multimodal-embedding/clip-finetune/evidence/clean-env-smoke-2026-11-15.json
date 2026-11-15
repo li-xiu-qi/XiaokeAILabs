@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-15",
+  "purpose": "Fresh-environment CUDA smoke check for the CLIP fine-tuning loop; not a Flickr30k reproduction.",
+  "hardware": "NVIDIA GB10",
+  "environment": {
+    "platform": "Linux",
+    "architecture": "aarch64",
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "torchvision": "0.29.1+cu132",
+    "transformers": "5.23.0",
+    "datasets": "5.2.0",
+    "matplotlib": "3.11.2",
+    "pillow": "13.0.0",
+    "cuda": "13.2",
+    "cuda_available": true,
+    "bfloat16_supported": true,
+    "pip_check": "passed"
+  },
+  "model": "Random-initialized tiny CLIP created by the test harness; no pretrained checkpoint was downloaded.",
+  "data": "Synthetic image-text pairs; four samples per split.",
+  "check": {
+    "optimizer_steps": 2,
+    "weights_changed": true,
+    "validation_test_and_save": true,
+    "result": "passed"
+  },
+  "limits": [
+    "Processor, model loading, and data preparation were substituted in the smoke harness.",
+    "The run used FP32; it does not verify BF16 or pretrained-weight loading.",
+    "It does not validate Flickr30k processing or retrieval quality and does not reproduce the real-data run."
+  ]
+}

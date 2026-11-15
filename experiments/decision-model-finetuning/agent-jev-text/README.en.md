@@ -34,10 +34,12 @@ python3 -m venv .venv
 source .venv/bin/activate
 # First install a CUDA-enabled PyTorch build compatible with the device
 python -m pip install -r requirements.txt
+# This compatible version was used in the clean-environment verification
+python -m pip install "transformers==5.16.1"
 python -c "import torch, transformers, pyarrow; from transformers import Qwen3Model; print('torch:', torch.__version__, 'CUDA:', torch.cuda.is_available(), 'transformers:', transformers.__version__); assert torch.cuda.is_available() and torch.cuda.is_bf16_supported()"
 ```
 
-`requirements.txt` specifies minimum versions for PyTorch and other dependencies; it does not fully lock the environment. The check requires CUDA and bfloat16 support, but does not establish that the GPU has enough memory for full-parameter fine-tuning. The installation steps have not yet been verified end to end in a newly created environment. Reserve disk space for the model, data, and training outputs. The download commands below use `--mirror` to access hf-mirror; remove that option if no mirror is needed.
+`requirements.txt` specifies minimum versions and is not a complete lockfile. On 2026-11-15, installation and the GPU smoke path were verified in a newly created isolated environment: Python 3.12.3, PyTorch 2.15.0+cu132, Transformers 5.16.1, and PyArrow 26.0.1. `pip check` passed, and CUDA and bfloat16 were available on an NVIDIA GB10. Because the newest Transformers release was not compatible with this script path, the verified setup explicitly pins Transformers to 5.16.1 after installing the requirements. The check trained one step on synthetic data and confirmed a parameter update, then completed initial-model selection, calibration, and reporting. It does not reproduce real-backbone training or the 600-step run in this clean environment. See the [clean-environment GPU smoke record](evidence/clean-env-gpu-smoke-2026-11-15.json). CUDA and bfloat16 availability also does not establish that another GPU has enough memory for full-parameter fine-tuning. Reserve disk space for the model, data, and training outputs. The download commands below use `--mirror` to access hf-mirror; remove that option if no mirror is needed.
 
 A GPU smoke check passed in an existing environment on an NVIDIA GB10 with Python 3.12, PyTorch 2.15.0+cu132 and Transformers 5.22.2. It uses a randomly initialized miniature Qwen3 and synthetic data, checks that one CUDA training step changes a parameter, then runs initial-model selection, calibration and reporting. It does not verify the real backbone or historical metrics. `pip check` in that environment still reports a platform compatibility issue for `nvidia-cusparselt-cu13`, so a fresh installation is not verified.
 

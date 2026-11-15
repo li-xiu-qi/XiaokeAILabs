@@ -17,7 +17,7 @@ Laya 采用专用判别式架构，核心机制是内置双模型分支（英文
 - `laya-pin.py`：指定模型模式对照脚本。同一条中文输入跑自动路由、单请求 model= 覆盖（multilingual / english 强灌 / typed-decisions）、Router(default=) 五种模式，对比判定、置信度与路由理由。
 - `laya-common.py`：模型架构、token 序列构造与置信度算法的本地复刻实现，供源码级对照分析。
 
-## 运行与复现步骤
+## 环境准备与复现步骤
 
 历史运行使用 Laya 0.3.5 和 CUDA 版 PyTorch；请先在独立 Python 环境中按设备安装兼容的 PyTorch，并预留模型下载所需网络与磁盘空间。下面安装的是记录中的 Laya 版本，其他依赖未完整锁定，重跑结果取决于实际环境。
 
@@ -28,6 +28,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 # 先按设备选择并安装兼容的 CUDA 版 PyTorch
 python -m pip install -r requirements.txt
+python -m pip check
 python -c "import torch; print('torch:', torch.__version__, 'CUDA:', torch.cuda.is_available()); assert torch.cuda.is_available()"
 
 python test_laya.py
@@ -39,7 +40,7 @@ python laya-pin.py
 python laya-zh-en.py
 ```
 
-七个脚本曾在 aarch64 GB10（20 核 CPU，121 GB 统一内存，torch 2.14.0+cu130）上运行，结果摘录见 `../evidence/`。`test_laya.py` 适合作为第一个脚本；首次运行还需下载模型权重。上述新建环境命令尚未在全新环境中端到端验证，间接依赖与权重版本未锁定。
+七个脚本曾在 aarch64 GB10（20 核 CPU，121 GB 统一内存，torch 2.14.0+cu130）上运行，结果摘录见 `../evidence/`。2026-11-15 又在 NVIDIA GB10 上从空 Python 3.12.3 虚拟环境安装 Laya 0.3.5，`pip check` 通过，CUDA 可用；`test_laya.py` 成功加载模型并路由到 english 分支，返回 `billing`。该次只验证新环境的安装和最小真实模型推理，另外六个脚本没有在这个新环境重跑；传递依赖及模型 revision 仍未完整锁定。摘要见[干净环境冒烟记录](evidence/clean-env-smoke-2026-11-15.json)。
 
 **注意事项**：
 

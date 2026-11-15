@@ -1,0 +1,30 @@
+{
+  "experiment": "decision-model-benchmark/baseline-llm",
+  "run_date": "2026-11-15",
+  "status": "passed",
+  "entry_point": "scripts/clean_env_gpu_smoke.sh",
+  "environment": {
+    "hardware": "NVIDIA GB10",
+    "architecture": "Linux aarch64",
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "transformers": "5.22.2",
+    "accelerate": "1.15.0",
+    "fresh_virtual_environment": true,
+    "pip_check": "No broken requirements found."
+  },
+  "model": {
+    "repo_id": "Qwen/Qwen2.5-0.5B-Instruct",
+    "revision": "7ae557604adf67be50417f59c2c2f167def9a775"
+  },
+  "generation": {
+    "device": "cuda:0",
+    "bf16_supported": true,
+    "load_seconds": 8.39,
+    "prompt_tokens": 35,
+    "generated_tokens": 2,
+    "output": "Billing",
+    "cuda_peak_allocated_gib": 0.9533
+  },
+  "scope": "Fresh installation and one GPU generation smoke only; the default Qwen3-VL-4B benchmark and output quality were not evaluated."
+}

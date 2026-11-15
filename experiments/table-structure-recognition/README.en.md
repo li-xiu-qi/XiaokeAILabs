@@ -25,13 +25,13 @@ python -m pip install -r requirements.txt
 
 After installation, `python -m pip check` and `python -c "import torch, torchvision, transformers; from PIL import Image; print(torch.__version__, torchvision.__version__, transformers.__version__)"` check dependencies and imports only; they do not load the model.
 
-The [requirements.txt](requirements.txt) pins the direct Transformers 5.22.2 and Pillow 12.0.0 dependencies used by this experiment, but excludes `torch` and `torchvision`, which must be installed for the target platform. The assembly and robustness scripts below use only the standard library and do not require this dependency list. Transitive dependencies are not locked. Although these direct versions match the GB10 CUDA smoke recorded below, that run used layered dependencies; a from-scratch installation remains unverified. The script reads a local model and does not download it automatically. Obtain the complete fixed snapshot from the [SLANet+ model page](https://huggingface.co/PaddlePaddle/SLANet_plus_safetensors), including weights, configuration and image processor files:
+The [requirements.txt](requirements.txt) pins the direct Transformers 5.22.2 and Pillow 12.0.0 dependencies used by this experiment, but excludes `torch` and `torchvision`, which must be installed for the target platform. The assembly and robustness scripts below use only the standard library and do not require this dependency list. Transitive dependencies are not locked. The inference script reads a local model and does not download it automatically. Obtain the complete fixed snapshot from the [SLANet+ model page](https://huggingface.co/PaddlePaddle/SLANet_plus_safetensors), including weights, configuration and image processor files:
 
 ```bash
 python -c "from huggingface_hub import snapshot_download; snapshot_download('PaddlePaddle/SLANet_plus_safetensors', revision='e44d12b3fe695792170dd46623075f63d8544461', local_dir='.work/slanet-model')"
 ```
 
-On 2026-11-13, one snapshot download attempt hit read timeouts and HTTP 503 before inference and did not obtain a complete snapshot. A separate later CUDA smoke used model files already available on the device and verified the hash below. These are separate runs; the latter does not prove a fresh download succeeds. After downloading the fixed revision, confirm the config, image processor, and weights are complete, then verify the model hash. See the [download failure record](evidence/2026-11-13-model-download-failure.json).
+On 2026-11-13, one snapshot download attempt hit read timeouts and HTTP 503 before inference; see the [record for that attempt](evidence/2026-11-13-model-download-failure.json). A clean-environment CUDA rerun on 2026-11-15 successfully downloaded the pinned revision and verified the weight hash before inference. The two network outcomes are recorded separately; the earlier failure does not describe the current download result.
 
 The `model.safetensors` SHA-256 for this revision is `4455fa2a535b80738e0e0af2ca899f719efb8d6e1c7e7209cc5126f81607bf06`. Run from this experiment directory. Both `--out` paths must not already exist:
 
@@ -47,7 +47,17 @@ python scripts/slanet_table_smoke.py --model .work/slanet-model --out .work/slan
 python -c "import json; d=json.load(open('.work/slanet-gpu/result.json')); s=d['result']['structure']; print('device:', d['device'], 'rows:', s.count('<tr>'), 'cells:', s.count('<td></td>'))"
 ```
 
-On 2026-11-13, CUDA inference on one cropped synthetic table ran on Ubuntu 24.04 aarch64 with NVIDIA GB10, PyTorch 2.15.0+cu132, torchvision 0.29.1+cu130, Transformers 5.22.2, and Pillow 12.0.0. It printed `device: cuda rows: 4 cells: 12`. The run used layered dependencies and does not establish that a clean installation succeeds. It checks structure output for one synthetic image; it does not measure accuracy on real tables or reproduce the complete evaluation. The Transformers and Pillow versions match the current dependency list. The original CPU run used Transformers 5.17.0 in a separate historical environment.
+On 2026-11-15, a new virtual environment on Linux aarch64 with an NVIDIA GB10 installed PyTorch 2.15.0+cu132, torchvision 0.29.1+cu132, Transformers 5.22.2 and Pillow 12.0.0; `pip check`, the pinned model download and its weight hash check all passed. CUDA inference on one cropped synthetic table returned 4 rows and 12 cells, with a structure score of 0.99996 and first-forward time of about 0.430 seconds. This verifies the clean-environment installation, download and structure-prediction path; it does not measure real-table accuracy or reproduce the complete evaluation. Rerun with fresh external data and output directories:
+
+```bash
+export XL_DATA_DIR=/path/to/slanet-data/run-001
+export XL_OUT_DIR=/path/to/slanet-output/run-001
+export XL_RUN_ID=run-001
+export XL_REQUIRE_EXTERNAL_ENV=1
+bash scripts/clean_env_cuda_smoke.sh
+```
+
+The script creates the virtual environment, cache and model snapshot under `XL_DATA_DIR`, saves results under `XL_OUT_DIR`, and refuses to overwrite an existing environment or output directory. See the [clean-environment CUDA smoke evidence](evidence/2026-11-15-clean-env-gpu-smoke.json). The original CPU run used Transformers 5.17.0 in a separate historical environment.
 
 ### 2. Align text with the predicted structure and evaluate robustness
 
@@ -69,5 +79,6 @@ On 2026-11-14, both standard-library scripts ran in a newly created isolated Pyt
 Historical results are in `results/`. These commands write new outputs under the Git-ignored `.work/`; they refuse to overwrite existing files, so use new output paths for reruns. The historical `assembly_robustness_benchmark.json` did not check remaining empty slots in `all_slots_filled`, nor structure predictions in `structure_exact`; it cannot determine whether text is missing or extra structure rows were produced. The corrected checks on a new result use row counts and empty-slot counts from this sample without merged cells. This is still not a general measure of table-structure equivalence.
 ## Evidence
 
-- [2026-11-13 GB10 synthetic-table CUDA smoke](evidence/2026-11-13-gpu-synthetic-smoke.json): model and input hashes, package versions, structure score, and single-run forward time. This used layered dependencies and does not verify a clean installation.
+- [2026-11-15 clean-environment CUDA smoke](evidence/2026-11-15-clean-env-gpu-smoke.json): pinned model and input hashes, package versions, structure score, and single-run forward time.
+- [2026-11-13 GB10 synthetic-table CUDA smoke](evidence/2026-11-13-gpu-synthetic-smoke.json): earlier layered-environment record.
 - [2026-11-13 model download failure](evidence/2026-11-13-model-download-failure.json): one fixed-snapshot retrieval stopped before inference after timeouts and HTTP 503; a later successful inference used files already available on the device.

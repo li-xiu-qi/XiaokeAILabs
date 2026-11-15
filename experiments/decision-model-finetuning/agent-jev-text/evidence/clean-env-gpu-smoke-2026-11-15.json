@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-15",
+  "purpose": "Validate a newly created Python environment and the synthetic-data GPU smoke path; this is not a full fine-tuning reproduction.",
+  "hardware": "NVIDIA GB10 (DGX Spark)",
+  "environment": {
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "transformers": "5.16.1",
+    "pyarrow": "26.0.1",
+    "cuda_available": true,
+    "bfloat16_supported": true,
+    "pip_check": "No broken requirements found"
+  },
+  "check": {
+    "input": "Synthetic one-example smoke data and a randomly initialized miniature Qwen3 model",
+    "optimizer_step": "One CUDA optimizer step changed model weights",
+    "selection_calibration_report": "Completed",
+    "result": "Passed"
+  },
+  "limits": [
+    "The clean-environment smoke did not load the Qwen3-0.6B backbone.",
+    "It did not reproduce the historical 600-step training run or its metrics.",
+    "Transformers 5.16.1 was explicitly installed after requirements installation; requirements.txt remains a lower-bound list rather than a full environment lock.",
+    "One smoke run on one device does not establish compatibility or memory sufficiency on other GPUs."
+  ]
+}

@@ -16,7 +16,7 @@
 
 | 项 | 配置 |
 |---|---|
-| Strata 来源 | PR #3622，`ferstar/Strata` 的 `gb10-022` 分支 |
+| Strata 来源 | [Niko1221/Strata PR #3622](https://github.com/Niko1221/Strata/pull/3622)，固定获取 `refs/pull/3622/head` |
 | 固定提交 | `d891f006aaec64024513a1e55856afd992baaa94` |
 | 模型 | `ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF`，IQ3_S（83.62 GB，2 个 GGUF 分片） |
 | 硬件 | DGX Spark，GB10，20 核 ARM64，121 GiB 统一内存，sm_121 |
@@ -51,7 +51,7 @@ DGX Spark（GB10，121 GiB 统一内存，273 GB/s），Strata 源码构建（aa
 
 - [x] 引擎构建（2026-10-26）：aarch64 + CUDA 13.0 + sm_121，strata 0.1.47
 - [x] 模型部署：IQ3_S 83.62 GB，SHA-256 校验通过
-- [ ] 语义正确性：现存基准记录中多条输出被截断；17×23 的原始结果尚未找到，不能据此判定两引擎通过语义测试。
+- [x] 单请求语义 smoke（2026-11-15）：Strata 在 GPU 上回答 `17×23=391`；旧基准的答案质量仍未逐条复核。
 - [x] Strata 基准：生成 20.5-47.3 tok/s，prompt 49.1-166.3 tok/s，MTP 接受率 50-70%
 - [x] llama.cpp 对照：生成 11.0-16.0 tok/s，prompt 21.3-83.2 tok/s
 - [ ] 内存安全：既有记录称最低可用 61 GiB、无 mem-guard 事件，逐时采样证据尚待核对。
@@ -60,6 +60,12 @@ DGX Spark（GB10，121 GiB 统一内存，273 GB/s），Strata 源码构建（aa
 - [x] Qwen3.6 跨引擎补充测试（2026-10-26 22:28）：llama.cpp + MTP 为 65.5–87.0 tok/s；这组与 Strata 的投机配置不同。
 
 原始数据在 [evidence/](evidence/)（逐请求 JSON，含 timings 与 draft 统计；Qwen3.6 结果见 `qwen36-results.jsonl` 与 `llama-qwen36-results.jsonl`）。
+
+### 2026-11-15 GPU 语义 smoke
+
+在 DGX Spark（Ubuntu 24.04、CUDA 13.0、NVIDIA 驱动 580.173.02）上重新启动 Strata 0.1.47，并以 `nvidia-smi` 记录到 GPU 利用率从请求前的 0% 变为请求后的 88%。模型返回 `391`，语义检查通过。该次采用 `--expert-cache 4096`，并移除 `--ple-io ram`，使 PLE 表从 SSD 读取；请求使用 context 8192、temperature 0、`max_tokens=128`。启动日志记录主模型专家载入 46.84 GiB、GPU 专家缓存 10.16 GiB；GB10 使用统一内存，这些数字不是独立显存容量要求。
+
+请求共生成 74 token，服务报告生成速度 60.8 tok/s、prompt 处理速度 78.7 tok/s，草稿 token 接受 53/62。只有一条短请求，且使用了为内存余量调整的配置；这些数值仅记录本次 smoke，不是性能基准，不能与上文历史基准直接比较。模型、驱动和运行参数见下方复现步骤及其启动配置。
 
 ## 关键发现
 
@@ -114,6 +120,15 @@ cd "$STRATA_WORK_ROOT/upstream"
 ```bash
 bash scripts/run_benchmark.sh
 ```
+
+若只需确认 GPU 推理和基本算术输出，可运行下面的短时 smoke。它会自行启动 Strata、等待 API 就绪、发送一条 `17×23` 请求、保存摘要与 GPU 状态，并在结束时停止服务；需要 NVIDIA 驱动工具 `nvidia-smi`。启动配置使用 `--expert-cache 4096` 且不使用 `--ple-io ram`。该步骤不运行性能基准：
+
+```bash
+export STRATA_WORK_ROOT="/path/to/strata-work"
+bash scripts/smoke_gpu.sh
+```
+
+摘要写入 `$XL_OUT_DIR/summary.json`（受控运行）或 `$STRATA_WORK_ROOT/artifacts/gpu-smoke/summary.json`（本地运行）。
 
 llama.cpp 对照可按历史版本检出源码，并使用 CUDA 构建 `llama-server`。以下构建命令依据[对应提交的上游说明](https://github.com/ggml-org/llama.cpp/blob/ccc3646c63127e32ab8e2773290a1aded6dfb69c/docs/build.md)，只固定源码和示例选项；历史构建完整选项未留存，本命令尚未重跑：
 

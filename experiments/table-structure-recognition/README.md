@@ -25,13 +25,13 @@ python -m pip install -r requirements.txt
 
 安装后可执行 `python -m pip check` 和 `python -c "import torch, torchvision, transformers; from PIL import Image; print(torch.__version__, torchvision.__version__, transformers.__version__)"`；这只检查依赖与导入，不会加载模型。
 
-[requirements.txt](requirements.txt) 固定了本实验直接使用的 Transformers 5.22.2 和 Pillow 12.0.0，不含需按平台匹配安装的 torch 与 torchvision；后面的组装与鲁棒性脚本只用标准库，不需要安装该清单。传递依赖仍未锁定。虽然这组直接依赖版本与下方 GB10 CUDA 冒烟记录一致，但该次运行使用分层环境；从零安装整套依赖仍未验证。脚本只读取本地模型，不会自动下载。可从 [SLANet+ 模型页面](https://huggingface.co/PaddlePaddle/SLANet_plus_safetensors)获取固定版本的完整快照，包括权重、配置和图像处理器文件：
+[requirements.txt](requirements.txt) 固定了本实验直接使用的 Transformers 5.22.2 和 Pillow 12.0.0，不含需按平台匹配安装的 torch 与 torchvision；后面的组装与鲁棒性脚本只用标准库，不需要安装该清单。传递依赖仍未锁定。脚本只读取本地模型，不会自动下载。可从 [SLANet+ 模型页面](https://huggingface.co/PaddlePaddle/SLANet_plus_safetensors)获取固定版本的完整快照，包括权重、配置和图像处理器文件：
 
 ```bash
 python -c "from huggingface_hub import snapshot_download; snapshot_download('PaddlePaddle/SLANet_plus_safetensors', revision='e44d12b3fe695792170dd46623075f63d8544461', local_dir='.work/slanet-model')"
 ```
 
-2026-11-13 的一次模型快照下载尝试在推理开始前遇到读取超时与 HTTP 503，未取得完整快照；之后单独的 CUDA 冒烟使用设备上已有的模型文件并核对了下列哈希。两次结果分开记录，后者不证明全新下载成功，详情见[下载失败记录](evidence/2026-11-13-model-download-failure.json)。下载固定 revision 后，应确认配置、预处理器与权重文件完整，再核对模型哈希。
+2026-11-13 的一次模型快照下载尝试在推理开始前遇到读取超时与 HTTP 503，未取得完整快照，见[当次失败记录](evidence/2026-11-13-model-download-failure.json)。2026-11-15 的干净环境 GPU 复跑成功下载了固定 revision，并在推理前核对权重哈希；两次网络结果分别记录，不把早先失败描述为当前仍无法下载。
 
 该版本 `model.safetensors` 的 SHA-256 为 `4455fa2a535b80738e0e0af2ca899f719efb8d6e1c7e7209cc5126f81607bf06`。以下命令从本实验目录执行，两个 `--out` 必须是尚不存在的目录：
 
@@ -47,7 +47,17 @@ python scripts/slanet_table_smoke.py --model .work/slanet-model --out .work/slan
 python -c "import json; d=json.load(open('.work/slanet-gpu/result.json')); s=d['result']['structure']; print('device:', d['device'], 'rows:', s.count('<tr>'), 'cells:', s.count('<td></td>'))"
 ```
 
-2026-11-13 在 Ubuntu 24.04 aarch64、NVIDIA GB10 上，用 PyTorch 2.15.0+cu132、torchvision 0.29.1+cu130、Transformers 5.22.2 和 Pillow 12.0.0 对一张裁剪的合成表格运行了 CUDA 推理，输出 `device: cuda rows: 4 cells: 12`。该次运行使用分层依赖环境，不能证明全新环境安装成功；它只验证这张合成图的结构输出，不衡量真实表格准确率，也不复现完整评测。该次运行中的 Transformers 和 Pillow 版本与当前依赖清单一致，但从零安装仍未验证。原 CPU 运行使用 Transformers 5.17.0，属于另一份历史环境记录。
+2026-11-15 在 Linux aarch64、NVIDIA GB10 上，新建虚拟环境并安装 PyTorch 2.15.0+cu132、torchvision 0.29.1+cu132、Transformers 5.22.2 和 Pillow 12.0.0；`pip check`、固定模型快照下载及权重哈希核对均通过。对一张裁剪的合成表格完成 CUDA 推理，输出 4 行、12 个单元格，结构分数 0.99996，首次前向耗时约 0.430 秒。这只验证干净环境中的安装、下载和结构预测流程，不衡量真实表格准确率，也不复现完整评测。使用新外部目录重跑：
+
+```bash
+export XL_DATA_DIR=/path/to/slanet-data/run-001
+export XL_OUT_DIR=/path/to/slanet-output/run-001
+export XL_RUN_ID=run-001
+export XL_REQUIRE_EXTERNAL_ENV=1
+bash scripts/clean_env_cuda_smoke.sh
+```
+
+脚本在 `XL_DATA_DIR` 下建立虚拟环境、缓存和模型快照，在 `XL_OUT_DIR` 下保存结果；会拒绝覆盖已有虚拟环境或输出目录。详细结果见[干净环境 CUDA 冒烟证据](evidence/2026-11-15-clean-env-gpu-smoke.json)。原 CPU 运行使用 Transformers 5.17.0，属于另一份历史环境记录。
 
 ### 2. 文字与结构组装对齐与鲁棒性评测
 
@@ -69,5 +79,6 @@ python scripts/eval_table_reconstruction.py --output .work/assembly-robustness.j
 历史结果保存在 `results/`。上述命令将新结果写到 Git 忽略的 `.work/`，输出文件已存在时会拒绝覆盖；重新运行请使用新的输出路径。 历史 `assembly_robustness_benchmark.json` 的 `all_slots_filled` 未检查剩余空槽，`structure_exact` 未检查结构预测，不能用于判断缺字或多余结构行；修正后新结果按这张无合并单元格样例的行数和空槽数检查，仍不是通用表格结构等价指标。
 ## 证据
 
-- [2026-11-13 GB10 合成表格 CUDA 冒烟记录](evidence/2026-11-13-gpu-synthetic-smoke.json)：包含模型与输入哈希、软件版本、结构得分和单次前向耗时。它使用分层依赖环境，不代表全新环境安装验证。
+- [2026-11-15 干净环境 CUDA 冒烟记录](evidence/2026-11-15-clean-env-gpu-smoke.json)：包含固定模型与输入哈希、软件版本、结构得分和单次前向耗时。
+- [2026-11-13 GB10 合成表格 CUDA 冒烟记录](evidence/2026-11-13-gpu-synthetic-smoke.json)：较早的分层环境记录。
 - [2026-11-13 模型下载失败记录](evidence/2026-11-13-model-download-failure.json)：一次获取固定快照的尝试因超时和 503 在推理前终止；后续成功推理使用了设备已有文件。

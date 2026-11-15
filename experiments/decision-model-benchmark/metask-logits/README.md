@@ -4,7 +4,7 @@
 
 本目录对应 `wayfind/metask-jev-4b-policy-mix` 模型的实机评测与复现工程。
 
-该模型基于 Qwen3.5-4B 微调，技术核心是把候选答案约束为单个 Token（A 到 Z），直接读取输出层对应 Token 的 Logits 并归一化为概率。它在中文分类测试集上 20 条全对，是四组方案里唯一的满分，常驻显存 8.58 GB。
+该模型基于 Qwen3.5-4B 微调，技术核心是把候选答案约束为单个 Token（A 到 Z），直接读取输出层对应 Token 的 Logits 并归一化为概率。2026-11-15 在 NVIDIA GB10 上的新环境复跑中，中文测试集 20 条全对，CUDA 显存峰值为 8.65 GB。该结果只反映这组短测试题。
 
 ## 文件组成与作用
 
@@ -41,24 +41,41 @@ PY
 
 ## 部署与复现步骤
 
-脚本需要 Bash、Python 3、curl、网络和足够的模型存储空间；历史性能测试使用 CUDA。安装脚本会在 `~/metask-jev` 创建或复用虚拟环境、安装和升级包，从上游 main 下载评分器，并下载约 8.5 GB 模型后执行一次推理。除 PyTorch 外的直接依赖列在 `requirements.txt`，大部分未锁版本；上游代码和模型也未锁定，不能保证重建相同环境。Linux 下默认先尝试 CUDA 12.1 的 PyTorch 下载源，需核对是否适配自己的设备。已有同名目录时应先检查其中内容。此安装路径尚未在全新环境端到端验证。
+脚本需要 Linux、Bash、Python 3.12、网络、CUDA 版 PyTorch 和约 8.5 GB 模型存储空间；最低内存尚未验证。2026-11-15 已在 NVIDIA GB10 / Linux aarch64、Python 3.12.3 的新建虚拟环境中完成安装与 GPU 基准。安装器默认在 `~/metask-jev` 创建或复用虚拟环境，也可用 `METASK_DIR` 指向独立位置。评分器从仓内固定副本安装，不再下载上游 `main`。本次模型固定为 `wayfind/metask-jev-4b-policy-mix@ea20fe85b28733b1522721dec119bec50947a869`；直接依赖版本固定在 `requirements.txt`，PyTorch 单独按设备安装，并由约束文件防止其他依赖替换它。模型与缓存分别由 `METASK_DIR`、`HF_HOME` 控制。
 
 从本目录按顺序执行初始化与测试脚本：
 
 ```bash
+export XL_DATA_DIR="$PWD/.work/data"
+export XL_OUT_DIR="$PWD/.work/out/run-001"
+mkdir -p "$XL_OUT_DIR"
+export METASK_DIR="$XL_DATA_DIR/metask-jev"
+export HF_HOME="$XL_DATA_DIR/huggingface"
+export HF_ENDPOINT="https://hf-mirror.com"  # 网络可直连官方 Hub 时可改为 https://huggingface.co
+export METASK_MODEL_REVISION="ea20fe85b28733b1522721dec119bec50947a869"
+export TORCH_REQUIREMENT="torch==2.15.0+cu132"
+export TORCH_INDEX_URL="https://download.pytorch.org/whl/cu132"
 bash metask-install.sh
-"$HOME/metask-jev/.venv/bin/python" metask-bench.py
+"$METASK_DIR/.venv/bin/python" metask-bench.py | tee "$XL_OUT_DIR/benchmark.log"
 ```
 
-**运行依赖说明**：`metask-bench.py` 运行时会直接调用安装脚本初始化在 `~/metask-jev` 的评分器模块。安装脚本在子进程中启用虚拟环境，退出后不会改变当前 shell，因此测试命令显式使用该虚拟环境的解释器。必须完整执行 `metask-install.sh` 初始化环境与权重后，方可启动测试。
+这里的 PyTorch 命令适用于本次记录的 NVIDIA GB10 / Linux aarch64 组合；其他设备需先按 PyTorch 官方说明选可用构建，再设置 `TORCH_REQUIREMENT` 与 `TORCH_INDEX_URL`。`XL_DATA_DIR`、`HF_HOME` 和 `METASK_DIR` 需指向新的隔离目录，避免复用其他实验的环境或缓存。安装脚本在子进程中启用虚拟环境，退出后不会改变当前 shell，因此基准命令显式使用该环境的解释器。安装器会创建依赖约束、检查依赖一致性、复制固定评分代码、下载指定模型版本并运行一次 GPU 自测；随后基准输出保存在日志中。
+
+PyTorch `2.15.0+cu132` 在 Linux aarch64 上固定依赖 NVIDIA `cuSPARSELt 0.8.1`。该组件的 NVIDIA `manylinux2014_sbsa` 轮子标签会被当前 pip 的 `pip check` 报为平台不匹配；安装器只在版本、架构和错误文本都完全匹配时执行额外检查，确认该 ARM 库能加载且 CUDA 设备可用。其他依赖冲突仍会让安装失败。实测还提示 `causal_conv1d` 与 `flash-linear-attention` 未安装，会退回较慢的 PyTorch 实现；本次延迟结果包含这一条件。
+
+`requirements.txt` 固定直接依赖，传递依赖仍由 pip 解析。本次新环境安装、模型类导入、单例 GPU 自测和下方基准均已完成。
 
 ## 实测指标与数据说明
 
-在本机测试环境下的实测数据：
+2026-11-15 在 NVIDIA GB10、Linux aarch64、Python 3.12.3、PyTorch `2.15.0+cu132`、Transformers `5.22.2` 上的新环境实测：
 
-- **端到端延迟**：单次分类判定的中位数 133.5 ms（英文）与 133.7 ms（中文）。
-- **业务准确率**：英文工单 20 条命中 19 条；中文工单 20 条全对。
-- **显存占用**：常驻 8.58 GB。
+- **加载与输出**：模型加载 56.19 秒；A–Z 均为单 Token；GPU 自测能够返回有效概率。
+- **单次延迟**：英文 4 选项判定 120 次，中位数 98.20 ms、P90 99.33 ms、P99 100.19 ms。未校准温度 `T=1` 的 40 次中位数为 98.69 ms。
+- **中英分类**：固定测试集各 20 条，英文命中 19 条（95%），中文命中 20 条（100%）；两组 P50 分别为 98.9 ms 和 97.7 ms。
+- **显存占用**：当前分配 8.55 GB，峰值 8.65 GB。主机可用内存从加载前 117.4 GB 到测试后 107.3 GB；最低需求仍未确定。
+- **测试限制**：中英文各只有 20 条；`causal_conv1d` 和 `flash-linear-attention` 未安装，模型使用较慢的参考实现。温度检查只展示 4 个样例的置信度与熵变化，没有重新计算上游 ECE。
+
+可核对的公开摘要见[本次复跑记录](evidence/2026-11-15-gpu-rerun.json)。
 
 **关于上游基准数据**：
 上游 README 列出的 ECE 校准误差（0.114 降至 0.040）与 JevBench 排名我们没有复现，排名也是上游自测插值，未经过官方评测。选型时以本仓实测数字为准，完整取舍说明见[基准报告](../../../docs/zh/decision-models/判别式决策模型基准实测.md)。
