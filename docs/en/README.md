@@ -27,7 +27,6 @@ flowchart TD
 | **Document Understanding** | How do we accurately parse heterogeneous PDFs, OCR text, and recover tables? | [Document Understanding](document-understanding/README.md) | [文档理解与信息提取](../zh/document-understanding/README.md) |
 | **Decision Models & Scoring** | How do we score discrete options under strict latency and certainty budgets? | [Decision Models](decision-models/README.md) | [决策模型与打分机制](../zh/decision-models/README.md) |
 | **Visual & Multimodal** | How do we locate interface elements, separate portraits, or adapt diffusion LoRAs? | [Visual and Multimodal](multimodal/README.md) | [视觉与多模态理解](../zh/multimodal/README.md) |
-| **Data Structures & Storage** | How do physical memory layouts, encoding schemes, and access patterns dictate cost? | [Data Structure Costs](data-structure-costs/README.md) | [数据结构与存储成本](../zh/data-structure-costs/README.md) |
 
 ---
 
@@ -96,11 +95,6 @@ The [ColBERT Guide](colbert/README.md) details shared late-interaction mechanics
 
 | Experiment | Theoretical Guide | Code and Reproduction |
 |---|---|---|
-| Probabilistic data structures & HLL | [Read](../zh/data-structure-costs/概率数据结构与基数估计.md) | [Experiment](../../experiments/data-structure-costs/README.en.md) |
-| Ordered index selection: B+Tree, LSM, SkipList, ART | [Read](../zh/data-structure-costs/读写放大与有序索引选型.md) | [Experiment](../../experiments/data-structure-costs/README.en.md) |
-| Hash table evolution & Swiss Table | [Read](../zh/data-structure-costs/哈希表演进与内存冲突解决.md) | [Experiment](../../experiments/data-structure-costs/README.en.md) |
-| Column storage & inverted index compression | [Read](../zh/data-structure-costs/列式存储与倒排索引压缩编码.md) | [Experiment](../../experiments/data-structure-costs/README.en.md) |
-| Data format size & speed benchmark | [Read](../zh/data-structure-costs/数据格式体积与速度实测.md) | [Experiment](../../experiments/data-structure-costs/README.en.md) |
 
 ---
 

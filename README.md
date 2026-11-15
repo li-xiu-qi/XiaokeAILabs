@@ -45,7 +45,6 @@ XiaokeAILabs 围绕这些工程问题开展开放实验，覆盖**模型训练�
 | 双机推理探索 | [两台电脑一起运行大模型：跨机通信探索](experiments/pipeline-parallel)：Gloo/NCCL 通信与小模型分层生成检查均通过；旧权重副本哈希差异的具体来源仍未查明 |
 | 端侧推理 | [Jina CLIP OpenVINO](experiments/jina-clip-openvino)：Intel CPU 与 NPU 上图文嵌入的正确性、驱动，以及这次文本负载的吞吐 |
 | 推理原理 | [LLM 机制](experiments/llm-mechanics)：量化、采样、KV Cache 示例；[Tokenizer 原理](experiments/tokenizer-mechanics)：字节级 BPE 与 token 计数；[推理成本模型](experiments/inference-cost-models)：内存算例与未验证的性能估算 |
-| 数据结构 | [数据结构成本](experiments/data-structure-costs)：索引和数据格式成本模型与验证脚本 |
 | 嵌入与重排序 | [文本嵌入微调](experiments/embedding-finetuning)：用查询和相关文档训练；[重排序微调](experiments/reranker-finetuning)：SciFact 上这次微调的 nDCG 差异跨过零；[ColBERT 微调](experiments/colbert-finetuning)；原理见 [ColBERT 系列](docs/zh/retrieval/colbert/) |
 | 对比学习训练 | [SimCSE 对比学习](experiments/contrastive-learning-simcse)：dropout 正例与 NLI 难负例两版训练脚本、STS 与 Recall@k 评测；干净 CUDA 环境的真实数据小样本流程已跑通，完整训练尚未复现 |
 | 检索与存储 | [六种向量检索方案：索引、召回与存储对比](experiments/vector-db-benchmark)：索引、召回、延迟、存储与混合检索 |

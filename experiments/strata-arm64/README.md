@@ -99,9 +99,11 @@ EOF
 bash scripts/prepare_dgx.sh
 ```
 
-脚本检出上表固定的 Strata 社区版本、调整构建并发，并调用上游安装脚本。准备过程可能下载依赖或权重，运行前应检查上游脚本及可用空间；模型为上表所列的两个 GGUF 分片，不进本仓。准备日志写入 `$STRATA_WORK_ROOT/artifacts/prepare.log`。脚本在新工作目录直接检出固定提交，已有检出则要求 HEAD 一致，不会自动替换。`models/IQ3_S/` 存在时，脚本通过 `--gguf-dir` 交给上游使用；目录不完整时上游会报错，不会自动补齐。上游另需准备约 5 GB 的 MTP 草稿层和转换产物，应按上游提示预留空间。
+脚本从 [Strata 上游仓库的 PR #3622](https://github.com/Niko1221/Strata/pull/3622) 固定引用 `refs/pull/3622/head` 获取代码，并核对上表中的提交哈希；这样不依赖贡献者 fork 上已不再公开的分支名。脚本调整构建并发后调用上游安装脚本。准备过程可能下载依赖或权重，运行前应检查上游脚本及可用空间；模型为上表所列的两个 GGUF 分片，不进本仓。准备日志写入 `$STRATA_WORK_ROOT/artifacts/prepare.log`。已有检出则要求 HEAD 与固定提交一致，不会自动替换。`models/IQ3_S/` 存在时，脚本通过 `--gguf-dir` 交给上游使用；目录不完整时上游会报错，不会自动补齐。上游另需准备约 5 GB 的 MTP 草稿层和转换产物，应按上游提示预留空间。
 
 准备完成后，先检查 `$STRATA_WORK_ROOT/upstream/strata-iq3_s.json` 的 `args` 数组。准备脚本建议将 `--expert-cache` 后的值设为 `4096`，可用文本编辑器修改并保存；这是待验证的配置，不等于已确认的历史基准参数。启动前检查可用内存，并确认端口 8890 空闲。然后在另一个终端启动服务，再从实验目录运行基准：
+
+GB10 上进行短时语义验证时，为给模型加载和任务守护留出余量，可将 `--expert-cache` 设为 `4096`，并从 `args` 数组中移除 `--ple-io` 及其后的 `ram`。这样 PLE 表从 SSD 读取而非预留约 29 GB 内存；它会改变性能表现，不能拿来和历史速度数据直接比较。
 
 ```bash
 export STRATA_WORK_ROOT="/path/to/strata-work"

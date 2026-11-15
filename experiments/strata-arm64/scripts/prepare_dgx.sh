@@ -9,7 +9,8 @@ UPSTREAM="$ROOT/upstream"
 ARTIFACTS="$ROOT/artifacts"
 DATA_DIR="$ROOT/data"
 MODEL_DIR="$ROOT/models"
-PINNED_REPO="https://github.com/ferstar/Strata.git"
+PINNED_REPO="https://github.com/Niko1221/Strata.git"
+PINNED_PR_REF="refs/pull/3622/head"
 PINNED_COMMIT="d891f006aaec64024513a1e55856afd992baaa94"
 
 mkdir -p "$ARTIFACTS" "$DATA_DIR" "$MODEL_DIR"
@@ -21,7 +22,11 @@ fi
 [[ -x /usr/local/cuda/bin/nvcc ]] || { echo "CUDA nvcc is missing." >&2; exit 2; }
 
 if [[ ! -d "$UPSTREAM/.git" ]]; then
-  git clone --no-checkout "$PINNED_REPO" "$UPSTREAM"
+  mkdir -p "$UPSTREAM"
+  git -C "$UPSTREAM" init
+  git -C "$UPSTREAM" remote add origin "$PINNED_REPO"
+  # The contributor fork branch may be deleted; the upstream PR ref preserves this pinned head.
+  git -C "$UPSTREAM" fetch --depth=1 origin "$PINNED_PR_REF"
   git -C "$UPSTREAM" checkout --detach "$PINNED_COMMIT"
 fi
 cd "$UPSTREAM"

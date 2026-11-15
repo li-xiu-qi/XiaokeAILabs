@@ -99,12 +99,6 @@
 
 ## 六、 数据结构与存储成本
 
-基础数据结构与文件格式的理论模型与实际测量。先看 [数据结构成本导览](data-structure-costs/README.md)。
 
 | 工程问题 | 主线讲解 | 代码与复现实验 |
 |---|---|---|
-| 如何用极小常数空间完成海量数据的成员判定、频次统计与 UV 去重？ | [概率数据结构与基数估计](data-structure-costs/概率数据结构与基数估计.md) | [Bloom/Cuckoo/HLL 模型](../../experiments/data-structure-costs/README.md) |
-| B+ 树、LSM-Tree、跳表与 ART 在读写放大与内存并发上如何权衡？ | [读写放大与有序索引选型](data-structure-costs/读写放大与有序索引选型.md) | [B+Tree/LSM/SkipList/ART](../../experiments/data-structure-costs/README.md) |
-| 现代硬件架构下，哈希表如何利用 SIMD 并行探查解决 Cache 缺失？ | [哈希表演进与内存冲突解决](data-structure-costs/哈希表演进与内存冲突解决.md) | [SwissTable/RobinHood 模型](../../experiments/data-structure-costs/README.md) |
-| 倒排索引与大数据列存如何实现 1~3 比特的极限整型压缩与动态剪枝？ | [列式存储与倒排索引压缩编码](data-structure-costs/列式存储与倒排索引压缩编码.md) | [PFor-Delta/Simple8b/WAND](../../experiments/data-structure-costs/README.md) |
-| JSON、JSONL、XLSX、SQLite 在读写、追加与索引膨胀上差多少？ | [数据格式体积与速度实测](data-structure-costs/数据格式体积与速度实测.md) | [数据格式基准实测](../../experiments/data-structure-costs/README.md) |
