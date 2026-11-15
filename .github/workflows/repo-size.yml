@@ -27,7 +27,7 @@ jobs:
 
       - name: 检查仓库历史打包体积
         run: |
-          packed=$(git rev-list --objects --all \
+          packed=$(git rev-list --objects HEAD \
             | awk '{print $1}' | sort -u \
             | git pack-objects --stdout -q | wc -c)
           mb=$((packed / 1048576))

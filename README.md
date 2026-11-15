@@ -1,67 +1,135 @@
-# XiaokeAILabs：AI 工程实验
+# XiaokeAILabs：AI 工程实战
 
-[English](README.en.md) | [工程原理与实验系列](docs/zh/README.md) | [网站源码](index.html)
+<p align="center">
+  <a href="https://li-xiu-qi.github.io/XiaokeAILabs/"><img src="https://img.shields.io/badge/官网-在线阅读-356552?style=flat-square&logo=googlechrome&logoColor=white" alt="在线网站"></a>
+  <a href="https://github.com/li-xiu-qi/XiaokeAILabs/stargazers"><img src="https://img.shields.io/github/stars/li-xiu-qi/XiaokeAILabs?style=flat-square&logo=github&color=356552" alt="GitHub Stars"></a>
+  <a href="https://github.com/li-xiu-qi/XiaokeAILabs/network/members"><img src="https://img.shields.io/github/forks/li-xiu-qi/XiaokeAILabs?style=flat-square&logo=github&color=356552" alt="GitHub Forks"></a>
+  <a href="https://github.com/li-xiu-qi/XiaokeAILabs/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-blue?style=flat-square" alt="License"></a>
+  <a href="docs/zh/README.md"><img src="https://img.shields.io/badge/文档-中文全景-green?style=flat-square" alt="中文文档"></a>
+</p>
+
+<p align="center">
+  <a href="https://li-xiu-qi.github.io/XiaokeAILabs/">🌐 在线展示网站</a> · 
+  <a href="README.en.md">English README</a> · 
+  <a href="docs/zh/README.md">📖 工程原理与实验系列文档</a>
+</p>
+
+---
 
 训练一个检索模型到底有没有改善搜索？单台设备能部署多大的模型，处理多人请求时又会怎样？一项推理优化能节省多少时间，其结果是否依赖特定硬件？
 
-XiaokeAILabs 围绕这些工程问题开展开放实验，覆盖**模型训练与微调、推理部署与性能、检索与重排序、文档解析和多模态**。这里既有实验代码和实测结果，也有帮助理解原理的教程与成本模型。希望它能帮助你选择实验方案、理解关键取舍，并在自己的数据和硬件上继续验证。
+XiaokeAILabs 围绕这些工业级问题开展开放实验，覆盖**检索与重排序、大模型训练、推理优化与单机极限、文档解析与决策模型**。这里既有完整的工程实现与实测数据，也有深入底层的原理解析与显存预算推导。希望它能帮助你在复杂方案间看清关键取舍，并在自己的业务数据和硬件上继续验证。
 
-项目开源并会持续更新。每项工作使用的数据、设备和评测方式各不相同，请结合对应报告理解结论。
+---
 
-**实验全景：**检索与排序 · 推理与部署 · 文档理解与信息抽取 · 视觉与多模态 · 数据结构与存储成本 · 模型训练。查看[实验地图](docs/zh/README.md)，了解各方向及其讲解、代码与复现入口。
+## 全项目目录导航
 
-## 从你的问题出发
+全项目采用双轨设计：**正文篇**聚焦成体系的工业级核心系统，**专题与原理篇**承载前沿机制推导与单点探索验证。
 
-| 你想解决的问题 | 可以从这里开始 |
-|---|---|
-| 单机上模型能不能装下、两套引擎和槽位差多少 | [2-bit 单卡](experiments/moe-2bit-fit) · [引擎与槽位](experiments/engine-slot-concurrency) · [NInfer 服务](experiments/ninfer-serving) · [Strata](experiments/strata-arm64) |
-| 投机解码换草稿配置之后，三个提示词的吞吐差多少 | [LLM 推理性能](experiments/llm-inference-perf) |
-| 两台电脑能否协同运行大模型 | [两台电脑一起运行大模型：跨机通信探索](experiments/pipeline-parallel) |
-| Intel NPU 上的图文嵌入能不能正确跑、吞吐差多少 | [Jina CLIP OpenVINO](experiments/jina-clip-openvino) |
-| 估算模型推理需要的内存与带宽，理解吞吐变化的原因 | [推理成本模型](experiments/inference-cost-models) · [LLM 机制](experiments/llm-mechanics) |
-| 用嵌入模型找候选，再用重排序模型挑出更相关的结果 | [嵌入与重排序](experiments/reranker-finetuning) · [ColBERT 微调](experiments/colbert-finetuning) |
-| 比较向量数据库的检索、索引和存储开销 | [六种向量检索方案：索引、召回与存储对比](experiments/vector-db-benchmark) |
-| 探索图像模型微调或文档识别 | [SDXL LoRA](experiments/image-finetune) · [MiniCPM-OCR](experiments/minicpm-ocr) |
-| 从零走通语言模型的训练全链路：分词、预训练、指令微调到强化学习 | [LLM 全链路](experiments/llm-lifecycle-fullchain) |
+### 【正文篇】核心工程主干
 
-## 从实测中能看到什么
+#### 第一卷：检索与重排序（搜索与 RAG 核心）
+从单向量召回、精细重排到细粒度多向量交互与工业级向量库选型。
+- **第 1 章 · 双塔向量模型（Embedding）与交叉编码器（Reranker）**
+  - 向量召回微调：Batch 内负采样与难负例挖掘 · [`embedding-finetuning`](experiments/embedding-finetuning/)
+  - 交叉编码器重排序：二次精排与多模态图文排序 · [`reranker-finetuning`](experiments/reranker-finetuning/)
+  - 模型蒸馏：将大型重排模型能力迁移至轻量小模型 · [`reranker-distillation`](experiments/reranker-distillation/)
+- **第 2 章 · ColBERT 多向量与晚期交互**
+  - 晚期交互原理：多向量表征与 MaxSim 细粒度匹配 · [`colbert-finetuning`](experiments/colbert-finetuning/)
+  - 模型蒸馏：从单向量教师蒸馏多向量模型 · [`colbert-distillation`](experiments/colbert-distillation/)
+  - 视觉多向量检索：页面截图端到端检索（ColPali 范式） · [`visual-multivector-retrieval`](experiments/visual-multivector-retrieval/)
+- **第 3 章 · 向量索引与数据库实测**
+  - 索引横向对比：Flat 暴力扫描、IVF 倒排聚类、HNSW 图索引与量化压缩
+  - 数据库选型与实测：嵌入式与独立服务端方案评测 · [`vector-db-benchmark`](experiments/vector-db-benchmark/)
 
-**微调不是效果提升的保证。** 在 [SciFact 重排序实验](experiments/reranker-finetuning)中，我们用 390 条查询训练小型重排序模型，并在固定 BM25 候选集的 300 条查询上评估。BM25 的 nDCG@10 为 0.6617，微调模型为 0.6375；差异的 95% 置信区间跨过零。这个结果说明，在这组数据与评估条件下，不能声称微调带来了改善。报告提供训练、评测与局限，帮助理解小样本微调应如何验证。
+#### 第二卷：大语言模型训练（从零走通完整生命周期）
+剥离黑盒封装，从因果架构搭建、预训练算力规划一路跑到指令微调与偏好对齐。
+- **第 4 章 · 现代大模型架构**
+  - 因果架构演进：RoPE 旋转位置编码、RMSNorm 与 SwiGLU 激活
+  - 注意力机制：从多头 MHA、分组共享 GQA 到低秩潜变量 MLA
+  - 混合专家（MoE）：Top-K 专家路由、共享专家与负载均衡
+- **第 5 章 · 预训练规律与算力规划**
+  - 扩展律（Scaling Laws）：算力、数据量与模型参数的最优配比 · [`llm-lifecycle-fullchain`](experiments/llm-lifecycle-fullchain/)
+  - 训练账本换算：Step、Token、GPU 小时与硬件利用率（MFU）
+  - Muon 优化器：矩阵正交化更新机理与训练收敛实测
+  - 基座模型评测：为什么 Base 模型不直接考对话，如何用连续似然打分
+- **第 6 章 · 模型微调与对齐**
+  - 指令微调（SFT）：损失掩码（Loss Masking）与高质量数据构造
+  - 参数高效微调（LoRA）：低秩适配器机理、秩的选取与防遗忘
+  - 偏好对齐（DPO）：免奖励模型的直接偏好优化 · [`dpo-preference-alignment`](experiments/dpo-preference-alignment/)
 
-**推理加速需要同时看速度与输出。** [MiniCPM-OCR 实验](experiments/minicpm-ocr)在 GB10 上比较普通生成和 DSpark 投机生成。四个样本的模型生成总耗时加速 2.36 倍，贪婪生成的 343 个 token 一致。计时包含输入的首次前向和后续生成，不包含图像读取与预处理；四个样本不足以代表所有文档。
+#### 第三卷：大语言模型推理优化与单机极限（让模型跑得更快更省）
+突破内存带宽墙，从显存预算、投机解码、低比特量化到单机极限并发与双卡协作。
+- **第 7 章 · 自回归解码与 KV Cache**
+  - 生成双阶段：算力受限的 Prefill 与带宽受限的 Decode
+  - KV Cache：显存换时间的计算图流转与注意力头压缩
+  - 推理显存预算：权重、KV 缓存与长并发显存定量测算 · [`inference-cost-models`](experiments/inference-cost-models/)
+- **第 8 章 · 投机解码加速**
+  - 协同推测原理：草稿模型先行推测、目标大模型矩阵核验 · [`llm-inference-perf`](experiments/llm-inference-perf/)
+  - 树状验证（Tree Attention）：因果掩码设计与单步校验多分支
+  - 投机加速实测：为什么理论接受率高，实际端到端反而可能变慢？
+- **第 9 章 · 模型量化与剪枝**
+  - 量化等级与精度变化：从 FP16 到 INT4/NVFP4，4-bit 的精度拐点
+  - 激活感知压缩：Wanda 激活剪枝、NVIDIA 2:4 硬件稀疏与 AWQ 权重量化
+- **第 10 章 · 硬件实战与并发调度**
+  - 单卡极限压测：299B MoE 极端量化与 35B 双引擎吞吐对比 · [`moe-2bit-fit`](experiments/moe-2bit-fit/) · [`engine-slot-concurrency`](experiments/engine-slot-concurrency/)
+  - 统一内存架构实测：GB10 平台上的 NInfer、Strata 与 llama.cpp 并发 · [`ninfer-serving`](experiments/ninfer-serving/) · [`strata-arm64`](experiments/strata-arm64/)
+  - 双卡流水线并行：两台设备间张量切分、网络传输与 MoE 通信瓶颈 · [`pipeline-parallel`](experiments/pipeline-parallel/)
 
-![MiniCPM-OCR 四个样本的模型生成耗时比较](experiments/minicpm-ocr/assets/dspark-generation-time.png)
+#### 第四卷：文档理解与表格还原（多模态真实输入前端）
+解决现实复杂文档进入 AI 系统的“第一公里”：从 PDF、扫描件与报表中抽取高质量结构化数据。
+- **第 11 章 · 文档版面与文字识别（OCR）**
+  - PDF 解析：规则抽取与矢量元素提取的适用边界 · [`pdf-rule-parsers`](experiments/pdf-rule-parsers/)
+  - PaddleOCR 落地：文本行检测（DBNet）与识别（SVTR） · [`paddle-ocr-detection-recognition`](experiments/paddle-ocr-detection-recognition/)
+- **第 12 章 · 表格结构识别与还原**
+  - SLANet 表格识别：从图像到有线/无线表格 HTML 单元格重组 · [`table-structure-recognition`](experiments/table-structure-recognition/)
+  - 方案对比：传统模块化拼接流水线 vs 端到端多模态大模型 · [`minicpm-ocr`](experiments/minicpm-ocr/)
 
-**硬件和部署配置会改变结论。** [Jina CLIP 实验](experiments/jina-clip-openvino)中，特定文本工作负载的 Intel NPU 吞吐达到 CPU 的 12.57 倍，旧驱动却出现 NaN。性能数字和故障都与测试设备、驱动及输入有关。[六种向量检索方案：索引、召回与存储对比](experiments/vector-db-benchmark)则在 Windows 11 x86-64 环境下，历史记录使用 20 Newsgroups 的 11,293 篇文档和 40 条查询比较六种方案；原始结果文件缺失，数字无法独立复核，它也不是 DGX Spark 上的测试。
+#### 第五卷：判别式决策与偏好系统（用模型做精准评估）
+超越逐字聊天：将模型概率转化为置信度明确的打分、排序与决策信号。
+- **第 13 章 · 决策模型打分机制**
+  - 决策模型与生成模型：直接输出标量分数与逐字采样的本质差异
+  - 决策模型微调与置信度校准（概率校准） · [`decision-model-finetuning`](experiments/decision-model-finetuning/)
+- **第 14 章 · 决策模型选型与实测**
+  - 多款判别式决策模型基准对比与工程选型建议 · [`decision-model-benchmark`](experiments/decision-model-benchmark/)
 
-## 实验索引
+---
 
-实验报告提供具体测量与边界；教程和计算模型用于解释方法，不应当作性能基准。
+### 【专题与原理篇】独立前沿与探索验证
+针对前沿表征理论、单点排查与探索性小实验的独立专篇，作为主干外部的延伸读物。
 
-| 方向 | 实验与内容 |
-|---|---|
-| 单机部署、引擎与并发 | [2-bit 单卡](experiments/moe-2bit-fit)：299B 2-bit 能否在一台 GB10 上跑通；[引擎与槽位](experiments/engine-slot-concurrency)：35B 的两套引擎，以及 1 槽和 8 槽；[NInfer 服务](experiments/ninfer-serving)：27B 模型包的移植与并发；[Strata](experiments/strata-arm64)：ARM64 移植和 llama.cpp 的这次对照 |
-| 投机解码配置 | [LLM 推理性能](experiments/llm-inference-perf)：三个模型、三个提示词的草稿配置对照 |
-| 双机推理探索 | [两台电脑一起运行大模型：跨机通信探索](experiments/pipeline-parallel)：Gloo/NCCL 通信与小模型分层生成检查均通过；旧权重副本哈希差异的具体来源仍未查明 |
-| 端侧推理 | [Jina CLIP OpenVINO](experiments/jina-clip-openvino)：Intel CPU 与 NPU 上图文嵌入的正确性、驱动，以及这次文本负载的吞吐 |
-| 推理原理 | [LLM 机制](experiments/llm-mechanics)：量化、采样、KV Cache 示例；[Tokenizer 原理](experiments/tokenizer-mechanics)：字节级 BPE 与 token 计数；[推理成本模型](experiments/inference-cost-models)：内存算例与未验证的性能估算 |
-| 嵌入与重排序 | [文本嵌入微调](experiments/embedding-finetuning)：用查询和相关文档训练；[重排序微调](experiments/reranker-finetuning)：SciFact 上这次微调的 nDCG 差异跨过零；[ColBERT 微调](experiments/colbert-finetuning)；原理见 [ColBERT 系列](docs/zh/retrieval/colbert/) |
-| 对比学习训练 | [SimCSE 对比学习](experiments/contrastive-learning-simcse)：dropout 正例与 NLI 难负例两版训练脚本、STS 与 Recall@k 评测；干净 CUDA 环境的真实数据小样本流程已跑通，完整训练尚未复现 |
-| 检索与存储 | [六种向量检索方案：索引、召回与存储对比](experiments/vector-db-benchmark)：索引、召回、延迟、存储与混合检索 |
-| 检索模型蒸馏 | [Embedding 蒸馏](experiments/embedding-distillation)：固定候选上的提升未达到预设目标；[重排序蒸馏](experiments/reranker-distillation)：相对监督训练的优势不确定；[ColBERT 蒸馏](experiments/colbert-distillation)：未达到预设目标，公开的真实教师打分脚本尚未重跑验证；[图文 Embedding 蒸馏](experiments/multimodal-embedding-distillation)：100 条查询未优于监督组，公开脚本尚未从头重跑 |
-| 稀疏与图文检索 | [SPLADE 微调](experiments/sparse-retrieval)；[图文重排](experiments/multimodal-reranking)；[页面多向量检索](experiments/visual-multivector-retrieval)：100 页上 Recall@1 为 0.55；[图文嵌入](experiments/multimodal-embedding) |
-| 视觉微调 | [SDXL 人脸身份 LoRA](experiments/image-finetune)：单一身份的小样本训练与对照；[人物抠像](experiments/portrait-matting)：30 张照片的区域、发丝和前向耗时 |
-| 语音识别 | [Whisper 语音识别微调](experiments/asr-finetuning)：使用 LibriSpeech 训练并比较测试集词错误率 |
-| 实时多模态交互 | [全双工实时多模态交互](experiments/full-duplex-multimodal)：MiniCPM-o 4.5 在 GB10 上完成录制音视频推流和并发语音输出验证；单次插话探针收到倾听事件，但最后语音输出晚于预设停止门槛，未通过；真人麦克风/扬声器与真人插话仍未验证 |
-| 偏好对齐 | [DPO 直接偏好优化](experiments/dpo-preference-alignment)：Qwen3-0.6B 在 UltraFeedback 回答对上完成 GPU 微调；本次 128 对测试的偏好方向未改变 |
-| 文档解析 | [系列导航](docs/zh/document-understanding/README.md)；[规则解析](experiments/pdf-rule-parsers)；[文字检测与识别](experiments/paddle-ocr-detection-recognition)；[表格结构](experiments/table-structure-recognition)；[MiniCPM-OCR](experiments/minicpm-ocr)：aarch64 部署、质检与生成加速 |
-| 判别式决策 | [基准评测](experiments/decision-model-benchmark) 与 [微调训练](experiments/decision-model-finetuning)：Laya、Nimble、metask-jev、Jev-Omni 实测与 RLCD/软标签微调 |
-| 模型训练 | [LLM 全链路](experiments/llm-lifecycle-fullchain)：BPE 分词、Muon 预训练（附 AdamW 基线）、midtrain、SFT、GRPO 与 KV cache 生成 |
+1. **文本切分与分词机制（Tokenizer）**
+   - UTF-8 字节编码如何合并成 token，BPE、WordPiece 与 Unigram 算法对比 · [`tokenizer-mechanics`](experiments/tokenizer-mechanics/)
+   - 中文 Token 税与跨词表 BPB 衡量标准
+2. **迟分词（Late Chunking）长文本嵌入**
+   - 传统滑动窗口信息碎裂问题；先整篇全注意力编码、后池化切片的数学与几何机理
+3. **对比学习表征几何（SimCSE）**
+   - 高维语义向量各向异性（Anisotropy）退化；对齐度与均匀度的几何直觉 · [`contrastive-learning-simcse`](experiments/contrastive-learning-simcse/)
+4. **端侧异构推理探测：Intel NPU 跑多模态嵌入**
+   - OpenVINO 在 Intel NPU 上的驱动边界与吞吐表现 · [`jina-clip-openvino`](experiments/jina-clip-openvino/)
+5. **训练工程排查：填充长度对损失的干扰**
+   - 固定输入下，注意力掩码与首层精度检查；填充长度为何导致 Loss 异常波动
+6. **图像生成与抠像轻量实验**
+   - 人脸身份 LoRA 微调与量化评估 · [`image-finetune`](experiments/image-finetune/)
+   - 极速人物抠像推理测速 · [`portrait-matting`](experiments/portrait-matting/)
+
+---
 
 ## 如何使用
 
-进入感兴趣的实验目录，先阅读其中的说明，了解问题、数据、设备、指标与结果，再按该实验提供的步骤运行。不同实验使用不同的软件环境和模型权重；部分需要特定 GPU、NPU 或数据集，不存在适用于所有目录的统一安装命令。性能结果适用于报告列出的条件，迁移到自己的业务前应重新测量。
+所有实验均在真实硬件上完成验证并附带复现脚本。每项实验包含：
+- **`README.md`**：实验目的、软硬件环境配置、执行步骤与关键结论；
+- **`evidence/`**：原始运行日志、指标 JSON 文件与图表资产；
+- **`scripts/`**：开箱即用的复现脚本与自动化测试流水线。
 
-代码采用 [Apache License 2.0](LICENSE)。欢迎通过 Issue 或 Pull Request 参与，具体方式见[贡献指南](CONTRIBUTING.md)。
+深入阅读原理与选型指南，参见 [工程原理与实验系列文档](docs/zh/README.md)。
 
-作者：李秀奇（筱可） · 公众号：筱可AI · 邮箱：lixiuqixiaoke@qq.com
+---
+
+## Star History
+
+<p align="center">
+  <a href="https://star-history.com/#li-xiu-qi/XiaokeAILabs&Date">
+    <img src="https://api.star-history.com/svg?repos=li-xiu-qi/XiaokeAILabs&type=Date" alt="Star History Chart" width="100%" style="max-width: 800px;">
+  </a>
+</p>
