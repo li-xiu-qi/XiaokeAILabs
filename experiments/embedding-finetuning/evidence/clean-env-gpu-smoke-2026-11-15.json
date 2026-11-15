@@ -1,0 +1,57 @@
+{
+  "date": "2026-11-15",
+  "status": "passed",
+  "environment": {
+    "os": "Linux",
+    "architecture": "aarch64",
+    "gpu": "NVIDIA GB10",
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "transformers": "5.23.0",
+    "sentence-transformers": "6.3.0",
+    "tqdm": "4.70.1",
+    "pandas": "3.1.1",
+    "pyarrow": "26.0.1",
+    "huggingface-hub": "2.4.0",
+    "pip_check": "passed",
+    "cuda_available": true
+  },
+  "assets": {
+    "model": "BAAI/bge-base-zh-v1.5",
+    "model_revision": "f03589ceff5aac7111bd60cfc7d497ca17ecac65",
+    "model_downloaded_during_run": true,
+    "dataset": "mteb/T2Retrieval",
+    "dataset_revision": "921dd3af6e78d1ae7ee0368aa8d7eaee02c8f08e",
+    "dataset_downloaded_during_run": false,
+    "dataset_source": "pre-existing copy of the pinned revision",
+    "dataset_sha256": {
+      "corpus/dev-00000-of-00001.parquet": "8f0400530c6ba664e580e2ae7bb5ed41a908b8abc17c3b3934f42cc65992ac1e",
+      "data/dev-00000-of-00001.parquet": "c4c6ffd715faf151e0832a26dfcf2d7ec1edc17d9620a9aa99e721cc2436d7d2",
+      "queries/dev-00000-of-00001.parquet": "186b4d0a13cc4d8339eccfc6d465d1b2d4d1f6572defa8d39f3c8da3b66b0210"
+    }
+  },
+  "run": {
+    "train_queries": 256,
+    "test_queries": 100,
+    "candidate_documents": 409,
+    "epochs": 1,
+    "training_steps": 32,
+    "batch_size": 8,
+    "device": "CUDA",
+    "baseline": {
+      "hit_at_10": 0.99,
+      "mrr": 0.9752941176470589
+    },
+    "finetuned": {
+      "hit_at_10": 0.99,
+      "mrr": 0.9804761904761905
+    }
+  },
+  "limits": [
+    "Small development subset with a small candidate pool; not the official test score.",
+    "The candidate pool includes labeled test positives and 200 random documents.",
+    "Only one training run; the training script does not fix its random seed.",
+    "Semantic near-duplicates and overlap with model pretraining data were not ruled out.",
+    "The Python environment was newly created, but the pinned dataset files were reused from an existing copy and hash-verified."
+  ]
+}

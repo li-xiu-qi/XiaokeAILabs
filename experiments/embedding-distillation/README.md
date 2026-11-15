@@ -33,7 +33,7 @@ python -c "import numpy, sentence_transformers, huggingface_hub; print('依赖�
 
 同日用固定版本的 Qwen3-Embedding-8B 教师和 MiniLM 学生在 CUDA 上运行真实数据短测：教师对 4 条查询及其 68 篇候选文档编码评分，学生对 2 条开发查询的候选完成评分并计算门槛；短测按设计在训练和测试前停止。教师权重文件已逐个校验 SHA-256。两条开发查询不足以判断教师优势或实验效果。
 
-上述命令提供依赖安装入口，并非已从零验证的锁定环境。以下数据准备命令还需 `curl`、`unzip`、`tar` 和 `sha256sum`，并需要为数据、模型和输出预留磁盘空间。
+[`requirements.txt`](requirements.txt) 固定了直接依赖版本，PyTorch 需按目标设备单独安装。以下数据准备命令还需 `curl`、`unzip`、`tar` 和 `sha256sum`，并需要为数据、模型和输出预留磁盘空间。
 
 可先运行无需下载模型或数据的 GPU 冒烟检查：
 
@@ -42,6 +42,19 @@ python scripts/synthetic_gpu_smoke.py
 ```
 
 该检查生成随机微型模型和合成数据，运行教师评分及学生阶段的开发集门槛；学生阶段的 `--smoke` 会在训练前停止。脚本随后直接调用训练函数，对监督和蒸馏损失分别训练两步并检查参数更新。这不代表正式实验通过门槛，也不复现真实数据上的结果。2026-11-13 在 Linux、NVIDIA GB10、Python 3.12.3、PyTorch 2.15.0+cu132、NumPy 2.5.4、Sentence Transformers 6.3.0、Transformers 5.22.2 和 huggingface_hub 2.4.0 的环境中该检查完成；该环境的 `pip check` 报告 `nvidia-cusparselt-cu13 0.8.1 is not supported on this platform`，因此这只是有限的运行证据，并非完整、可从零重建的依赖组合。
+
+要从新环境安装依赖并运行相同的 GPU 冒烟，可使用：
+
+```bash
+export XL_REQUIRE_EXTERNAL_ENV=1
+export XL_RUN_ID="$(date +%Y%m%d-%H%M%S)"
+export XL_DATA_DIR="$HOME/xl-data"
+export XL_OUT_DIR="$HOME/xl-output"
+# 仅当继承的代理阻断下载时设置：export XL_CLEAR_PROXY=1
+bash scripts/clean_env_gpu_smoke.sh
+```
+
+2026-11-15 在 Linux ARM64 / NVIDIA GB10 的新建虚拟环境中按固定依赖安装；`pip check`、CUDA 与 BF16 检查通过，合成 GPU 冒烟完成，监督和蒸馏损失各更新参数 2 步。运行记录见 [`evidence/clean-env-gpu-smoke-2026-11-15.json`](evidence/clean-env-gpu-smoke-2026-11-15.json)。本次没有下载真实模型或数据，也没有运行真实数据的教师门槛、完整蒸馏和测试集评估；从空环境完整复现仍未验证。
 
 从本实验目录运行以下命令；把 `WORK` 改成仓库外的工作目录。数据、模型和输出均写入该目录：
 
@@ -77,6 +90,6 @@ python scripts/train.py --stage teacher --data "$DATA" --pools "$POOLS" --out "$
 python scripts/train.py --stage student --data "$DATA" --pools "$POOLS" --out "$WORK" --teacher "$WORK/models/teacher" --student "$WORK/models/student" --min-teacher-gap 0.05
 ```
 
-教师阶段只计算训练候选和开发集分数；学生阶段先在同一开发集、同一批候选上比较师生。通过门槛后，监督和蒸馏两组均训练完成并保存，再计算测试集分数。`--smoke` 只检查小规模开发集流程，不训练，也不评估测试集。脚本要求 Linux `/proc/meminfo` 和至少约 50 GiB 系统可用内存；正式实验使用 CUDA。新的门槛逻辑、训练与测试流程已按上述步骤运行一次；从空环境安装尚未验证。
+教师阶段只计算训练候选和开发集分数；学生阶段先在同一开发集、同一批候选上比较师生。通过门槛后，监督和蒸馏两组均训练完成并保存，再计算测试集分数。`--smoke` 只检查小规模开发集流程，不训练，也不评估测试集。脚本要求 Linux `/proc/meminfo` 和至少约 50 GiB 系统可用内存；正式实验使用 CUDA。真实数据的门槛、训练和测试流程此前已运行一次，但使用的是复制并调整的环境；全新环境验证目前只覆盖合成 GPU 冒烟。
 
 历史流程中教师阶段生成分数，学生阶段评价原模型、监督组和蒸馏组。它会核对语料、查询和候选池的 SHA-256、模型路径与教师输出完整性；同一路径下模型内容发生变化不会被路径检查发现，仍需自行核验模型 revision 和权重。不同硬件、依赖版本与随机性会影响结果。

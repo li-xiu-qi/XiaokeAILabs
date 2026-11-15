@@ -1,0 +1,30 @@
+{
+  "date": "2026-11-15",
+  "result": "passed",
+  "environment": {
+    "os": "Linux",
+    "architecture": "aarch64",
+    "gpu": "NVIDIA GB10",
+    "python": "3.12.3",
+    "torch": "2.15.0+cu132",
+    "numpy": "2.5.4",
+    "sentence-transformers": "6.3.0",
+    "transformers": "5.23.0",
+    "huggingface-hub": "2.4.0",
+    "pip_check": "passed",
+    "cuda": true,
+    "bfloat16": true
+  },
+  "validation": {
+    "synthetic_teacher_scoring": "passed",
+    "synthetic_development_gate_path": "passed",
+    "supervised_loss_parameter_updates": 2,
+    "distilled_loss_parameter_updates": 2
+  },
+  "scope": "fresh environment install and synthetic GPU workflow smoke",
+  "limits": [
+    "No real model weights or dataset were downloaded.",
+    "The real-data teacher gate, full distillation training, and test evaluation were not run in this environment.",
+    "This does not reproduce the reported real-data experiment results."
+  ]
+}
