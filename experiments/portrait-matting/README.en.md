@@ -12,6 +12,22 @@ Run all commands below from this experiment directory.
 
 ## Installation and preparation
 
+Prepare Python 3.12 and device-compatible PyTorch and torchvision, then install `numpy` and `Pillow` from this directory's [`requirements.txt`](requirements.txt). The clean-environment GPU smoke script pins PyTorch 2.15.0+cu132, torchvision 0.29.1+cu132, and constraints for transitive dependencies on GB10/Linux aarch64. For other devices, select a compatible build using the [official PyTorch installation guide](https://pytorch.org/get-started/locally/). Model weights and PPM-100 data require several hundred MB, in addition to space for the virtual environment and outputs. The expected weight SHA-256 is `3c7c1d92033f7c38d6577c481d13a195d7d80a159b960f4f3119ac7b534cf4f8`.
+
+### GPU smoke run from a clean environment
+
+The script creates a new virtual environment, installs CUDA-enabled PyTorch and the other dependencies, downloads the pinned RVM code, weights, and dataset, verifies their hashes, and evaluates the fixed 30-image sample on CUDA. Set the following variables to new paths outside the repository; existing environments and outputs are never overwritten. Run from this experiment directory:
+
+```bash
+export XL_RUN_ID="rvm-$(date +%Y%m%d-%H%M%S)"
+export XL_DATA_DIR="/path/outside/repository/portrait-matting-data"
+export XL_OUT_DIR="/path/outside/repository/portrait-matting-output"
+export XL_REQUIRE_EXTERNAL_ENV=1
+bash scripts/clean_env_gpu_smoke.sh
+```
+
+The default target is NVIDIA GB10/Linux aarch64. For other platforms, first confirm that a CUDA PyTorch wheel is available and set `PYTHON_BIN` and `TORCH_INDEX_URL` as needed. The script pins direct dependencies and PyTorch, while pip resolves transitive dependencies; it is not a cross-platform lock file.
+
 Prepare Python, a device-compatible version of PyTorch and torchvision, and install `numpy` and `Pillow`. Historical records used PyTorch 2.14.0 and CUDA 13.0; complete versions for the other dependencies were not pinned. The upstream RVM code is licensed under [GPL-3.0](https://github.com/PeterL1n/RobustVideoMatting/blob/master/LICENSE); check the applicable license before using its code or model. Select the platform and CUDA configuration using the [official PyTorch installation guide](https://pytorch.org/get-started/locally/). CPU execution is possible but slower. Set `WORK_DIR` to an existing working directory outside the repository. Retrieve the pinned RVM source and download `rvm_mobilenetv3.pth` from the [official repository's PyTorch download entry](https://github.com/PeterL1n/RobustVideoMatting#download) into `$WORK_DIR/weights/`. The weight SHA-256 expected by the code is `3c7c1d92033f7c38d6577c481d13a195d7d80a159b960f4f3119ac7b534cf4f8`.
 
 ```bash
@@ -33,9 +49,9 @@ The sampling script first checks archive SHA-256 `5a3d9029437954594c26ea773e927c
 
 After setup, `python -m pip check` and `python -c "import torch, torchvision, numpy, PIL; print('CUDA:', torch.cuda.is_available())"` check dependency imports and CUDA visibility only; they do not demonstrate that the model loads or that the evaluation has run.
 
-On 2026-11-13, the command below processed the fixed sample of 30 PPM portrait photos and their alpha labels on CUDA using Linux ARM64, NVIDIA GB10, Python 3.12.3, PyTorch 2.15.0+cu132, torchvision 0.29.1+cu130, NumPy 2.5.4, and Pillow 13.0.0. The run produced 30 nonempty alpha images and result records. The inputs were dataset photos, not script-generated images; this run did not extract video frames or assess temporal consistency. It used layered dependencies, and `pip check` reported `nvidia-cusparselt-cu13` as unsupported on the platform in the base environment; a complete fresh installation has not been validated. This run checks the script and pinned weights, not every device, and does not replace verification of dataset and portrait-use terms.
+On 2026-11-15, the script above completed on NVIDIA GB10 (Linux aarch64, Python 3.12.3), starting from a new virtual environment; `pip check` passed. The pinned RVM weights and PPM-100 archive passed SHA-256 checks, and all 30 images completed CUDA inference. Versions were PyTorch 2.15.0+cu132, torchvision 0.29.1+cu132, NumPy 2.5.4, and Pillow 13.0.0. Macro means were IoU 0.9730, Dice 0.9862, Boundary F1 0.8916, and MAE 0.00857; synchronized model-forward timing averaged about 6.98 ms per run. See the [clean-environment GPU evaluation summary](evidence/clean-env-gpu-smoke-2026-11-15.json). This is an exploratory evaluation of a fixed 30-image still-photo sample; it does not establish performance on a larger dataset, video temporal consistency, or reproducibility on other devices. Dataset annotation licensing and portrait-use terms still require separate review.
 
-On 2026-11-14, the same 30 photos were evaluated successfully on similar hardware with the dependency versions above in a copied and adjusted isolated environment; `pip check` passed. This was not a fresh installation and covered still images only, not video temporal consistency.
+The 2026-11-13 historical CUDA run used layered dependencies; torchvision and the PyTorch CUDA build did not match, and `pip check` in its base environment reported an unsupported package. Keep that as a historical run, not as installation guidance. The 2026-11-14 rerun used a copied and adjusted isolated environment and passed `pip check`, but was not installed from scratch. The November 15 run adds verification from clean installation through real-data CUDA evaluation.
 
 ## Run single-frame evaluation
 

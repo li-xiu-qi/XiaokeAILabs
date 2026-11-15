@@ -78,8 +78,8 @@ def text_file_iter_batched(filepath: str | Path, chunk_size: int = 1000) -> Iter
     if not path.exists():
         raise FileNotFoundError(
             f"未检测到语料文件: {path}\n"
-            f"如需使用标准公开数据集，请指定 --corpus-path 参数；\n"
-            f"如需进行 CPU 快速冒烟测试，请先运行: python examples/generate_toy_dataset.py"
+            f"如需使用标准公开数据集，请指定 --corpus-path 参数或运行 python scripts/prepare_data.py；\n"
+            f"如需进行快速冒烟测试，请运行: python scripts/prepare_data.py --source toy"
         )
 
     batch = []
@@ -137,7 +137,7 @@ def load_sft_dataset(filepath: str | Path | None = None) -> list[dict]:
     if not path.exists():
         raise FileNotFoundError(
             f"未检测到 SFT 数据文件: {path}\n"
-            f"请指定 --sft-path 或先运行 python examples/generate_toy_dataset.py 生成冒烟数据。"
+            f"请指定 --sft-path 或先运行 python scripts/prepare_data.py 生成数据。"
         )
     records = []
     with open(path, "r", encoding="utf-8") as f:
@@ -154,7 +154,7 @@ def load_rl_dataset(filepath: str | Path | None = None) -> list[dict]:
     if not path.exists():
         raise FileNotFoundError(
             f"未检测到 RL 任务数据文件: {path}\n"
-            f"请指定 --rl-path 或先运行 python examples/generate_toy_dataset.py 生成冒烟数据。"
+            f"请指定 --rl-path 或先运行 python scripts/prepare_data.py 生成数据。"
         )
     records = []
     with open(path, "r", encoding="utf-8") as f:

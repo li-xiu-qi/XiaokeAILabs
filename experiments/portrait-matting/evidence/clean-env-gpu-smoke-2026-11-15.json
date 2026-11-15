@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-15",
+  "result": "passed",
+  "platform": "Linux aarch64",
+  "python": "3.12.3",
+  "gpu": "NVIDIA GB10",
+  "torch": "2.15.0+cu132",
+  "torchvision": "0.29.1+cu132",
+  "numpy": "2.5.4",
+  "pillow": "13.0.0",
+  "pip_check": "passed",
+  "rvm_commit": "53d74c6826735f01f4406b5ca9075eee27bec094",
+  "weights_sha256": "3c7c1d92033f7c38d6577c481d13a195d7d80a159b960f4f3119ac7b534cf4f8",
+  "dataset_manifest_sha256": "dd74f49e214c33cf3aca437cb370815d91c74dd598f7de7e33b5516c876eb8d4",
+  "sample_count": 30,
+  "macro_mean": {
+    "iou": 0.973014147470452,
+    "dice": 0.9862319050789479,
+    "boundary_f1": 0.891613818848816,
+    "mae": 0.008566687439911434,
+    "mse": 0.004174232132196192,
+    "sad_1000": 6.347710849673202,
+    "unknown_mae": 0.11011736757423388
+  },
+  "mean_forward_seconds": 0.006983725623770927,
+  "scope": "fixed 30-image PPM sample; still-image inference only",
+  "limits": [
+    "No video temporal consistency evaluation.",
+    "Dataset annotation license and portrait usage rights require separate checks."
+  ]
+}

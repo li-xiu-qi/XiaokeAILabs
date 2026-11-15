@@ -112,7 +112,7 @@ $XL_DATA_DIR/corpus.txt ──► 01_train_tokenizer.py ──► $XL_OUT_DIR/to
 - Python ≥ 3.10，依赖见 `requirements.txt`（实测：torch 2.15.0+cpu、tokenizers 0.23.3、matplotlib 3.11.2）
 - GPU 运行需要带 CUDA 的 torch（实测 2.14.0+cu126，RTX 3080 Laptop）；`--device auto` 时检测到卡即用卡，否则 CPU
 - 分布式后端 auto 策略：CUDA 且编译了 NCCL 用 nccl，否则 gloo；Windows 官方 wheel 未编译 NCCL 时选择 gloo；CUDA DDP 的可用性取决于具体环境，见下文已知限制
-- 支持公开标准数据集流，离线冒烟测试语料由 `examples/generate_toy_dataset.py` 独立生成
+- 支持公开标准数据集流，离线冒烟测试语料可直接使用 `scripts/prepare_data.py --source toy` 生成
 - 运行环境清单写入 `$XL_OUT_DIR/run_manifest.json`（含 run_id / profile / device / amp / nproc 等字段）
 - 多核机器上小模型默认 4 线程最快（实测 8 线程因争用更慢），可用 `LLM_THREADS` 环境变量覆盖
 
@@ -130,7 +130,7 @@ python -c "import torch, tokenizers; print('torch:', torch.__version__, 'CUDA av
 
 依赖清单包含 `matplotlib`，它用于绘图，缺失时会跳过 PNG 输出；两份专题绘图脚本还会使用 NumPy，安装 `matplotlib` 时通常会一起安装。`matplotlib_layout_audit` 是可选的外部版面检查工具，缺失时会跳过审计，不影响出图。多进程运行时还需让 `torchrun` 与所用 Python 环境一致，例如在启动前激活安装了 PyTorch 的虚拟环境。
 
-一键脚本默认使用 `$XL_DATA_DIR`（未设置时为 `.work/data`）中的数据。若该目录没有 `corpus.txt`，脚本会生成玩具数据，同时写入 `corpus.txt`、`sft.jsonl` 和 `rl.jsonl`，因此可能覆盖目录中已有的同名 SFT 或 RL 文件；提供自定义语料时请一并准备三个文件，JSONL 字段可参照 `examples/generate_toy_dataset.py`。`run.sh` 不接收外部数据源参数，使用 Parquet 数据需分阶段调用支持该格式的脚本。
+一键脚本默认使用 `$XL_DATA_DIR`（未设置时为 `.work/data`）中的数据。若该目录没有 `corpus.txt`，脚本会自动运行 `scripts/prepare_data.py --source toy` 生成冒烟数据，同时写入 `corpus.txt`、`sft.jsonl` 和 `rl.jsonl`，因此可能覆盖目录中已有的同名 SFT 或 RL 文件；提供自定义语料时请一并准备三个文件，格式可参照 `scripts/prepare_data.py`。`run.sh` 不接收外部数据源参数，使用 Parquet 数据需分阶段调用支持该格式的脚本。
 
 ### CPU smoke 运行记录
 
@@ -249,7 +249,7 @@ torchrun --nproc_per_node=2 scripts/02_model.py --device cpu
 
 ```bash
 export XL_DATA_DIR=/path/to/data XL_OUT_DIR=/path/to/out
-python examples/generate_toy_dataset.py
+python scripts/prepare_data.py --source toy
 python scripts/01_train_tokenizer.py --corpus-path "$XL_DATA_DIR/corpus.txt" --vocab-size 2048
 ```
 
@@ -362,11 +362,10 @@ llm-lifecycle-fullchain/
 │   ├── smoke.json               冒烟档：CPU 最小步数
 │   ├── gpu-smoke.json           GPU 冒烟档：单卡 CUDA + BF16
 │   └── full.json                完整档：较大的词表与训练步数
-├── examples/
-│   └── generate_toy_dataset.py  独立离线冒烟测试语料合成器（写 $XL_DATA_DIR 或 .work/data）
 ├── fixtures/                    分词器域偏差评测的固定域切片与生成器
 ├── evidence/                     收敛后的报告与证据副本（原始运行产物留在 $XL_OUT_DIR）
 ├── scripts/
+│   ├── prepare_data.py          全生命周期数据集自动化准备脚本（真实语料下载或 --source toy 本地快速冒烟）
 │   ├── dataset.py               统一流式数据集加载器 (对标 nanochat/dataset.py)
 │   ├── llm_common.py            共享模块：模型、Muon、KV cache、数据与生成工具
 │   ├── 01_train_tokenizer.py    GPT-4 风格正则预分词的 BPE 训练/导出/校验

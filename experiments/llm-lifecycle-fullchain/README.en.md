@@ -102,7 +102,7 @@ $XL_DATA_DIR/corpus.txt ──► 01_train_tokenizer.py ──► $XL_OUT_DIR/to
 - Python ≥ 3.10; dependencies are in `requirements.txt`. Recorded CPU environment: torch 2.15.0+cpu, tokenizers 0.23.3, matplotlib 3.11.2.
 - GPU runs need CUDA-enabled torch. Recorded GPU environment: torch 2.14.0+cu126 on an RTX 3080 Laptop. With `--device auto`, a detected GPU is used; otherwise the script uses CPU.
 - Backend auto-selection uses NCCL when CUDA and NCCL are available, otherwise gloo. Official Windows wheels commonly lack NCCL. CUDA DDP depends on the exact environment; see the limitations below.
-- Standard public dataset streams are supported. `examples/generate_toy_dataset.py` independently creates offline smoke data.
+- Standard public dataset streams are supported. `scripts/prepare_data.py --source toy` independently creates offline smoke data.
 - `$XL_OUT_DIR/run_manifest.json` records `run_id`, profile, device, AMP mode, process count, and other run details.
 - Four CPU threads were fastest for the small model in the recorded multi-core test; eight threads were slower due to contention. Override with `LLM_THREADS`.
 
@@ -120,7 +120,7 @@ python -c "import torch, tokenizers; print('torch:', torch.__version__, 'CUDA av
 
 The requirements include Matplotlib for plots; if unavailable, PNG generation is skipped. The two topic-specific plotting scripts also use NumPy, usually installed with Matplotlib. `matplotlib_layout_audit` is an optional external layout checker; without it, audit is skipped. For multiprocess runs, make sure `torchrun` uses the same Python environment as the installed PyTorch.
 
-The one-command runner reads data from `$XL_DATA_DIR` (default `.work/data`). If it does not find `corpus.txt`, it generates toy data and writes `corpus.txt`, `sft.jsonl`, and `rl.jsonl`, which may overwrite existing files with those names. For custom corpora, prepare all three files; JSONL fields are illustrated by `examples/generate_toy_dataset.py`. `run.sh` does not accept an external data-source argument. To use Parquet, invoke the supporting stage scripts individually.
+The one-command runner reads data from `$XL_DATA_DIR` (default `.work/data`). If it does not find `corpus.txt`, it generates toy data and writes `corpus.txt`, `sft.jsonl`, and `rl.jsonl`, which may overwrite existing files with those names. For custom corpora, prepare all three files; JSONL fields are illustrated by `scripts/prepare_data.py`. `run.sh` does not accept an external data-source argument. To use Parquet, invoke the supporting stage scripts individually.
 
 ### Recorded CPU smoke run
 
@@ -177,7 +177,7 @@ Keep large checkpoints on the compute device under `$XL_OUT_DIR/checkpoints/`. T
 The individual stages are:
 
 ```bash
-python examples/generate_toy_dataset.py # Optional: create smoke data under $XL_DATA_DIR
+python scripts/prepare_data.py --source toy # Optional: create smoke data under $XL_DATA_DIR
 python scripts/01_train_tokenizer.py    # Streaming corpus input; BPE training/export (CPU)
 python scripts/02_model.py              # Model checks: QK norm/RoPE/cache/softcap/GQA/AMP
 python scripts/03_pretrain.py           # Pretraining (Muon vs AdamW)
@@ -237,7 +237,7 @@ Under `torchrun`, two nodes with one GPU each use the same semantics as two GPUs
 
 ```bash
 export XL_DATA_DIR=/path/to/data XL_OUT_DIR=/path/to/out
-python examples/generate_toy_dataset.py
+python scripts/prepare_data.py --source toy
 python scripts/01_train_tokenizer.py --corpus-path "$XL_DATA_DIR/corpus.txt" --vocab-size 2048
 ```
 
@@ -341,10 +341,10 @@ llm-lifecycle-fullchain/
 ├── requirements.txt
 ├── run.sh                       One-command runner; profiles are in configs/
 ├── configs/                     CPU smoke, CUDA+BF16 smoke, and full profiles
-├── examples/generate_toy_dataset.py  Offline toy smoke-corpus generator
 ├── fixtures/                    Fixed tokenizer-domain slices and generator
 ├── evidence/                    Converged report and evidence copies; raw output stays in $XL_OUT_DIR
 └── scripts/
+    ├── prepare_data.py          Data preparation tool (downloads real open datasets or --source toy for fast offline smoke)
     ├── dataset.py               Shared streaming loader (like nanochat/dataset.py)
     ├── llm_common.py            Model, Muon, cache, data, and generation utilities
     ├── 01_train_tokenizer.py    BPE training/export/checks with GPT-4-style regex pre-tokenization

@@ -93,7 +93,7 @@ echo "[run] XL_OUT_DIR=$XL_OUT_DIR XL_DATA_DIR=$XL_DATA_DIR XL_RUN_ID=$XL_RUN_ID
 # 前置：缺语料时生成离线冒烟语料（只写 XL_DATA_DIR）
 if [ ! -f "$XL_DATA_DIR/corpus.txt" ]; then
   echo "[run] [前置] 生成离线冒烟语料 -> $XL_DATA_DIR"
-  "$PY" examples/generate_toy_dataset.py
+  "$PY" scripts/prepare_data.py --source toy
 fi
 
 echo "[run] [1/8] 训练 BPE 分词器（vocab=$VOCAB, max_chars=$TOK_CHARS）"
